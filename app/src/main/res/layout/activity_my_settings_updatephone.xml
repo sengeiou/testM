@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/page_background"
+    android:orientation="vertical"
+    >
+
+    <include layout="@layout/layout_head"/>
+
+    <LinearLayout
+        android:id="@+id/llMySettingsUser"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/padding_dp_15"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_dp_45"
+            >
+
+            <TextView
+                android:layout_width="@dimen/padding_dp_60"
+                android:layout_height="wrap_content"
+                android:text="@string/my_settings_updatePhone_old"
+                />
+
+            <EditText
+                android:id="@+id/etMySettingsUpdatePhoneOld"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/padding_dp_15"
+                android:background="@null"
+                android:hint="@string/my_settings_updatePhone_phoneTips"
+                android:textSize="@dimen/text_size_14"
+                />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_dp_1"
+            android:background="@color/page_background"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_dp_45"
+            >
+
+            <TextView
+                android:layout_width="@dimen/padding_dp_60"
+                android:layout_height="wrap_content"
+                android:text="@string/my_settings_updatePhone_new"
+                />
+
+            <EditText
+                android:id="@+id/etMySettingsUpdatePhoneNew"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="@dimen/padding_dp_15"
+                android:background="@null"
+                android:hint="@string/my_settings_updatePhone_phoneTips"
+                android:textSize="@dimen/text_size_14"
+                />
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_dp_1"
+            android:background="@color/page_background"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_dp_45"
+            >
+
+            <TextView
+                android:layout_width="@dimen/padding_dp_60"
+                android:layout_height="wrap_content"
+                android:text="@string/my_settings_updatePhone_msg"
+                />
+
+            <EditText
+                android:id="@+id/etMySettingsUpdatePhoneMsg"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:layout_marginStart="@dimen/padding_dp_15"
+                android:background="@null"
+                android:hint="@string/my_settings_updatePhone_msgTips"
+                android:textSize="@dimen/text_size_14"
+                />
+
+            <TextView
+                android:id="@+id/tvMySettingsUpdatePhoneGetMsg"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="@string/my_settings_updatePhone_getMsg"
+                android:padding="@dimen/padding_dp_10"
+                android:gravity="center"
+                android:textColor="@color/colorOrange"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tvMySettingsUpdatePhoneSubmit"
+        android:layout_width="150dp"
+        android:layout_height="@dimen/padding_dp_40"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/padding_dp_20"
+        android:background="@drawable/ripple_bg_white0_radius3"
+        android:gravity="center"
+        android:text="@string/submit"
+        android:textSize="@dimen/text_size_16"
+        />
+</LinearLayout>

@@ -20,6 +20,12 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- 我的 -->
+        <activity android:name=".activity.MySettings"/>
+        <activity android:name=".activity.MySettingsUser"/>
+        <activity android:name=".activity.MySettingsSetOrUpdatePassword"/>
+        <activity android:name=".activity.MySettingsUpdatePhone"/>
+        <activity android:name=".activity.MySettingsAboutUs"/>
     </application>
 
 </manifest>
