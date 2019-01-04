@@ -4,6 +4,8 @@ import android.content.Context
 import android.content.Intent
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.view.dialog.DialogCommon
 import kotlinx.android.synthetic.main.activity_my_settings.*
 import kotlinx.android.synthetic.main.layout_head.*
 
@@ -17,6 +19,7 @@ import kotlinx.android.synthetic.main.layout_head.*
  *  Date: 2019/1/3
  */
 class MySettingsActivity : BaseActivity() {
+    private lateinit var mDialog: DialogCommon   //弹框
 
     override fun getLayoutId(): Int {
         return R.layout.activity_my_settings
@@ -26,7 +29,7 @@ class MySettingsActivity : BaseActivity() {
         super.initObject()
 
         //设置标题
-        setHeadName(getString(R.string.my_settings_title))
+        setHeadName(getString(R.string.setting))
     }
 
     override fun initListener() {
@@ -44,7 +47,7 @@ class MySettingsActivity : BaseActivity() {
 
         //设置或修改密码
         llMySettingsUpdatePassword.setOnClickListener {
-            MySettingsSetOrUpdatePasswordActivity().atyToNext(this,tvMySettingsNewOrOldPassword.text as String)
+            MySettingsSetOrUpdatePasswordActivity().atyToNext(this, tvMySettingsNewOrOldPassword.text as String)
         }
 
         //换绑手机
@@ -54,7 +57,10 @@ class MySettingsActivity : BaseActivity() {
 
         //清理缓存
         llMySettingsClearCache.setOnClickListener {
-
+            mDialog = DialogCommon(this, getString(R.string.tips), getString(R.string.clearCache_tips), onRightClick = {
+                ToastUtil.showShort("确定")
+            })
+            mDialog.show()
         }
 
         //关于我们
@@ -64,7 +70,10 @@ class MySettingsActivity : BaseActivity() {
 
         //退出账号
         tvMySettingsExitUser.setOnClickListener {
-
+            mDialog = DialogCommon(this, getString(R.string.tips), getString(R.string.exitApp_tips), onRightClick = {
+                ToastUtil.showShort("确定")
+            })
+            mDialog.show()
         }
     }
 

@@ -26,7 +26,7 @@
             <TextView
                 android:layout_width="@dimen/padding_dp_60"
                 android:layout_height="wrap_content"
-                android:text="@string/my_settings_updatePhone_old"
+                android:text="@string/oldPhone"
                 />
 
             <EditText
@@ -35,7 +35,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/padding_dp_15"
                 android:background="@null"
-                android:hint="@string/my_settings_updatePhone_phoneTips"
+                android:hint="@string/phoneTips"
                 android:textSize="@dimen/text_size_14"
                 />
         </LinearLayout>
@@ -54,7 +54,7 @@
             <TextView
                 android:layout_width="@dimen/padding_dp_60"
                 android:layout_height="wrap_content"
-                android:text="@string/my_settings_updatePhone_new"
+                android:text="@string/newPhone"
                 />
 
             <EditText
@@ -63,7 +63,7 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/padding_dp_15"
                 android:background="@null"
-                android:hint="@string/my_settings_updatePhone_phoneTips"
+                android:hint="@string/phoneTips"
                 android:textSize="@dimen/text_size_14"
                 />
         </LinearLayout>
@@ -82,7 +82,7 @@
             <TextView
                 android:layout_width="@dimen/padding_dp_60"
                 android:layout_height="wrap_content"
-                android:text="@string/my_settings_updatePhone_msg"
+                android:text="@string/msg"
                 />
 
             <EditText
@@ -100,7 +100,7 @@
                 android:id="@+id/tvMySettingsUpdatePhoneGetMsg"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:text="@string/my_settings_updatePhone_getMsg"
+                android:text="@string/getMsg"
                 android:padding="@dimen/padding_dp_10"
                 android:gravity="center"
                 android:textColor="@color/colorOrange"

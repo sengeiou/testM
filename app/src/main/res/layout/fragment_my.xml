@@ -215,7 +215,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/padding_dp_10"
-                android:text="@string/my_message"
+                android:text="@string/message"
                 />
         </LinearLayout>
     </LinearLayout>
@@ -227,7 +227,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/padding_dp_30"
         android:gravity="center"
-        android:text="@string/my_login"
+        android:text="@string/login"
         android:background="@drawable/ripple_bg_white0_radius3"
         />
 </LinearLayout>

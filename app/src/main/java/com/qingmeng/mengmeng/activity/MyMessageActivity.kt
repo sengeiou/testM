@@ -24,7 +24,7 @@ class MyMessageActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
-        setHeadName(getString(R.string.my_message))
+        setHeadName(getString(R.string.message))
     }
 
     override fun initListener() {

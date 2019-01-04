@@ -3,6 +3,7 @@ package com.qingmeng.mengmeng.fragment
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.*
+import com.qingmeng.mengmeng.view.dialog.SelectDialog
 import kotlinx.android.synthetic.main.fragment_my.*
 
 /**

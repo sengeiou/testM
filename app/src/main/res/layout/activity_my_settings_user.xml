@@ -9,355 +9,363 @@
 
     <include layout="@layout/layout_head"/>
 
-    <LinearLayout
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical"
+        android:fillViewport="true"
+        android:scrollbars="none"
         >
 
         <LinearLayout
-            android:id="@+id/llMySettingsUserHead"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_45"
-            android:background="@drawable/ripple_bg_white"
-            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:orientation="vertical"
             >
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <LinearLayout
+                android:id="@+id/llMySettingsUserHead"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_45"
+                android:background="@drawable/ripple_bg_white"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_dp_15"
+                    android:layout_weight="1"
+                    android:text="@string/my_settings_user_head"
+                    />
+
+                <ImageView
+                    android:id="@+id/ivMySettingsUserHead"
+                    android:layout_width="@dimen/padding_dp_30"
+                    android:layout_height="@dimen/padding_dp_30"
+                    android:layout_marginEnd="@dimen/padding_dp_15"
+                    android:src="@mipmap/ic_launcher"
+                    />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="@dimen/padding_dp_15"
+                    android:src="@mipmap/ic_launcher"
+                    />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_1"
                 android:layout_marginStart="@dimen/padding_dp_15"
-                android:layout_weight="1"
-                android:text="@string/my_settings_user_head"
+                android:background="@color/page_background"
                 />
 
-            <ImageView
-                android:id="@+id/ivMySettingsUserHead"
-                android:layout_width="@dimen/padding_dp_30"
-                android:layout_height="@dimen/padding_dp_30"
-                android:layout_marginEnd="@dimen/padding_dp_15"
-                android:src="@mipmap/ic_launcher"
-                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_45"
+                android:gravity="center_vertical"
+                >
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="@dimen/padding_dp_15"
-                android:src="@mipmap/ic_launcher"
-                />
-        </LinearLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_dp_15"
+                    android:layout_weight="1"
+                    android:text="@string/username"
+                    />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_1"
-            android:layout_marginStart="@dimen/padding_dp_15"
-            android:background="@color/page_background"
-            />
+                <TextView
+                    android:id="@+id/tvMySettingsUserUserName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_dp_15"
+                    android:text="yang"
+                    />
+            </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_45"
-            android:gravity="center_vertical"
-            >
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_1"
                 android:layout_marginStart="@dimen/padding_dp_15"
-                android:layout_weight="1"
-                android:text="@string/my_settings_user_username"
+                android:background="@color/page_background"
                 />
 
-            <TextView
-                android:id="@+id/tvMySettingsUserUserName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/padding_dp_15"
-                android:text="yang"
-                />
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/llMySettingsUserGender"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_45"
+                android:background="@drawable/ripple_bg_white"
+                android:gravity="center_vertical"
+                >
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_1"
-            android:layout_marginStart="@dimen/padding_dp_15"
-            android:background="@color/page_background"
-            />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_dp_15"
+                    android:layout_weight="1"
+                    android:text="@string/gender"
+                    />
 
-        <LinearLayout
-            android:id="@+id/llMySettingsUserGender"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_45"
-            android:background="@drawable/ripple_bg_white"
-            android:gravity="center_vertical"
-            >
+                <TextView
+                    android:id="@+id/tvMySettingsUserGender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_dp_15"
+                    android:text="男"
+                    />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="@dimen/padding_dp_15"
+                    android:src="@mipmap/ic_launcher"
+                    />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_1"
                 android:layout_marginStart="@dimen/padding_dp_15"
-                android:layout_weight="1"
-                android:text="@string/my_settings_user_gender"
+                android:background="@color/page_background"
                 />
 
-            <TextView
-                android:id="@+id/tvMySettingsUserGender"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/padding_dp_15"
-                android:text="男"
-                />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_45"
+                android:gravity="center_vertical"
+                >
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="@dimen/padding_dp_15"
-                android:src="@mipmap/ic_launcher"
-                />
-        </LinearLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_dp_15"
+                    android:layout_weight="1"
+                    android:text="@string/phone"
+                    />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_1"
-            android:layout_marginStart="@dimen/padding_dp_15"
-            android:background="@color/page_background"
-            />
+                <TextView
+                    android:id="@+id/tvMySettingsPhone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_dp_15"
+                    android:text="18361116212"
+                    />
+            </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_45"
-            android:gravity="center_vertical"
-            >
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_1"
                 android:layout_marginStart="@dimen/padding_dp_15"
-                android:layout_weight="1"
-                android:text="@string/my_settings_user_phone"
+                android:background="@color/page_background"
                 />
 
-            <TextView
-                android:id="@+id/tvMySettingsPhone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/padding_dp_15"
-                android:text="18361116212"
-                />
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_45"
+                android:gravity="center_vertical"
+                >
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_1"
-            android:layout_marginStart="@dimen/padding_dp_15"
-            android:background="@color/page_background"
-            />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_dp_15"
+                    android:layout_weight="1"
+                    android:text="@string/my_settings_user_telephone"
+                    />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_45"
-            android:gravity="center_vertical"
-            >
+                <TextView
+                    android:id="@+id/tvMySettingsUserTelephone"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_dp_15"
+                    android:text="null"
+                    />
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_1"
                 android:layout_marginStart="@dimen/padding_dp_15"
-                android:layout_weight="1"
-                android:text="@string/my_settings_user_telephone"
+                android:background="@color/page_background"
                 />
 
-            <TextView
-                android:id="@+id/tvMySettingsUserTelephone"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/padding_dp_15"
-                android:text="null"
-                />
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_45"
+                android:gravity="center_vertical"
+                >
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_1"
-            android:layout_marginStart="@dimen/padding_dp_15"
-            android:background="@color/page_background"
-            />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_dp_15"
+                    android:layout_weight="1"
+                    android:text="@string/wechat"
+                    />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_45"
-            android:gravity="center_vertical"
-            >
+                <TextView
+                    android:id="@+id/tvMySettingsUserWechat"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_dp_15"
+                    android:text="18361116212"
+                    />
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_1"
                 android:layout_marginStart="@dimen/padding_dp_15"
-                android:layout_weight="1"
-                android:text="@string/my_settings_user_wechat"
+                android:background="@color/page_background"
                 />
 
-            <TextView
-                android:id="@+id/tvMySettingsUserWechat"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/padding_dp_15"
-                android:text="18361116212"
-                />
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_45"
+                android:gravity="center_vertical"
+                >
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_1"
-            android:layout_marginStart="@dimen/padding_dp_15"
-            android:background="@color/page_background"
-            />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_dp_15"
+                    android:layout_weight="1"
+                    android:text="@string/qq"
+                    />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_45"
-            android:gravity="center_vertical"
-            >
+                <TextView
+                    android:id="@+id/tvMySettingsUserQQ"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_dp_15"
+                    android:text="1318392199"
+                    />
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_1"
                 android:layout_marginStart="@dimen/padding_dp_15"
-                android:layout_weight="1"
-                android:text="@string/my_settings_user_qq"
+                android:background="@color/page_background"
                 />
 
-            <TextView
-                android:id="@+id/tvMySettingsUserQQ"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/padding_dp_15"
-                android:text="1318392199"
-                />
-        </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_45"
+                android:gravity="center_vertical"
+                >
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_1"
-            android:layout_marginStart="@dimen/padding_dp_15"
-            android:background="@color/page_background"
-            />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_dp_15"
+                    android:layout_weight="1"
+                    android:text="@string/email"
+                    />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_45"
-            android:gravity="center_vertical"
-            >
+                <TextView
+                    android:id="@+id/tvMySettingsUserEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_dp_15"
+                    android:text="1318392199@qq.com"
+                    />
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_1"
                 android:layout_marginStart="@dimen/padding_dp_15"
-                android:layout_weight="1"
-                android:text="@string/my_settings_user_email"
+                android:background="@color/page_background"
                 />
 
-            <TextView
-                android:id="@+id/tvMySettingsUserEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="@dimen/padding_dp_15"
-                android:text="1318392199@qq.com"
-                />
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/llMySettingsUserCity"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_45"
+                android:background="@drawable/ripple_bg_white"
+                android:gravity="center_vertical"
+                >
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_1"
-            android:layout_marginStart="@dimen/padding_dp_15"
-            android:background="@color/page_background"
-            />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_dp_15"
+                    android:layout_weight="1"
+                    android:text="@string/my_settings_user_city"
+                    />
 
-        <LinearLayout
-            android:id="@+id/llMySettingsUserCity"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_45"
-            android:background="@drawable/ripple_bg_white"
-            android:gravity="center_vertical"
-            >
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="@dimen/padding_dp_15"
+                    android:src="@mipmap/ic_launcher"
+                    />
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_1"
                 android:layout_marginStart="@dimen/padding_dp_15"
-                android:layout_weight="1"
-                android:text="@string/my_settings_user_city"
+                android:background="@color/page_background"
                 />
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="@dimen/padding_dp_15"
-                android:src="@mipmap/ic_launcher"
-                />
-        </LinearLayout>
+            <LinearLayout
+                android:id="@+id/llMySettingsUserMoney"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_45"
+                android:background="@drawable/ripple_bg_white"
+                android:gravity="center_vertical"
+                >
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_1"
-            android:layout_marginStart="@dimen/padding_dp_15"
-            android:background="@color/page_background"
-            />
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_dp_15"
+                    android:layout_weight="1"
+                    android:text="@string/my_settings_user_money"
+                    />
 
-        <LinearLayout
-            android:id="@+id/llMySettingsUserMoney"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_45"
-            android:background="@drawable/ripple_bg_white"
-            android:gravity="center_vertical"
-            >
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="@dimen/padding_dp_15"
+                    android:src="@mipmap/ic_launcher"
+                    />
+            </LinearLayout>
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_1"
                 android:layout_marginStart="@dimen/padding_dp_15"
-                android:layout_weight="1"
-                android:text="@string/my_settings_user_money"
+                android:background="@color/page_background"
                 />
 
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="@dimen/padding_dp_15"
-                android:src="@mipmap/ic_launcher"
-                />
+            <LinearLayout
+                android:id="@+id/llMySettingsUserInterestIndustry"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_45"
+                android:background="@drawable/ripple_bg_white"
+                android:gravity="center_vertical"
+                >
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_dp_15"
+                    android:layout_weight="1"
+                    android:text="@string/my_settings_user_interestIndustry"
+                    />
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginEnd="@dimen/padding_dp_15"
+                    android:src="@mipmap/ic_launcher"
+                    />
+            </LinearLayout>
         </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_1"
-            android:layout_marginStart="@dimen/padding_dp_15"
-            android:background="@color/page_background"
-            />
-
-        <LinearLayout
-            android:id="@+id/llMySettingsUserInterestIndustry"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_45"
-            android:background="@drawable/ripple_bg_white"
-            android:gravity="center_vertical"
-            >
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/padding_dp_15"
-                android:layout_weight="1"
-                android:text="@string/my_settings_user_interestIndustry"
-                />
-
-            <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
-                android:layout_marginEnd="@dimen/padding_dp_15"
-                android:src="@mipmap/ic_launcher"
-                />
-        </LinearLayout>
-    </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
 </LinearLayout>
