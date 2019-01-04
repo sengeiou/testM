@@ -4,11 +4,10 @@ import android.content.Context
 import android.content.Intent
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
-import kotlinx.android.synthetic.main.activity_my_settings_aboutus.*
 import kotlinx.android.synthetic.main.layout_head.*
 
 /**
- *  Description :设置 - 关于我们
+ *  Description :设置 - 企业入驻
 
  *  Author:yang
 
@@ -16,19 +15,16 @@ import kotlinx.android.synthetic.main.layout_head.*
 
  *  Date: 2019/1/3
  */
-class MySettingsAboutUs : BaseActivity() {
+class MyEnterpriseEntryActivity : BaseActivity() {
 
     override fun getLayoutId(): Int {
-        return R.layout.activity_my_settings_aboutus
+        return R.layout.activity_my_enterpriseentry
     }
 
     override fun initObject() {
         super.initObject()
 
-        setHeadName(getString(R.string.my_settings_aboutUs))
-
-        //设置版本号
-        tvMySettingsAboutUsVersion.text = tvMySettingsAboutUsVersion.text.toString() + getLocalVersion(this)
+        setHeadName(getString(R.string.my_enterpriseEntry))
     }
 
     override fun initListener() {
@@ -38,14 +34,6 @@ class MySettingsAboutUs : BaseActivity() {
         mBack.setOnClickListener {
             this.finish()
         }
-    }
-
-    //版本
-    private fun getLocalVersion(context: Context): String {
-        val packageInfo = context.applicationContext
-                .packageManager
-                .getPackageInfo(context.packageName, 0)
-        return packageInfo.versionName
     }
 
     fun atyToNext(context: Context) {

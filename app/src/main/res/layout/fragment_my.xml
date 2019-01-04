@@ -30,6 +30,7 @@
                 />
 
             <TextView
+                android:id="@+id/tvMyUserName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
@@ -67,12 +68,14 @@
                 >
 
                 <TextView
+                    android:id="@+id/tvMyMyFollowNum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/my_defaultNum"
                     />
 
                 <TextView
+                    android:id="@+id/tvMyMyFollow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/my_myFollow"
@@ -89,6 +92,7 @@
                 >
 
                 <TextView
+                    android:id="@+id/tvMyMyLeavingMessageNum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/my_defaultNum"
@@ -111,12 +115,14 @@
                 >
 
                 <TextView
+                    android:id="@+id/tvMyMyFootprintNum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/my_defaultNum"
                     />
 
                 <TextView
+                    android:id="@+id/tvMyMyFootprint"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/my_myFootprint"

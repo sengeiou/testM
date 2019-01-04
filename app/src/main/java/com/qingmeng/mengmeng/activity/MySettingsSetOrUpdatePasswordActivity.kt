@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.layout_head.*
 
  *  Date: 2019/1/3
  */
-class MySettingsSetOrUpdatePassword : BaseActivity(){
+class MySettingsSetOrUpdatePasswordActivity : BaseActivity(){
 
     override fun getLayoutId(): Int {
         return R.layout.activity_my_settings_setorupdate

@@ -21,11 +21,16 @@
             </intent-filter>
         </activity>
         <!-- 我的 -->
-        <activity android:name=".activity.MySettings"/>
-        <activity android:name=".activity.MySettingsUser"/>
-        <activity android:name=".activity.MySettingsSetOrUpdatePassword"/>
-        <activity android:name=".activity.MySettingsUpdatePhone"/>
-        <activity android:name=".activity.MySettingsAboutUs"/>
+        <activity android:name=".activity.MySettingsActivity"/>
+        <activity android:name=".activity.MySettingsUserActivity"/>
+        <activity android:name=".activity.MySettingsSetOrUpdatePasswordActivity"/>
+        <activity android:name=".activity.MySettingsUpdatePhoneActivity"/>
+        <activity android:name=".activity.MySettingsAboutUsActivity"/>
+        <activity android:name=".activity.MyMyFollowActivity"/>
+        <activity android:name=".activity.MyMyLeavingMessageActivity"/>
+        <activity android:name=".activity.MyEnterpriseEntryActivity"/>
+        <activity android:name=".activity.MyThreeBindingActivity"/>
+        <activity android:name=".activity.MyMessageActivity"/>
     </application>
 
 </manifest>

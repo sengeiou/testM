@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.layout_head.*
 
  *  Date: 2019/1/3
  */
-class MySettings : BaseActivity() {
+class MySettingsActivity : BaseActivity() {
 
     override fun getLayoutId(): Int {
         return R.layout.activity_my_settings
@@ -39,17 +39,17 @@ class MySettings : BaseActivity() {
 
         //用户
         llMySettingsUser.setOnClickListener {
-            MySettingsUser().atyToNext(this)
+            MySettingsUserActivity().atyToNext(this)
         }
 
         //设置或修改密码
         llMySettingsUpdatePassword.setOnClickListener {
-            MySettingsSetOrUpdatePassword().atyToNext(this,tvMySettingsNewOrOldPassword.text as String)
+            MySettingsSetOrUpdatePasswordActivity().atyToNext(this,tvMySettingsNewOrOldPassword.text as String)
         }
 
         //换绑手机
         llMySettingsUpdatePhone.setOnClickListener {
-            MySettingsUpdatePhone().atyToNext(this)
+            MySettingsUpdatePhoneActivity().atyToNext(this)
         }
 
         //清理缓存
@@ -59,7 +59,7 @@ class MySettings : BaseActivity() {
 
         //关于我们
         llMySettingsAboutUs.setOnClickListener {
-            MySettingsAboutUs().atyToNext(this)
+            MySettingsAboutUsActivity().atyToNext(this)
         }
 
         //退出账号
