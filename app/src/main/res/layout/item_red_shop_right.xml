@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/padding_dp_90"
+    android:layout_height="@dimen/padding_dp_90"
+    android:gravity="center"
+    android:orientation="vertical">
+
+    <ImageView
+        android:layout_width="@dimen/padding_dp_60"
+        android:layout_height="@dimen/padding_dp_60" />
+
+    <TextView
+        android:layout_width="@dimen/padding_dp_60"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_dp_5" />
+</LinearLayout>
