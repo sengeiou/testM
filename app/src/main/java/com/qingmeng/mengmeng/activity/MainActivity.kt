@@ -1,4 +1,4 @@
-package com.qingmeng.mengmeng
+package com.qingmeng.mengmeng.activity
 
 import AppManager
 import android.annotation.SuppressLint
@@ -8,6 +8,8 @@ import android.widget.ImageView
 import android.widget.TabHost
 import android.widget.TabWidget
 import android.widget.TextView
+import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.base.MainTab
 import com.qingmeng.mengmeng.utils.ToastUtil
 import kotlinx.android.synthetic.main.activity_main.*
