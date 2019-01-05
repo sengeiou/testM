@@ -1,12 +1,233 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/page_background"
+    android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@color/colorOrange"
+        android:orientation="vertical"
+        >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5"
+            >
+
+            <ImageView
+                android:id="@+id/ivMyHeadPortrait"
+                android:layout_width="@dimen/padding_dp_50"
+                android:layout_height="@dimen/padding_dp_50"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/padding_dp_15"
+                android:src="@mipmap/ic_launcher"
+                />
+
+            <TextView
+                android:id="@+id/tvMyUserName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/padding_dp_10"
+                android:layout_toEndOf="@+id/ivMyHeadPortrait"
+                android:text="@string/my_username"
+                />
+
+            <ImageView
+                android:id="@+id/ivMySettings"
+                android:layout_width="@dimen/padding_dp_25"
+                android:layout_height="@dimen/padding_dp_25"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="@dimen/padding_dp_15"
+                android:layout_marginTop="@dimen/padding_dp_15"
+                android:src="@mipmap/ic_launcher"
+                />
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:paddingEnd="@dimen/padding_dp_15"
+            android:paddingStart="@dimen/padding_dp_15"
+            >
+
+            <LinearLayout
+                android:id="@+id/llMyMyFollow"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/tvMyMyFollowNum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/my_defaultNum"
+                    />
+
+                <TextView
+                    android:id="@+id/tvMyMyFollow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/my_myFollow"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llMyMyLeavingMessage"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/tvMyMyLeavingMessageNum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/my_defaultNum"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/my_myLeavingMessage"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/llMyMyFootprint"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/tvMyMyFootprintNum"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/my_defaultNum"
+                    />
+
+                <TextView
+                    android:id="@+id/tvMyMyFootprint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/my_myFootprint"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llMyEnterpriseEntry"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding_dp_45"
+        android:layout_marginEnd="@dimen/padding_dp_15"
+        android:layout_marginStart="@dimen/padding_dp_15"
+        android:layout_marginTop="@dimen/padding_dp_15"
+        android:background="@drawable/ripple_bg_white_radius5"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        >
+
+        <ImageView
+            android:layout_width="@dimen/padding_dp_25"
+            android:layout_height="@dimen/padding_dp_25"
+            android:layout_marginStart="@dimen/padding_dp_20"
+            android:src="@mipmap/ic_launcher"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_dp_10"
+            android:text="@string/my_enterpriseEntry"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/llMyNoLogin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        >
+
+        <LinearLayout
+            android:id="@+id/llMyThreeBinding"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_dp_45"
+            android:layout_marginEnd="@dimen/padding_dp_15"
+            android:layout_marginStart="@dimen/padding_dp_15"
+            android:layout_marginTop="@dimen/padding_dp_15"
+            android:background="@drawable/ripple_bg_white_radius5"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            >
+
+            <ImageView
+                android:layout_width="@dimen/padding_dp_25"
+                android:layout_height="@dimen/padding_dp_25"
+                android:layout_marginStart="@dimen/padding_dp_20"
+                android:src="@mipmap/ic_launcher"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_dp_10"
+                android:text="@string/my_threeBinding"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/llMyMessage"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_dp_45"
+            android:layout_marginEnd="@dimen/padding_dp_15"
+            android:layout_marginStart="@dimen/padding_dp_15"
+            android:layout_marginTop="@dimen/padding_dp_15"
+            android:background="@drawable/ripple_bg_white_radius5"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            >
+
+            <ImageView
+                android:layout_width="@dimen/padding_dp_25"
+                android:layout_height="@dimen/padding_dp_25"
+                android:layout_marginStart="@dimen/padding_dp_20"
+                android:src="@mipmap/ic_launcher"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_dp_10"
+                android:text="@string/message"
+                />
+        </LinearLayout>
+    </LinearLayout>
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/tvMyLogin"
+        android:layout_width="@dimen/padding_dp_90"
+        android:layout_height="@dimen/padding_dp_30"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/padding_dp_30"
         android:gravity="center"
-        android:text="4"/>
+        android:text="@string/login"
+        android:background="@drawable/ripple_bg_white0_radius3"
+        />
 </LinearLayout>

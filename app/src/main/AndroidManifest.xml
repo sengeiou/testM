@@ -20,6 +20,17 @@
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <!-- 我的 -->
+        <activity android:name=".activity.MySettingsActivity"/>
+        <activity android:name=".activity.MySettingsUserActivity"/>
+        <activity android:name=".activity.MySettingsSetOrUpdatePasswordActivity"/>
+        <activity android:name=".activity.MySettingsUpdatePhoneActivity"/>
+        <activity android:name=".activity.MySettingsAboutUsActivity"/>
+        <activity android:name=".activity.MyMyFollowActivity"/>
+        <activity android:name=".activity.MyMyLeavingMessageActivity"/>
+        <activity android:name=".activity.MyEnterpriseEntryActivity"/>
+        <activity android:name=".activity.MyThreeBindingActivity"/>
+        <activity android:name=".activity.MyMessageActivity"/>
     </application>
 
 </manifest>

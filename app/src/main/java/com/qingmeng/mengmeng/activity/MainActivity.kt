@@ -58,6 +58,14 @@ class MainActivity : BaseActivity(), TabHost.OnTabChangeListener {
     }
 
     override fun onTabChanged(tabId: String?) {
-        tabId?.let { setHeadName(it) }
+        tabId?.let {
+            //我的板块就隐藏头部
+            if (it == getString(R.string.tab_name_my)) {
+                setShowHead(false)
+            } else {
+                setShowHead(true)
+                setHeadName(it)
+            }
+        }
     }
 }

@@ -2,6 +2,7 @@ package com.qingmeng.mengmeng
 
 import AppManager
 import android.content.pm.ActivityInfo
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
@@ -30,7 +31,7 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= 21) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = ContextCompat.getColor(this, R.color.colorPrimaryDark)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.colorOrange)
         }
         setContentView(getLayoutId())
         AppManager.instance.addActivity(this)
@@ -52,11 +53,26 @@ abstract class BaseActivity : AppCompatActivity() {
     /**
      * 根据字符串设置标题名
      *
-     *
      * ram resourceId
      */
     protected fun setHeadName(resourceId: Int) {
         mTitle?.setText(resourceId)
+    }
+
+    /**
+     * 设置标题背景色
+     */
+    protected fun setHeadBack(color: String) {
+        mTopView?.setBackgroundColor(Color.parseColor(color))
+    }
+
+    /**
+     * 根据字符串设置标题背景色
+     *
+     * ram resourceId
+     */
+    protected fun setHeadBack(resourceId: Int) {
+        mTopView?.setBackgroundResource(resourceId)
     }
 
     /**
@@ -66,6 +82,19 @@ abstract class BaseActivity : AppCompatActivity() {
         mBack?.let { it ->
             it.visibility = if (isShowBack) {
                 it.setOnClickListener { onBackPressed() }
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+        }
+    }
+
+    /**
+     * 是否显示头部view   默认显示
+     */
+    protected fun setShowHead(isShowHead: Boolean) {
+        mTopView?.let { it ->
+            it.visibility = if (isShowHead) {
                 View.VISIBLE
             } else {
                 View.GONE
