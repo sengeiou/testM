@@ -16,6 +16,7 @@
     <color name="color_999999">#999999</color>
     <color name="colorOrange">#ff9900</color>
     <color name="colorOrangeBright">#ffa142</color>
+    <color name="dialog_item_bg">#f2f2f2</color>
     <color name="page_background">#eeeeee</color>
     <!-- 点击背景 -->
     <color name="whiteColorPress">#5521272b</color>
