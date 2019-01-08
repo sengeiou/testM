@@ -1,13 +1,12 @@
 package com.qingmeng.mengmeng.activity
 
-import android.content.Context
-import android.content.Intent
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.view.dialog.DialogCommon
 import kotlinx.android.synthetic.main.activity_my_settings.*
 import kotlinx.android.synthetic.main.layout_head.*
+import org.jetbrains.anko.startActivity
 
 /**
  *  Description :我的 - 设置
@@ -42,17 +41,17 @@ class MySettingsActivity : BaseActivity() {
 
         //用户
         llMySettingsUser.setOnClickListener {
-            MySettingsUserActivity().atyToNext(this)
+            startActivity<MySettingsUserActivity>()
         }
 
         //设置或修改密码
         llMySettingsUpdatePassword.setOnClickListener {
-            MySettingsSetOrUpdatePasswordActivity().atyToNext(this, tvMySettingsNewOrOldPassword.text as String)
+            startActivity<MySettingsSetOrUpdatePasswordActivity>("title" to tvMySettingsNewOrOldPassword.text as String)
         }
 
         //换绑手机
         llMySettingsUpdatePhone.setOnClickListener {
-            MySettingsUpdatePhoneActivity().atyToNext(this)
+            startActivity<MySettingsUpdatePhoneActivity>()
         }
 
         //清理缓存
@@ -65,7 +64,7 @@ class MySettingsActivity : BaseActivity() {
 
         //关于我们
         llMySettingsAboutUs.setOnClickListener {
-            MySettingsAboutUsActivity().atyToNext(this)
+            startActivity<MySettingsAboutUsActivity>()
         }
 
         //退出账号
@@ -75,11 +74,5 @@ class MySettingsActivity : BaseActivity() {
             })
             mDialog.show()
         }
-    }
-
-    //aty跳转
-    fun atyToNext(context: Context) {
-        val intent = Intent(context, this.javaClass)
-        context.startActivity(intent)
     }
 }

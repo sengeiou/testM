@@ -10,6 +10,7 @@ import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.WindowManager
 import com.qingmeng.mengmeng.utils.SharedSingleton
+import com.qingmeng.mengmeng.utils.TimerHandler
 import com.qingmeng.mengmeng.view.dialog.DialogCustom
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -24,6 +25,7 @@ abstract class BaseActivity : AppCompatActivity() {
     var totalTime = -1
     var timing = 1
     var timingOver = 2
+    lateinit var timerHandler: TimerHandler
     private val mCompositeDisposable: CompositeDisposable = CompositeDisposable()
 
     override fun onCreate(savedInstanceState: Bundle?) {
