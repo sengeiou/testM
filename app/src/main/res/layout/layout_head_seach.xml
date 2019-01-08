@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/colorPrimary">
+
+    <LinearLayout
+        android:id="@+id/mTopView"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding_dp_42"
+        android:background="@color/colorOrange">
+
+        <ImageView
+            android:id="@+id/head_search_mBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/padding_dp_5"
+            android:layout_marginTop="@dimen/padding_dp_1"
+            android:padding="@dimen/padding_dp_10"
+            android:src="@drawable/common_btn_back" />
+
+        <TextView
+            android:id="@+id/head_search"
+            style="@style/DefaultHint"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/padding_dp_30"
+            android:layout_marginBottom="@dimen/padding_dp_10"
+            android:layout_marginLeft="@dimen/padding_dp_10"
+            android:layout_marginRight="@dimen/padding_dp_20"
+            android:layout_marginTop="@dimen/padding_dp_5"
+            android:layout_weight="1"
+            android:background="@drawable/bg_seach"
+            android:drawableLeft="@drawable/common_btn_back"
+            android:drawablePadding="@dimen/padding_dp_5"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/padding_dp_5"
+            android:text="@string/seach" />
+
+        <TextView
+            android:id="@+id/head_search_mMenu"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/padding_dp_15"
+            android:layout_marginTop="@dimen/padding_dp_9"
+            android:text="@string/cancel"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_20"
+            android:visibility="gone" />
+    </LinearLayout>
+</RelativeLayout>

@@ -10,6 +10,8 @@
     <string name="login">登录</string>
     <string name="qq">QQ</string>
     <string name="wechat">微信</string>
+    <string name="sina">新浪</string>
+    <string name="wechat_friends">朋友圈</string>
     <string name="email">邮箱</string>
     <string name="save">保存</string>
     <string name="delete">删除</string>
@@ -40,7 +42,16 @@
     <string name="money_10_20">10-20万</string>
     <string name="money_20_50">20-50万</string>
     <string name="money_50">50万以上</string>
-
+    <string name="seach">请输入你想要搜索的</string>
+    <!-- =======================================红铺===================================== -->
+    <string name="seach_shop_count">门店数：</string>
+    <string name="seach_visit_count">浏览量：</string>
+    <string name="seach_food_type">餐饮类型</string>
+    <string name="seach_add_area">加盟区域</string>
+    <string name="seach_ranking">综合排序</string>
+    <string name="seach_screning_conditon">筛选条件</string>
+    <!-- ======================================头报====================================== -->
+    <string name="head_detail">详情</string>
     <!-- ======================================我的====================================== -->
     <string name="my_defaultNum">--</string>
     <string name="exitApp_tips">确定要退出账号吗？</string>
@@ -79,4 +90,6 @@
     <string name="my_threeBinding_untying">解绑</string>
     <string name="my_threeBinding_qqTips">解除绑定后，你将不能通过QQ进行第三方登录</string>
     <string name="my_threeBinding_wechatTips">解除绑定后，你将不能通过微信进行第三方登录</string>
+    <string name="title_activity_head_datails">Head_datails</string>
+    <string name="title_activity_head_details">HeadDetailsActivity</string>
 </resources>

@@ -74,7 +74,9 @@
     <dimen name="padding_dp_90">90dp</dimen>
     <dimen name="padding_dp_95">95dp</dimen>
     <dimen name="padding_dp_102">102dp</dimen>
+    <dimen name="padding_dp_120">120dp</dimen>
     <dimen name="padding_dp_141">141dp</dimen>
+    <dimen name="padding_dp_200">200dp</dimen>
 
     <dimen name="text_size_12">12sp</dimen>
     <dimen name="text_size_8">8sp</dimen>
@@ -111,4 +113,5 @@
     <dimen name="image_color">28dp</dimen>
     <dimen name="image_color_margin">6dp</dimen>
     <dimen name="image_mode_space">32dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>
