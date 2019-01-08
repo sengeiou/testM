@@ -6,11 +6,16 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-
         android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true">
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="@dimen/padding_dp_10"
+        android:layout_marginRight="@dimen/padding_dp_10"
+        android:layout_marginTop="@dimen/padding_dp_10"
+        android:layout_marginBottom="@dimen/padding_dp_10"
+        >
 
         <ImageView
+            android:id="@+id/news_pager_icon"
             android:layout_width="@dimen/padding_dp_102"
             android:layout_height="match_parent"
             android:layout_marginRight="@dimen/padding_dp_10" />
@@ -23,6 +28,7 @@
             android:orientation="vertical">
 
             <TextView
+                android:id="@+id/news_pager_tittle"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -30,6 +36,7 @@
                 android:textSize="@dimen/text_size_20" />
 
             <TextView
+                android:id="@+id/news_pager_content"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="2"
@@ -37,6 +44,7 @@
                 android:textSize="@dimen/text_size_18" />
 
             <TextView
+                android:id="@+id/news_pager_date"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1" />

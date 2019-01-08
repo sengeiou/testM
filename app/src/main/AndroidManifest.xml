@@ -43,16 +43,26 @@
             </intent-filter>
         </activity>
         <!-- 我的 -->
-        <activity android:name=".activity.MySettingsActivity"/>
-        <activity android:name=".activity.MySettingsUserActivity"/>
-        <activity android:name=".activity.MySettingsSetOrUpdatePasswordActivity"/>
-        <activity android:name=".activity.MySettingsUpdatePhoneActivity"/>
-        <activity android:name=".activity.MySettingsAboutUsActivity"/>
-        <activity android:name=".activity.MyMyFollowActivity"/>
-        <activity android:name=".activity.MyMyLeavingMessageActivity"/>
-        <activity android:name=".activity.MyEnterpriseEntryActivity"/>
-        <activity android:name=".activity.MyThreeBindingActivity"/>
-        <activity android:name=".activity.MyMessageActivity"/>
+        <activity android:name=".activity.MySettingsActivity" />
+        <activity android:name=".activity.MySettingsUserActivity" />
+        <activity android:name=".activity.MySettingsSetOrUpdatePasswordActivity" />
+        <activity android:name=".activity.MySettingsUpdatePhoneActivity" />
+        <activity android:name=".activity.MySettingsAboutUsActivity" />
+        <activity android:name=".activity.MyMyFollowActivity" />
+        <activity android:name=".activity.MyMyLeavingMessageActivity" />
+        <activity android:name=".activity.MyEnterpriseEntryActivity" />
+        <activity android:name=".activity.MyThreeBindingActivity" />
+        <activity android:name=".activity.MyMessageActivity" />
+        <activity
+            android:name=".activity.Head_datails"
+            android:label="@string/title_activity_head_datails"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.HeadDetailsActivity"
+            android:label="@string/title_activity_head_details"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.RedShopSeach" />
+        <activity android:name=".activity.RedShopSeachResult"></activity>
     </application>
 
 </manifest>
