@@ -3,8 +3,8 @@ package com.qingmeng.mengmeng.fragment
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.*
-import com.qingmeng.mengmeng.view.dialog.SelectDialog
 import kotlinx.android.synthetic.main.fragment_my.*
+import org.jetbrains.anko.support.v4.startActivity
 
 /**
  * 我的板块
@@ -20,12 +20,19 @@ class MyFragment : BaseFragment() {
     override fun initObject() {
         super.initObject()
 
-
+        swlMy.isRefreshing = true
+        //用户信息查询
+        httpLoad()
     }
 
     //点击事件
     override fun initListener() {
         super.initListener()
+
+        //下拉刷新
+        swlMy.setOnRefreshListener {
+            httpLoad()
+        }
 
         //头像
         ivMyHeadPortrait.setOnClickListener {
@@ -35,42 +42,47 @@ class MyFragment : BaseFragment() {
         //设置
         ivMySettings.setOnClickListener {
             //跳转aty
-            MySettingsActivity().atyToNext(context!!)
+            startActivity<MySettingsActivity>()
         }
 
         //我的关注
         llMyMyFollow.setOnClickListener {
-            MyMyFollowActivity().atyToNext(context!!, tvMyMyFollow.text as String)
+            startActivity<MyMyFollowActivity>("title" to tvMyMyFootprint.text as String)
         }
 
         //我的留言
         llMyMyLeavingMessage.setOnClickListener {
-            MyMyLeavingMessageActivity().atyToNext(context!!)
+            startActivity<MyMyLeavingMessageActivity>()
         }
 
         //我的足迹
         llMyMyFootprint.setOnClickListener {
-            MyMyFollowActivity().atyToNext(context!!, tvMyMyFootprint.text as String)
+            startActivity<MyMyFollowActivity>("title" to tvMyMyFootprint.text as String)
         }
 
         //企业入驻
         llMyEnterpriseEntry.setOnClickListener {
-            MyEnterpriseEntryActivity().atyToNext(context!!)
+            startActivity<MyEnterpriseEntryActivity>()
         }
 
         //第三方绑定
         llMyThreeBinding.setOnClickListener {
-            MyThreeBindingActivity().atyToNext(context!!)
+            startActivity<MyThreeBindingActivity>()
         }
 
         //消息
         llMyMessage.setOnClickListener {
-            MyMessageActivity().atyToNext(context!!)
+            startActivity<MyMessageActivity>()
         }
 
         //登录
         tvMyLogin.setOnClickListener {
 
         }
+    }
+
+    //查询用户接口
+    private fun httpLoad(){
+        swlMy.isRefreshing = false
     }
 }

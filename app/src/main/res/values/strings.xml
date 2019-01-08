@@ -30,6 +30,7 @@
     <string name="msg">验证码</string>
     <string name="getMsg">获取验证码</string>
     <string name="phoneTips">请输入手机号</string>
+    <string name="msgTips">请输入验证码</string>
     <string name="photograph">拍照</string>
     <string name="albumSelect">从相册选择</string>
     <string name="boy">男</string>
@@ -88,4 +89,19 @@
     <string name="my_threeBinding_untying">解绑</string>
     <string name="my_threeBinding_qqTips">解除绑定后，你将不能通过QQ进行第三方登录</string>
     <string name="my_threeBinding_wechatTips">解除绑定后，你将不能通过微信进行第三方登录</string>
+    <string name="pleaseSelect">请选择</string>
+    <string name="popCitySelect_province">选择省份/地区</string>
+    <string name="popCitySelect_city">选择城市</string>
+    <string name="popCitySelect_area">选择区/县</string>
+    <string name="popCitySelect_twoTips">请选择城市</string>
+    <string name="popCitySelect_threeTips">请选择县</string>
+    <string name="permission_takeCamera">请开启应用拍照权限</string>
+    <string name="permission_openAlbum">请开启应用读取权限</string>
+    <string name="passNew_tips">请输入新密码</string>
+    <string name="passMax_tips">密码最多为12位</string>
+    <string name="updatePass_success">修改成功</string>
+    <string name="passSystemIn_tips">请输入当前密码</string>
+    <string name="passFormat_tips">密码格式不对，请输入6至12位密码</string>
+    <string name="passDissimilarity_tips">设置的新密码两次输入不一致</string>
+    <string name="phoneFormat_tips">手机号格式输入不正确</string>
 </resources>

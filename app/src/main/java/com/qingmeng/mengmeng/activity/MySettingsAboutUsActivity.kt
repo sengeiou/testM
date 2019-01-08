@@ -1,7 +1,6 @@
 package com.qingmeng.mengmeng.activity
 
 import android.content.Context
-import android.content.Intent
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import kotlinx.android.synthetic.main.activity_my_settings_aboutus.*
@@ -46,10 +45,5 @@ class MySettingsAboutUsActivity : BaseActivity() {
                 .packageManager
                 .getPackageInfo(context.packageName, 0)
         return packageInfo.versionName
-    }
-
-    fun atyToNext(context: Context) {
-        val intent = Intent(context, this.javaClass)
-        context.startActivity(intent)
     }
 }

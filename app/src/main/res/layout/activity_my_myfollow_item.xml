@@ -1,78 +1,114 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.qingmeng.mengmeng.view.SwipeMenuLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/padding_dp_60"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/ripple_bg_white"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
+    app:ios="false"
+    app:leftSwipe="true"
+    app:swipeEnable="true"
     >
 
-    <ImageView
-        android:id="@+id/ivMyMyFollowRvLogo"
-        android:layout_width="@dimen/padding_dp_50"
-        android:layout_height="@dimen/padding_dp_50"
-        android:layout_marginStart="@dimen/padding_dp_15"
-        android:src="@mipmap/ic_launcher"
-        />
-
     <LinearLayout
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/padding_dp_15"
-        android:layout_weight="1"
         android:orientation="vertical"
         >
 
-        <TextView
-            android:id="@+id/tvMyMyFollowRvBrandName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="品牌名称"
-            android:textColor="@color/color_333333"
-            />
-
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_dp_60"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
             >
+
+            <ImageView
+                android:id="@+id/ivMyMyFollowRvLogo"
+                android:layout_width="@dimen/padding_dp_50"
+                android:layout_height="@dimen/padding_dp_50"
+                android:layout_marginStart="@dimen/padding_dp_15"
+                android:src="@mipmap/ic_launcher"
+                />
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_dp_15"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                >
+
+                <TextView
+                    android:id="@+id/tvMyMyFollowRvBrandName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="品牌名称"
+                    android:textColor="@color/color_333333"
+                    />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/my_myFollow_cateringType"
+                        android:textColor="@color/color_999999"
+                        android:textSize="@dimen/text_size_12"
+                        />
+
+                    <TextView
+                        android:id="@+id/tvMyMyFollowRvCateringType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="房地产"
+                        android:textColor="@color/color_999999"
+                        android:textSize="@dimen/text_size_12"
+                        />
+                </LinearLayout>
+
+            </LinearLayout>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/my_myFollow_cateringType"
+                android:text="@string/my_myFollow_investmentAmount"
                 android:textColor="@color/color_999999"
                 android:textSize="@dimen/text_size_12"
                 />
 
             <TextView
-                android:id="@+id/tvMyMyFollowRvCateringType"
+                android:id="@+id/tvMyMyFollowRvInvestmentAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="房地产"
-                android:textColor="@color/color_999999"
+                android:layout_marginEnd="@dimen/padding_dp_15"
+                android:text="5个"
+                android:textColor="@color/red"
                 android:textSize="@dimen/text_size_12"
                 />
         </LinearLayout>
 
+        <View
+            android:id="@+id/viewMyMyFollowRvLine"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/page_background"
+            />
     </LinearLayout>
 
+    <!-- 屏幕右侧外边部分，正常时在屏幕中处于不可见 -->
     <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/my_myFollow_investmentAmount"
-        android:textColor="@color/color_999999"
+        android:id="@+id/tvMyMyFollowRvDelete"
+        android:layout_width="@dimen/padding_dp_60"
+        android:layout_height="match_parent"
+        android:background="@color/red"
+        android:gravity="center"
+        android:text="删除"
+        android:textColor="@color/white"
         android:textSize="@dimen/text_size_12"
         />
-
-    <TextView
-        android:id="@+id/tvMyMyFollowRvInvestmentAmount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/padding_dp_15"
-        android:text="5个"
-        android:textColor="@color/red"
-        android:textSize="@dimen/text_size_12"
-        />
-</LinearLayout>
+</com.qingmeng.mengmeng.view.SwipeMenuLayout>

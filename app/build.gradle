@@ -21,12 +21,16 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            //请求地址
+            buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //bugly
             buildConfigField("String", "BUGLY_APPID", "\"0bf47d1cec\"")
         }
         debug {
             minifyEnabled false
+            //请求地址
+            buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //bugly
             buildConfigField("String", "BUGLY_APPID", "\"0bf47d1cec\"")
