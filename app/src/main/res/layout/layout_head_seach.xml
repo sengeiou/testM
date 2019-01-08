@@ -22,7 +22,7 @@
 
         <TextView
             android:id="@+id/head_search"
-            style="@style/DefaultHint"
+            style="@style/SeachDefaultHint"
             android:layout_width="0dp"
             android:layout_height="@dimen/padding_dp_30"
             android:layout_marginBottom="@dimen/padding_dp_10"
