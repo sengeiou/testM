@@ -67,9 +67,4 @@ class MyThreeBindingActivity : BaseActivity() {
             }
         }
     }
-
-    fun atyToNext(context: Context) {
-        val intent = Intent(context, this.javaClass)
-        context.startActivity(intent)
-    }
 }

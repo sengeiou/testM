@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rlSelectDialogRvMenu"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/padding_dp_45"
+    android:background="@drawable/view_item_background"
+    android:gravity="center_vertical"
+    >
+
+    <TextView
+        android:id="@+id/tvMySettingsUserPopRvLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_dp_15"
+        android:text="A"
+        />
+
+    <TextView
+        android:id="@+id/tvMySettingsUserPopRvCity"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_dp_15"
+        android:text="content"
+        android:textColor="@color/color_333333"
+        />
+</LinearLayout>

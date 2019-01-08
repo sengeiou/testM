@@ -1,7 +1,5 @@
 package com.qingmeng.mengmeng.activity
 
-import android.content.Context
-import android.content.Intent
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import kotlinx.android.synthetic.main.layout_head.*
@@ -34,10 +32,5 @@ class MyMessageActivity : BaseActivity() {
         mBack.setOnClickListener {
             this.finish()
         }
-    }
-
-    fun atyToNext(context: Context) {
-        val intent = Intent(context, this.javaClass)
-        context.startActivity(intent)
     }
 }

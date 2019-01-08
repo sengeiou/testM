@@ -43,4 +43,17 @@
         <item name="android:textColor">@color/color_999999</item>
     </style>
 
+    <style name="DefaultTextContent">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_size_16</item>
+        <item name="android:textColor">@color/color_333333</item>
+    </style>
+
+    <style name="DefaultHint">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_size_14</item>
+        <item name="android:textColor">@color/color_999999</item>
+    </style>
 </resources>

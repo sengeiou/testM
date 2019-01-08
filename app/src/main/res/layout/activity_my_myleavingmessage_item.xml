@@ -70,9 +70,10 @@
         />
 
     <RelativeLayout
+        android:id="@+id/rlMyMyLeavingMessageRvBrandDetails"
         android:layout_width="match_parent"
         android:layout_height="@dimen/padding_dp_60"
-        android:background="@color/page_background"
+        android:background="@drawable/ripple_bg_gray"
         android:orientation="horizontal"
         >
 
