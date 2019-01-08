@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.qingmeng.mengmeng.view.SwipeMenuLayout
-    android:id="@+id/smlMyMyFollowRv"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/smlMyMyFollowRv"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     app:ios="false"
     >
 
@@ -43,7 +43,7 @@
                     android:id="@+id/tvMyMyFollowRvBrandName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="品牌名称"
+                    android:text="系统通知"
                     android:textColor="@color/color_333333"
                     />
 
@@ -54,18 +54,10 @@
                     >
 
                     <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/my_myFollow_cateringType"
-                        android:textColor="@color/color_999999"
-                        android:textSize="@dimen/text_size_12"
-                        />
-
-                    <TextView
                         android:id="@+id/tvMyMyFollowRvCateringType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="房地产"
+                        android:text="你好啊你好啊"
                         android:textColor="@color/color_999999"
                         android:textSize="@dimen/text_size_12"
                         />
@@ -74,20 +66,13 @@
             </LinearLayout>
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/my_myFollow_investmentAmount"
-                android:textColor="@color/color_999999"
-                android:textSize="@dimen/text_size_12"
-                />
-
-            <TextView
                 android:id="@+id/tvMyMyFollowRvInvestmentAmount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="top"
                 android:layout_marginEnd="@dimen/padding_dp_15"
-                android:text="5个"
-                android:textColor="@color/red"
+                android:layout_marginTop="@dimen/padding_dp_15"
+                android:text="16：23"
                 android:textSize="@dimen/text_size_12"
                 />
         </LinearLayout>

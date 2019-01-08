@@ -8,8 +8,8 @@ import android.content.Context
 import android.graphics.PointF
 import android.util.AttributeSet
 import android.view.*
+import android.view.animation.AccelerateDecelerateInterpolator
 import android.view.animation.AccelerateInterpolator
-import android.view.animation.OvershootInterpolator
 import com.qingmeng.mengmeng.R
 
 /**
@@ -413,13 +413,13 @@ class SwipeMenuLayout @JvmOverloads constructor(context: Context, attrs: Attribu
         mExpandAnim = ValueAnimator.ofInt(scrollX, if (isLeftSwipe) mRightMenuWidths else -mRightMenuWidths)
         mExpandAnim?.apply {
             addUpdateListener { animation -> scrollTo(animation.animatedValue as Int, 0) }
-            interpolator = OvershootInterpolator()
+            interpolator = AccelerateDecelerateInterpolator() //先快后慢
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     isExpand = true
                 }
             })
-            setDuration(300).start()
+            setDuration(200).start()
         }
     }
 
@@ -452,14 +452,14 @@ class SwipeMenuLayout @JvmOverloads constructor(context: Context, attrs: Attribu
         mCloseAnim = ValueAnimator.ofInt(scrollX, 0)
         mCloseAnim?.apply {
             addUpdateListener { animation -> scrollTo(animation.animatedValue as Int, 0) }
-            interpolator = AccelerateInterpolator()
+            interpolator = AccelerateInterpolator() //越来越快
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     isExpand = false
 
                 }
             })
-            setDuration(300).start()
+            setDuration(200).start()
         }
     }
 
