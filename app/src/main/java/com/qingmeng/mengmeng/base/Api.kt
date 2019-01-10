@@ -1,7 +1,9 @@
 package com.qingmeng.mengmeng.base
 
 import com.qingmeng.mengmeng.entity.BaseBean
+
 import com.qingmeng.mengmeng.entity.MyMyFollowBean
+import com.qingmeng.mengmeng.entity.UserInfo
 import io.reactivex.Observable
 import retrofit2.http.GET
 import retrofit2.http.Header
@@ -20,4 +22,10 @@ interface Api {
     //修改密码
     @POST("app/user/update_password")
     fun updatePass(@Query("password") password: String, @Query("newPassword") newPassword: String, @Query("verifyPassword") verifyPassword: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+    //账号登录
+    @POST("app/user/account_login")
+    fun accountlogin( @Query("account") account: String,@Query("password") password: String): Observable<BaseBean<UserInfo>>
+    //短信登录
+    @POST("app/user/msm_login")
+    fun msmlogin( @Query("phone") phone: String,@Query("msmCode") msmCode: String): Observable<BaseBean<UserInfo>>
 }
