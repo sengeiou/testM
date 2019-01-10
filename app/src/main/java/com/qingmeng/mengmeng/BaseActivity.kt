@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.WindowManager
+import com.qingmeng.mengmeng.constant.ImageCodeHandler
 import com.qingmeng.mengmeng.utils.SharedSingleton
 import com.qingmeng.mengmeng.utils.TimerHandler
 import com.qingmeng.mengmeng.view.dialog.DialogCustom
@@ -22,6 +23,7 @@ import kotlinx.android.synthetic.main.layout_head.*
 abstract class BaseActivity : AppCompatActivity() {
     protected val sharedSingleton = SharedSingleton.instance
     protected lateinit var myDialog: DialogCustom
+    lateinit var imgHandler: ImageCodeHandler
     var totalTime = -1
     var timing = 1
     var timingOver = 2

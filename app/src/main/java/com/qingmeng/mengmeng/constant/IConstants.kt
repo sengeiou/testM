@@ -18,4 +18,6 @@ object IConstants {
 
     val RESULT_CODE_TAKE_CAMERA = 101    //拍照
     val RESULT_CODE_OPEN_ALBUM = 102     //打开相册
+
+    val GET_IMAGE_CODE = BASE_URL + "api/captcha_app/image_app?account="
 }
