@@ -3,13 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     >
 
     <android.support.v4.widget.SwipeRefreshLayout
         android:id="@+id/swlMy"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:visibility="gone"
         >
+    </android.support.v4.widget.SwipeRefreshLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -242,5 +245,4 @@
                 android:text="@string/login"
                 />
         </LinearLayout>
-    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

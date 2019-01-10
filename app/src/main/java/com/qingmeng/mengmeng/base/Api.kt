@@ -44,5 +44,6 @@ interface Api {
 
     //修改密码
     @POST("app/user/update_password")
-    fun updatePass(@Query("password") password: String, @Query("newPassword") newPassword: String, @Query("verifyPassword") verifyPassword: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+    @FormUrlEncoded
+    fun updatePass(@Field("password") password: String, @Field("newPassword") newPassword: String, @Field("verifyPassword") verifyPassword: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
 }
