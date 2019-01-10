@@ -9,6 +9,7 @@ import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
 import android.view.View
 import android.view.WindowManager
+import com.qingmeng.mengmeng.constant.ImageCodeHandler
 import com.qingmeng.mengmeng.utils.SharedSingleton
 import com.qingmeng.mengmeng.utils.TimerHandler
 import com.qingmeng.mengmeng.view.dialog.DialogCustom
@@ -22,6 +23,7 @@ import kotlinx.android.synthetic.main.layout_head.*
 abstract class BaseActivity : AppCompatActivity() {
     protected val sharedSingleton = SharedSingleton.instance
     protected lateinit var myDialog: DialogCustom
+    lateinit var imgHandler: ImageCodeHandler
     var totalTime = -1
     var timing = 1
     var timingOver = 2
@@ -33,7 +35,7 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= 21) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = ContextCompat.getColor(this, R.color.colorOrange)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.main_theme)
         }
         setContentView(getLayoutId())
         AppManager.instance.addActivity(this)
@@ -84,19 +86,6 @@ abstract class BaseActivity : AppCompatActivity() {
         mBack?.let { it ->
             it.visibility = if (isShowBack) {
                 it.setOnClickListener { onBackPressed() }
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
-        }
-    }
-
-    /**
-     * 是否显示头部view   默认显示
-     */
-    protected fun setShowHead(isShowHead: Boolean) {
-        mTopView?.let { it ->
-            it.visibility = if (isShowHead) {
                 View.VISIBLE
             } else {
                 View.GONE

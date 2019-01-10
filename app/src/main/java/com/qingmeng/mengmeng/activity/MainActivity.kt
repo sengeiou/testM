@@ -5,7 +5,6 @@ import android.annotation.SuppressLint
 import android.os.Build
 import android.view.View
 import android.widget.ImageView
-import android.widget.TabHost
 import android.widget.TabWidget
 import android.widget.TextView
 import com.qingmeng.mengmeng.BaseActivity
@@ -14,7 +13,8 @@ import com.qingmeng.mengmeng.base.MainTab
 import com.qingmeng.mengmeng.utils.ToastUtil
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : BaseActivity(), TabHost.OnTabChangeListener {
+class MainActivity : BaseActivity() {
+
     private var firstTime = 0L
 
     override fun getLayoutId(): Int = R.layout.activity_main
@@ -26,7 +26,6 @@ class MainActivity : BaseActivity(), TabHost.OnTabChangeListener {
             tabhost.tabWidget.showDividers = TabWidget.SHOW_DIVIDER_NONE
         }
         initTabs()
-        tabhost.setOnTabChangedListener(this)
         setShowBack(false)
     }
 
@@ -54,18 +53,6 @@ class MainActivity : BaseActivity(), TabHost.OnTabChangeListener {
             firstTime = secondTime//更新firstTime
         } else {//两次按键小于2秒时，退出应用
             AppManager.instance.appExit(this)
-        }
-    }
-
-    override fun onTabChanged(tabId: String?) {
-        tabId?.let {
-            //我的板块就隐藏头部
-            if (it == getString(R.string.tab_name_my)) {
-                setShowHead(false)
-            } else {
-                setShowHead(true)
-                setHeadName(it)
-            }
         }
     }
 }
