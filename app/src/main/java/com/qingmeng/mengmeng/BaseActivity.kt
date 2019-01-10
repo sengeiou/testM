@@ -35,7 +35,7 @@ abstract class BaseActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         if (Build.VERSION.SDK_INT >= 21) {
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
-            window.statusBarColor = ContextCompat.getColor(this, R.color.colorOrange)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.main_theme)
         }
         setContentView(getLayoutId())
         AppManager.instance.addActivity(this)
@@ -86,19 +86,6 @@ abstract class BaseActivity : AppCompatActivity() {
         mBack?.let { it ->
             it.visibility = if (isShowBack) {
                 it.setOnClickListener { onBackPressed() }
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
-        }
-    }
-
-    /**
-     * 是否显示头部view   默认显示
-     */
-    protected fun setShowHead(isShowHead: Boolean) {
-        mTopView?.let { it ->
-            it.visibility = if (isShowHead) {
                 View.VISIBLE
             } else {
                 View.GONE
