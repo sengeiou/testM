@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.adapter
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +15,7 @@ import com.qingmeng.mengmeng.R
  * 头报适配器
  */
 
-class NewspaperAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class NewspaperAdapter(context: Context, var imgs: IntArray, var mList: ArrayList<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val ITEM_BANNER = 0
     private val ITEM_NEWS = 1
     override fun getItemViewType(position: Int): Int = when (position) {
@@ -46,12 +47,12 @@ class NewspaperAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     }
 
-    //以后改
-    override fun getItemCount(): Int = 1
+    override fun getItemCount(): Int = mList.size
 
     inner class NewspaperBannerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val bgaBanner = itemView.findViewById<BGABanner>(R.id.news_pager_bgaBanner)
         fun bindViewHolder() {
+
 
         }
     }
