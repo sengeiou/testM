@@ -53,6 +53,7 @@
         <activity android:name=".activity.MyEnterpriseEntryActivity" />
         <activity android:name=".activity.MyThreeBindingActivity" />
         <activity android:name=".activity.MyMessageActivity" />
+        <activity android:name=".activity.MyMessageChatActivity" />
         <activity
             android:name=".activity.HeadDetailsActivity"
             android:label="@string/title_activity_head_details"

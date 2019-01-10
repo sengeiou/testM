@@ -2,14 +2,14 @@
 <com.qingmeng.mengmeng.view.SwipeMenuLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/smlMyMyFollowRv"
+    android:id="@+id/smlMyMessageRv"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:ios="false"
     >
 
     <LinearLayout
-        android:id="@+id/llMyMyFollowRv"
+        android:id="@+id/llMyMessageRv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/ripple_bg_white"
@@ -24,7 +24,7 @@
             >
 
             <ImageView
-                android:id="@+id/ivMyMyFollowRvLogo"
+                android:id="@+id/ivMyMessageRvLogo"
                 android:layout_width="@dimen/padding_dp_50"
                 android:layout_height="@dimen/padding_dp_50"
                 android:layout_marginStart="@dimen/padding_dp_15"
@@ -40,7 +40,7 @@
                 >
 
                 <TextView
-                    android:id="@+id/tvMyMyFollowRvBrandName"
+                    android:id="@+id/tvMyMessageRvTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="系统通知"
@@ -54,7 +54,7 @@
                     >
 
                     <TextView
-                        android:id="@+id/tvMyMyFollowRvCateringType"
+                        android:id="@+id/tvMyMessageContent"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="你好啊你好啊"
@@ -66,7 +66,7 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/tvMyMyFollowRvInvestmentAmount"
+                android:id="@+id/tvMyMessageRvTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="top"
@@ -78,7 +78,7 @@
         </LinearLayout>
 
         <View
-            android:id="@+id/viewMyMyFollowRvLine"
+            android:id="@+id/viewMyMessageRvLine"
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="@color/page_background"
@@ -87,7 +87,7 @@
 
     <!-- 屏幕右侧外边部分，正常时在屏幕中处于不可见 -->
     <TextView
-        android:id="@+id/tvMyMyFollowRvDelete"
+        android:id="@+id/tvMyMessageRvDelete"
         android:layout_width="@dimen/padding_dp_70"
         android:layout_height="match_parent"
         android:background="@color/red"

@@ -43,6 +43,10 @@
     <string name="money_10_20">10-20万</string>
     <string name="money_20_50">20-50万</string>
     <string name="money_50">50万以上</string>
+    <string name="send">发送</string>
+    <string name="camera">拍照</string>
+    <string name="photo">照片</string>
+    <string name="video">视频</string>
     <string name="seach">请输入你想要搜索的</string>
     <!-- =======================================红铺===================================== -->
     <string name="seach_shop_count">门店数：</string>
@@ -118,4 +122,9 @@
     <string name="passFormat_tips">密码格式不对，请输入6至12位密码</string>
     <string name="passDissimilarity_tips">设置的新密码两次输入不一致</string>
     <string name="phoneFormat_tips">手机号格式输入不正确</string>
+    <string name="sendBrand">发送品牌</string>
+    <string name="mm_customerService">盟盟客服</string>
+    <string name="hold_to_talk">按住 说话</string>
+    <string name="release_to_over">松开 结束</string>
+    <string name="cancel_to_send">取消 发送</string>
 </resources>

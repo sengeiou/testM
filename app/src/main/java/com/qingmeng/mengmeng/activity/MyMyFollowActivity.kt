@@ -69,7 +69,7 @@ class MyMyFollowActivity : BaseActivity() {
 
         rvMyMyFollow.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
-                //SwipeMenuLayout添加左滑事件
+                //SwipeMenuLayout关闭view
                 SwipeMenuLayout.viewCache?.smoothClose()
             }
             false
