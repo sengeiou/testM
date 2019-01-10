@@ -1,45 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@color/colorPrimary"
-    >
+    android:id="@+id/mTopView"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/padding_dp_42"
+    android:background="@color/colorPrimary">
 
-    <RelativeLayout
-        android:id="@+id/mTopView"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_dp_42"
-        android:background="@color/colorOrange"
-        >
+    <ImageView
+        android:id="@+id/mBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/padding_dp_5"
+        android:padding="@dimen/padding_dp_10"
+        android:src="@drawable/common_btn_back"/>
 
-        <ImageView
-            android:id="@+id/mBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding_dp_10"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="@dimen/padding_dp_5"
-            android:src="@drawable/common_btn_back"/>
+    <TextView
+        android:id="@+id/mTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_20"/>
 
-        <TextView
-            android:id="@+id/mTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:textSize="@dimen/text_size_20"
-            android:textColor="@color/white"
-            />
-
-        <TextView
-            android:id="@+id/mMenu"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginRight="@dimen/padding_dp_15"
-            android:textSize="@dimen/text_size_20"
-            android:textColor="@color/white"
-            />
-    </RelativeLayout>
+    <TextView
+        android:id="@+id/mMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/padding_dp_15"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_20"/>
 </RelativeLayout>

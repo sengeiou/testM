@@ -4,6 +4,7 @@ import AppManager
 import android.annotation.SuppressLint
 import android.app.Application
 import android.text.TextUtils
+import com.qingmeng.mengmeng.entity.UserBean
 import com.qingmeng.mengmeng.utils.SharedSingleton
 import com.tencent.bugly.crashreport.CrashReport
 import java.io.BufferedReader
@@ -16,6 +17,7 @@ import java.io.IOException
 @SuppressLint("CheckResult")
 class MainApplication : Application() {
     var TOKEN: String = ""
+    lateinit var user: UserBean
     private lateinit var sharedSingleton: SharedSingleton
 
     init {
@@ -26,6 +28,8 @@ class MainApplication : Application() {
         super.onCreate()
         instance = this
         sharedSingleton = SharedSingleton.instance
+        user = UserBean.fromString()
+        TOKEN = user.token
         initBugly()
     }
 

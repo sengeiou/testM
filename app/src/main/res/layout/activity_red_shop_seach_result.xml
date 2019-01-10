@@ -12,34 +12,40 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/padding_dp_50"
+        android:background="@color/white"
         android:orientation="horizontal">
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center" />
+            android:gravity="center"
+            android:text="@string/seach_food_type" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center" />
+            android:gravity="center"
+            android:text="@string/seach_add_area" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center" />
+            android:gravity="center"
+            android:text="@string/seach_ranking" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center" />
+            android:gravity="center"
+            android:text="@string/seach_screning_conditon" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/search_result_recylerview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 </LinearLayout>
