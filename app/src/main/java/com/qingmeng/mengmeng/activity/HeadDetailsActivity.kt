@@ -13,6 +13,7 @@ import kotlinx.android.synthetic.main.layout_head.*
 
 
 class HeadDetailsActivity : BaseActivity() {
+
     private lateinit var mBottomDialog: ShareDialog
     private lateinit var newsDetailsWebView: WebView
     override fun getLayoutId(): Int = R.layout.activity_head_details
