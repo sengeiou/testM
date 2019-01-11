@@ -70,6 +70,7 @@
     <string name="forget_password">忘记密码?</string>
     <string name="sign_up_now">立即注册</string>
     <string name="get_code">获取验证码</string>
+    <string name="sms_verify_login">短信验证登录</string>
     <string name="use_name_password_login">账号密码登录</string>
     <string name="input_code">请输入验证码</string>
     <string name="enter_password">请设置密码</string>

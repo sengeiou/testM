@@ -41,13 +41,8 @@
     android:layout_alignParentTop="true"
     android:id="@+id/btn_login_pw_lin"
     android:layout_centerHorizontal="true">
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_marginStart="107dp"
-        app:srcCompat="@drawable/login_icon_input_pw_n" />
-            <Button
+
+    <Button
                 android:id="@+id/btn_login_pw_main"
                 android:layout_width="345dp"
                 android:layout_height="45dp"
@@ -57,27 +52,36 @@
                 android:text="@string/use_name_password_login"
                 android:textColor="@color/color_ffffff"
                 android:textSize="@dimen/text_size_16" />
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginStart="107dp"
+        app:srcCompat="@drawable/login_icon_input_pw_n" />
 </RelativeLayout>
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/btn_login_pw_lin"
                 android:layout_centerHorizontal="true">
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="22dp"
-                    android:layout_marginStart="104dp"
-                    app:srcCompat="@drawable/login_icon_verification_code" />
-            <Button
+
+                <Button
                 android:id="@+id/btn_login_sms_main"
                 android:layout_width="345dp"
                 android:layout_height="45dp"
                 android:layout_marginTop="10dp"
                 android:background="@drawable/shape_login_button_sms"
-                android:text="@string/use_sms_verify_login"
+                android:text="@string/sms_verify_login"
                 android:textColor="@color/color_5ab1e1"
                 android:textSize="@dimen/text_size_16" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="104dp"
+                    android:layout_marginTop="22dp"
+                    app:srcCompat="@drawable/login_icon_verification_code" />
             </RelativeLayout>
         </RelativeLayout>
 

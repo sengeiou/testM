@@ -119,6 +119,7 @@ class LogLogincodeActivity : BaseActivity() {
                     }
                     //未注册去注册
                     else {
+                        ToastUtil.showShort(bean.msg)
 
                     }
                 }, {
