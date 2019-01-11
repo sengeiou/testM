@@ -17,7 +17,7 @@ class TimerHandler(activity: BaseActivity, private val tv: TextView) : Handler()
         when (msg?.what) {
             activity.timingOver -> {
                 tv.setText(R.string.getMsg)
-                tv.setTextColor(activity.resources.getColor(R.color.colorOrange))
+                tv.setTextColor(activity.resources.getColor(R.color.colorPrimary))
                 tv.isClickable = true
                 activity.totalTime = -1
             }

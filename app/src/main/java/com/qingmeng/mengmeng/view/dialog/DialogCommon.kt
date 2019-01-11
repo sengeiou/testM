@@ -41,6 +41,12 @@ class DialogCommon constructor(context: Context, val titleText: String = "", val
         tvLeft = mDialogView.findViewById(R.id.tvLeft)
         tvRight = mDialogView.findViewById(R.id.tvRight)
 
+        val window = window
+        val wlp = window.attributes
+        //设置宽度
+        wlp.width = 810
+        window.attributes = wlp
+
         tvTitle.visibility = if (TextUtils.isEmpty(titleText)) {
             tvContent.gravity = Gravity.CENTER
             View.GONE

@@ -56,7 +56,7 @@
         android:layout_width="@dimen/padding_dp_90"
         android:layout_height="@dimen/padding_dp_30"
         android:layout_gravity="bottom"
-        android:background="@drawable/ripple_bg_orange0_radius20"
+        android:background="@drawable/ripple_bg_blue0_radius20"
         android:gravity="center"
         android:text="@string/sendBrand"
         >
