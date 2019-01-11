@@ -27,4 +27,8 @@
     <color name="line_color_e5">#e5e5e5</color>
     <!-- 点击背景 -->
     <color name="whiteColorPress">#5521272b</color>
+    <!-- 登录 -->
+    <color name="color_dcdcdc">#dcdcdc</color>
+    <color name="color_5ab1e1">#5ab1e1</color>
+    <color name="color_ffffff">#ffffff</color>
 </resources>
