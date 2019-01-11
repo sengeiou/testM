@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/page_background"
+    android:background="@color/page_background_f5"
     android:orientation="vertical"
     >
 
@@ -76,7 +76,7 @@
                 android:layout_height="@dimen/padding_dp_30"
                 android:layout_marginStart="@dimen/padding_dp_5"
                 android:layout_weight="1"
-                android:background="@drawable/ripple_bg_drawable_orange0_radius20"
+                android:background="@drawable/ripple_bg_drawable_blue0_radius20"
                 >
 
                 <EditText
@@ -103,7 +103,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/ripple_bg_orange0_radius20"
+                    android:background="@drawable/ripple_bg_blue0_radius20"
                     android:gravity="center"
                     android:text="@string/hold_to_talk"
                     android:textColor="@color/color_333333"
@@ -123,7 +123,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/padding_dp_5"
-                android:background="@drawable/ripple_bg_orange"
+                android:background="@drawable/ripple_bg_blue"
                 android:padding="@dimen/padding_dp_5"
                 android:text="@string/send"
                 android:textColor="@color/white"
@@ -134,7 +134,7 @@
             android:id="@+id/rlMyMessageChatBottom"
             android:layout_width="match_parent"
             android:layout_height="200dp"
-            android:background="@color/page_background"
+            android:background="@color/page_background_f5"
             >
 
             <!-- 表情 -->

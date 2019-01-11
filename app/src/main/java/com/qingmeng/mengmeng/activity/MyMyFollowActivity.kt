@@ -91,7 +91,7 @@ class MyMyFollowActivity : BaseActivity() {
                 getView<LinearLayout>(R.id.llMyMyFollowRv).setOnClickListener {
 
                 }
-                //item删除
+                //item取消关注
                 getView<TextView>(R.id.tvMyMyFollowRvDelete).setOnClickListener {
                     //删除菜单关闭
                     getView<SwipeMenuLayout>(R.id.smlMyMyFollowRv).smoothClose()

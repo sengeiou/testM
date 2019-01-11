@@ -3,6 +3,9 @@ package com.qingmeng.mengmeng.fragment
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.*
+import com.qingmeng.mengmeng.utils.dp2px
+import com.qingmeng.mengmeng.utils.getBarHeight
+import com.qingmeng.mengmeng.utils.setMarginExt
 import kotlinx.android.synthetic.main.fragment_my.*
 import org.jetbrains.anko.support.v4.startActivity
 
@@ -19,6 +22,12 @@ class MyFragment : BaseFragment() {
     //view初始化
     override fun initObject() {
         super.initObject()
+
+        // 获得状态栏高度
+        val statusBarHeight = getBarHeight(context!!)
+        //给布局的高度重新设置一下 加上状态栏高度
+        rlMyTop.layoutParams.height = rlMyTop.layoutParams.height + getBarHeight(context!!)
+        ivMySettings.setMarginExt(top = statusBarHeight + context!!.dp2px(15))
 
         swlMy.isRefreshing = true
         //用户信息查询
@@ -82,7 +91,7 @@ class MyFragment : BaseFragment() {
     }
 
     //查询用户接口
-    private fun httpLoad(){
+    private fun httpLoad() {
         swlMy.isRefreshing = false
     }
 }

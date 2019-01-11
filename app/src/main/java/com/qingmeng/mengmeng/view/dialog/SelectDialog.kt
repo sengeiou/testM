@@ -13,6 +13,7 @@ import android.widget.TextView
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
 import com.qingmeng.mengmeng.entity.SelectDialogBean
+import com.qingmeng.mengmeng.utils.dp2px
 
 /**
  *  Description :从下往上弹出的dialog
@@ -58,8 +59,8 @@ class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectD
         if (isDefaultLayout) {
             mRvSelect.background = null
         } else {
-            mRvSelect.setPadding(15, 15, 15, 15)
-            mRvSelect.setBackgroundResource(R.drawable.ripple_bg_drawable_white_radius5)
+            mRvSelect.setPadding(context.dp2px(13), context.dp2px(10), context.dp2px(13), context.dp2px(10))
+            mRvSelect.setBackgroundResource(R.drawable.ripple_bg_drawable_white_radius15)
         }
 
         initAdapter()
@@ -77,17 +78,17 @@ class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectD
                         //按位置设置背景
                         if (position == 0) {
                             getView<View>(R.id.viewSelectDialogRvLine).visibility = View.GONE
-                            getView<TextView>(R.id.tvSelectDialogRvMenu).setBackgroundResource(R.drawable.ripple_bg_white_top_radius5)
+                            getView<TextView>(R.id.tvSelectDialogRvMenu).setBackgroundResource(R.drawable.ripple_bg_white_top_radius15)
                         } else if (position == menuList.lastIndex) {
                             getView<View>(R.id.viewSelectDialogRvLine).visibility = View.VISIBLE
-                            getView<TextView>(R.id.tvSelectDialogRvMenu).setBackgroundResource(R.drawable.ripple_bg_white_bottom_radius5)
+                            getView<TextView>(R.id.tvSelectDialogRvMenu).setBackgroundResource(R.drawable.ripple_bg_white_bottom_radius15)
                         } else {
                             getView<View>(R.id.viewSelectDialogRvLine).visibility = View.VISIBLE
                             getView<TextView>(R.id.tvSelectDialogRvMenu).setBackgroundResource(R.drawable.ripple_bg_white)
                         }
                     } else {    //只有一个菜单
                         getView<View>(R.id.viewSelectDialogRvLine).visibility = View.GONE
-                        getView<TextView>(R.id.tvSelectDialogRvMenu).setBackgroundResource(R.drawable.ripple_bg_white_radius5)
+                        getView<TextView>(R.id.tvSelectDialogRvMenu).setBackgroundResource(R.drawable.ripple_bg_white_radius15)
                     }
                     setText(R.id.tvSelectDialogRvMenu, t.menu)
                 }
@@ -103,7 +104,7 @@ class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectD
                 holder.apply {
                     getView<RelativeLayout>(R.id.rlSelectDialogRvMenu).apply {
                         if (it.checkState) {
-                            setBackgroundResource(R.mipmap.view_choose_bg)
+                            setBackgroundResource(R.mipmap.my_settings_user_dialogselect)
                         } else {
                             setBackgroundResource(R.color.dialog_item_bg)
                         }
