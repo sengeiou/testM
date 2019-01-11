@@ -1,7 +1,6 @@
 package com.qingmeng.mengmeng.base
 
 import com.qingmeng.mengmeng.entity.BaseBean
-
 import com.qingmeng.mengmeng.entity.CodeBean
 import com.qingmeng.mengmeng.entity.MyMyFollowBean
 import com.qingmeng.mengmeng.entity.UserBean

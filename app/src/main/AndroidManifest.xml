@@ -54,9 +54,12 @@
         <activity android:name=".activity.MyThreeBindingActivity" />
         <activity android:name=".activity.MyMessageActivity" />
         <!-- 登录注册 -->
-        <activity android:name=".activity.LogLoginActivity" />
+        <activity android:name=".activity.LogLoginMainActivity" />
+        <activity android:name=".activity.LogLoginpwActivity" />
+        <activity android:name=".activity.LogLogincodeActivity" />
 
 
+        <activity android:name=".activity.MyMessageChatActivity" />
         <activity
             android:name=".activity.HeadDetailsActivity"
             android:label="@string/title_activity_head_details"

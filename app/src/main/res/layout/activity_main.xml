@@ -4,15 +4,10 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-    <include
-        android:id="@+id/topLayout"
-        layout="@layout/layout_head"/>
-
     <LinearLayout
         android:id="@+id/pager_wrapper"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/topLayout"
         android:background="@color/common_bg"
         android:orientation="vertical"
         android:paddingBottom="@dimen/tab_height">
@@ -42,6 +37,5 @@
                 android:layout_weight="0"/>
         </com.qingmeng.mengmeng.view.widget.MyFragmentTabHost>
     </RelativeLayout>
-
 
 </RelativeLayout>

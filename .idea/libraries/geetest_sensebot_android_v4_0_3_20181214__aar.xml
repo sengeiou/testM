@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="geetest_sensebot_android_v4.0.3_20181214:@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/geetest_sensebot_android_v4.0.3_20181214.aar/cec3d8dd216c6d3546610df2c0d01e91/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/geetest_sensebot_android_v4.0.3_20181214.aar/cec3d8dd216c6d3546610df2c0d01e91/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -48,18 +48,6 @@
             android:layout_marginTop="10dp"
           >
 
-            <TextView
-                android:id="@+id/tv_login_get_code"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:text="@string/get_code"
-                android:clickable="true"
-                android:textColor="@color/colorOrangeBright"
-                android:textSize="@dimen/text_size_18"
-               />
-
             <EditText
                 android:id="@+id/edt_login_pwd"
                 android:layout_width="match_parent"
@@ -70,6 +58,18 @@
                 android:hint="@string/please_input_password"
                 android:inputType="textPassword"
                 android:textSize="@dimen/text_size_16" />
+            <TextView
+                android:id="@+id/btn_login_get_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="@string/get_code"
+                android:clickable="true"
+                android:focusable="true"
+                android:textColor="@color/colorOrangeBright"
+                android:textSize="@dimen/text_size_18"
+                />
         </RelativeLayout>
         <View style="@style/cutting_line" />
         <RelativeLayout
@@ -83,7 +83,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10sp"
-                android:text="@string/use_SMS_verify_login"
+                android:text="@string/use_sms_verify_login"
                 android:clickable="true"
                 android:textColor="@color/colorOrangeBright"
                 android:textSize="@dimen/text_size_16" />
@@ -106,7 +106,7 @@
             android:layout_height="45dp"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="30dp"
-            android:background="@drawable/shape_login_button"
+            android:background="@drawable/shape_login_button_pw"
             android:text="@string/login"
             android:textColor="@color/black"
             android:textSize="@dimen/text_size_16" />
@@ -129,7 +129,7 @@
                 android:layout_height="wrap_content"
                 android:paddingEnd="10dp"
                 android:paddingStart="10dp"
-                android:text="@string/other_login_methods"
+
                 android:textColor="@color/color_999999"
                 android:textSize="@dimen/text_size_16" />
 
@@ -152,7 +152,7 @@
                 android:layout_alignParentStart="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="65dp"
-                android:drawableTop="@drawable/two_login_qq"
+                android:drawableTop="@drawable/login_icon_qq"
                 android:gravity="center"
                 android:text="@string/qq"
                 android:clickable="true"
@@ -165,7 +165,7 @@
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentTop="true"
                 android:layout_marginEnd="65dp"
-                android:drawableTop="@drawable/two_login_qq"
+                android:drawableTop="@drawable/login_icon_wx"
                 android:gravity="center"
                 android:text="@string/wechat"
                 android:clickable="true"

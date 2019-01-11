@@ -2,6 +2,7 @@ package com.qingmeng.mengmeng.activity
 
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MotionEvent
+import android.widget.LinearLayout
 import android.widget.TextView
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
@@ -68,7 +69,7 @@ class MyMyFollowActivity : BaseActivity() {
 
         rvMyMyFollow.setOnTouchListener { v, event ->
             if (event.action == MotionEvent.ACTION_UP) {
-                //SwipeMenuLayout添加左滑事件
+                //SwipeMenuLayout关闭view
                 SwipeMenuLayout.viewCache?.smoothClose()
             }
             false
@@ -86,8 +87,14 @@ class MyMyFollowActivity : BaseActivity() {
                 setText(R.id.tvMyMyFollowRvBrandName, t.name)
                 setText(R.id.tvMyMyFollowRvCateringType, t.foodName)
                 setText(R.id.tvMyMyFollowRvInvestmentAmount, t.capitalName)
+                //item点击
+                getView<LinearLayout>(R.id.llMyMyFollowRv).setOnClickListener {
+
+                }
                 //item删除
                 getView<TextView>(R.id.tvMyMyFollowRvDelete).setOnClickListener {
+                    //删除菜单关闭
+                    getView<SwipeMenuLayout>(R.id.smlMyMyFollowRv).smoothClose()
                     ToastUtil.showShort("删除" + position)
                 }
             }

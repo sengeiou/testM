@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/ripple_bg_white"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="@dimen/padding_dp_10"
+    android:layout_marginBottom="@dimen/padding_dp_10"
+    >
+
+    <ImageView
+        android:id="@+id/tvMyMessageChatRvLogo"
+        android:layout_width="@dimen/padding_dp_50"
+        android:layout_height="@dimen/padding_dp_50"
+        android:src="@mipmap/ic_launcher"
+        />
+
+    <RelativeLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:paddingStart="@dimen/padding_dp_10"
+        >
+
+        <TextView
+            android:id="@+id/tvMyMessageChatRvBrandName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="品牌名称"
+            />
+
+        <TextView
+            android:id="@+id/myMessageChatRvInvestmentAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="@string/my_myFollow_investmentAmount"
+            />
+
+        <TextView
+            android:id="@+id/tvMyMessageChatRvInvestmentAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toEndOf="@+id/myMessageChatRvInvestmentAmount"
+            android:text="5个"
+            android:textColor="@color/red"
+            />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tvMyMessageChatRvTime"
+        android:layout_width="@dimen/padding_dp_90"
+        android:layout_height="@dimen/padding_dp_30"
+        android:layout_gravity="bottom"
+        android:background="@drawable/ripple_bg_orange0_radius20"
+        android:gravity="center"
+        android:text="@string/sendBrand"
+        >
+    </TextView>
+</LinearLayout>
