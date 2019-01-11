@@ -22,6 +22,6 @@
     <View
         android:layout_width="0.5dp"
         android:layout_height="@dimen/padding_dp_40"
-        android:background="@color/page_background_f5"
+        android:background="@color/page_background"
         />
 </LinearLayout>

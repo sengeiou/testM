@@ -10,18 +10,17 @@
         android:id="@+id/viewSelectDialogRvLine"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/line_color_e5"
+        android:background="@color/page_background"
         android:visibility="gone"
         />
 
     <TextView
         android:id="@+id/tvSelectDialogRvMenu"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_dp_58"
-        android:background="@drawable/ripple_bg_white_radius15"
+        android:layout_height="@dimen/padding_dp_45"
+        android:background="@drawable/ripple_bg_white_radius5"
         android:gravity="center"
         android:text="item"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/text_size_17"
         />
 </LinearLayout>
