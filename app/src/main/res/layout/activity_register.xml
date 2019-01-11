@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@color/common_bg"
               android:orientation="vertical">
 
     <include layout="@layout/layout_head"/>
@@ -96,5 +97,42 @@
         android:singleLine="true"
         android:textColor="@color/color_333333"
         android:textCursorDrawable="@drawable/color_cursor"
+        android:textSize="@dimen/text_size_16"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding_dp_60"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/mRegisterAccept"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_dp_10"
+            android:src="@drawable/common_btn_back"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/read_accept"/>
+
+        <TextView
+            android:id="@+id/mUserAgreement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/user_agreement"
+            android:textColor="@color/colorOrangeBright"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/mRegister"
+        android:layout_width="@dimen/padding_dp_90"
+        android:layout_height="@dimen/padding_dp_60"
+        android:layout_gravity="center_horizontal"
+        android:background="@color/black"
+        android:gravity="center"
+        android:text="@string/register"
+        android:textColor="@color/white"
         android:textSize="@dimen/text_size_16"/>
 </LinearLayout>

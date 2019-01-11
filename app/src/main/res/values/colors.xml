@@ -14,6 +14,8 @@
     <color name="color_333333">#333333</color>
     <color name="color_666666">#666666</color>
     <color name="color_999999">#999999</color>
+    <color name="color_909090">#909090</color>
+    <color name="color_646464">#646464</color>
     <color name="colorOrange">#ff9900</color>
     <color name="color_dddddd">#dddddd</color>
     <color name="colorOrangeBright">#ffa142</color>
@@ -21,4 +23,7 @@
     <color name="page_background">#eeeeee</color>
     <!-- 点击背景 -->
     <color name="whiteColorPress">#5521272b</color>
+    <!-- 登录 -->
+    <color name="color_5ab1e1">#5ab1e1</color>
+    <color name="color_ffffff">#ffffff</color>
 </resources>

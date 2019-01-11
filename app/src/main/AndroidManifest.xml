@@ -62,7 +62,12 @@
             android:label="@string/title_activity_head_details"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activity.RedShopSeach" />
-        <activity android:name=".activity.RedShopSeachResult"></activity>
+        <activity android:name=".activity.RedShopSeachResult"/>
+
+        <!--登录注册-->
+        <activity
+            android:name=".activity.RegisterActivity"
+            android:windowSoftInputMode="stateHidden"/>
     </application>
 
 </manifest>
