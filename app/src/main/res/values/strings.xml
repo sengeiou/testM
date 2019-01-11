@@ -96,6 +96,7 @@
     <string name="exitApp_tips">确定要退出账号吗？</string>
     <string name="clearCache_tips">确定要清除缓存吗？</string>
     <string name="my_myFollow">我的关注</string>
+    <string name="my_myFollow_cancel">取消关注</string>
     <string name="my_myFollow_cateringType">餐饮类型：</string>
     <string name="my_myFollow_investmentAmount">投资金额：</string>
     <string name="my_myLeavingMessage">我的留言</string>

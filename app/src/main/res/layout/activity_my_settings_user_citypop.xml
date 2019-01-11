@@ -17,14 +17,14 @@
             android:id="@+id/rlMySettingsUserPopTopAll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/ripple_bg_white_top_radius5"
+            android:background="@drawable/ripple_bg_white_top_radius15"
             android:paddingBottom="10dp"
             >
 
             <RelativeLayout
                 android:id="@+id/rlMySettingsUserPopTop"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/padding_dp_35"
                 >
 
                 <TextView
@@ -34,7 +34,7 @@
                     android:layout_marginTop="13dp"
                     android:text="@string/pleaseSelect"
                     android:textColor="@color/color_333333"
-                    android:textSize="@dimen/text_size_14"
+                    android:textSize="@dimen/text_size_17"
                     />
 
                 <ImageView
@@ -42,8 +42,8 @@
                     android:layout_width="@dimen/padding_dp_30"
                     android:layout_height="@dimen/padding_dp_30"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="5dp"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginEnd="@dimen/padding_dp_9"
+                    android:layout_marginTop="@dimen/padding_dp_9"
                     android:padding="5dp"
                     android:src="@mipmap/ic_launcher"
                     />
@@ -54,7 +54,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rlMySettingsUserPopTop"
-                android:paddingStart="@dimen/padding_dp_15"
+                android:paddingStart="@dimen/padding_dp_14"
                 android:visibility="gone"
                 >
 
@@ -62,9 +62,9 @@
                     android:id="@+id/tvMySettingsUserPopOneDot"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/padding_dp_15"
+                    android:layout_marginTop="@dimen/padding_dp_24"
                     android:text="●"
-                    android:textColor="@color/colorOrange"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/text_size_14"
                     />
 
@@ -72,11 +72,12 @@
                     android:id="@+id/tvMySettingsUserPopOneTips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_dp_15"
-                    android:layout_marginTop="@dimen/padding_dp_15"
+                    android:layout_marginStart="@dimen/padding_dp_25"
+                    android:layout_marginTop="@dimen/padding_dp_24"
                     android:layout_toEndOf="@+id/tvMySettingsUserPopOneDot"
                     android:text="安徽省"
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
 
                 <TextView
@@ -84,9 +85,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvMySettingsUserPopOneDot"
-                    android:layout_marginTop="@dimen/padding_dp_15"
+                    android:layout_marginTop="@dimen/padding_dp_28"
                     android:text="●"
-                    android:textColor="@color/colorOrange"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/text_size_14"
                     android:visibility="gone"
                     />
@@ -96,8 +97,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvMySettingsUserPopOneDot"
-                    android:layout_marginStart="@dimen/padding_dp_15"
-                    android:layout_marginTop="@dimen/padding_dp_15"
+                    android:layout_marginStart="@dimen/padding_dp_25"
+                    android:layout_marginTop="@dimen/padding_dp_28"
                     android:layout_toEndOf="@+id/tvMySettingsUserPopTwoDot"
                     android:text="@string/popCitySelect_twoTips"
                     android:textColor="@color/color_333333"
@@ -109,9 +110,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvMySettingsUserPopTwoDot"
-                    android:layout_marginTop="@dimen/padding_dp_15"
+                    android:layout_marginBottom="@dimen/padding_dp_16"
+                    android:layout_marginTop="@dimen/padding_dp_28"
                     android:text="◯"
-                    android:textColor="@color/colorOrange"
+                    android:textColor="@color/colorPrimary"
                     android:textSize="@dimen/text_size_14"
                     />
 
@@ -120,11 +122,12 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tvMySettingsUserPopTwoDot"
-                    android:layout_marginStart="@dimen/padding_dp_15"
-                    android:layout_marginTop="@dimen/padding_dp_15"
+                    android:layout_marginStart="@dimen/padding_dp_25"
+                    android:layout_marginTop="@dimen/padding_dp_28"
                     android:layout_toEndOf="@+id/tvMySettingsUserPopThreeDot"
                     android:text="@string/popCitySelect_twoTips"
-                    android:textColor="@color/colorOrange"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="@dimen/text_size_15"
                     />
 
                 <RelativeLayout
@@ -132,7 +135,7 @@
                     android:layout_height="wrap_content"
                     android:layout_above="@+id/tvMySettingsUserPopThreeDot"
                     android:layout_below="@+id/tvMySettingsUserPopOneDot"
-                    android:layout_marginBottom="-19dp"
+                    android:layout_marginBottom="-32dp"
                     android:layout_marginTop="-4dp"
                     >
 
@@ -140,7 +143,7 @@
                         android:layout_width="@dimen/padding_dp_1"
                         android:layout_height="match_parent"
                         android:layout_centerHorizontal="true"
-                        android:background="@color/colorOrange"
+                        android:background="@color/colorPrimary"
                         />
 
                     <TextView
@@ -156,7 +159,7 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_1"
+            android:layout_height="0.5dp"
             android:layout_below="@+id/rlMySettingsUserPopTopAll"
             android:layout_marginTop="-1dp"
             android:background="#dddddd"
@@ -166,7 +169,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_below="@+id/rlMySettingsUserPopTopAll"
-            android:background="@color/page_background"
+            android:background="@color/page_background_f8"
             android:orientation="vertical"
             >
 
@@ -174,10 +177,12 @@
                 android:id="@+id/tvMySettingsUserPopTips"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/padding_dp_15"
-                android:layout_marginStart="@dimen/padding_dp_15"
-                android:layout_marginTop="@dimen/padding_dp_15"
+                android:layout_marginBottom="@dimen/padding_dp_7"
+                android:layout_marginStart="@dimen/padding_dp_13"
+                android:layout_marginTop="@dimen/padding_dp_11"
                 android:text="@string/popCitySelect_province"
+                android:textColor="@color/color_666666"
+                android:textSize="@dimen/text_size_12"
                 />
 
             <android.support.v7.widget.RecyclerView
