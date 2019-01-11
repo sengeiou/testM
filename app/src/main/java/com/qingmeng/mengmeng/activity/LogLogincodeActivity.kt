@@ -85,8 +85,6 @@ class LogLogincodeActivity : BaseActivity() {
                 TextUtils.isEmpty(code) -> ToastUtil.showShort(getString(R.string.scuuess_code))
                 else ->  msmlogin(phone,code)
             }
-
-
         }
         //获取验证码
         tv_login_get_code_sms_login.setOnClickListener{
