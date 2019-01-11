@@ -2,6 +2,7 @@ package com.qingmeng.mengmeng.activity
 
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.View
 import android.widget.EditText
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
@@ -36,7 +37,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
         if (intent.getStringExtra("title") == getString(R.string.my_settings_setPassword)) {
             setHeadName(getString(R.string.my_settings_setPassword))
             mIsSetPass = true
-            etMySettingsSetOrUpdateOld.setHint(R.string.username)
+            etMySettingsSetOrUpdateOld.visibility = View.GONE
         } else {//修改密码
             setHeadName(getString(R.string.my_settings_updatePassword))
             mIsSetPass = false
@@ -63,56 +64,43 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
         //保存
         tvMySettingsSetOrUpdateSave.setOnClickListener {
             //设置密码就直接给旧密码随便赋些值
-            val oldPass = etMySettingsSetOrUpdateOld.text.toString().trim()
+            val oldPass = if (mIsSetPass) {
+                "1836111"
+            } else {
+                etMySettingsSetOrUpdateOld.text.toString().trim()
+            }
             val newPass = etMySettingsSetOrUpdateNew.text.toString().trim()
             val newPassTwo = etMySettingsSetOrUpdateNewTwo.text.toString().trim()
-            //设置密码判断
-            if (mIsSetPass) {
-                if (oldPass.isNotBlank() && newPass.isNotBlank() && newPassTwo.isNotBlank()) {
-                    if (!checkPass(newPass) || !checkPass(newPassTwo)) {
-                        ToastUtil.showShort(getString(R.string.passMax_tips))
-                    } else {
-                        if (newPass == newPassTwo) {
-                            //设置密码
-                            setPassHttp(oldPass, newPass, newPassTwo)
-                        } else {
-                            ToastUtil.showShort(getString(R.string.passDissimilarity_tips))
-                        }
-                    }
+            if (oldPass.isNotBlank() && newPass.isNotBlank() && newPassTwo.isNotBlank()) {
+                if (!checkPass(oldPass) || !checkPass(newPass) || !checkPass(newPassTwo)) {
+                    ToastUtil.showShort(getString(R.string.passMax_tips))
                 } else {
-                    if (oldPass.isBlank()) {
-                        ToastUtil.showShort(getString(R.string.please_input_user_name))
-                    } else if (newPass.isBlank() || newPassTwo.isBlank()) {
-                        ToastUtil.showShort(getString(R.string.passNew_tips))
-                    }
-                }
-            } else {    //修改密码
-                if (oldPass.isNotBlank() && newPass.isNotBlank() && newPassTwo.isNotBlank()) {
-                    if (!checkPass(oldPass) || !checkPass(newPass) || !checkPass(newPassTwo)) {
-                        ToastUtil.showShort(getString(R.string.passMax_tips))
-                    } else {
-                        if (newPass == newPassTwo) {
+                    if (newPass == newPassTwo) {
+                        if (mIsSetPass) {
+                            //设置密码
+                            setPassHttp(newPass, newPassTwo)
+                        } else {
                             //修改密码
                             updatePassHttp(oldPass, newPass, newPassTwo)
-                        } else {
-                            ToastUtil.showShort(getString(R.string.passDissimilarity_tips))
                         }
+                    } else {
+                        ToastUtil.showShort(getString(R.string.passDissimilarity_tips))
                     }
-                } else {
-                    if (oldPass.isBlank()) {
-                        ToastUtil.showShort(getString(R.string.passSystemIn_tips))
-                    } else if (newPass.isBlank() || newPassTwo.isBlank()) {
-                        ToastUtil.showShort(getString(R.string.passNew_tips))
-                    }
+                }
+            } else {
+                if (oldPass.isBlank()) {
+                    ToastUtil.showShort(getString(R.string.passSystemIn_tips))
+                } else if (newPass.isBlank() || newPassTwo.isBlank()) {
+                    ToastUtil.showShort(getString(R.string.passNew_tips))
                 }
             }
         }
     }
 
     //设置密码接口
-    private fun setPassHttp(oldPass: String, newPass: String, newPassTwo: String) {
+    private fun setPassHttp(newPass: String, newPassTwo: String) {
         ApiUtils.getApi()
-                .updatePass(oldPass, newPass, newPassTwo, "")
+                .updatePass("", newPass, newPassTwo, "")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({

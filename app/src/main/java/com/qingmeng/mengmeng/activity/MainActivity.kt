@@ -4,7 +4,6 @@ import AppManager
 import android.annotation.SuppressLint
 import android.os.Build
 import android.view.View
-import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TabWidget
 import android.widget.TextView
@@ -22,11 +21,6 @@ class MainActivity : BaseActivity() {
 
     @SuppressLint("ObsoleteSdkInt")
     override fun initObject() {
-        //设置状态栏隐藏
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
-        }
-
         tabhost.setup(this, supportFragmentManager, R.id.realtabcontent)
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
             tabhost.tabWidget.showDividers = TabWidget.SHOW_DIVIDER_NONE
