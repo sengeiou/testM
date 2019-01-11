@@ -4,7 +4,7 @@
     android:id="@+id/rlSelectDialogRvMenu"
     android:layout_width="wrap_content"
     android:layout_height="35dp"
-    android:layout_margin="@dimen/padding_dp_5"
+    android:layout_margin="@dimen/padding_dp_10"
     android:background="@color/dialog_item_bg"
     android:orientation="vertical"
     >
@@ -17,5 +17,6 @@
         android:gravity="center"
         android:text="item"
         android:textColor="@color/color_333333"
+        android:textSize="@dimen/text_size_15"
         />
 </RelativeLayout>

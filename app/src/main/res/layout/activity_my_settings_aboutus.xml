@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/page_background"
+    android:background="@color/page_background_f5"
     android:gravity="center_horizontal"
     android:orientation="vertical"
     >
@@ -14,32 +14,36 @@
         android:id="@+id/ivMySettingsAboutUsLogo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+        android:layout_marginTop="92dp"
         android:src="@mipmap/ic_launcher"
         />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_dp_10"
+        android:layout_marginTop="@dimen/padding_dp_15"
         android:text="@string/my_settings_aboutUs_companyName"
+        android:textColor="@color/color_333333"
+        android:textSize="@dimen/text_size_15"
         />
 
     <TextView
         android:id="@+id/tvMySettingsAboutUsVersion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_dp_5"
+        android:layout_marginTop="@dimen/padding_dp_10"
         android:text="版本号"
-        android:textColor="@color/color_999999"
+        android:textColor="@color/color_808080"
+        android:textSize="@dimen/text_size_12"
         />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/padding_dp_5"
+        android:layout_marginTop="@dimen/padding_dp_10"
         android:text="http://www.baidu.com"
-        android:textColor="@color/colorOrange"
+        android:textColor="@color/colorPrimary"
+        android:textSize="@dimen/text_size_12"
         />
 
     <LinearLayout
@@ -51,8 +55,9 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_dp_10"
+        android:layout_marginBottom="@dimen/padding_dp_25"
         android:text="@string/my_settings_aboutUs_tips"
-        android:textColor="@color/color_999999"
+        android:textColor="@color/color_808080"
+        android:textSize="@dimen/text_size_12"
         />
 </LinearLayout>
