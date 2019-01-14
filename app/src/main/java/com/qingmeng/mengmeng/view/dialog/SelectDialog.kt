@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.Gravity
 import android.view.View
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import android.widget.TextView
 import com.qingmeng.mengmeng.R
@@ -78,19 +79,19 @@ class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectD
                         //按位置设置背景
                         if (position == 0) {
                             getView<View>(R.id.viewSelectDialogRvLine).visibility = View.GONE
-                            getView<TextView>(R.id.tvSelectDialogRvMenu).setBackgroundResource(R.drawable.ripple_bg_white_top_radius15)
+                            getView<TextView>(R.id.tvSelectDialogRvMenuL).setBackgroundResource(R.drawable.ripple_bg_white_top_radius15)
                         } else if (position == menuList.lastIndex) {
                             getView<View>(R.id.viewSelectDialogRvLine).visibility = View.VISIBLE
-                            getView<TextView>(R.id.tvSelectDialogRvMenu).setBackgroundResource(R.drawable.ripple_bg_white_bottom_radius15)
+                            getView<TextView>(R.id.tvSelectDialogRvMenuL).setBackgroundResource(R.drawable.ripple_bg_white_bottom_radius15)
                         } else {
                             getView<View>(R.id.viewSelectDialogRvLine).visibility = View.VISIBLE
-                            getView<TextView>(R.id.tvSelectDialogRvMenu).setBackgroundResource(R.drawable.ripple_bg_white)
+                            getView<TextView>(R.id.tvSelectDialogRvMenuL).setBackgroundResource(R.drawable.ripple_bg_white)
                         }
                     } else {    //只有一个菜单
                         getView<View>(R.id.viewSelectDialogRvLine).visibility = View.GONE
-                        getView<TextView>(R.id.tvSelectDialogRvMenu).setBackgroundResource(R.drawable.ripple_bg_white_radius15)
+                        getView<TextView>(R.id.tvSelectDialogRvMenuL).setBackgroundResource(R.drawable.ripple_bg_white_radius15)
                     }
-                    setText(R.id.tvSelectDialogRvMenu, t.menu)
+                    setText(R.id.tvSelectDialogRvMenuL, t.menu)
                 }
             }, onItemClick = { _, _, position ->
                 //点击把下标传过去
@@ -102,14 +103,16 @@ class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectD
             mRvSelect.layoutManager = mmGridLayoutManager
             mAdapter = CommonAdapter(context, R.layout.view_dialog_choose_item, menuList, holderConvert = { holder, it, _, _ ->
                 holder.apply {
-                    getView<RelativeLayout>(R.id.rlSelectDialogRvMenu).apply {
+                    getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
                         if (it.checkState) {
-                            setBackgroundResource(R.mipmap.my_settings_user_dialogselect)
+                            setBackgroundColor(resources.getColor(R.color.colorBlueBright))
+                            getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.VISIBLE
                         } else {
                             setBackgroundResource(R.color.dialog_item_bg)
+                            getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.GONE
                         }
                     }
-                    setText(R.id.tvSelectDialogRvMenu, it.menu)
+                    setText(R.id.tvSelectDialogRvMenuG, it.menu)
                 }
             }, onItemClick = { _, _, position ->
                 menuList[position].let {

@@ -19,6 +19,7 @@
             android:src="@mipmap/ic_launcher"
             />
     </LinearLayout>
+
     <View
         android:layout_width="0.5dp"
         android:layout_height="@dimen/padding_dp_40"

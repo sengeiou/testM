@@ -1,5 +1,7 @@
 package com.qingmeng.mengmeng.adapter
 
+import android.widget.LinearLayout
+import android.widget.TextView
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.util.ItemViewDelegate
 import com.qingmeng.mengmeng.adapter.util.ViewHolder
@@ -27,7 +29,6 @@ class ChatAdapter {
         override fun convert(holder: ViewHolder, item: Int, position: Int, payloads: List<Any>?) {
 
         }
-
     }
 
     //品牌详情
@@ -41,9 +42,17 @@ class ChatAdapter {
         }
 
         override fun convert(holder: ViewHolder, item: Int, position: Int, payloads: List<Any>?) {
+            holder.apply {
+                //品牌详情点击
+                getView<LinearLayout>(R.id.llMyMessageChatRvBrand).setOnClickListener {
 
+                }
+                //发送品牌点击
+                getView<TextView>(R.id.tvMyMessageChatRvTime).setOnClickListener {
+
+                }
+            }
         }
-
     }
 
     //自己消息
@@ -59,7 +68,6 @@ class ChatAdapter {
         override fun convert(holder: ViewHolder, item: Int, position: Int, payloads: List<Any>?) {
 
         }
-
     }
 
     //别人消息
@@ -75,6 +83,5 @@ class ChatAdapter {
         override fun convert(holder: ViewHolder, item: Int, position: Int, payloads: List<Any>?) {
 
         }
-
     }
 }

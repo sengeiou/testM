@@ -63,7 +63,7 @@ object GlideLoader : ILoader {
             else -> throw TypeCastException("only support ")
         }
 
-        options.apply() {
+        options.apply{
             if (centerCrop) {
                 options.optionalCenterCrop()
             }

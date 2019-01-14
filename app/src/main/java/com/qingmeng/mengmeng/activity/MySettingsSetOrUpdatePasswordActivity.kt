@@ -1,6 +1,7 @@
 package com.qingmeng.mengmeng.activity
 
 import android.text.Editable
+import android.text.InputType
 import android.text.TextWatcher
 import android.widget.EditText
 import com.qingmeng.mengmeng.BaseActivity
@@ -37,6 +38,9 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
             setHeadName(getString(R.string.my_settings_setPassword))
             mIsSetPass = true
             etMySettingsSetOrUpdateOld.setHint(R.string.username)
+            //设置输入类型 默认
+            etMySettingsSetOrUpdateOld.inputType = InputType.TYPE_CLASS_TEXT
+            ivMySettingsSetOrUpdateIcon.setImageResource(R.mipmap.my_settings_updatepass_user)
         } else {//修改密码
             setHeadName(getString(R.string.my_settings_updatePassword))
             mIsSetPass = false

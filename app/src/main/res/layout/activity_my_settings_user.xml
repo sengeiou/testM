@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:id="@+id/llMySettingsUser"
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llMySettingsUser"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/page_background_f5"
@@ -32,24 +32,29 @@
                 android:gravity="center_vertical"
                 >
 
-                <ImageView
-                    android:layout_width="@dimen/padding_dp_20"
-                    android:layout_height="@dimen/padding_dp_20"
-                    android:src="@mipmap/ic_launcher"
-                    android:layout_marginStart="@dimen/padding_dp_10"
-                    />
+                <LinearLayout
+                    android:layout_width="@dimen/padding_dp_40"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/my_settings_user_head"
+                        />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_dp_10"
                     android:layout_weight="1"
                     android:text="@string/my_settings_user_head"
-                    android:textSize="@dimen/text_size_15"
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
 
-                <ImageView
+                <com.qingmeng.mengmeng.view.RoundImageView
                     android:id="@+id/ivMySettingsUserHead"
                     android:layout_width="@dimen/padding_dp_44"
                     android:layout_height="@dimen/padding_dp_44"
@@ -58,10 +63,10 @@
                     />
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@mipmap/item_navigation"
                     />
             </LinearLayout>
 
@@ -78,21 +83,26 @@
                 android:gravity="center_vertical"
                 >
 
-                <ImageView
-                    android:layout_width="@dimen/padding_dp_20"
-                    android:layout_height="@dimen/padding_dp_20"
-                    android:src="@mipmap/ic_launcher"
-                    android:layout_marginStart="@dimen/padding_dp_10"
-                    />
+                <LinearLayout
+                    android:layout_width="@dimen/padding_dp_40"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/my_settings_user_username"
+                        />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_dp_10"
                     android:layout_weight="1"
                     android:text="@string/username"
-                    android:textSize="@dimen/text_size_15"
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
 
                 <TextView
@@ -100,9 +110,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text="yang"
-                    android:textSize="@dimen/text_size_15"
+                    android:text=" "
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
             </LinearLayout>
 
@@ -121,21 +131,26 @@
                 android:gravity="center_vertical"
                 >
 
-                <ImageView
-                    android:layout_width="@dimen/padding_dp_20"
-                    android:layout_height="@dimen/padding_dp_20"
-                    android:src="@mipmap/ic_launcher"
-                    android:layout_marginStart="@dimen/padding_dp_10"
-                    />
+                <LinearLayout
+                    android:layout_width="@dimen/padding_dp_40"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/my_settings_user_gender"
+                        />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_dp_10"
                     android:layout_weight="1"
                     android:text="@string/gender"
-                    android:textSize="@dimen/text_size_15"
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
 
                 <TextView
@@ -143,16 +158,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text="男"
-                    android:textSize="@dimen/text_size_15"
+                    android:text=" "
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@mipmap/item_navigation"
                     />
             </LinearLayout>
 
@@ -169,21 +184,26 @@
                 android:gravity="center_vertical"
                 >
 
-                <ImageView
-                    android:layout_width="@dimen/padding_dp_20"
-                    android:layout_height="@dimen/padding_dp_20"
-                    android:src="@mipmap/ic_launcher"
-                    android:layout_marginStart="@dimen/padding_dp_10"
-                    />
+                <LinearLayout
+                    android:layout_width="@dimen/padding_dp_40"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/phone"
+                        />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_dp_10"
                     android:layout_weight="1"
                     android:text="@string/phone"
-                    android:textSize="@dimen/text_size_15"
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
 
                 <TextView
@@ -191,9 +211,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text="18361116212"
-                    android:textSize="@dimen/text_size_15"
+                    android:text=" "
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
             </LinearLayout>
 
@@ -210,21 +230,26 @@
                 android:gravity="center_vertical"
                 >
 
-                <ImageView
-                    android:layout_width="@dimen/padding_dp_20"
-                    android:layout_height="@dimen/padding_dp_20"
-                    android:src="@mipmap/ic_launcher"
-                    android:layout_marginStart="@dimen/padding_dp_10"
-                    />
+                <LinearLayout
+                    android:layout_width="@dimen/padding_dp_40"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/my_settings_user_telephone"
+                        />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_dp_10"
                     android:layout_weight="1"
                     android:text="@string/my_settings_user_telephone"
-                    android:textSize="@dimen/text_size_15"
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
 
                 <TextView
@@ -232,9 +257,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text="null"
-                    android:textSize="@dimen/text_size_15"
+                    android:text=" "
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
             </LinearLayout>
 
@@ -250,21 +275,26 @@
                 android:gravity="center_vertical"
                 >
 
-                <ImageView
-                    android:layout_width="@dimen/padding_dp_20"
-                    android:layout_height="@dimen/padding_dp_20"
-                    android:src="@mipmap/ic_launcher"
-                    android:layout_marginStart="@dimen/padding_dp_10"
-                    />
+                <LinearLayout
+                    android:layout_width="@dimen/padding_dp_40"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/my_settings_user_wechat"
+                        />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_dp_10"
                     android:layout_weight="1"
                     android:text="@string/wechat"
-                    android:textSize="@dimen/text_size_15"
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
 
                 <TextView
@@ -272,9 +302,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text="18361116212"
-                    android:textSize="@dimen/text_size_15"
+                    android:text=" "
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
             </LinearLayout>
 
@@ -291,21 +321,26 @@
                 android:gravity="center_vertical"
                 >
 
-                <ImageView
-                    android:layout_width="@dimen/padding_dp_20"
-                    android:layout_height="@dimen/padding_dp_20"
-                    android:src="@mipmap/ic_launcher"
-                    android:layout_marginStart="@dimen/padding_dp_10"
-                    />
+                <LinearLayout
+                    android:layout_width="@dimen/padding_dp_40"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/my_settings_user_qq"
+                        />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_dp_10"
                     android:layout_weight="1"
                     android:text="@string/qq"
-                    android:textSize="@dimen/text_size_15"
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
 
                 <TextView
@@ -313,9 +348,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text="1318392199"
-                    android:textSize="@dimen/text_size_15"
+                    android:text=" "
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
             </LinearLayout>
 
@@ -332,21 +367,26 @@
                 android:gravity="center_vertical"
                 >
 
-                <ImageView
-                    android:layout_width="@dimen/padding_dp_20"
-                    android:layout_height="@dimen/padding_dp_20"
-                    android:src="@mipmap/ic_launcher"
-                    android:layout_marginStart="@dimen/padding_dp_10"
-                    />
+                <LinearLayout
+                    android:layout_width="@dimen/padding_dp_40"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/my_settings_user_email"
+                        />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_dp_10"
                     android:layout_weight="1"
                     android:text="@string/email"
-                    android:textSize="@dimen/text_size_15"
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
 
                 <TextView
@@ -354,9 +394,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text="1318392199@qq.com"
-                    android:textSize="@dimen/text_size_15"
+                    android:text=" "
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
             </LinearLayout>
 
@@ -374,28 +414,43 @@
                 android:gravity="center_vertical"
                 >
 
-                <ImageView
-                    android:layout_width="@dimen/padding_dp_20"
-                    android:layout_height="@dimen/padding_dp_20"
-                    android:src="@mipmap/ic_launcher"
-                    android:layout_marginStart="@dimen/padding_dp_10"
-                    />
+                <LinearLayout
+                    android:layout_width="@dimen/padding_dp_40"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/my_settings_user_city"
+                        />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_dp_10"
                     android:layout_weight="1"
                     android:text="@string/my_settings_user_city"
-                    android:textSize="@dimen/text_size_15"
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
+                    />
+
+                <TextView
+                    android:id="@+id/tvMySettingsUserCity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_dp_10"
+                    android:text=" "
+                    android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@mipmap/item_navigation"
                     />
             </LinearLayout>
 
@@ -414,28 +469,43 @@
                 android:gravity="center_vertical"
                 >
 
-                <ImageView
-                    android:layout_width="@dimen/padding_dp_20"
-                    android:layout_height="@dimen/padding_dp_20"
-                    android:src="@mipmap/ic_launcher"
-                    android:layout_marginStart="@dimen/padding_dp_10"
-                    />
+                <LinearLayout
+                    android:layout_width="@dimen/padding_dp_40"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/my_settings_user_money"
+                        />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_dp_10"
                     android:layout_weight="1"
                     android:text="@string/my_settings_user_money"
-                    android:textSize="@dimen/text_size_15"
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
+                    />
+
+                <TextView
+                    android:id="@+id/tvMySettingsUserMoney"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_dp_10"
+                    android:text=" "
+                    android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@mipmap/item_navigation"
                     />
             </LinearLayout>
 
@@ -454,28 +524,43 @@
                 android:gravity="center_vertical"
                 >
 
-                <ImageView
-                    android:layout_width="@dimen/padding_dp_20"
-                    android:layout_height="@dimen/padding_dp_20"
-                    android:src="@mipmap/ic_launcher"
-                    android:layout_marginStart="@dimen/padding_dp_10"
-                    />
+                <LinearLayout
+                    android:layout_width="@dimen/padding_dp_40"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/my_settings_user_interestindustry"
+                        />
+                </LinearLayout>
 
                 <TextView
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/padding_dp_10"
                     android:layout_weight="1"
                     android:text="@string/my_settings_user_interestIndustry"
-                    android:textSize="@dimen/text_size_15"
                     android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
+                    />
+
+                <TextView
+                    android:id="@+id/tvMySettingsUserInterestIndustry"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_dp_10"
+                    android:text=" "
+                    android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:src="@mipmap/ic_launcher"
+                    android:src="@mipmap/item_navigation"
                     />
             </LinearLayout>
         </LinearLayout>

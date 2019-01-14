@@ -10,7 +10,7 @@
     <include layout="@layout/layout_head"/>
 
     <LinearLayout
-        android:id="@+id/llMySettingsUser"
+        android:id="@+id/llMySettingsUserInformation"
         android:layout_width="match_parent"
         android:layout_height="92dp"
         android:background="@drawable/ripple_bg_white"
@@ -18,7 +18,7 @@
         android:orientation="horizontal"
         >
 
-        <ImageView
+        <com.qingmeng.mengmeng.view.RoundImageView
             android:id="@+id/ivMySettingsHead"
             android:layout_width="@dimen/padding_dp_60"
             android:layout_height="@dimen/padding_dp_60"
@@ -38,10 +38,10 @@
             />
 
         <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/padding_dp_10"
-            android:src="@mipmap/ic_launcher"
+            android:src="@mipmap/item_navigation"
             />
     </LinearLayout>
 
@@ -62,18 +62,23 @@
             android:gravity="center_vertical"
             >
 
-            <ImageView
-                android:layout_width="@dimen/padding_dp_20"
-                android:layout_height="@dimen/padding_dp_20"
-                android:layout_marginStart="@dimen/text_size_15"
-                android:src="@mipmap/ic_launcher"
-                />
+            <LinearLayout
+                android:layout_width="39dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/password"
+                    />
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tvMySettingsNewOrOldPassword"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/padding_dp_15"
                 android:layout_weight="1"
                 android:text="@string/my_settings_setPassword"
                 android:textColor="@color/color_333333"
@@ -81,17 +86,17 @@
                 />
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/padding_dp_10"
-                android:src="@mipmap/ic_launcher"
+                android:src="@mipmap/item_navigation"
                 />
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_marginStart="@dimen/padding_dp_15"
+            android:layout_marginStart="@dimen/padding_dp_10"
             android:background="@color/page_background_f5"
             />
 
@@ -103,17 +108,22 @@
             android:gravity="center_vertical"
             >
 
+            <LinearLayout
+                android:layout_width="39dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                >
+
             <ImageView
-                android:layout_width="@dimen/padding_dp_20"
-                android:layout_height="@dimen/padding_dp_20"
-                android:layout_marginStart="@dimen/text_size_15"
-                android:src="@mipmap/ic_launcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/phone"
                 />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/padding_dp_15"
                 android:layout_weight="1"
                 android:text="@string/my_settings_updatePhone"
                 android:textColor="@color/color_333333"
@@ -121,10 +131,10 @@
                 />
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/padding_dp_10"
-                android:src="@mipmap/ic_launcher"
+                android:src="@mipmap/item_navigation"
                 />
         </LinearLayout>
     </LinearLayout>
@@ -146,17 +156,22 @@
             android:gravity="center_vertical"
             >
 
+            <LinearLayout
+                android:layout_width="39dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                >
+
             <ImageView
-                android:layout_width="@dimen/padding_dp_20"
-                android:layout_height="@dimen/padding_dp_20"
-                android:layout_marginStart="@dimen/text_size_15"
-                android:src="@mipmap/ic_launcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/delete"
                 />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/padding_dp_15"
                 android:layout_weight="1"
                 android:text="@string/my_settings_clearCache"
                 android:textColor="@color/color_333333"
@@ -164,17 +179,17 @@
                 />
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/padding_dp_10"
-                android:src="@mipmap/ic_launcher"
+                android:src="@mipmap/item_navigation"
                 />
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
-            android:layout_marginStart="@dimen/padding_dp_15"
+            android:layout_marginStart="@dimen/padding_dp_10"
             android:background="@color/page_background_f5"
             />
 
@@ -186,17 +201,22 @@
             android:gravity="center_vertical"
             >
 
+            <LinearLayout
+                android:layout_width="39dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                >
+
             <ImageView
-                android:layout_width="@dimen/padding_dp_20"
-                android:layout_height="@dimen/padding_dp_20"
-                android:layout_marginStart="@dimen/text_size_15"
-                android:src="@mipmap/ic_launcher"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@mipmap/my_settings_aboutus"
                 />
+            </LinearLayout>
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/padding_dp_15"
                 android:layout_weight="1"
                 android:text="@string/my_settings_aboutUs"
                 android:textColor="@color/color_333333"
@@ -204,10 +224,10 @@
                 />
 
             <ImageView
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/padding_dp_10"
-                android:src="@mipmap/ic_launcher"
+                android:src="@mipmap/item_navigation"
                 />
         </LinearLayout>
     </LinearLayout>

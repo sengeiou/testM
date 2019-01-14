@@ -15,7 +15,7 @@
         />
 
     <TextView
-        android:id="@+id/tvSelectDialogRvMenu"
+        android:id="@+id/tvSelectDialogRvMenuL"
         android:layout_width="match_parent"
         android:layout_height="@dimen/padding_dp_58"
         android:background="@drawable/ripple_bg_white_radius15"
