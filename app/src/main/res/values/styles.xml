@@ -5,7 +5,7 @@
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/colorPrimary</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
@@ -64,5 +64,26 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/text_size_14</item>
         <item name="android:textColor">@color/color_999999</item>
+    </style>
+
+    <!-- 分割线-->
+    <style name="cutting_line">
+        <item name="android:layout_width">325dp</item>
+        <item name="android:layout_height">0.5dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:background">@color/color_dcdcdc</item>
+    </style>
+    <!-- 分割线-->
+    <style name="cutting_line_change_psw">
+        <item name="android:layout_width">330dp</item>
+        <item name="android:layout_height">0.5dp</item>
+        <item name="android:layout_gravity">center_horizontal</item>
+        <item name="android:background">@color/color_dcdcdc</item>
+    </style>
+
+    <!-- 语音弹出框样式 -->
+    <style name="SoundVolumeStyle" parent="@android:style/Theme.Dialog">
+        <item name="android:windowBackground"> @android:color/transparent </item>
+        <item name="android:backgroundDimEnabled">false</item>
     </style>
 </resources>

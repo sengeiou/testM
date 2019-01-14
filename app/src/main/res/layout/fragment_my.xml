@@ -10,72 +10,75 @@
         android:id="@+id/swlMy"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
         >
-    </android.support.v4.widget.SwipeRefreshLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/page_background"
+            android:background="@color/page_background_f5"
             android:orientation="vertical"
             >
 
-            <LinearLayout
+            <RelativeLayout
+                android:id="@+id/rlMyTop"
                 android:layout_width="match_parent"
-                android:layout_height="150dp"
-                android:background="@color/colorOrange"
-                android:orientation="vertical"
+                android:layout_height="270dp"
+                android:background="@color/white"
                 >
 
-                <RelativeLayout
+                <ImageView
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1.5"
-                    >
+                    android:layout_height="wrap_content"
+                    android:background="@mipmap/my_top_bg"
+                    />
 
-                    <ImageView
-                        android:id="@+id/ivMyHeadPortrait"
-                        android:layout_width="@dimen/padding_dp_50"
-                        android:layout_height="@dimen/padding_dp_50"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="@dimen/padding_dp_15"
-                        android:src="@mipmap/ic_launcher"
-                        />
+                <com.qingmeng.mengmeng.view.RoundImageView
+                    android:id="@+id/ivMyHeadPortrait"
+                    android:layout_width="@dimen/padding_dp_75"
+                    android:layout_height="@dimen/padding_dp_75"
+                    android:layout_centerInParent="true"
+                    android:layout_marginStart="@dimen/padding_dp_15"
+                    android:src="@mipmap/ic_launcher"
+                    />
 
-                    <TextView
-                        android:id="@+id/tvMyUserName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="@dimen/padding_dp_10"
-                        android:layout_toEndOf="@+id/ivMyHeadPortrait"
-                        android:text="@string/my_username"
-                        />
+                <TextView
+                    android:id="@+id/tvMyUserName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/ivMyHeadPortrait"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginBottom="@dimen/padding_dp_10"
+                    android:layout_marginStart="@dimen/padding_dp_10"
+                    android:text="@string/my_username"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/text_size_17"
+                    />
 
-                    <ImageView
-                        android:id="@+id/ivMySettings"
-                        android:layout_width="@dimen/padding_dp_25"
-                        android:layout_height="@dimen/padding_dp_25"
-                        android:layout_alignParentEnd="true"
-                        android:layout_marginEnd="@dimen/padding_dp_15"
-                        android:layout_marginTop="@dimen/padding_dp_15"
-                        android:src="@mipmap/ic_launcher"
-                        />
-                </RelativeLayout>
+                <ImageView
+                    android:id="@+id/ivMySettings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_marginEnd="@dimen/padding_dp_15"
+                    android:layout_marginTop="@dimen/padding_dp_15"
+                    android:src="@mipmap/my_settings"
+                    />
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="0dp"
-                    android:layout_weight="1"
-                    android:paddingEnd="@dimen/padding_dp_15"
-                    android:paddingStart="@dimen/padding_dp_15"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginBottom="@dimen/padding_dp_25"
+                    android:gravity="center_vertical"
+                    android:paddingEnd="@dimen/padding_dp_35"
+                    android:paddingStart="@dimen/padding_dp_35"
                     >
 
                     <LinearLayout
                         android:id="@+id/llMyMyFollow"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:orientation="vertical"
@@ -85,7 +88,9 @@
                             android:id="@+id/tvMyMyFollowNum"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/padding_dp_12"
                             android:text="@string/my_defaultNum"
+                            android:textColor="@color/color_333333"
                             />
 
                         <TextView
@@ -93,13 +98,20 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/my_myFollow"
+                            android:textColor="@color/color_333333"
                             />
                     </LinearLayout>
+
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="@dimen/padding_dp_35"
+                        android:background="@color/line_color_dc"
+                        />
 
                     <LinearLayout
                         android:id="@+id/llMyMyLeavingMessage"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:orientation="vertical"
@@ -109,20 +121,29 @@
                             android:id="@+id/tvMyMyLeavingMessageNum"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/padding_dp_12"
                             android:text="@string/my_defaultNum"
+                            android:textColor="@color/color_333333"
                             />
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/my_myLeavingMessage"
+                            android:textColor="@color/color_333333"
                             />
                     </LinearLayout>
+
+                    <View
+                        android:layout_width="0.5dp"
+                        android:layout_height="@dimen/padding_dp_35"
+                        android:background="@color/line_color_dc"
+                        />
 
                     <LinearLayout
                         android:id="@+id/llMyMyFootprint"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:orientation="vertical"
@@ -132,7 +153,9 @@
                             android:id="@+id/tvMyMyFootprintNum"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/padding_dp_12"
                             android:text="@string/my_defaultNum"
+                            android:textColor="@color/color_333333"
                             />
 
                         <TextView
@@ -140,28 +163,29 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="@string/my_myFootprint"
+                            android:textColor="@color/color_333333"
                             />
                     </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
+            </RelativeLayout>
 
             <LinearLayout
                 android:id="@+id/llMyEnterpriseEntry"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/padding_dp_45"
-                android:layout_marginEnd="@dimen/padding_dp_15"
-                android:layout_marginStart="@dimen/padding_dp_15"
-                android:layout_marginTop="@dimen/padding_dp_15"
+                android:layout_marginEnd="@dimen/padding_dp_10"
+                android:layout_marginStart="@dimen/padding_dp_10"
+                android:layout_marginTop="@dimen/padding_dp_10"
                 android:background="@drawable/ripple_bg_white_radius5"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 >
 
                 <ImageView
-                    android:layout_width="@dimen/padding_dp_25"
-                    android:layout_height="@dimen/padding_dp_25"
-                    android:layout_marginStart="@dimen/padding_dp_20"
-                    android:src="@mipmap/ic_launcher"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_dp_13"
+                    android:src="@mipmap/my_enterpriseentry"
                     />
 
                 <TextView
@@ -169,6 +193,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/padding_dp_10"
                     android:text="@string/my_enterpriseEntry"
+                    android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
                     />
             </LinearLayout>
 
@@ -177,25 +203,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:visibility="gone"
                 >
 
                 <LinearLayout
                     android:id="@+id/llMyThreeBinding"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/padding_dp_45"
-                    android:layout_marginEnd="@dimen/padding_dp_15"
-                    android:layout_marginStart="@dimen/padding_dp_15"
-                    android:layout_marginTop="@dimen/padding_dp_15"
+                    android:layout_marginEnd="@dimen/padding_dp_10"
+                    android:layout_marginStart="@dimen/padding_dp_10"
+                    android:layout_marginTop="@dimen/padding_dp_10"
                     android:background="@drawable/ripple_bg_white_radius5"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     >
 
                     <ImageView
-                        android:layout_width="@dimen/padding_dp_25"
-                        android:layout_height="@dimen/padding_dp_25"
-                        android:layout_marginStart="@dimen/padding_dp_20"
-                        android:src="@mipmap/ic_launcher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/padding_dp_13"
+                        android:src="@mipmap/my_threebinding"
                         />
 
                     <TextView
@@ -203,6 +230,8 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/padding_dp_10"
                         android:text="@string/my_threeBinding"
+                        android:textColor="@color/color_333333"
+                        android:textSize="@dimen/text_size_15"
                         />
                 </LinearLayout>
 
@@ -210,19 +239,19 @@
                     android:id="@+id/llMyMessage"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/padding_dp_45"
-                    android:layout_marginEnd="@dimen/padding_dp_15"
-                    android:layout_marginStart="@dimen/padding_dp_15"
-                    android:layout_marginTop="@dimen/padding_dp_15"
+                    android:layout_marginEnd="@dimen/padding_dp_10"
+                    android:layout_marginStart="@dimen/padding_dp_10"
+                    android:layout_marginTop="@dimen/padding_dp_10"
                     android:background="@drawable/ripple_bg_white_radius5"
                     android:gravity="center_vertical"
                     android:orientation="horizontal"
                     >
 
                     <ImageView
-                        android:layout_width="@dimen/padding_dp_25"
-                        android:layout_height="@dimen/padding_dp_25"
-                        android:layout_marginStart="@dimen/padding_dp_20"
-                        android:src="@mipmap/ic_launcher"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/padding_dp_13"
+                        android:src="@mipmap/my_message"
                         />
 
                     <TextView
@@ -230,19 +259,24 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/padding_dp_10"
                         android:text="@string/message"
+                        android:textColor="@color/color_333333"
+                        android:textSize="@dimen/text_size_15"
                         />
                 </LinearLayout>
             </LinearLayout>
 
             <TextView
                 android:id="@+id/tvMyLogin"
-                android:layout_width="@dimen/padding_dp_90"
-                android:layout_height="@dimen/padding_dp_30"
+                android:layout_width="150dp"
+                android:layout_height="@dimen/padding_dp_45"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/padding_dp_30"
-                android:background="@drawable/ripple_bg_white0_radius3"
+                android:layout_marginTop="@dimen/padding_dp_50"
+                android:background="@drawable/ripple_bg_blue_radius5"
                 android:gravity="center"
                 android:text="@string/login"
+                android:textColor="@color/white"
+                android:textSize="@dimen/text_size_18"
                 />
         </LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

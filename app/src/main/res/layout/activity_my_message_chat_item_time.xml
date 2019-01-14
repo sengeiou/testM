@@ -3,23 +3,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginTop="@dimen/padding_dp_10"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="@dimen/text_size_11"
     >
 
     <TextView
         android:id="@+id/tvMyMessageChatRvTime"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="82dp"
+        android:layout_height="@dimen/padding_dp_20"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/view_item_time_bg"
-        android:paddingBottom="@dimen/padding_dp_2"
-        android:paddingEnd="@dimen/padding_dp_5"
-        android:paddingStart="@dimen/padding_dp_5"
-        android:paddingTop="@dimen/padding_dp_2"
+        android:gravity="center"
         android:text="今天 11:11"
-        android:textSize="11sp"
+        android:textColor="@color/color_666666"
+        android:textSize="@dimen/text_size_12"
         >
     </TextView>
 </LinearLayout>

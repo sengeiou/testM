@@ -16,33 +16,49 @@
         android:orientation="horizontal">
 
         <TextView
+            android:id="@+id/search_food_type"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/seach_food_type" />
+            android:text="@string/seach_food_type"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/text_size_14" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/seach_add_area" />
+            android:text="@string/seach_add_area"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/text_size_14" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/seach_ranking" />
+            android:text="@string/seach_ranking"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/text_size_14" />
 
         <TextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="@string/seach_screning_conditon" />
+            android:text="@string/seach_screning_conditon"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/text_size_14" />
     </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/color_999999" />
+
+    <include layout="@layout/activity_common_pop_window" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/search_result_recylerview"

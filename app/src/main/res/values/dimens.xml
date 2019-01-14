@@ -50,6 +50,7 @@
     <dimen name="padding_dp_46">46dp</dimen>
     <dimen name="padding_dp_47">47dp</dimen>
     <dimen name="padding_dp_48">48dp</dimen>
+    <dimen name="padding_dp_49">49dp</dimen>
     <dimen name="padding_dp_50">50dp</dimen>
     <dimen name="padding_dp_51">51dp</dimen>
     <dimen name="padding_dp_52">52dp</dimen>
@@ -74,10 +75,13 @@
     <dimen name="padding_dp_83">83dp</dimen>
     <dimen name="padding_dp_90">90dp</dimen>
     <dimen name="padding_dp_95">95dp</dimen>
+    <dimen name="padding_dp_100">100dp</dimen>
     <dimen name="padding_dp_102">102dp</dimen>
     <dimen name="padding_dp_120">120dp</dimen>
     <dimen name="padding_dp_141">141dp</dimen>
     <dimen name="padding_dp_200">200dp</dimen>
+    <dimen name="padding_dp_313">313dp</dimen>
+    <dimen name="padding_dp_492">492dp</dimen>
 
     <dimen name="text_size_12">12sp</dimen>
     <dimen name="text_size_8">8sp</dimen>

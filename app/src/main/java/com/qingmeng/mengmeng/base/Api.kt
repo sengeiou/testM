@@ -47,6 +47,30 @@ interface Api {
     @GET("api/banner/get_banner")
     fun getBanners(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannersBean>>
 
+    //账号登录
+    @POST("app/user/account_login")
+    fun accountlogin(@Query("account") account: String, @Query("password") password: String): Observable<BaseBean<UserBean>>
+
+    //短信登录
+    @POST("app/user/msm_login")
+    fun msmlogin(@Query("phone") phone: String, @Query("msmCode") msmCode: String): Observable<BaseBean<UserBean>>
+
+    /**
+     * =========================================我的板块=========================================
+     */
+    //获取我的页面信息
+    @GET("api/personal/get_center_personal")
+    fun myInformation(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyInformation>>
+
+    //获取个人设置页面信息
+    @GET("api/personal/get_personal")
+    fun mySettingsUser(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MySettingsUserBean>>
+
+    //修改个人信息
+    @POST("api/personal/personal_modify")
+    @FormUrlEncoded
+    fun updateMySettingsUser(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MySettingsUserBean>>
+
     //我的关注
     @GET("api_my/get_attention")
     fun myFollow(@Query("userId") userId: Int, @Query("pageNum") pageNum: Int): Observable<BaseBean<MyMyFollowBean>>
@@ -55,4 +79,14 @@ interface Api {
     @POST("app/user/update_password")
     @FormUrlEncoded
     fun updatePass(@Field("password") password: String, @Field("newPassword") newPassword: String, @Field("verifyPassword") verifyPassword: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+
+    /**
+     * 获取banner图信息
+     * @param  type 1、首页；3、头报 5.登录banner 6.引导页
+     **/
+    @POST("api/banner/get_banner")
+    fun getbanner( @Query("VERSION") version: String,@Query("type") type: Int): Observable<BaseBean<BannerData>>
+    //忘记密码
+    @POST("app/user/forget_password")
+    fun forgetpassword(@Query("phone") phone: String, @Query("msmCode") msmCode: String, @Query("password") password: String, @Header("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
 }
