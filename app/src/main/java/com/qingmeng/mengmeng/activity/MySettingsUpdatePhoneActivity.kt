@@ -27,7 +27,7 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
-        timerHandler = TimerHandler(this,tvMySettingsUpdatePhoneGetMsg)
+        timerHandler = TimerHandler(this, tvMySettingsUpdatePhoneGetMsg)
 
         setHeadName(getString(R.string.my_settings_updatePhone))
     }

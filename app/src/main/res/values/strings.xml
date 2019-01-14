@@ -49,6 +49,11 @@
     <string name="photo">照片</string>
     <string name="video">视频</string>
     <string name="seach">请输入你想要搜索的</string>
+    <!-- =======================================爱加盟===================================== -->
+    <string name="join_feedback_description">请输入反馈描述，上传照片有助于我们判断，提升投诉通过率哦！</string>
+    <string name="join_feedback_type">请选择反馈问题的类型</string>
+    <string name="join_feedback">我要反馈</string>
+
     <!-- =======================================红铺===================================== -->
     <string name="seach_shop_count">门店数：</string>
     <string name="seach_visit_count">浏览量：</string>

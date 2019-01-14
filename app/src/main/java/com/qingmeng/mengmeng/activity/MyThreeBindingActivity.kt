@@ -1,10 +1,7 @@
 package com.qingmeng.mengmeng.activity
 
-import android.content.Context
-import android.content.Intent
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.view.dialog.DialogCommon
 import kotlinx.android.synthetic.main.activity_my_threebinding.*
 import kotlinx.android.synthetic.main.layout_head.*
