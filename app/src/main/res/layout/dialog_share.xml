@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="105dp"
         android:orientation="horizontal">
 
         <LinearLayout
@@ -18,10 +18,13 @@
             android:gravity="center">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/icon_share_wechat"
                 android:gravity="center"
-                android:text="@string/wechat" />
+                android:text="@string/wechat"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/text_size_18" />
 
         </LinearLayout>
 
@@ -33,10 +36,13 @@
             android:gravity="center">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/icon_share_moments"
                 android:gravity="center"
-                android:text="@string/wechat_friends" />
+                android:text="@string/wechat_friends"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/text_size_18" />
 
         </LinearLayout>
 
@@ -48,10 +54,13 @@
             android:gravity="center">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/icon_share_qq"
                 android:gravity="center"
-                android:text="@string/qq" />
+                android:text="@string/qq"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/text_size_18" />
 
         </LinearLayout>
 
@@ -64,10 +73,13 @@
             android:gravity="center">
 
             <TextView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawableTop="@drawable/icon_share_sina"
                 android:gravity="center"
-                android:text="@string/sina" />
+                android:text="@string/sina"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/text_size_18" />
 
         </LinearLayout>
 
@@ -82,9 +94,9 @@
         android:id="@+id/share_cancel"
         android:layout_width="match_parent"
         android:layout_height="49dp"
+        android:background="@color/page_background_f5"
         android:gravity="center"
-        android:text="取消"
+        android:text="@string/cancel"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/text_size_16" />
-
+        android:textSize="@dimen/text_size_18" />
 </LinearLayout>
