@@ -6,7 +6,7 @@
         >
         <shape>
             <!--  按钮背景 -->
-            <solid android:color="#e4e4e4"/>
+            <solid android:color="#e2e2e2"/>
             <!--  弧度 -->
             <corners android:radius="10dp"/>
             <!--  边框宽度和颜色 -->
@@ -29,7 +29,8 @@
           android:state_selected="false"
         >
         <shape>
-            <solid android:color="#5521272b"/>
+            <solid android:color="#e2e2e2"/>
+            <corners android:radius="10dp"/>
         </shape>
     </item>
 </selector>

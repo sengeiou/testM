@@ -55,7 +55,7 @@ class MyMessageActivity : BaseActivity() {
             httpLoad()
         }
 
-        rvMyMessage.setOnTouchListener { v, event ->
+        rvMyMessage.setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 //SwipeMenuLayout关闭view
                 SwipeMenuLayout.viewCache?.smoothClose()
@@ -67,11 +67,11 @@ class MyMessageActivity : BaseActivity() {
     private fun initAdapter() {
         mLayoutManager = LinearLayoutManager(this)
         rvMyMessage.layoutManager = mLayoutManager
-        mAdapter = CommonAdapter(this, R.layout.activity_my_message_item, mList, holderConvert = { holder, data, position, payloads ->
+        mAdapter = CommonAdapter(this, R.layout.activity_my_message_item, mList, holderConvert = { holder, t, position, payloads ->
             holder.apply {
                 //消息点击
                 getView<LinearLayout>(R.id.llMyMessageRv).setOnClickListener {
-                    startActivity<MyMessageChatActivity>()
+                    startActivity<MyMessageChatActivity>("title" to getView<TextView>(R.id.tvMyMessageRvTitle).text.toString())
                 }
                 //删除
                 getView<TextView>(R.id.tvMyMessageRvDelete).setOnClickListener {

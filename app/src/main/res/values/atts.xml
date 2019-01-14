@@ -27,4 +27,11 @@
             <enum name="alpha" value="1" />
         </attr>
     </declare-styleable>
+
+    <!-- 圆形图片 -->
+    <declare-styleable name="round_imageview">
+        <attr name="border_color" format="color"/>
+        <attr name="border_width" format="dimension"/>
+        <attr name="circle" format="boolean"/>
+    </declare-styleable>
 </resources>

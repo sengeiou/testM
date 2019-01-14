@@ -12,13 +12,20 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.constant.IConstants.RESULT_CODE_OPEN_ALBUM
 import com.qingmeng.mengmeng.constant.IConstants.RESULT_CODE_TAKE_CAMERA
+import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
+import com.qingmeng.mengmeng.entity.MySettingsUserBean
 import com.qingmeng.mengmeng.entity.SelectDialogBean
+import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.imageLoader.CacheType
+import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.utils.photo.InstallApp
 import com.qingmeng.mengmeng.utils.photo.PhotoConfig
 import com.qingmeng.mengmeng.utils.photo.SimplePhotoUtil
 import com.qingmeng.mengmeng.view.dialog.PopCitySelect
 import com.qingmeng.mengmeng.view.dialog.SelectDialog
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_settings_user.*
 import kotlinx.android.synthetic.main.layout_head.*
 import java.io.FileInputStream
@@ -35,8 +42,9 @@ import java.io.FileNotFoundException
  *  Date: 2019/1/3
  */
 class MySettingsUserActivity : BaseActivity() {
-    private lateinit var mBottomDialog: SelectDialog    //自定义dialog
-    private lateinit var mPopCity: PopCitySelect        //城市选择pop
+    private lateinit var mBottomDialog: SelectDialog                //自定义dialog
+    private lateinit var mPopCity: PopCitySelect                    //城市选择pop
+    private lateinit var mMySettingsUserBean: MySettingsUserBean    //个人信息bean
 
     override fun getLayoutId(): Int {
         return R.layout.activity_my_settings_user
@@ -46,6 +54,8 @@ class MySettingsUserActivity : BaseActivity() {
         super.initObject()
 
         setHeadName(getString(R.string.my_settings_user_title))
+
+        httpLoad()
     }
 
     override fun initListener() {
@@ -150,6 +160,24 @@ class MySettingsUserActivity : BaseActivity() {
         }
     }
 
+    //接口请求
+    private fun httpLoad() {
+        ApiUtils.getApi()
+                .mySettingsUser(TEST_ACCESS_TOKEN)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    if (it.code == 12000) {
+                        mMySettingsUserBean = it.data as MySettingsUserBean
+                        setData(it.data as MySettingsUserBean)
+                    } else {
+
+                    }
+                }, {
+
+                })
+    }
+
     //权限申请结果
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
@@ -213,6 +241,26 @@ class MySettingsUserActivity : BaseActivity() {
             e.printStackTrace()
             return null
         }
+    }
+
+    //设置数据
+    private fun setData(mySettingsUserBean: MySettingsUserBean) {
+        //头像
+        GlideLoader.load(this, mySettingsUserBean.avatar, ivMySettingsUserHead, cacheType = CacheType.All, placeholder = R.mipmap.ic_launcher)
+        tvMySettingsUserUserName.text = mySettingsUserBean.name
+        if (mySettingsUserBean.sex == 1) {
+            tvMySettingsUserGender.text = getString(R.string.boy)
+        } else {
+            tvMySettingsUserGender.text = getString(R.string.girl)
+        }
+        tvMySettingsPhone.text = mySettingsUserBean.phone
+        tvMySettingsUserTelephone.text = mySettingsUserBean.telephone
+        tvMySettingsUserWechat.text = mySettingsUserBean.wx
+        tvMySettingsUserQQ.text = mySettingsUserBean.qq
+        tvMySettingsUserEmail.text = mySettingsUserBean.email
+        tvMySettingsUserCity.text = mySettingsUserBean.address
+        tvMySettingsUserMoney.text = mySettingsUserBean.capital
+        tvMySettingsUserInterestIndustry.text = mySettingsUserBean.industryOfInterest
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

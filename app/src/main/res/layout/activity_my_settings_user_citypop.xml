@@ -39,13 +39,16 @@
 
                 <ImageView
                     android:id="@+id/ivMySettingsUserPopClose"
-                    android:layout_width="@dimen/padding_dp_30"
-                    android:layout_height="@dimen/padding_dp_30"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:layout_marginEnd="@dimen/padding_dp_9"
-                    android:layout_marginTop="@dimen/padding_dp_9"
-                    android:padding="5dp"
-                    android:src="@mipmap/ic_launcher"
+                    android:layout_marginEnd="@dimen/padding_dp_5"
+                    android:layout_marginTop="@dimen/padding_dp_5"
+                    android:paddingBottom="@dimen/padding_dp_5"
+                    android:paddingEnd="@dimen/padding_dp_5"
+                    android:paddingStart="@dimen/padding_dp_5"
+                    android:paddingTop="@dimen/padding_dp_9"
+                    android:src="@mipmap/close"
                     />
             </RelativeLayout>
 

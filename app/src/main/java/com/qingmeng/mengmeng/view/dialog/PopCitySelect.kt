@@ -155,7 +155,7 @@ class PopCitySelect : PopupWindow {
         mAdapter = CommonAdapter(mActivity, R.layout.activity_my_settings_user_citypop_item, mList, holderConvert = { holder, t, _, _ ->
             holder.apply {
                 setText(R.id.tvMySettingsUserPopRvCity, t)
-                getView<LinearLayout>(R.id.rlSelectDialogRvMenu).setOnTouchListener { _, event ->
+                getView<LinearLayout>(R.id.rlSelectDialogRvMenuL).setOnTouchListener { _, event ->
                     when (event.action) {
                         MotionEvent.ACTION_DOWN -> {
                             //每次按下时记录坐标
