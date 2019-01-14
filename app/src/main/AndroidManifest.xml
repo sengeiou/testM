@@ -53,13 +53,13 @@
         <activity android:name=".activity.MyEnterpriseEntryActivity" />
         <activity android:name=".activity.MyThreeBindingActivity" />
         <activity android:name=".activity.MyMessageActivity" />
-        <!-- 登录注册 -->
-        <activity android:name=".activity.LogLoginMainActivity" />
-        <activity android:name=".activity.LogLoginpwActivity" />
-        <activity android:name=".activity.LogLogincodeActivity" />
-
-
         <activity android:name=".activity.MyMessageChatActivity" />
+        <!-- 登录注册 -->
+        <activity android:name=".activity.LoginMainActivity" />
+        <activity android:name=".activity.LoginpwActivity" />
+        <activity android:name=".activity.LogincodeActivity" />
+        <activity android:name=".activity.LoginChangePswActivity" />
+        <activity android:name=".activity.LoginBindingPhone" />
         <activity
             android:name=".activity.HeadDetailsActivity"
             android:label="@string/title_activity_head_details"
@@ -69,7 +69,7 @@
 
         <!--登录注册-->
         <activity
-            android:name=".activity.RegisterActivity"
+            android:name=".activity.LoginRegisterActivity"
             android:windowSoftInputMode="stateHidden"/>
     </application>
 

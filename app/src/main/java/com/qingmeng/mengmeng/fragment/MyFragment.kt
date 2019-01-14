@@ -95,7 +95,7 @@ class MyFragment : BaseFragment() {
 
         //登录
         tvMyLogin.setOnClickListener {
-            startActivity<LogLoginMainActivity>()
+            startActivity<LoginMainActivity>()
         }
     }
 
