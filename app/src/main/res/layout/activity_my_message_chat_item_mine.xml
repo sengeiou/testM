@@ -3,8 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_gravity="top"
+    android:layout_marginEnd="@dimen/padding_dp_10"
+    android:layout_marginTop="@dimen/padding_dp_10"
     android:orientation="horizontal"
-    android:padding="@dimen/padding_dp_10"
     >
 
     <LinearLayout
@@ -31,8 +33,8 @@
             android:id="@+id/ivMyMessageChatRvMineFail"
             android:layout_width="@dimen/padding_dp_15"
             android:layout_height="@dimen/padding_dp_15"
+            android:layout_marginEnd="@dimen/padding_dp_5"
             android:background="@color/red"
-            android:visibility="gone"
             />
     </RelativeLayout>
 
@@ -40,7 +42,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/padding_dp_10"
-        android:background="@drawable/ripple_bg_drawable_white_radius5"
+        android:background="@drawable/ripple_bg_drawable_blue_radius5"
         >
 
         <TextView
@@ -48,13 +50,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/padding_dp_10"
-            android:text="你好啊"
+            android:maxWidth="200dp"
+            android:text="你也好啊"
+            android:textColor="@color/color_333333"
             />
 
         <ImageView
             android:id="@+id/ivMyMessageChatRvMineImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxHeight="200dp"
+            android:maxWidth="150dp"
             android:src="@mipmap/ic_launcher"
             android:visibility="gone"
             />
@@ -63,16 +69,10 @@
             android:id="@+id/llMyMessageChatRvMineAudio"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/padding_dp_10"
+            android:layout_margin="@dimen/padding_dp_5"
             android:gravity="center_vertical"
             android:visibility="gone"
             >
-
-            <ImageView
-                android:layout_width="@dimen/padding_dp_50"
-                android:layout_height="@dimen/padding_dp_25"
-                android:background="@mipmap/ic_launcher"
-                />
 
             <TextView
                 android:id="@+id/tvMyMessageChatRvMineAudioTime"
@@ -80,6 +80,12 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/padding_dp_5"
                 android:text="5s"
+                />
+
+            <ImageView
+                android:layout_width="@dimen/padding_dp_50"
+                android:layout_height="@dimen/padding_dp_25"
+                android:background="@mipmap/ic_launcher"
                 />
         </LinearLayout>
 
@@ -93,8 +99,8 @@
 
     <ImageView
         android:id="@+id/ivMyMessageChatRvMineHead"
-        android:layout_width="@dimen/padding_dp_30"
-        android:layout_height="@dimen/padding_dp_30"
+        android:layout_width="@dimen/padding_dp_40"
+        android:layout_height="@dimen/padding_dp_40"
         android:src="@mipmap/ic_launcher"
         />
 </LinearLayout>

@@ -4,15 +4,17 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.RedShopSeachResult
 import com.qingmeng.mengmeng.adapter.CommonAdapter
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.dp2px
+import com.qingmeng.mengmeng.utils.getBarHeight
+import com.qingmeng.mengmeng.utils.setMarginExt
 import kotlinx.android.synthetic.main.fragment_red_shop.*
+import kotlinx.android.synthetic.main.layout_head.*
 import org.jetbrains.anko.support.v4.startActivity
 
 class RedShopFragment : BaseFragment() {
@@ -27,6 +29,14 @@ class RedShopFragment : BaseFragment() {
     override fun getLayoutId(): Int = R.layout.fragment_red_shop
     override fun initObject() {
         super.initObject()
+        mTitle.setText(R.string.tab_name_red_shop)
+        // 获得状态栏高度
+        val statusBarHeight = getBarHeight(context!!)
+        //给布局的高度重新设置一下 加上状态栏高度
+        mTopView.layoutParams.height = mTopView.layoutParams.height + getBarHeight(context!!)
+        mTitle.setMarginExt(top = statusBarHeight + context!!.dp2px(60))
+        mBack.visibility = View.GONE
+
         initLeftAdapter()
         initRightAdapter()
         setData()
@@ -37,7 +47,7 @@ class RedShopFragment : BaseFragment() {
     private fun initLeftAdapter() {
         mLauyoutManger = LinearLayoutManager(context)
         red_shop_left_recyclerview.layoutManager = mLauyoutManger
-        mLeftAdapter = CommonAdapter(context!!, R.layout.item_red_shop_left, mLeftList, holderConvert = { holder, data, position, payloads ->
+        mLeftAdapter = CommonAdapter(context!!, R.layout.red_shop_left_item, mLeftList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
                 //                getView<LinearLayout>(R.id.red_shop_left_lineralayout).setOnClickListener {
 //
@@ -55,7 +65,7 @@ class RedShopFragment : BaseFragment() {
     private fun initRightAdapter() {
         mLauyoutManger = LinearLayoutManager(context)
         red_shop_right_recyclerview.layoutManager = mLauyoutManger
-        mRightAdapter = CommonAdapter(context!!, R.layout.item_red_shop_right, mRightList, holderConvert = { holder, data, position, payloads ->
+        mRightAdapter = CommonAdapter(context!!, R.layout.red_shop_right_item, mRightList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
                 if (mRightList.size > 1) {
 
@@ -67,7 +77,7 @@ class RedShopFragment : BaseFragment() {
                     mRightInAdapter = CommonAdapter(context, R.layout.fragment_red_shop_right_in_item, mRightInList, holderConvert = { holder, data, position, payloads ->
 
                     }, onItemClick = { view, holder, position ->
-                   startActivity<RedShopSeachResult>()
+                        startActivity<RedShopSeachResult>()
                     })
                     adapter = mRightInAdapter
                 }
@@ -105,5 +115,6 @@ class RedShopFragment : BaseFragment() {
 
     override fun initListener() {
         super.initListener()
+
     }
 }

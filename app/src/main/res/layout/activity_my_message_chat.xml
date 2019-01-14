@@ -11,6 +11,7 @@
     <include layout="@layout/layout_head"/>
 
     <FrameLayout
+        android:id="@+id/flMyMessageChat"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -20,8 +21,9 @@
             android:id="@+id/rvMyMessageChat"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="1dp"
-            android:scrollbarStyle="insideInset"
+            android:scrollbarSize="@dimen/padding_dp_5"
+            android:scrollbarThumbVertical="@drawable/ripple_bg_drawable_gray0_radius20"
+            android:scrollbars="vertical"
             />
 
         <TextView
@@ -46,6 +48,12 @@
             />
     </FrameLayout>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/page_background_f5"
+        />
+
     <LinearLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -55,28 +63,25 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/padding_dp_49"
+            android:layout_gravity="center_vertical"
             android:background="@color/white"
             android:gravity="center_vertical"
-            android:paddingBottom="@dimen/padding_dp_5"
-            android:paddingEnd="@dimen/padding_dp_10"
-            android:paddingStart="@dimen/padding_dp_10"
-            android:paddingTop="@dimen/padding_dp_5"
             >
 
             <ImageView
                 android:id="@+id/ivMyMessageChatAudio"
-                android:layout_width="@dimen/padding_dp_20"
-                android:layout_height="@dimen/padding_dp_20"
-                android:src="@mipmap/ic_launcher"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:padding="@dimen/padding_dp_10"
+                android:src="@mipmap/my_message_chat_audio"
                 />
 
             <RelativeLayout
                 android:layout_width="0dp"
-                android:layout_height="@dimen/padding_dp_30"
-                android:layout_marginStart="@dimen/padding_dp_5"
+                android:layout_height="@dimen/padding_dp_36"
                 android:layout_weight="1"
-                android:background="@drawable/ripple_bg_drawable_blue0_radius20"
+                android:background="@drawable/ripple_bg_drawable_gray_radius18"
                 >
 
                 <EditText
@@ -84,18 +89,19 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@null"
-                    android:paddingStart="@dimen/padding_dp_10"
+                    android:paddingEnd="@dimen/padding_dp_25"
+                    android:paddingStart="@dimen/padding_dp_15"
+                    android:textColor="@color/color_333333"
                     />
 
                 <ImageView
                     android:id="@+id/ivMyMessageChatExpression"
-                    android:layout_width="@dimen/padding_dp_20"
-                    android:layout_height="@dimen/padding_dp_20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:layout_marginStart="@dimen/padding_dp_5"
-                    android:src="@mipmap/ic_launcher"
+                    android:padding="@dimen/padding_dp_5"
+                    android:src="@mipmap/my_message_chat_expression"
                     />
 
                 <TextView
@@ -103,37 +109,44 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
-                    android:background="@drawable/ripple_bg_blue0_radius20"
+                    android:background="@drawable/ripple_bg_drawable_gray_radius18"
                     android:gravity="center"
                     android:text="@string/hold_to_talk"
                     android:textColor="@color/color_333333"
+                    android:visibility="gone"
                     />
             </RelativeLayout>
 
             <ImageView
                 android:id="@+id/ivMyMessageChatFunction"
-                android:layout_width="@dimen/padding_dp_20"
-                android:layout_height="@dimen/padding_dp_20"
-                android:layout_marginStart="@dimen/padding_dp_5"
-                android:background="@mipmap/ic_launcher"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:paddingEnd="@dimen/padding_dp_10"
+                android:paddingStart="@dimen/padding_dp_5"
+                android:src="@mipmap/my_message_chat_function"
                 />
 
             <TextView
                 android:id="@+id/tvMyMessageChatSend"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/padding_dp_5"
-                android:background="@drawable/ripple_bg_blue"
-                android:padding="@dimen/padding_dp_5"
+                android:layout_marginEnd="@dimen/padding_dp_10"
+                android:layout_marginStart="@dimen/padding_dp_10"
+                android:background="@drawable/ripple_bg_blue_radius5"
+                android:paddingBottom="@dimen/padding_dp_5"
+                android:paddingEnd="@dimen/padding_dp_10"
+                android:paddingStart="@dimen/padding_dp_10"
+                android:paddingTop="@dimen/padding_dp_5"
                 android:text="@string/send"
                 android:textColor="@color/white"
+                android:visibility="gone"
                 />
         </LinearLayout>
 
         <RelativeLayout
             android:id="@+id/rlMyMessageChatBottom"
             android:layout_width="match_parent"
-            android:layout_height="200dp"
+            android:layout_height="wrap_content"
             android:background="@color/page_background_f5"
             >
 
@@ -141,7 +154,8 @@
             <RelativeLayout
                 android:id="@+id/rlMyMessageChatExpression"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="280dp"
+                android:visibility="gone"
                 >
 
                 <android.support.v4.view.ViewPager
@@ -179,9 +193,10 @@
             <LinearLayout
                 android:id="@+id/llMyMessageChatFunction"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="280dp"
                 android:orientation="horizontal"
                 android:padding="@dimen/padding_dp_20"
+                android:visibility="gone"
                 >
 
                 <LinearLayout

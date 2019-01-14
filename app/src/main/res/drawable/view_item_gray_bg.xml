@@ -18,7 +18,7 @@
     <item android:state_selected="true"
         >
         <shape>
-            <solid android:color="#eeeeee"/>
+            <solid android:color="#f5f5f5"/>
             <corners android:radius="0dp"/>
             <stroke android:width="0dp" android:color="#ff999999"/>
         </shape>

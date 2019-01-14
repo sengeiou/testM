@@ -35,19 +35,39 @@ interface Api {
                  @Field("password") password: String, @Field("verifyPassword") verifyPassword: String,
                  @Field("type") type: Int, @Field("isUserProtocol") isUserProtocol: Int = 1): Observable<BaseBean<UserBean>>
 
+    //账号登录
+    @POST("app/user/account_login")
+    fun accountlogin(@Query("account") account: String, @Query("password") password: String): Observable<BaseBean<UserBean>>
+
+    //短信登录
+    @POST("app/user/msm_login")
+    fun msmlogin(@Query("phone") phone: String, @Query("msmCode") msmCode: String): Observable<BaseBean<UserBean>>
+
+    /**
+     * =========================================我的板块=========================================
+     */
+    //获取我的页面信息
+    @GET("api/personal/get_center_personal")
+    fun myInformation(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyInformation>>
+
+    //获取个人设置页面信息
+    @GET("api/personal/get_personal")
+    fun mySettingsUser(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MySettingsUserBean>>
+
+    //修改个人信息
+    @POST("api/personal/personal_modify")
+    @FormUrlEncoded
+    fun updateMySettingsUser(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MySettingsUserBean>>
+
     //我的关注
     @GET("api_my/get_attention")
     fun myFollow(@Query("userId") userId: Int, @Query("pageNum") pageNum: Int): Observable<BaseBean<MyMyFollowBean>>
 
     //修改密码
     @POST("app/user/update_password")
-    fun updatePass(@Query("password") password: String, @Query("newPassword") newPassword: String, @Query("verifyPassword") verifyPassword: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
-    //账号登录
-    @POST("app/user/account_login")
-    fun accountlogin( @Query("account") account: String,@Query("password") password: String): Observable<BaseBean<UserBean>>
-    //短信登录
-    @POST("app/user/msm_login")
-    fun msmlogin( @Query("phone") phone: String,@Query("msmCode") msmCode: String): Observable<BaseBean<UserBean>>
+    @FormUrlEncoded
+    fun updatePass(@Field("password") password: String, @Field("newPassword") newPassword: String, @Field("verifyPassword") verifyPassword: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+
     /**
      * 获取banner图信息
      * @param  type 1、首页；3、头报 5.登录banner 6.引导页

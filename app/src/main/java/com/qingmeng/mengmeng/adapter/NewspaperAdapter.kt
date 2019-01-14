@@ -36,11 +36,11 @@ class NewspaperAdapter(context: Context, var imgs: IntArray, var mList: ArrayLis
         val view: View
         return when (viewType) {
             ITEM_BANNER -> {
-                view = LayoutInflater.from(parent.context).inflate(R.layout.item_news_bgabanner, parent, false)
+                view = LayoutInflater.from(parent.context).inflate(R.layout.news_bgabanner_item, parent, false)
                 NewspaperBannerViewHolder(view)
             }
             else -> {
-                view = LayoutInflater.from(parent.context).inflate(R.layout.item_news_paper, parent, false)
+                view = LayoutInflater.from(parent.context).inflate(R.layout.news_paper_item, parent, false)
                 NewspaperBannerViewHolder(view)
             }
         }

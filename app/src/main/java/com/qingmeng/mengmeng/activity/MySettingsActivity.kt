@@ -3,6 +3,8 @@ package com.qingmeng.mengmeng.activity
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.imageLoader.CacheType
+import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.view.dialog.DialogCommon
 import kotlinx.android.synthetic.main.activity_my_settings.*
 import kotlinx.android.synthetic.main.layout_head.*
@@ -29,6 +31,10 @@ class MySettingsActivity : BaseActivity() {
 
         //设置标题
         setHeadName(getString(R.string.setting))
+        //设置头像
+        GlideLoader.load(this, intent.getStringExtra("avatar"), ivMySettingsHead, cacheType = CacheType.All, placeholder = R.mipmap.ic_launcher)
+        //设置用户名
+        tvMySettingsUserName.text = intent.getStringExtra("userName")
     }
 
     override fun initListener() {
@@ -40,7 +46,7 @@ class MySettingsActivity : BaseActivity() {
         }
 
         //用户
-        llMySettingsUser.setOnClickListener {
+        llMySettingsUserInformation.setOnClickListener {
             startActivity<MySettingsUserActivity>()
         }
 

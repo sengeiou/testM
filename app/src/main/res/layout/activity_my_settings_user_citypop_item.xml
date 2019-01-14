@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/rlSelectDialogRvMenu"
+    android:id="@+id/rlSelectDialogRvMenuL"
     android:layout_width="match_parent"
     android:layout_height="@dimen/padding_dp_45"
     android:background="@drawable/view_item_background"
