@@ -6,11 +6,16 @@
     <color name="colorAccent">#D81B60</color>
     <color name="primarybar_background">#FCFCFC</color>
     <color name="common_bg">#f5f5f5</color>
+    <color name="transparent">#00000000</color>
 
     <color name="white">#ffffff</color>
+    <color name="white_30">#4dffffff</color>
     <color name="black">#000000</color>
     <color name="red">#ff0000</color>
     <color name="green">#66cc99</color>
+    <color name="color_5ab1e1">#5ab1e1</color>
+    <color name="color_3681bd">#3681bd</color>
+    <color name="color_e13e3f">#e13e3f</color>
     <color name="color_333333">#333333</color>
     <color name="color_666666">#666666</color>
     <color name="color_999999">#999999</color>

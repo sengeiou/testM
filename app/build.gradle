@@ -58,7 +58,9 @@ version = [
 ]
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation"org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    //noinspection NotInterpolated,GradleCompatible
+    implementation "com.android.support:support-v4:$version.support"
     implementation "com.android.support:appcompat-v7:$version.support"
     //RecyclerView
     implementation "com.android.support:recyclerview-v7:$version.support"
@@ -86,4 +88,6 @@ dependencies {
     //其中latest.release指代最新Bugly NDK版本号，也可以指定明确的版本号，例如3.0
     implementation 'cn.bingoogolapple:bga-banner:2.1.7'
     implementation(name: 'geetest_sensebot_android_v4.0.3_20181214', ext: 'aar')
+    implementation 'com.github.Aspsine:SwipeToLoadLayout:1.0.3'
+    implementation 'com.github.hackware1993:MagicIndicator:1.4.2'
 }

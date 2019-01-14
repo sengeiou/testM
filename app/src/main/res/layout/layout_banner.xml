@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:orientation="vertical"
+              android:layout_width="wrap_content"
+              android:layout_height="wrap_content">
+
+    <cn.bingoogolapple.bgabanner.BGABanner
+        android:id="@+id/mJoinBanner"
+        android:layout_width="match_parent"
+        android:layout_height="188dp"
+        android:layout_centerHorizontal="true"
+        app:banner_indicatorGravity="bottom|center_horizontal"
+        app:banner_isNumberIndicator="false"
+        app:banner_pageChangeDuration="800"
+        app:banner_placeholderDrawable="@drawable/image_holder"
+        app:banner_pointAutoPlayAble="true"
+        app:banner_pointAutoPlayInterval="3000"
+        app:banner_pointContainerBackground="@color/transparent"
+        app:banner_pointContainerLeftRightPadding="@dimen/padding_dp_8"
+        app:banner_pointDrawable="@drawable/point_banner"
+        app:banner_pointTopBottomMargin="@dimen/padding_dp_8"
+        app:banner_tipTextColor="@color/white"
+        app:banner_tipTextSize="@dimen/text_size_14"
+        app:banner_transitionEffect="alpha">
+    </cn.bingoogolapple.bgabanner.BGABanner>
+
+</LinearLayout>
