@@ -13,15 +13,18 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/padding_dp_5"
         android:padding="@dimen/padding_dp_10"
-        android:src="@drawable/common_btn_back"/>
+        android:src="@drawable/common_btn_back" />
 
     <TextView
         android:id="@+id/mTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
+        android:layout_marginBottom="@dimen/padding_dp_10"
+        android:gravity="center_vertical"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_20"/>
+        android:textSize="@dimen/text_size_20" />
 
     <TextView
         android:id="@+id/mMenu"
@@ -31,5 +34,5 @@
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/padding_dp_15"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_20"/>
+        android:textSize="@dimen/text_size_20" />
 </RelativeLayout>
