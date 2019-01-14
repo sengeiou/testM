@@ -19,6 +19,7 @@
     <string name="cancel">取消</string>
     <string name="sure">确定</string>
     <string name="tips">提示</string>
+    <string name="retrieve_password">找回密码</string>
     <string name="message">消息</string>
     <string name="gender">性别</string>
     <string name="phone">手机号</string>
@@ -60,7 +61,7 @@
 
     <!-- ======================================登录注册====================================== -->
 
-    <string name="please_input_user_name">请输入你的用户名</string>
+    <string name="please_input_user_name">请输入用户名</string>
     <string name="please_input_user_name_or_phone_num">请输入手机号码/用户名</string>
     <string name="please_input_phone_num">请输入手机号码</string>
     <string name="please_read_accept">请同意用户协议</string>
@@ -74,7 +75,9 @@
     <string name="use_name_password_login">账号密码登录</string>
     <string name="input_code">请输入验证码</string>
     <string name="enter_password">请设置密码</string>
+    <string name="enter_new_password">请输入新密码</string>
     <string name="confirm_password">请确认密码</string>
+    <string name="confirm_new_password">请确认新密码</string>
     <string name="user_name_empty">用户名不能为空</string>
     <string name="psw_hint">请输入6–12位密码</string>
     <string name="psw_inconsistent">两次密码不一致</string>
@@ -86,9 +89,10 @@
     <string name="scuuess_code">请输入正确格式的验证码</string>
     <string name="picture_neirong">请输入图片中的内容</string>
     <string name="read_accept">我已经认证阅读并接受</string>
-    <string name="user_agreement">「盟盟用户协议」</string>
+    <string name="user_agreement">《盟盟用户协议》</string>
     <string name="refresh">刷新</string>
     <string name="register">注册</string>
+    <string name="phone_not_register">该手机尚未注册</string>
     <string name="get_message_code">请输入4位验证码</string>
 
     <!-- ======================================我的====================================== -->

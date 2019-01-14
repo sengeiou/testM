@@ -12,34 +12,40 @@ import com.qingmeng.mengmeng.utils.GeetestUtil
 import com.qingmeng.mengmeng.utils.ToastUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_register.*
+import kotlinx.android.synthetic.main.activity_log_binding_phone.*
+import kotlinx.android.synthetic.main.activity_log_register.*
 import org.json.JSONObject
-
+/**
+ * Created by mingyue
+ * Date: 2019/1/14
+ * mail: 153705849@qq.com
+ * describe: 绑定手机
+ */
 @SuppressLint("CheckResult")
-class RegisterActivity : BaseActivity() {
+class LoginBindingPhone : BaseActivity() {
     private var mRead = false
-    override fun getLayoutId(): Int = R.layout.activity_register
+    override fun getLayoutId(): Int = R.layout.activity_log_binding_phone
 
     override fun initObject() {
-        imgHandler = ImageCodeHandler(this, mRegisterGetCode)
+        imgHandler = ImageCodeHandler(this, tv_get_code_binding_phone)
         GeetestUtil.init(this)
     }
 
     override fun initListener() {
         //是否同意用户协议
-        mRegisterAccept.setOnClickListener {
+        img_read_binding_phone.setOnClickListener {
             mRead = if (!mRead) {
-                mRegisterAccept.setImageResource(R.drawable.login_icon_refresh)
+                img_read_binding_phone.setImageResource(R.drawable.login_icon_yes_read_s)
                 true
             } else {
-                mRegisterAccept.setImageResource(R.drawable.common_btn_back)
+                img_read_binding_phone.setImageResource(R.drawable.login_icon_not_read_n)
                 false
             }
         }
         //获取验证码
-        mRegisterGetCode.setOnClickListener {
-            val userName = mRegisterUserName.text.toString()
-            val phone = mRegisterPhone.text.toString()
+        tv_get_code_binding_phone.setOnClickListener {
+            val userName = edt_input_username_binding_phone.text.toString()
+            val phone = edt_input_phone_binding_phone.text.toString()
             when {
                 TextUtils.isEmpty(userName) -> ToastUtil.showShort(getString(R.string.user_name_empty))
                 TextUtils.isEmpty(phone) -> ToastUtil.showShort(getString(R.string.phone_empty))
@@ -47,12 +53,12 @@ class RegisterActivity : BaseActivity() {
             }
         }
         //注册
-        mRegister.setOnClickListener {
-            val userName = mRegisterUserName.text.toString()
-            val phone = mRegisterPhone.text.toString()
-            val code = mRegisterCode.text.toString()
-            val psw = mRegisterPsw.text.toString()
-            val confirmPsw = mRegisterConfirmPsw.text.toString()
+        btn_login_binding_phone.setOnClickListener {
+            val userName = edt_input_username_binding_phone.text.toString()
+            val phone = edt_input_phone_binding_phone.text.toString()
+            val code = edt_input_code_binding_phone.text.toString()
+            val psw = edt_input_password_binding_phone.text.toString()
+            val confirmPsw = edt_input_sure_password_binding_phone.text.toString()
             when {
                 TextUtils.isEmpty(userName) -> ToastUtil.showShort(getString(R.string.user_name_empty))
                 TextUtils.isEmpty(phone) -> ToastUtil.showShort(getString(R.string.phone_empty))
@@ -64,7 +70,10 @@ class RegisterActivity : BaseActivity() {
             }
         }
     }
-
+/*
+*接口需等第三方登录之后再调试
+*
+ */
     //注册
     private fun register(userName: String, phone: String, code: String, psw: String, confirmPsw: String) {
         ApiUtils.getApi().register(userName, phone, code, psw, confirmPsw, 2)
@@ -136,7 +145,7 @@ class RegisterActivity : BaseActivity() {
 
     //展示图片验证码
     private fun showImgCode() {
-        myDialog.showImageCodeDialog(mRegisterPhone.text.toString(), 1,
+        myDialog.showImageCodeDialog(edt_input_phone_register.text.toString(), 1,
                 { addSubscription(it) }, { imgHandler.sendEmptyMessage(timing) })
     }
 
@@ -145,7 +154,7 @@ class RegisterActivity : BaseActivity() {
      * @param type 1极验验证  0图片验证码
      **/
     private fun sendSmsCode(result: String) {
-        val phone = mRegisterPhone.text.toString()
+        val phone = edt_input_phone_register.text.toString()
         val params = JSONObject(result)
         ApiUtils.getApi().sendSms(phone, 1, geetest_challenge = params.optString("geetest_challenge"),
                 geetest_validate = params.optString("geetest_validate"), geetest_seccode = params.optString("geetest_seccode"))

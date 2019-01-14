@@ -1,9 +1,6 @@
 package com.qingmeng.mengmeng.base
 
-import com.qingmeng.mengmeng.entity.BaseBean
-import com.qingmeng.mengmeng.entity.CodeBean
-import com.qingmeng.mengmeng.entity.MyMyFollowBean
-import com.qingmeng.mengmeng.entity.UserBean
+import com.qingmeng.mengmeng.entity.*
 import io.reactivex.Observable
 import retrofit2.http.*
 
@@ -51,4 +48,13 @@ interface Api {
     //短信登录
     @POST("app/user/msm_login")
     fun msmlogin( @Query("phone") phone: String,@Query("msmCode") msmCode: String): Observable<BaseBean<UserBean>>
+    /**
+     * 获取banner图信息
+     * @param  type 1、首页；3、头报 5.登录banner 6.引导页
+     **/
+    @POST("api/banner/get_banner")
+    fun getbanner( @Query("VERSION") version: String,@Query("type") type: Int): Observable<BaseBean<BannerData>>
+    //忘记密码
+    @POST("app/user/forget_password")
+    fun forgetpassword(@Query("phone") phone: String, @Query("msmCode") msmCode: String, @Query("password") password: String, @Header("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
 }
