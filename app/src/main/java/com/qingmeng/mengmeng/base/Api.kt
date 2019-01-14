@@ -35,6 +35,18 @@ interface Api {
                  @Field("password") password: String, @Field("verifyPassword") verifyPassword: String,
                  @Field("type") type: Int, @Field("isUserProtocol") isUserProtocol: Int = 1): Observable<BaseBean<UserBean>>
 
+    //获取静态数据
+    @GET("api/get_system_static_info")
+    fun getStaticInfo(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<StaticDataBean>>
+
+    //获取首页推荐列表
+    @GET("api/join/get_setting_brands")
+    fun getRecommend(@Query("sysStaticId") sysStaticId: Int, @Query("pageNum") pageNum: Int): Observable<BaseBean<JoinRecommendBean>>
+
+    //获取首页推荐列表
+    @GET("api/banner/get_banner")
+    fun getBanners(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannersBean>>
+
     //账号登录
     @POST("app/user/account_login")
     fun accountlogin(@Query("account") account: String, @Query("password") password: String): Observable<BaseBean<UserBean>>

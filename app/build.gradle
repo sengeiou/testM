@@ -57,10 +57,11 @@ version = [
         support: "28.0.0",
 ]
 dependencies {
-    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    //noinspection NotInterpolated,GradleCompatible
+    implementation "com.android.support:support-v4:$version.support"
     implementation "com.android.support:appcompat-v7:$version.support"
-    implementation 'com.android.support:support-v4:28.0.0'
     //RecyclerView
     implementation "com.android.support:recyclerview-v7:$version.support"
     implementation "com.android.support:design:$version.support"
@@ -90,4 +91,6 @@ dependencies {
     //微信
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:5.1.6'
 
+    implementation 'com.github.Aspsine:SwipeToLoadLayout:1.0.3'
+    implementation 'com.github.hackware1993:MagicIndicator:1.4.2'
 }

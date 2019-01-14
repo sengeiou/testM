@@ -2,7 +2,7 @@
     <string name="app_name">盟盟</string>
     <string name="exit_app">再按一次退出盟盟</string>
     <string name="tab_name_love_to_join">爱加盟</string>
-    <string name="tab_name_red_shop">盟盟红铺</string>
+    <string name="tab_name_red_shop">红铺</string>
     <string name="tab_name_head_newspaper">头报</string>
     <string name="tab_name_my">我的</string>
 
@@ -53,6 +53,7 @@
     <string name="join_feedback_description">请输入反馈描述，上传照片有助于我们判断，提升投诉通过率哦！</string>
     <string name="join_feedback_type">请选择反馈问题的类型</string>
     <string name="join_feedback">我要反馈</string>
+    <string name="recommend_advisory">立即咨询</string>
 
     <!-- =======================================红铺===================================== -->
     <string name="seach_shop_count">门店数：</string>
