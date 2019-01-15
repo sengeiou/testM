@@ -55,6 +55,11 @@
     <string name="join_feedback">我要反馈</string>
     <string name="recommend_advisory">立即咨询</string>
 
+    <string name="join_feedback_type1">品牌信息有误</string>
+    <string name="join_feedback_type2">品牌不存在</string>
+    <string name="join_feedback_type3">存在欺诈骗钱行为</string>
+    <string name="join_feedback_type4">存在侵权行为</string>
+
     <!-- =======================================红铺===================================== -->
     <string name="seach_shop_count">门店数：</string>
     <string name="seach_visit_count">浏览量：</string>
