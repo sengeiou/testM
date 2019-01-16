@@ -91,7 +91,7 @@
     <string name="confirm_new_password">请确认新密码</string>
     <string name="user_name_empty">用户名不能为空</string>
     <string name="psw_hint">请输入6–12位密码</string>
-    <string name="psw_inconsistent">两次密码不一致</string>
+    <string name="psw_inconsistent">两次密码不一致1</string>
     <string name="phone_empty">手机号不能为空</string>
     <string name="password_empty">密码不能为空</string>
     <string name="login_success">登录成功</string>

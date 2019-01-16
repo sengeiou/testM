@@ -213,7 +213,7 @@ class LogincodeActivity : BaseActivity() {
      */
     private fun msmlogin(phone: String, msmCode: String) {
         ApiUtils.getApi()
-                .msmlogin(phone, msmCode)
+                .smslogin(phone, msmCode)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -226,6 +226,7 @@ class LogincodeActivity : BaseActivity() {
                         12000 -> {
                             bean.data?.let {
                                 MainApplication.instance.user = it
+                                MainApplication.instance.TOKEN = it.token
                                 it.upDate()
                             }
                             sharedSingleton.setString(IConstants.LOGIN_PHONE, phone)

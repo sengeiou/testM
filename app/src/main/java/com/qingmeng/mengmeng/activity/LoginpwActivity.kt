@@ -161,7 +161,7 @@ class LoginpwActivity : BaseActivity() {
                         12000 -> {
                             bean.data?.let {
                                 MainApplication.instance.user = it
-                                MainApplication.instance.TOKEN = it.userInfo.token
+                                MainApplication.instance.TOKEN = it.token
                                 it.upDate()
                             }
                             sharedSingleton.setString(IConstants.USER, username)

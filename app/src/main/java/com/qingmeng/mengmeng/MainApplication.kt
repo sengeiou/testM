@@ -7,6 +7,8 @@ import android.text.TextUtils
 import com.qingmeng.mengmeng.entity.UserBean
 import com.qingmeng.mengmeng.utils.SharedSingleton
 import com.tencent.bugly.crashreport.CrashReport
+import com.tencent.mm.opensdk.openapi.IWXAPI
+import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import java.io.BufferedReader
 import java.io.FileReader
 import java.io.IOException
@@ -18,12 +20,20 @@ import java.io.IOException
 class MainApplication : Application() {
     var TOKEN: String = ""
     lateinit var user: UserBean
+    lateinit var mWxApi :IWXAPI
     private lateinit var sharedSingleton: SharedSingleton
 
     init {
         AppManager.instance
     }
-
+    /*
+* 注册到微信
+*/
+    private fun registToWX()
+    {
+          mWxApi = WXAPIFactory.createWXAPI(this, "APP_ID", false);//此处的APP_ID替换为你在微信开放平台上申请到的APP_ID
+        mWxApi.registerApp("APP_ID");
+    }
     override fun onCreate() {
         super.onCreate()
         instance = this
@@ -31,6 +41,8 @@ class MainApplication : Application() {
         user = UserBean.fromString()
         TOKEN = user.token
         initBugly()
+        registToWX();
+
     }
 
     private fun initBugly() {

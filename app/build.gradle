@@ -57,7 +57,7 @@ version = [
         support: "28.0.0",
 ]
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     //noinspection NotInterpolated,GradleCompatible
     implementation "com.android.support:support-v4:$version.support"
@@ -89,8 +89,10 @@ dependencies {
     implementation 'cn.bingoogolapple:bga-banner:2.1.7'
     implementation(name: 'geetest_sensebot_android_v4.0.3_20181214', ext: 'aar')
     //微信
-    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:5.1.6'
-
+    implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
+    implementation 'com.aliyun.dpa:oss-android-sdk:+'
     implementation 'com.github.Aspsine:SwipeToLoadLayout:1.0.3'
     implementation 'com.github.hackware1993:MagicIndicator:1.4.2'
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
+    implementation files('libs/open_sdk_r6008_lite.jar')
 }
