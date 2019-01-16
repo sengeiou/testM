@@ -85,4 +85,10 @@ class MainActivity : BaseActivity(), TabHost.OnTabChangeListener {
             }
         }
     }
+
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//        val tabs = MainTab.values()
+//        (tabs[3] as MyFragment).onActivityResult(requestCode, resultCode, data!!)
+//    }
 }

@@ -13,7 +13,7 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
-import com.qingmeng.mengmeng.entity.SelectDialogBean
+import com.qingmeng.mengmeng.entity.SelectBean
 import com.qingmeng.mengmeng.utils.dp2px
 
 /**
@@ -25,18 +25,16 @@ import com.qingmeng.mengmeng.utils.dp2px
 
  *  Date: 2019/1/4
  */
-class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectDialogBean>, val isDefaultLayout: Boolean = true,
+class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectBean>, val isDefaultLayout: Boolean = true,
                                val onItemClick: (position: Int) -> Unit = { },
-                               val onCalcelClick: (view: View) -> Unit = { },
-                               val onOtherDismiss: (menuList: ArrayList<SelectDialogBean>) -> Unit = {},
+                               val onCalcelClick: (view: View, menuList: ArrayList<SelectBean>) -> Unit = { view, list -> },
                                theme: Int = R.style.dialog_common) : Dialog(context, theme) {
     private lateinit var mDialogView: View                          //dialog
     private lateinit var mTvCalcel: TextView                        //取消按钮
     private lateinit var mLayoutManager: LinearLayoutManager        //布局管理器
     private lateinit var mmGridLayoutManager: GridLayoutManager     //布局管理器
     private lateinit var mRvSelect: RecyclerView                    //菜单列表
-    private lateinit var mAdapter: CommonAdapter<SelectDialogBean>  //适配器
-    private var mIsCancel = false                                   //变量 是否是点击取消调的dismiss()方法
+    private lateinit var mAdapter: CommonAdapter<SelectBean>        //适配器
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -60,6 +58,7 @@ class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectD
         if (isDefaultLayout) {
             mRvSelect.background = null
         } else {
+            mTvCalcel.text = "确定"
             mRvSelect.setPadding(context.dp2px(13), context.dp2px(10), context.dp2px(13), context.dp2px(10))
             mRvSelect.setBackgroundResource(R.drawable.ripple_bg_drawable_white_radius15)
         }
@@ -87,11 +86,34 @@ class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectD
                             getView<View>(R.id.viewSelectDialogRvLine).visibility = View.VISIBLE
                             getView<TextView>(R.id.tvSelectDialogRvMenuL).setBackgroundResource(R.drawable.ripple_bg_white)
                         }
+//                        //设置点击状态
+//                        getView<TextView>(R.id.tvSelectDialogRvMenuCLickL).apply {
+//                            if (t.checkState) {
+//                                //按位置分别设置点击状态
+//                                if (position == 0) {
+//                                    setBackgroundResource(R.drawable.ripple_bg_drawable_white_top_radius15_click)
+//                                } else if (position == menuList.lastIndex) {
+//                                    setBackgroundResource(R.drawable.ripple_bg_drawable_white_bottom_radius15_click)
+//                                } else {
+//                                    setBackgroundResource(R.drawable.ripple_bg_drawable_white_click)
+//                                }
+//                            } else {
+//                                background = null
+//                            }
+//                        }
                     } else {    //只有一个菜单
                         getView<View>(R.id.viewSelectDialogRvLine).visibility = View.GONE
                         getView<TextView>(R.id.tvSelectDialogRvMenuL).setBackgroundResource(R.drawable.ripple_bg_white_radius15)
+//                        //设置点击状态
+//                        getView<TextView>(R.id.tvSelectDialogRvMenuCLickL).apply {
+//                            if (t.checkState) {
+//                                setBackgroundResource(R.drawable.ripple_bg_drawable_white_radius15_click)
+//                            } else {
+//                                background = null
+//                            }
+//                        }
                     }
-                    setText(R.id.tvSelectDialogRvMenuL, t.menu)
+                    setText(R.id.tvSelectDialogRvMenuL, t.name)
                 }
             }, onItemClick = { _, _, position ->
                 //点击把下标传过去
@@ -101,10 +123,10 @@ class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectD
         } else {  //表格排布
             mmGridLayoutManager = GridLayoutManager(context, 3)
             mRvSelect.layoutManager = mmGridLayoutManager
-            mAdapter = CommonAdapter(context, R.layout.view_dialog_choose_item, menuList, holderConvert = { holder, it, _, _ ->
+            mAdapter = CommonAdapter(context, R.layout.view_dialog_choose_item, menuList, holderConvert = { holder, t, _, _ ->
                 holder.apply {
                     getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
-                        if (it.checkState) {
+                        if (t.checkState) {
                             setBackgroundColor(resources.getColor(R.color.colorBlueBright))
                             getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.VISIBLE
                         } else {
@@ -112,7 +134,7 @@ class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectD
                             getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.GONE
                         }
                     }
-                    setText(R.id.tvSelectDialogRvMenuG, it.menu)
+                    setText(R.id.tvSelectDialogRvMenuG, t.name)
                 }
             }, onItemClick = { _, _, position ->
                 menuList[position].let {
@@ -127,19 +149,8 @@ class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectD
     private fun initListener() {
         //取消按钮
         mTvCalcel.setOnClickListener {
-            onCalcelClick(it)
-            mIsCancel = true
+            onCalcelClick(it, menuList)
             dismiss()
-        }
-    }
-
-    //重写dismiss方法 如果是点击屏幕或按返回键 就返回一个回调
-    override fun dismiss() {
-        super.dismiss()
-
-        //不是点击取消取消的
-        if (!mIsCancel) {
-            onOtherDismiss(menuList)
         }
     }
 }

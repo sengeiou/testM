@@ -42,7 +42,7 @@ class MyThreeBindingActivity : BaseActivity() {
             if (tvMyThreeBindingQQ.text.toString() == getString(R.string.my_threeBinding_yes)) {
                 mDialog = DialogCommon(this, getString(R.string.tips), getString(R.string.my_threeBinding_qqTips), rightText = getString(R.string.my_threeBinding_untying), onRightClick = {
                     tvMyThreeBindingQQ.text = getString(R.string.my_threeBinding_not)
-                    tvMyThreeBindingQQ.setTextColor(getColor(R.color.color_999999))
+                    tvMyThreeBindingQQ.setTextColor(resources.getColor(R.color.color_999999))
                 })
                 mDialog.show()
             } else {  //跳转QQ绑定
@@ -56,7 +56,7 @@ class MyThreeBindingActivity : BaseActivity() {
             if (tvMyThreeBindingWechat.text.toString() == getString(R.string.my_threeBinding_yes)) {
                 mDialog = DialogCommon(this, getString(R.string.tips), getString(R.string.my_threeBinding_wechatTips), rightText = getString(R.string.my_threeBinding_untying), onRightClick = {
                     tvMyThreeBindingWechat.text = getString(R.string.my_threeBinding_not)
-                    tvMyThreeBindingWechat.setTextColor(getColor(R.color.color_999999))
+                    tvMyThreeBindingWechat.setTextColor(resources.getColor(R.color.color_999999))
                 })
                 mDialog.show()
             } else {  //跳转微信绑定
