@@ -50,18 +50,18 @@ class ViewHolder(private val mContext: Context, val convertView: View) : Recycle
      * @return
      */
     fun setText(viewId: Int, text: String?) {
-        getView<TextView>(viewId).text = text?:""
+        getView<TextView>(viewId).text = text ?: ""
     }
 
-    fun setImageResource(viewId: Int, resId: Int){
+    fun setImageResource(viewId: Int, resId: Int) {
         getView<ImageView>(viewId).setImageResource(resId)
     }
 
-    fun setImageBitmap(viewId: Int, bitmap: Bitmap){
+    fun setImageBitmap(viewId: Int, bitmap: Bitmap) {
         getView<ImageView>(viewId).setImageBitmap(bitmap)
     }
 
-    fun setImageDrawable(viewId: Int, drawable: Drawable){
+    fun setImageDrawable(viewId: Int, drawable: Drawable) {
         getView<ImageView>(viewId).setImageDrawable(drawable)
     }
 
@@ -78,7 +78,7 @@ class ViewHolder(private val mContext: Context, val convertView: View) : Recycle
         getView<View>(viewId).setBackgroundResource(backgroundRes)
     }
 
-    fun setTextColorRes(viewId: Int, textColorRes: Int){
+    fun setTextColorRes(viewId: Int, textColorRes: Int) {
         getView<TextView>(viewId).setTextColor(mContext.resources.getColor(textColorRes))
     }
 
@@ -100,7 +100,7 @@ class ViewHolder(private val mContext: Context, val convertView: View) : Recycle
         view.visibility = if (visible) View.VISIBLE else View.GONE
     }
 
-    fun linkify(viewId: Int){
+    fun linkify(viewId: Int) {
         val view = getView<TextView>(viewId)
         Linkify.addLinks(view, Linkify.ALL)
     }
@@ -134,23 +134,23 @@ class ViewHolder(private val mContext: Context, val convertView: View) : Recycle
         view.rating = rating
     }
 
-    fun setRating(viewId: Int, rating: Float, max: Int){
+    fun setRating(viewId: Int, rating: Float, max: Int) {
         val view = getView<RatingBar>(viewId)
         view.max = max
         view.rating = rating
     }
 
-    fun setTag(viewId: Int, tag: Any){
+    fun setTag(viewId: Int, tag: Any) {
         val view = getView<View>(viewId)
         view.tag = tag
     }
 
-    fun setTag(viewId: Int, key: Int, tag: Any){
+    fun setTag(viewId: Int, key: Int, tag: Any) {
         val view = getView<View>(viewId)
         view.setTag(key, tag)
     }
 
-    fun setChecked(viewId: Int, checked: Boolean){
+    fun setChecked(viewId: Int, checked: Boolean) {
         val view = getView<View>(viewId) as Checkable
         view.isChecked = checked
     }
@@ -159,19 +159,19 @@ class ViewHolder(private val mContext: Context, val convertView: View) : Recycle
      * 关于事件的
      */
     fun setOnClickListener(viewId: Int,
-                           listener: View.OnClickListener){
+                           listener: View.OnClickListener) {
         val view = getView<View>(viewId)
         view.setOnClickListener(listener)
     }
 
     fun setOnTouchListener(viewId: Int,
-                           listener: View.OnTouchListener){
+                           listener: View.OnTouchListener) {
         val view = getView<View>(viewId)
         view.setOnTouchListener(listener)
     }
 
     fun setOnLongClickListener(viewId: Int,
-                               listener: View.OnLongClickListener){
+                               listener: View.OnLongClickListener) {
         val view = getView<View>(viewId)
         view.setOnLongClickListener(listener)
     }

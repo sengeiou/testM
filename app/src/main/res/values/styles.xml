@@ -15,9 +15,9 @@
         <item name="android:screenOrientation">portrait</item>
     </style>
 
-    <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+    <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
-    <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
 
     <!-- 常规对话框样式 -->
     <style name="commondialogstyle" parent="@android:style/Theme.Dialog">
@@ -95,7 +95,7 @@
 
     <!-- 语音弹出框样式 -->
     <style name="SoundVolumeStyle" parent="@android:style/Theme.Dialog">
-        <item name="android:windowBackground"> @android:color/transparent </item>
+        <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
 </resources>

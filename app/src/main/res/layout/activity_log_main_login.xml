@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/common_bg"
-    android:orientation="vertical">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/common_bg"
+              android:orientation="vertical">
+
     <ImageView
         android:id="@+id/iv_login_mm_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="40dp"
-        app:srcCompat="@drawable/login_logo" />
+        app:srcCompat="@drawable/login_logo"/>
 
     <cn.bingoogolapple.bgabanner.BGABanner
         android:id="@+id/banner_login_main"
@@ -19,15 +20,14 @@
         android:layout_height="200dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="45dp"
-        app:srcCompat="@drawable/login_logo" />
+        app:srcCompat="@drawable/login_logo"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
         android:background="@color/common_bg"
         android:orientation="vertical">
-
-
 
 
         <RelativeLayout
@@ -53,7 +53,7 @@
                     android:textColor="@color/color_ffffff"
                     android:drawableStart="@drawable/login_icon_input_pw_n"
                     android:drawablePadding="@dimen/padding_dp_10"
-                    android:textSize="@dimen/text_size_16" />
+                    android:textSize="@dimen/text_size_16"/>
 
 
             </LinearLayout>
@@ -76,7 +76,7 @@
                     android:textColor="@color/color_5ab1e1"
                     android:drawableStart="@drawable/login_icon_verification_code"
                     android:drawablePadding="@dimen/padding_dp_10"
-                    android:textSize="@dimen/text_size_16" />
+                    android:textSize="@dimen/text_size_16"/>
             </LinearLayout>
         </RelativeLayout>
 
@@ -100,7 +100,7 @@
                 android:drawablePadding="5dp"
                 android:text="@string/sign_up_now"
                 android:textColor="@color/color_666666"
-                android:textSize="@dimen/text_size_14" />
+                android:textSize="@dimen/text_size_14"/>
         </LinearLayout>
 
         <LinearLayout
@@ -120,7 +120,7 @@
                 android:text="@string/wechat"
                 android:layout_marginStart="102dp"
                 android:textColor="@color/color_666666"
-                android:textSize="@dimen/text_size_14" />
+                android:textSize="@dimen/text_size_14"/>
 
             <TextView
                 android:id="@+id/tv_login_other_login_qq_main"
@@ -133,7 +133,7 @@
                 android:layout_marginStart="60dp"
                 android:textColor="@color/color_666666"
                 android:text="@string/qq"
-                android:textSize="@dimen/text_size_14" />
+                android:textSize="@dimen/text_size_14"/>
 
         </LinearLayout>
 

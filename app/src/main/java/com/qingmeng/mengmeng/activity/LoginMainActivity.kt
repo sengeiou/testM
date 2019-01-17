@@ -1,6 +1,5 @@
 package com.qingmeng.mengmeng.activity
 
-import android.app.Application
 import android.content.Intent
 import android.util.Log
 import android.widget.ImageView
@@ -10,19 +9,18 @@ import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.entity.BannersBean
+import com.qingmeng.mengmeng.entity.Banner
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.tencent.connect.common.Constants
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_log_main_login.*
-import kotlinx.android.synthetic.main.layout_banner.*
-import org.jetbrains.anko.startActivity
 import com.tencent.mm.opensdk.modelmsg.SendAuth
 import com.tencent.tauth.IUiListener
 import com.tencent.tauth.Tencent
 import com.tencent.tauth.UiError
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_log_main_login.*
+import org.jetbrains.anko.startActivity
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -33,8 +31,8 @@ import org.json.JSONObject
  * mail: 153705849@qq.com
  * describe: 登录页面首页
  */
-class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, BannersBean.BannerBean>, BGABanner.Adapter<ImageView, String>  {
-    lateinit var openid:String
+class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>, BGABanner.Adapter<ImageView, String> {
+    lateinit var openid: String
     //banner加载图片
     override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: String?, position: Int) {
         model?.let {
@@ -43,12 +41,13 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, BannersB
                     .centerCrop()).into(itemView)
         }
     }
+
     //banner点击事件
-    override fun onBannerItemClick(banner: BGABanner?, itemView: ImageView?, model: BannersBean.BannerBean?, position: Int) {
+    override fun onBannerItemClick(banner: BGABanner?, itemView: ImageView?, model: Banner, position: Int) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
-    private val mImgList = ArrayList<BannersBean.BannerBean>()
+    private val mImgList = ArrayList<Banner>()
     override fun getLayoutId(): Int {
         //设置标题
         //     setHeadName(getString(R.string.login))
@@ -59,6 +58,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, BannersB
         setBGABannerLogin()
 
     }
+
     //初始化Object
     override fun initObject() {
         super.initObject()
@@ -88,13 +88,13 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, BannersB
         }
 
     }
-    //QQ第三方登录
-    fun qqLogin(){
-        var mTencent:Tencent=Tencent.createInstance("123123123",getApplicationContext()) //将123123123改为自己的AppID
-        mTencent.login(this@LoginMainActivity,"all", BaseUiListener());
-        openid=mTencent.openId
-    }
 
+    //QQ第三方登录
+    fun qqLogin() {
+        var mTencent: Tencent = Tencent.createInstance("123123123", getApplicationContext()) //将123123123改为自己的AppID
+        mTencent.login(this@LoginMainActivity, "all", BaseUiListener());
+        openid = mTencent.openId
+    }
 
 
     //微信登陆
@@ -116,7 +116,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, BannersB
         ApiUtils.getApi().getbanner("", 5)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe({  bean ->
+                .subscribe({ bean ->
                     if (bean.code == 12000) {
                         bean.data?.let {
                             if (!it.banners.isEmpty()) {
@@ -134,25 +134,27 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, BannersB
                     ToastUtil.showNetError()
                 }, {}, { addSubscription(it) })
     }
+
     private fun setBanner() {
         banner_login_main.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
         banner_login_main.setDelegate(this)//设置点击事件，重写点击回调方法
         banner_login_main.setData(mImgList, null)
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         Tencent.onActivityResultData(requestCode, resultCode, data, BaseUiListener());
 
-        if(requestCode == Constants.REQUEST_API) {
-            if(resultCode == Constants.REQUEST_LOGIN) {
-                Tencent.handleResultData(data,  BaseUiListener());
+        if (requestCode == Constants.REQUEST_API) {
+            if (resultCode == Constants.REQUEST_LOGIN) {
+                Tencent.handleResultData(data, BaseUiListener());
             }
 
         }
     }
 }
 
-private  class BaseUiListener : IUiListener,BaseActivity() {
+private class BaseUiListener : IUiListener, BaseActivity() {
     override fun getLayoutId(): Int {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -172,7 +174,7 @@ private  class BaseUiListener : IUiListener,BaseActivity() {
 
             Log.v("TAG", "-------------" + openidString!!)
             access_token = response.getString("access_token")
-            ApiUtils.getApi().thirdlogin(openidString,1)
+            ApiUtils.getApi().thirdlogin(openidString, 1)
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({ bean ->
@@ -182,14 +184,14 @@ private  class BaseUiListener : IUiListener,BaseActivity() {
                                 MainApplication.instance.TOKEN = it.token
                                 it.upDate()
                             }
-                            if (bean.code == 25093)  {
+                            if (bean.code == 25093) {
                                 ToastUtil.showShort(bean.msg)
                                 startActivity<LoginBindingPhoneActivity>()
                             }
                         } else {
                             ToastUtil.showShort(bean.msg)
                         }
-                    } )
+                    })
             //expires_in = ((JSONObject) response).getString("expires_in");
         } catch (e: JSONException) {
             // TODO Auto-generated catch block

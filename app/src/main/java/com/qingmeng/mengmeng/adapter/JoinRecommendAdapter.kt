@@ -50,7 +50,7 @@ class JoinRecommendAdapter(val context: Context, val onItemClick: (JoinRecommend
             recommendName.text = joinBean.name
             recommendMoney.text = "￥${joinBean.capitalName}"
             itemView.setOnClickListener { onItemClick(joinBean) }
-            if (!TextUtils.isEmpty(joinBean.logo)){
+            if (!TextUtils.isEmpty(joinBean.logo)) {
                 Glide.with(context).load(joinBean.logo).into(recommendLogo)
             }
         }

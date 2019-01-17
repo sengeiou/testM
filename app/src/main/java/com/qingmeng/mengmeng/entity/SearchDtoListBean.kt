@@ -1,6 +1,7 @@
 package com.qingmeng.mengmeng.entity
 
 import java.io.Serializable
+
 /**
  * Created by mingyue
  * Date: 2019/1/16

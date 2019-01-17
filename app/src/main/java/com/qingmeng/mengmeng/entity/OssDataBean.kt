@@ -11,11 +11,11 @@ class OssDataBean(var endpoint: String,
 class OssBean {
     var securityToken: String = ""
         get() = DESUtil.decryptECB(field, key)
-    var accessKeyId: String= ""
+    var accessKeyId: String = ""
         get() = DESUtil.decryptECB(field, key)
-    var accessKeySecret: String= ""
+    var accessKeySecret: String = ""
         get() = DESUtil.decryptECB(field, key)
-    var expiration: String= ""
+    var expiration: String = ""
         get() = DESUtil.decryptECB(field, key)
     private val key = "llIU0x02"
 
