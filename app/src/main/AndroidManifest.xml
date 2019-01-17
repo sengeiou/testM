@@ -68,7 +68,12 @@
         <activity android:name=".activity.MyEnterpriseEntryActivity"/>
         <activity android:name=".activity.MyThreeBindingActivity"/>
         <activity android:name=".activity.MyMessageActivity"/>
-        <activity android:name=".activity.MyMessageChatActivity"/>
+        <activity
+            android:name=".activity.MyMessageChatActivity"
+            android:configChanges="keyboardHidden|orientation"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="adjustResize"
+            />
         <!-- 登录注册 -->
         <activity android:name=".activity.LoginMainActivity"/>
         <activity android:name=".activity.LoginpwActivity"/>
@@ -91,6 +96,7 @@
 
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
+
                 <data android:scheme="tencent123456"/>
             </intent-filter>
         </activity>

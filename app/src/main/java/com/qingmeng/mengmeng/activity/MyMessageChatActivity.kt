@@ -179,10 +179,14 @@ class MyMessageChatActivity : BaseActivity() {
                 //按住说话隐藏
                 tvMyMessageChatClickSay.visibility = View.GONE
             } else {
+                //改变输入框上面的布局高度
+                changeMiddleLayoutHeight()
                 mExpressionOrFunction = 1
                 //关闭软键盘
                 mKeyboardUtil.hideInputKeyboard()
             }
+            //列表移到最后一个
+            rvMyMessageChat.scrollToPosition(mList.lastIndex)
         }
 
         //系统工具 +
@@ -195,20 +199,25 @@ class MyMessageChatActivity : BaseActivity() {
                 //按住说话隐藏
                 tvMyMessageChatClickSay.visibility = View.GONE
             } else {
+                //改变输入框上面的布局高度
+                changeMiddleLayoutHeight()
                 mExpressionOrFunction = 2
                 //关闭软键盘
                 mKeyboardUtil.hideInputKeyboard()
             }
+            //列表移到最后一个
+            rvMyMessageChat.scrollToPosition(mList.lastIndex)
         }
 
         //输入框点击
-        etMyMessageChatContent.setOnTouchListener { _, _ ->
+        etMyMessageChatContent.setOnClickListener {
+            //改变输入框上面的布局高度
+            changeMiddleLayoutHeight()
             //表情和工具布局隐藏
             llMyMessageChatFunction.visibility = View.GONE
             rlMyMessageChatExpression.visibility = View.GONE
             //打开软键盘
             mKeyboardUtil.showInputKeyboard()
-            false
         }
 
         //输入框内容改变监听
@@ -240,11 +249,17 @@ class MyMessageChatActivity : BaseActivity() {
         //系统键盘监听
         mKeyboardUtil.setListener(object : KeyboardUtil.OnKeyboardListener {
             override fun onKeyboardShow(i: Int) {
+                //恢复输入框上面的布局高度
+                recoveryMiddleLayoutHeight()
                 //恢复默认值 其他都不受理
                 mExpressionOrFunction = 0
+                //列表移到最后一个
+                rvMyMessageChat.scrollToPosition(mList.lastIndex)
             }
 
             override fun onKeyboardHide(i: Int) {
+                //恢复输入框上面的布局高度
+                recoveryMiddleLayoutHeight()
                 when (mExpressionOrFunction) {
                     1 -> {
                         rlMyMessageChatExpression.visibility = View.VISIBLE
@@ -263,6 +278,8 @@ class MyMessageChatActivity : BaseActivity() {
                 }
                 //恢复默认值 其他都不受理
                 mExpressionOrFunction = 0
+                //列表移到最后一个
+                rvMyMessageChat.scrollToPosition(mList.lastIndex)
             }
         })
 
@@ -338,6 +355,21 @@ class MyMessageChatActivity : BaseActivity() {
         } else if (voiceValue > 28000.0) {
             mSoundVolumeImg.setBackgroundResource(R.drawable.view_dialog_sound_volume_07)
         }
+    }
+
+    //改变输入框上面布局(中间布局)的高度，临时改变下（为了引起视觉误差 让用户感觉上面的布局在等键盘弹起，会感觉很流畅）
+    private fun changeMiddleLayoutHeight() {
+        val fragmentParams = flMyMessageChat.layoutParams as LinearLayout.LayoutParams
+        fragmentParams.weight = 0f
+        //让布局的高度等于当前recyclerView的高度,形成短暂的等待视差
+        fragmentParams.height = rvMyMessageChat.height
+    }
+
+    //恢复输入框上面布局的高度（键盘弹起后和关闭后恢复）
+    private fun recoveryMiddleLayoutHeight() {
+        val fragmentParams = flMyMessageChat.layoutParams as LinearLayout.LayoutParams
+        fragmentParams.weight = 1f
+        fragmentParams.height = 0
     }
 
     private fun setData() {

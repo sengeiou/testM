@@ -17,6 +17,7 @@ import com.qingmeng.mengmeng.entity.AllCity
 import com.qingmeng.mengmeng.entity.MySettingsUserBean
 import com.qingmeng.mengmeng.entity.SelectBean
 import com.qingmeng.mengmeng.utils.ApiUtils
+import com.qingmeng.mengmeng.utils.InputCheckUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.utils.imageLoader.CacheType
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
@@ -30,7 +31,6 @@ import kotlinx.android.synthetic.main.activity_my_settings_user.*
 import kotlinx.android.synthetic.main.layout_head.*
 import java.io.FileInputStream
 import java.io.FileNotFoundException
-import java.util.regex.Pattern
 
 
 /**
@@ -183,9 +183,9 @@ class MySettingsUserActivity : BaseActivity() {
                 }
             }
         }
-
         //感兴趣行业
         llMySettingsUserInterestIndustry.setOnClickListener {
+
             //数据不为空就直接调打开弹框方法
             if (mInterestList.isNotEmpty()) {
                 openInterestDialog(mInterestList)
@@ -348,25 +348,25 @@ class MySettingsUserActivity : BaseActivity() {
     //接口请求前内容验证
     private fun contentVerification() {
         if (!mName.isNullOrBlank()) {   //真实姓名
-            if (!mPhone.isNullOrBlank() && checkTel(mPhone!!)) {    // 手机号
+            if (!mPhone.isNullOrBlank() && InputCheckUtils.checkPhone(mPhone!!)) {    // 手机号
                 if (mDistrictId != null && mDistrictId != 0) {  //城市id
                     if (mCapitalId != null && mCapitalId != 0) {    //创业资本
                         if (!mIndustryOfInterest.isNullOrBlank()) { //感兴趣行业
                             //一路过关斩将 终于过来了！(缓一缓还有第二轮！)
                             //如果这些选填的内容不为空的话 那么就判断它们格式正不正确 然后请求接口
-                            if (!mTelephone.isNullOrBlank()) {
+                            if (!mTelephone.isNullOrBlank() && !InputCheckUtils.checkTel(mTelephone!!)) {
                                 ToastUtil.showShort(getString(R.string.my_settings_user_telephone_tips))
                                 return
                             }
-                            if (!mWx.isNullOrBlank()) {
+                            if (!mWx.isNullOrBlank() && !InputCheckUtils.checkWechat(mWx!!)) {
                                 ToastUtil.showShort(getString(R.string.my_settings_user_wechat_tips))
                                 return
                             }
-                            if (!mQQ.isNullOrBlank()) {
+                            if (!mQQ.isNullOrBlank() && !InputCheckUtils.checkQQ(mQQ!!)) {
                                 ToastUtil.showShort(getString(R.string.my_settings_user_qq_tips))
                                 return
                             }
-                            if (!mEmail.isNullOrBlank()) {
+                            if (!mEmail.isNullOrBlank() && !InputCheckUtils.checkEmail(mEmail!!)) {
                                 ToastUtil.showShort(getString(R.string.my_settings_user_email_tips))
                                 return
                             }
@@ -394,17 +394,6 @@ class MySettingsUserActivity : BaseActivity() {
         }
     }
 
-    //正则验证手机号
-    private fun checkTel(tel: String): Boolean {
-        if (tel.isNullOrBlank()) {
-            return false
-        } else {
-            val pattern = Pattern.compile("^[1][3,4,5,7,8][0-9]{9}$")
-            val matcher = pattern.matcher(tel)
-            return matcher.matches()
-        }
-    }
-
     //设置数据
     private fun setData(mySettingsUserBean: MySettingsUserBean) {
         //头像
@@ -426,8 +415,8 @@ class MySettingsUserActivity : BaseActivity() {
         etMySettingsUserWechat.setText(mySettingsUserBean.wx)
         etMySettingsUserQQ.setText(mySettingsUserBean.qq)
         etMySettingsUserEmail.setText(mySettingsUserBean.email)
-        if (!mySettingsUserBean.address.isNullOrBlank()) {
-            tvMySettingsUserCity.text = mySettingsUserBean.address
+        if (!mySettingsUserBean.cityName.isNullOrBlank()) {
+            tvMySettingsUserCity.text = mySettingsUserBean.cityName
             tvMySettingsUserCity.setTextColor(resources.getColor(R.color.color_333333))
         } else {
             tvMySettingsUserCity.text = getString(R.string.my_settings_user_select_no)

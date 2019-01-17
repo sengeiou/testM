@@ -1,5 +1,7 @@
 package com.qingmeng.mengmeng.activity
 
+import android.app.Activity
+import android.content.Intent
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.fragment.MyFragment
@@ -11,6 +13,7 @@ import com.qingmeng.mengmeng.view.dialog.DialogCommon
 import kotlinx.android.synthetic.main.activity_my_settings.*
 import kotlinx.android.synthetic.main.layout_head.*
 import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.startActivityForResult
 
 /**
  *  Description :我的 - 设置
@@ -23,6 +26,9 @@ import org.jetbrains.anko.startActivity
  */
 class MySettingsActivity : BaseActivity() {
     private lateinit var mDialog: DialogCommon   //弹框
+    private val REQUEST_MY_SETTINGS = 9264       //下一页返回数据的requestCode
+    private var mPhone = ""                      //上个页面传过来的手机号
+    private var mPhoneChange = false             //上个页面传过来的手机号是否改变过
 
     override fun getLayoutId(): Int {
         return R.layout.activity_my_settings
@@ -45,6 +51,7 @@ class MySettingsActivity : BaseActivity() {
             tvMySettingsNewOrOldPassword.text = getString(R.string.my_settings_setPassword)
         }
 
+        mPhone = intent.getStringExtra("phone")
         //设置缓存大小
         tvMySettingsCache.text = GlideCacheUtils.getCacheSize(this)
     }
@@ -69,7 +76,7 @@ class MySettingsActivity : BaseActivity() {
 
         //换绑手机
         llMySettingsUpdatePhone.setOnClickListener {
-            startActivity<MySettingsUpdatePhoneActivity>()
+            startActivityForResult<MySettingsUpdatePhoneActivity>(REQUEST_MY_SETTINGS, "phone" to mPhone)
         }
 
         //清理缓存
@@ -94,5 +101,24 @@ class MySettingsActivity : BaseActivity() {
             })
             mDialog.show()
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_MY_SETTINGS && resultCode == Activity.RESULT_OK) {
+            val phone = data?.getStringExtra("phone")
+            if (phone != null) {
+                mPhone = phone
+                //设置返回时告诉上一个页面刷新
+                mPhoneChange = true
+            }
+        }
+    }
+
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_OK, Intent().apply {
+            putExtra("mPhoneChange", mPhoneChange)
+        })
+        super.onBackPressed()
     }
 }

@@ -21,11 +21,12 @@ class MySettingsUserBean {
     val email: String = ""
     val fax: String = ""
     val provinceId: Int = 0
-    val cityIds: Int = 0
     val address: String = ""
     var capitalId: Int = 0
     val industryOfInterest: String = ""
     val capital: String = ""
     val industryOfInterestName: List<String> = ArrayList()
     val userName: String = ""
+    val cityIds: Int = 0
+    val cityName: String = ""
 }

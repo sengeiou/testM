@@ -76,7 +76,11 @@ class MyFragment : BaseFragment() {
         //设置
         ivMySettings.setOnClickListener {
             //跳转aty
-            startActivity<MySettingsActivity>("avatar" to mMyInformation.avatar, "userName" to mMyInformation.userName)
+            startActivityForResult(Intent(context, MySettingsActivity::class.java).apply {
+                putExtra("avatar", mMyInformation.avatar)
+                putExtra("userName", mMyInformation.userName)
+                putExtra("phone", mMyInformation.phone)
+            }, REQUEST_MY)
         }
 
         //我的关注
@@ -176,8 +180,9 @@ class MyFragment : BaseFragment() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_MY && resultCode == Activity.RESULT_OK) {
             val isDelete = data?.getBooleanExtra("isDelete", false) ?: false
+            val mPhoneChange = data?.getBooleanExtra("mPhoneChange", false) ?: false
             //如果下一页删掉过数据 就刷新下本页
-            if (isDelete) {
+            if (isDelete || mPhoneChange) {
                 slMy.isRefreshing = true
                 if (mSettingsOrUpdate != 0) {
                     httpLoad()

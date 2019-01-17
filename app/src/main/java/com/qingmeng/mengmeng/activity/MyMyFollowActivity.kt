@@ -182,6 +182,7 @@ class MyMyFollowActivity : BaseActivity() {
                                 if (pageNum == 1) {
                                     //空白页提示
                                     llMyMyFollowTips.visibility = View.VISIBLE
+                                    slMyMyFollow.isRefreshEnabled = true
                                 }
                             } else {
                                 mHasNextPage = true
@@ -199,12 +200,12 @@ class MyMyFollowActivity : BaseActivity() {
                     setRefreshAsFalse()
                     mCanHttpLoad = true
                     llMyMyFollowTips.visibility = View.VISIBLE
+                    slMyMyFollow.isRefreshEnabled = true
                 })
     }
 
     //取消关注接口 先把下一页的数据查出来传给删除方法
     private fun httpDelLoadOne(pageNum: Int, myFollowDel: MyFollow) {
-        mCanHttpLoad = false
         ApiUtils.getApi().let {
             if (mIsMyFollow) {
                 it.myFollow(pageNum, TEST_ACCESS_TOKEN)

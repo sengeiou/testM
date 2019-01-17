@@ -1,6 +1,5 @@
 package com.qingmeng.mengmeng.base
 
-import com.luck.picture.lib.entity.LocalMedia
 import com.qingmeng.mengmeng.entity.*
 import io.reactivex.Observable
 import retrofit2.http.*
@@ -61,6 +60,39 @@ interface Api {
     fun smslogin(@Query("phone") phone: String, @Query("smsCode") smsCode: String): Observable<BaseBean<UserBean>>
 
     /**
+     * 获取banner图信息
+     * @param  type 1、首页；3、头报 5.登录banner 6.引导页
+     **/
+    @POST("api/banner/get_banner")
+    fun getbanner(@Query("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
+
+    //忘记密码
+    @POST("app/user/forget_password")
+    fun forgetpassword(@Query("phone") phone: String, @Query("msmCode") msmCode: String, @Query("password") password: String, @Header("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
+
+    //获取oss令牌
+    @GET("http://zng535.natappfree.cc/oss/authorization_app?name=mm")
+    fun getOssToken(): Observable<BaseBean<OssDataBean>>
+
+    //我的反馈
+    @POST("/api/feedback/add_feedback")
+    fun join_feedback(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int, @Query("type") type: Int, @Query("content") content: String, @Query("urlList") urlList: ArrayList<String>): Observable<BaseBean<Any>>
+
+    //第三方登录
+    @POST("/app/user/third_party_login")
+    fun thirdlogin(@Query("openId") openId: String, @Query("type") type: Int): Observable<BaseBean<UserBean>>
+
+    //获取热门词汇
+    @GET("api/join/hot_search")
+    fun get_hot_search(@Header("VERSION") version: String): Observable<BaseBean<HotSearchBean>>
+
+    //爱加盟首页搜索
+    @POST("/api/join/get_search_brands")
+    fun join_search_brands(@Query("keyWord") keyWord: String, @Query("fatherId") fatherId: Int,
+                           @Query("typeId") typeId: Int, @Query("cityIds") cityIds: String, @Query("capitalIds") capitalIds: String,
+                           @Query("modeIds") modeIds: String, @Query("integratedSortId") integratedSortId: Int, @Query("pageNum") pageNum: Int): Observable<BaseBean<SearchDtoListBean>>
+
+    /**
      * =========================================我的板块=========================================
      */
     //获取我的页面信息
@@ -114,38 +146,9 @@ interface Api {
     @FormUrlEncoded
     fun updatePass(@Field("password") password: String, @Field("newPassword") newPassword: String, @Field("verifyPassword") verifyPassword: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
 
-    /**
-     * 获取banner图信息
-     * @param  type 1、首页；3、头报 5.登录banner 6.引导页
-     **/
-    @POST("api/banner/get_banner")
-    fun getbanner(@Query("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
-
-    //忘记密码
-    @POST("app/user/forget_password")
-    fun forgetpassword(@Query("phone") phone: String, @Query("msmCode") msmCode: String, @Query("password") password: String, @Header("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
-
-    //获取oss令牌
-    @GET("http://zng535.natappfree.cc/oss/authorization_app?name=mm")
-    fun getOssToken(): Observable<BaseBean<OssDataBean>>
-
-    //我的反馈
-    @POST("/api/feedback/add_feedback")
-    fun join_feedback(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int, @Query("type") type: Int, @Query("content") content: String, @Query("urlList") urlList: ArrayList<String>): Observable<BaseBean<Any>>
-
-    //第三方登录
-    @POST("/app/user/third_party_login")
-    fun thirdlogin(@Query("openId") openId: String, @Query("type") type: Int): Observable<BaseBean<UserBean>>
-
-    //获取热门词汇
-    @GET("api/join/hot_search")
-    fun get_hot_search(@Header("VERSION") version: String): Observable<BaseBean<HotSearchBean>>
-
-    //爱加盟首页搜索
-    @POST("/api/join/get_search_brands")
-    fun join_search_brands(@Query("keyWord") keyWord: String, @Query("fatherId") fatherId: Int,
-                           @Query("typeId") typeId: Int, @Query("cityIds") cityIds: String, @Query("capitalIds") capitalIds: String,
-                           @Query("modeIds") modeIds: String, @Query("integratedSortId") integratedSortId: Int, @Query("pageNum") pageNum: Int): Observable<BaseBean<SearchDtoListBean>>
+    //换绑手机
+    @GET("app/user/exchange_Phone")
+    fun updatePhone(@Query("newPhone") newPhone: String, @Query("smsCode") smsCode: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
 
     //我的关注
     @GET("api/my_attention/get_attention")
@@ -170,4 +173,17 @@ interface Api {
     //删除我的足迹
     @GET("api/my_footprint/del_footprint")
     fun deleteMyFootprint(@Query("brandId") brandId: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+
+    //第三方绑定状态查询
+    @GET("api/my_footprint/del_footprint")
+    fun threeBindingState(@Query("brandId") brandId: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+
+    //第三方绑定
+    @POST("app/user/third_party_binding")
+    @FormUrlEncoded
+    fun threeBinding(@Field("type") type: Int, @Field("openId") openId: String, @Field("token") token: String, @Field("weChatUnionId") weChatUnionId: String, @Header("ACCESS-TOKEN") accessToken: String): Observable<BaseBean<Any>>
+
+    //第三方解绑绑定
+    @GET("app/user/third_party_unbind")
+    fun unThreeBinding(@Field("type") type: Int, @Header("ACCESS-TOKEN") accessToken: String): Observable<BaseBean<Any>>
 }

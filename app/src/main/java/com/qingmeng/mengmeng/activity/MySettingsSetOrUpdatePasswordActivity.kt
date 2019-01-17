@@ -8,12 +8,12 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.utils.ApiUtils
+import com.qingmeng.mengmeng.utils.InputCheckUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_settings_setorupdate.*
 import kotlinx.android.synthetic.main.layout_head.*
-import java.util.regex.Pattern
 
 /**
  *  Description :设置 - 设置或修改密码
@@ -85,7 +85,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
             //设置密码判断
             if (mIsSetPass) {
                 if (oldPass.isNotBlank() && newPass.isNotBlank() && newPassTwo.isNotBlank()) {
-                    if (!checkPass(newPass) || !checkPass(newPassTwo)) {
+                    if (!InputCheckUtils.checkPass6_16(newPass) || !InputCheckUtils.checkPass6_16(newPassTwo)) {
                         ToastUtil.showShort(getString(R.string.passFormat_tips))
                     } else {
                         if (newPass == newPassTwo) {
@@ -104,7 +104,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
                 }
             } else {    //修改密码
                 if (oldPass.isNotBlank() && newPass.isNotBlank() && newPassTwo.isNotBlank()) {
-                    if (!checkPass(oldPass) || !checkPass(newPass) || !checkPass(newPassTwo)) {
+                    if (!InputCheckUtils.checkPass6_16(oldPass) || !InputCheckUtils.checkPass6_16(newPass) || !InputCheckUtils.checkPass6_16(newPassTwo)) {
                         ToastUtil.showShort(getString(R.string.passFormat_tips))
                     } else {
                         if (newPass == newPassTwo) {
@@ -211,32 +211,16 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
                 if (editText.text.toString().trim().isNotBlank()) {
                     //密码提示
                     if (isPass) {
-                        if (!checkPass(editText.text.toString().trim())) {
+                        if (!InputCheckUtils.checkPass6_16(editText.text.toString().trim())) {
                             ToastUtil.showShort(getString(R.string.passFormat_tips))
                         }
                     } else {  //设置用户名限制提示
-                        if (!checkString(editText.text.toString().trim())) {
+                        if (!InputCheckUtils.checkString4_6(editText.text.toString().trim())) {
                             ToastUtil.showShort(getString(R.string.userNameFormat_tips))
                         }
                     }
                 }
             }
         }
-    }
-
-    /**
-     * 6到16位区分大小写密码
-     */
-    private fun checkPass(pass: String): Boolean {
-        val pattern = Pattern.compile("^[a-zA-Z0-9]{6,12}$")
-        val matcher = pattern.matcher(pass)
-        return matcher.matches()
-    }
-
-    /**
-     * 4到16位字符
-     */
-    private fun checkString(str: String): Boolean {
-        return str.length in 4..16
     }
 }

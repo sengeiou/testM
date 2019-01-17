@@ -119,7 +119,7 @@
     <string name="my_myFollow_investmentAmount">投资金额：</string>
     <string name="my_myLeavingMessage">我的留言</string>
     <string name="my_myLeavingMessage_reply">已回复</string>
-    <string name="my_myLeavingMessage_noReply">待回复</string>
+    <string name="my_myLeavingMessage_noReply">待查看</string>
     <string name="my_myLeavingMessage_StoreNum">门店数：</string>
     <string name="my_myFootprint">我的足迹</string>
     <string name="my_enterpriseEntry">企业入驻</string>
@@ -144,8 +144,8 @@
     <string name="my_settings_user_money_tips">请选择创业资本</string>
     <string name="my_settings_user_interestIndustry_tips">请选择感兴趣行业</string>
     <string name="my_settings_user_telephone_tips">固定电话格式输入不正确</string>
-    <string name="my_settings_user_wechat_tips">微信格式不对，请输入6至20位字母或数字</string>
-    <string name="my_settings_user_qq_tips">qq格式不对，请输入6至11位数字</string>
+    <string name="my_settings_user_wechat_tips">微信格式输入不正确</string>
+    <string name="my_settings_user_qq_tips">qq格式不对，请输入5至12位数字</string>
     <string name="my_settings_user_email_tips">邮箱格式输入不正确</string>
     <string name="my_settings_setOrUpdate_tips">必须是6-12位数字、英文字母（区分大小写），也可以是两者的组合。</string>
     <string name="my_settings_updatePhone_msgTips">请输入新手机号中的验证码</string>

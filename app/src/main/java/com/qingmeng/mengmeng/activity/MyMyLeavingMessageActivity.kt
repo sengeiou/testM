@@ -5,6 +5,7 @@ import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
@@ -13,6 +14,7 @@ import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.entity.MyLeavingMessage
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_myleavingmessage.*
@@ -104,15 +106,31 @@ class MyMyLeavingMessageActivity : BaseActivity() {
     private fun initAdapter() {
         mLayoutManager = LinearLayoutManager(this)
         rvMyMyLeavingMessage.layoutManager = mLayoutManager
-        mAdapter = CommonAdapter(this, R.layout.activity_my_myleavingmessage_item, mList, holderConvert = { holder, data, position, payloads ->
+        mAdapter = CommonAdapter(this, R.layout.activity_my_myleavingmessage_item, mList, holderConvert = { holder, t, position, payloads ->
             holder.apply {
+                setText(R.id.tvMyMyLeavingMessageRvTime, t.createTime)
+                //待查看
+                if (t.status == 0) {
+                    setText(R.id.tvMyMyLeavingMessageRvState, getString(R.string.my_myLeavingMessage_reply))
+                    setTextColorRes(R.id.tvMyMyLeavingMessageRvState, R.color.red)
+                } else {    //已回复
+                    setText(R.id.tvMyMyLeavingMessageRvState, getString(R.string.my_myLeavingMessage_noReply))
+                    setTextColorRes(R.id.tvMyMyLeavingMessageRvState, R.color.green)
+                }
+                setText(R.id.tvMyMyLeavingMessageRvLeavingMessage, t.message)
+                GlideLoader.load(this, t.logo, getView(R.id.ivMyMyLeavingMessageRvLogo), centerCrop = false)
+                setText(R.id.tvMyMyLeavingMessageRvBrandName, t.brandName)
+                setText(R.id.tvMyMyLeavingMessageRvInvestmentAmount, t.capitalName)
+                setText(R.id.tvMyMyLeavingMessageRvStoreNum, t.storesNum)
+                //删除点击
+                getView<LinearLayout>(R.id.llMyMyLeavingMessageRvDelete).setOnClickListener {
+                    httpDelLoadOne(mPageNum, t)
+                }
                 //品牌详情点击
                 getView<RelativeLayout>(R.id.rlMyMyLeavingMessageRvBrandDetails).setOnClickListener {
 
                 }
             }
-        }, onItemClick = { view, holder, position ->
-
         })
         rvMyMyLeavingMessage.adapter = mAdapter
     }
@@ -142,6 +160,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                                 if (pageNum == 1) {
                                     //空白页提示
                                     llMyMyLeavingMessageTips.visibility = View.VISIBLE
+                                    slMyMyLeavingMessage.isRefreshEnabled = true
                                 }
                             } else {
                                 mHasNextPage = true
@@ -159,12 +178,12 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                     setRefreshAsFalse()
                     mCanHttpLoad = true
                     llMyMyLeavingMessageTips.visibility = View.VISIBLE
+                    slMyMyLeavingMessage.isRefreshEnabled = true
                 })
     }
 
     //删除留言接口 先把下一页的数据查出来传给删除方法
     private fun httpDelLoadOne(pageNum: Int, myLeavingMessageDel: MyLeavingMessage) {
-        mCanHttpLoad = false
         ApiUtils.getApi()
                 .myLeavingMessage(pageNum, TEST_ACCESS_TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
