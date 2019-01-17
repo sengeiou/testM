@@ -59,7 +59,6 @@
                     android:layout_width="@dimen/padding_dp_44"
                     android:layout_height="@dimen/padding_dp_44"
                     android:layout_marginEnd="@dimen/padding_dp_12"
-                    android:src="@mipmap/ic_launcher"
                     />
 
                 <ImageView
@@ -109,10 +108,52 @@
                     android:id="@+id/tvMySettingsUserUserName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text=" "
+                    android:paddingEnd="@dimen/padding_dp_10"
+                    android:textColor="@color/color_999999"
+                    android:textSize="@dimen/text_size_15"
+                    />
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:layout_marginStart="@dimen/padding_dp_10"
+                android:background="@color/page_background_f5"
+                />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_45"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center_vertical"
+                >
+
+                <LinearLayout
+                    android:layout_width="@dimen/padding_dp_40"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    >
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@mipmap/my_settings_user_name"
+                        />
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/my_settings_user_name"
                     android:textColor="@color/color_333333"
                     android:textSize="@dimen/text_size_15"
+                    />
+
+                <EditText
+                    android:id="@+id/etMySettingsName"
+                    style="@style/my_settings_user_edt"
+                    android:maxLength="20"
                     />
             </LinearLayout>
 
@@ -157,9 +198,9 @@
                     android:id="@+id/tvMySettingsUserGender"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text=" "
-                    android:textColor="@color/color_333333"
+                    android:paddingEnd="@dimen/padding_dp_10"
+                    android:text="@string/my_settings_user_select_no"
+                    android:textColor="@color/color_999999"
                     android:textSize="@dimen/text_size_15"
                     />
 
@@ -210,9 +251,8 @@
                     android:id="@+id/tvMySettingsPhone"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text=" "
-                    android:textColor="@color/color_333333"
+                    android:paddingEnd="@dimen/padding_dp_10"
+                    android:textColor="@color/color_999999"
                     android:textSize="@dimen/text_size_15"
                     />
             </LinearLayout>
@@ -244,22 +284,16 @@
                 </LinearLayout>
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="@string/my_settings_user_telephone"
                     android:textColor="@color/color_333333"
                     android:textSize="@dimen/text_size_15"
                     />
 
-                <TextView
-                    android:id="@+id/tvMySettingsUserTelephone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text=" "
-                    android:textColor="@color/color_333333"
-                    android:textSize="@dimen/text_size_15"
+                <EditText
+                    android:id="@+id/etMySettingsUserTelephone"
+                    style="@style/my_settings_user_edt"
                     />
             </LinearLayout>
 
@@ -289,22 +323,16 @@
                 </LinearLayout>
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="@string/wechat"
                     android:textColor="@color/color_333333"
                     android:textSize="@dimen/text_size_15"
                     />
 
-                <TextView
-                    android:id="@+id/tvMySettingsUserWechat"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text=" "
-                    android:textColor="@color/color_333333"
-                    android:textSize="@dimen/text_size_15"
+                <EditText
+                    android:id="@+id/etMySettingsUserWechat"
+                    style="@style/my_settings_user_edt"
                     />
             </LinearLayout>
 
@@ -335,22 +363,18 @@
                 </LinearLayout>
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="@string/qq"
                     android:textColor="@color/color_333333"
                     android:textSize="@dimen/text_size_15"
                     />
 
-                <TextView
-                    android:id="@+id/tvMySettingsUserQQ"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text=" "
-                    android:textColor="@color/color_333333"
-                    android:textSize="@dimen/text_size_15"
+                <EditText
+                    android:id="@+id/etMySettingsUserQQ"
+                    style="@style/my_settings_user_edt"
+                    android:inputType="number"
+                    android:maxLength="11"
                     />
             </LinearLayout>
 
@@ -381,22 +405,16 @@
                 </LinearLayout>
 
                 <TextView
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:text="@string/email"
                     android:textColor="@color/color_333333"
                     android:textSize="@dimen/text_size_15"
                     />
 
-                <TextView
-                    android:id="@+id/tvMySettingsUserEmail"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text=" "
-                    android:textColor="@color/color_333333"
-                    android:textSize="@dimen/text_size_15"
+                <com.qingmeng.mengmeng.view.EmailAutoCompleteTextView
+                    android:id="@+id/etMySettingsUserEmail"
+                    style="@style/my_settings_user_edt"
                     />
             </LinearLayout>
 
@@ -440,9 +458,9 @@
                     android:id="@+id/tvMySettingsUserCity"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text=" "
-                    android:textColor="@color/color_333333"
+                    android:paddingEnd="@dimen/padding_dp_10"
+                    android:text="@string/my_settings_user_select_no"
+                    android:textColor="@color/color_999999"
                     android:textSize="@dimen/text_size_15"
                     />
 
@@ -495,9 +513,9 @@
                     android:id="@+id/tvMySettingsUserMoney"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text=" "
-                    android:textColor="@color/color_333333"
+                    android:paddingEnd="@dimen/padding_dp_10"
+                    android:text="@string/my_settings_user_select_no"
+                    android:textColor="@color/color_999999"
                     android:textSize="@dimen/text_size_15"
                     />
 
@@ -550,9 +568,9 @@
                     android:id="@+id/tvMySettingsUserInterestIndustry"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:text=" "
-                    android:textColor="@color/color_333333"
+                    android:paddingEnd="@dimen/padding_dp_10"
+                    android:text="@string/my_settings_user_select_no"
+                    android:textColor="@color/color_999999"
                     android:textSize="@dimen/text_size_15"
                     />
 

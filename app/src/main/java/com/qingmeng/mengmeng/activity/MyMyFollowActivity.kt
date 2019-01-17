@@ -1,12 +1,17 @@
 package com.qingmeng.mengmeng.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.MotionEvent
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
+import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.entity.MyFollow
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -31,6 +36,11 @@ class MyMyFollowActivity : BaseActivity() {
     private lateinit var mLayoutManager: LinearLayoutManager
     private lateinit var mAdapter: CommonAdapter<MyFollow>
     private var mList = ArrayList<MyFollow>()
+    private var mPageNum: Int = 1                                        //接口请求页数
+    private var mCanHttpLoad = true                                      //是否可以请求接口
+    private var mHasNextPage = true                                      //是否有下一页
+    private var mIsMyFollow = true                                       //是否是我的关注
+    private var mIsDelete = false                                        //是否删除过数据
 
     override fun getLayoutId(): Int {
         return R.layout.activity_my_myfollow
@@ -42,28 +52,38 @@ class MyMyFollowActivity : BaseActivity() {
         //设置标题
         if (intent.getStringExtra("title") == getString(R.string.my_myFollow)) {
             setHeadName(getString(R.string.my_myFollow))
-        } else {//修改密码
+            mIsMyFollow = true
+        } else {
             setHeadName(getString(R.string.my_myFootprint))
+            mIsMyFollow = false
         }
 
         //适配器初始化
         initAdapter()
 
-        srlMyMyFollow.isRefreshing = true
-        //请求接口
-        httpLoad()
+        slMyMyFollow.isRefreshing = true
+        //接口请求
+        httpLoad(1)
     }
 
     override fun initListener() {
         super.initListener()
 
         //下拉刷新
-        srlMyMyFollow.setOnRefreshListener {
-            httpLoad()
+        slMyMyFollow.setOnRefreshListener {
+            httpLoad(1)
+        }
+
+        //上滑加载
+        slMyMyFollow.setOnLoadMoreListener {
+            httpLoad(mPageNum)
         }
 
         //返回
         mBack.setOnClickListener {
+            setResult(Activity.RESULT_OK, Intent().apply {
+                putExtra("isDelete", mIsDelete)
+            })
             this.finish()
         }
 
@@ -74,6 +94,35 @@ class MyMyFollowActivity : BaseActivity() {
             }
             false
         }
+
+        //RecyclerView滑动监听
+        rvMyMyFollow.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                //滑到顶部了
+                if (!recyclerView.canScrollVertically(-1)) {
+                    if (!slMyMyFollow.isLoadingMore) {
+                        slMyMyFollow.isRefreshEnabled = true
+                    }
+                } else if (!recyclerView.canScrollVertically(1)) {  //滑到底部了
+                    //如果下拉刷新没有刷新的话
+                    if (!slMyMyFollow.isRefreshing) {
+                        if (mList.isNotEmpty()) {
+                            //是否有下一页
+                            if (mHasNextPage) {
+                                //是否可以请求接口
+                                if (mCanHttpLoad) {
+                                    slMyMyFollow.isLoadMoreEnabled = true
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    slMyMyFollow.isRefreshEnabled = false
+                    slMyMyFollow.isLoadMoreEnabled = false
+                }
+            }
+        })
     }
 
     //适配器加载
@@ -84,7 +133,11 @@ class MyMyFollowActivity : BaseActivity() {
             holder.apply {
                 //glide加载图片
                 GlideLoader.load(this@MyMyFollowActivity, t.logo, getView(R.id.ivMyMyFollowRvLogo), cacheType = CacheType.All)
-                setText(R.id.tvMyMyFollowRvBrandName, t.name)
+                if (mIsMyFollow) {
+                    setText(R.id.tvMyMyFollowRvBrandName, t.name)
+                } else {
+                    setText(R.id.tvMyMyFollowRvBrandName, t.brandName)
+                }
                 setText(R.id.tvMyMyFollowRvCateringType, t.foodName)
                 setText(R.id.tvMyMyFollowRvInvestmentAmount, t.capitalName)
                 //item点击
@@ -95,36 +148,132 @@ class MyMyFollowActivity : BaseActivity() {
                 getView<TextView>(R.id.tvMyMyFollowRvDelete).setOnClickListener {
                     //删除菜单关闭
                     getView<SwipeMenuLayout>(R.id.smlMyMyFollowRv).smoothClose()
-                    ToastUtil.showShort("删除" + position)
+                    httpDelLoadOne(mPageNum, t)
                 }
             }
-        }, onItemClick = { view, holder, position ->
-
         })
         rvMyMyFollow.adapter = mAdapter
     }
 
     //我的关注列表接口请求
-    private fun httpLoad() {
-        ApiUtils.getApi()
-                .myFollow(1, 1)
+    private fun httpLoad(pageNum: Int) {
+        mCanHttpLoad = false
+        ApiUtils.getApi().let {
+            if (mIsMyFollow) {
+                it.myFollow(pageNum, TEST_ACCESS_TOKEN)
+            } else {
+                it.myFootprint(pageNum, TEST_ACCESS_TOKEN)
+            }
+        }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    srlMyMyFollow.isRefreshing = false
-                    //模拟点数据
-                    setData()
+                    //刷新状态关闭
+                    setRefreshAsFalse()
+                    mCanHttpLoad = true
+                    it.apply {
+                        if (code == 12000) {
+                            //如果页数是1 清空内容重新加载
+                            if (pageNum == 1) {
+                                //清空已经选择集合
+                                mList.clear()
+                                mPageNum = 1
+                            }
+                            //请求后判断里面数据
+                            if (data == null || data?.data!!.isEmpty()) {
+                                mHasNextPage = false
+                                if (pageNum == 1) {
+                                    //空白页提示
+                                    llMyMyFollowTips.visibility = View.VISIBLE
+                                }
+                            } else {
+                                mHasNextPage = true
+                                if (pageNum == 1) {
+                                    llMyMyFollowTips.visibility = View.GONE
+                                }
+                                //防止内容为空
+                                data?.let {
+                                    //把内容添加到mList里去
+                                    mList.addAll(it.data)
+                                }
+                                mPageNum++
+                            }
+                            mAdapter.notifyDataSetChanged()
+                        }
+                    }
                 }, {
-                    srlMyMyFollow.isRefreshing = false
-                    setData()
+                    setRefreshAsFalse()
+                    mCanHttpLoad = true
+                    llMyMyFollowTips.visibility = View.VISIBLE
                 })
     }
 
-    private fun setData() {
-        mList.clear()
-        for (i in 0 until 20) {
-            mList.add(MyFollow("DRAGON" + i, "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3236989755,3566217273&fm=26&gp=0.jpg", "小吃", "0元加盟"))
+    //取消关注接口 先把下一页的数据查出来传给删除方法
+    private fun httpDelLoadOne(pageNum: Int, myFollowDel: MyFollow) {
+        mCanHttpLoad = false
+        ApiUtils.getApi().let {
+            if (mIsMyFollow) {
+                it.myFollow(pageNum, TEST_ACCESS_TOKEN)
+            } else {
+                it.myFootprint(pageNum, TEST_ACCESS_TOKEN)
+            }
         }
-        mAdapter.notifyDataSetChanged()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    it.apply {
+                        if (code == 12000) {
+                            httpDelLoadTwo(data?.data!!, myFollowDel)
+                        } else {
+                            ToastUtil.showShort(getString(R.string.my_myFollow_cancel_fail))
+                        }
+                    }
+                }, {
+
+                })
+    }
+
+    //真.取消关注接口
+    private fun httpDelLoadTwo(myFollowList: List<MyFollow>, myFollowDel: MyFollow) {
+        ApiUtils.getApi().let {
+            if (mIsMyFollow) {
+                it.deleteMyFollow(myFollowDel.id, TEST_ACCESS_TOKEN)
+            } else {
+                it.deleteMyFootprint(myFollowDel.brandId, TEST_ACCESS_TOKEN)
+            }
+        }
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    it.apply {
+                        if (code == 12000) {
+                            mIsDelete = true
+                            //直接根据对象从mList里移除数据
+                            mList.remove(myFollowDel)
+                            //再往最后面加一个下一页接口的第一个数据
+                            if (myFollowList.isNotEmpty()) {
+                                mList.add(myFollowList[0])
+                            }
+                            mAdapter.notifyDataSetChanged()
+                        }
+                    }
+                }, {
+
+                })
+    }
+
+    //用到的地方偏多 统一一下
+    private fun setRefreshAsFalse() {
+        slMyMyFollow.isRefreshing = false
+        slMyMyFollow.isLoadingMore = false
+        slMyMyFollow.isRefreshEnabled = false
+        slMyMyFollow.isLoadMoreEnabled = false
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        setResult(Activity.RESULT_OK, Intent().apply {
+            putExtra("isDelete", mIsDelete)
+        })
     }
 }

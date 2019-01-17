@@ -11,19 +11,16 @@ package com.qingmeng.mengmeng.entity
  */
 
 data class MyMyFollowBean(
-        val pageNum: Int,
-        val pageSize: Int,
-        val size: Int,
-        val startRow: Int,
-        val endRow: Int,
-        val total: Int,
-        val pages: Int,
-        val list: List<MyFollow>
+        val data: List<MyFollow>
 )
 
 data class MyFollow(
+        val id: Int,
+        val brandId: Int,
         val name: String,
+        val brandName: String,
         val logo: String,
         val foodName: String,
+        val attentionId: Int,
         val capitalName: String
 )
