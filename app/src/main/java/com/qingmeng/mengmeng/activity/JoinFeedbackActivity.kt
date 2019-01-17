@@ -21,6 +21,7 @@ import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.GridImageAdapter
 import com.qingmeng.mengmeng.constant.IConstants
+import com.qingmeng.mengmeng.entity.SelectBean
 import com.qingmeng.mengmeng.entity.SelectDialogBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -85,15 +86,15 @@ class JoinFeedbackActivity: BaseActivity() {
         //选择问题
         btn_join_feedback.setOnClickListener {
             //菜单内容
-            val menuList = ArrayList<SelectDialogBean>()
-            menuList.add(SelectDialogBean(getString(R.string.join_feedback_type1)))
-            menuList.add(SelectDialogBean(getString(R.string.join_feedback_type2)))
-            menuList.add(SelectDialogBean(getString(R.string.join_feedback_type3)))
-            menuList.add(SelectDialogBean(getString(R.string.join_feedback_type4)))
-            mBottomDialog = SelectDialog(this, menuList, onItemClick = { position ->
+            val menuList = ArrayList<SelectBean>()
+            menuList.add(SelectBean(name =getString(R.string.join_feedback_type1),id = 1))
+            menuList.add(SelectBean(name =getString(R.string.join_feedback_type2),id = 2))
+            menuList.add(SelectBean(name =getString(R.string.join_feedback_type3),id = 3))
+            menuList.add(SelectBean(name =getString(R.string.join_feedback_type4),id = 4))
+            mBottomDialog = SelectDialog(this, menuList, onItemClick = { id ->
                  run  {
-                    btn_join_feedback.setText("" + menuList.get(position).menu)
-                    type=position
+                    btn_join_feedback.setText("" + menuList.get(id).name)
+                    type=id
                 }
 
             })
