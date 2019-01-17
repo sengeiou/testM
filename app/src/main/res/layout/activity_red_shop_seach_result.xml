@@ -7,9 +7,12 @@
     android:orientation="vertical"
     tools:context=".activity.RedShopSeachResult">
 
-    <include layout="@layout/layout_head_seach" />
+    <include
+        android:id="@+id/head_search_include"
+        layout="@layout/layout_head_seach" />
 
     <LinearLayout
+        android:id="@+id/search_result_linear"
         android:layout_width="match_parent"
         android:layout_height="@dimen/padding_dp_50"
         android:background="@color/white"
@@ -26,6 +29,7 @@
             android:textSize="@dimen/text_size_14" />
 
         <TextView
+            android:id="@+id/search_add_area"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -35,6 +39,7 @@
             android:textSize="@dimen/text_size_14" />
 
         <TextView
+            android:id="@+id/search_ranking"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -44,6 +49,7 @@
             android:textSize="@dimen/text_size_14" />
 
         <TextView
+            android:id="@+id/search_screning_conditon"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -54,11 +60,10 @@
     </LinearLayout>
 
     <View
+        android:id="@+id/search_result_view"
         android:layout_width="match_parent"
         android:layout_height="2dp"
         android:background="@color/color_999999" />
-
-    <include layout="@layout/activity_common_pop_window" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/search_result_recylerview"

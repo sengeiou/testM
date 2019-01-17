@@ -32,7 +32,7 @@ class MySettingsActivity : BaseActivity() {
         //设置标题
         setHeadName(getString(R.string.setting))
         //设置头像
-        GlideLoader.load(this, intent.getStringExtra("avatar"), ivMySettingsHead, cacheType = CacheType.All, placeholder = R.mipmap.ic_launcher)
+        GlideLoader.load(this, intent.getStringExtra("avatar"), ivMySettingsHead, cacheType = CacheType.All)
         //设置用户名
         tvMySettingsUserName.text = intent.getStringExtra("userName")
     }

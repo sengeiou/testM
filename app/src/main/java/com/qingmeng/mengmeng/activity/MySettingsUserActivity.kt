@@ -246,7 +246,7 @@ class MySettingsUserActivity : BaseActivity() {
     //设置数据
     private fun setData(mySettingsUserBean: MySettingsUserBean) {
         //头像
-        GlideLoader.load(this, mySettingsUserBean.avatar, ivMySettingsUserHead, cacheType = CacheType.All, placeholder = R.mipmap.ic_launcher)
+        GlideLoader.load(this, mySettingsUserBean.avatar, ivMySettingsUserHead, cacheType = CacheType.All)
         tvMySettingsUserUserName.text = mySettingsUserBean.name
         if (mySettingsUserBean.sex == 1) {
             tvMySettingsUserGender.text = getString(R.string.boy)
