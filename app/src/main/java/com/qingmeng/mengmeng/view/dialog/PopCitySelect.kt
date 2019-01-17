@@ -12,8 +12,12 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.RelativeLayout
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.activity.MySettingsUserActivity
 import com.qingmeng.mengmeng.adapter.CommonAdapter
-import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.entity.AllCity
+import com.qingmeng.mengmeng.utils.ApiUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_settings_user_citypop.view.*
 
 /**
@@ -28,21 +32,31 @@ import kotlinx.android.synthetic.main.activity_my_settings_user_citypop.view.*
 class PopCitySelect : PopupWindow {
     private var mActivity: Activity
     private lateinit var mLayoutManager: LinearLayoutManager
-    private lateinit var mAdapter: CommonAdapter<String>
-    private var mList = ArrayList<String>()                          //所有城市数据
+    private lateinit var mAdapter: CommonAdapter<AllCity>
+    private var mList = ArrayList<AllCity>()                         //目前列表用到的数据
+    private var mOneCityList = ArrayList<AllCity>()                  //一级城市（省）
+    private var mTwoCityList = ArrayList<AllCity>()                  //二级城市（市）
+    private var mThreeCityList = ArrayList<AllCity>()                //三级城市（区/县）
     private var mMenuView: View
     private var mPointPosition = Point()                             //手指按下坐标
     private var record = arrayOf(0, 0)                               //存放手指按下坐标和时间戳
     private var defaultTop = 0                                       //弹框原始距离顶部位置
+    private lateinit var mCitySelectCallBack: CitySelectCallBack                          //回调
 
     //构造方法
-    constructor(activity: Activity, mList: ArrayList<String>) : super(activity) {
+    constructor(activity: Activity) : super(activity) {
         this.mActivity = activity
-        this.mList = mList
         mMenuView = LayoutInflater.from(activity).inflate(R.layout.activity_my_settings_user_citypop, null)
 
         initListener()
         initAdapter()
+        //如果页面的临时数据不为空 就不用请求数组
+        if (MySettingsUserActivity.mAllCityList.isNotEmpty()) {
+            //执行数据分类方法
+            setData(MySettingsUserActivity.mAllCityList)
+        } else {
+            httpLoad()
+        }
 
         //取消按钮
         mMenuView.ivMySettingsUserPopClose.setOnClickListener {
@@ -154,7 +168,7 @@ class PopCitySelect : PopupWindow {
         mMenuView.rvMySettingsUserPop.layoutManager = mLayoutManager
         mAdapter = CommonAdapter(mActivity, R.layout.activity_my_settings_user_citypop_item, mList, holderConvert = { holder, t, _, _ ->
             holder.apply {
-                setText(R.id.tvMySettingsUserPopRvCity, t)
+                setText(R.id.tvMySettingsUserPopRvCity, t.name)
                 getView<LinearLayout>(R.id.rlSelectDialogRvMenuL).setOnTouchListener { _, event ->
                     when (event.action) {
                         MotionEvent.ACTION_DOWN -> {
@@ -171,22 +185,94 @@ class PopCitySelect : PopupWindow {
             //第一次点击
             if (mMenuView.rlMySettingsUserPopTopBottom.visibility == View.GONE) {
                 mMenuView.rlMySettingsUserPopTopBottom.visibility = View.VISIBLE
-                mMenuView.tvMySettingsUserPopOneTips.text = mList[position]
+                mMenuView.tvMySettingsUserPopOneTips.text = mList[position].name
                 mMenuView.tvMySettingsUserPopTips.text = "选择城市"
+                //遍历二级城市列表 把所有父id为当前城市id的市拿出来加到mList里去
+                mList.clear()
+                mTwoCityList.forEach {
+                    if (it.fatherId.toString() == mOneCityList[position].id) {
+                        mList.add(it)
+                    }
+                }
+                //如果mList是空的 那么就直接关闭pop 调回调方法
+                if (mList.isEmpty()) {
+                    mCitySelectCallBack.onCitySelectCallBack(mOneCityList[position])
+                    dismiss()
+                } else {
+                    //滚到第一个
+                    mMenuView.rvMySettingsUserPop.scrollToPosition(0)
+                    mAdapter.notifyDataSetChanged()
+                }
             } else if (mMenuView.tvMySettingsUserPopTwoDot.visibility == View.GONE) {  //选择第二个城市了
                 mMenuView.tvMySettingsUserPopTwoDot.visibility = View.VISIBLE
                 mMenuView.tvMySettingsUserPopTwoTips.visibility = View.VISIBLE
-                mMenuView.tvMySettingsUserPopTwoTips.text = mList[position]
+                mMenuView.tvMySettingsUserPopTwoTips.text = mList[position].name
                 mMenuView.tvMySettingsUserPopThreeTips.text = "请选择县"
                 mMenuView.tvMySettingsUserPopTips.text = "选择区/县"
+                //先把当前城市保存下来 以便后面比较
+                val city = mList[position]
+                mList.clear()
+                mThreeCityList.forEach {
+                    if (it.fatherId.toString() == city.id) {
+                        mList.add(it)
+                    }
+                }
+                if (mList.isEmpty()) {
+                    mCitySelectCallBack.onCitySelectCallBack(city)
+                    dismiss()
+                } else {
+                    //滚到第一个
+                    mMenuView.rvMySettingsUserPop.scrollToPosition(0)
+                    mAdapter.notifyDataSetChanged()
+                }
             } else {  //选择第三个县
                 //调用回调
-
-                ToastUtil.showShort(mList[position])
+                mCitySelectCallBack.onCitySelectCallBack(mList[position])
                 dismiss()
             }
         })
         mMenuView.rvMySettingsUserPop.adapter = mAdapter
+    }
+
+    //城市列表请求
+    private fun httpLoad() {
+        ApiUtils.getApi()
+                .getCityStatic()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    it.apply {
+                        if (code == 12000) {
+                            data?.city.let {
+                                //执行数据分类方法
+                                setData(it as ArrayList<AllCity>)
+                                MySettingsUserActivity.mAllCityList = it
+                            }
+                        }
+                    }
+                }, {
+
+                })
+    }
+
+    //数据分类
+    private fun setData(city: ArrayList<AllCity>) {
+        //遍历请求到的数组 然后一个个分类存放
+        city.forEach {
+            // || it.level == 0
+            if (it.level == 1) {
+                mOneCityList.add(it)
+                //先从省级别选择
+                mList.add(it)
+            } else if (it.level == 2) {
+                mTwoCityList.add(it)
+            } else if (it.level == 3) {
+                mThreeCityList.add(it)
+            }
+        }
+        mMenuView.pbYingyingRecommend.visibility = View.GONE
+        mMenuView.tvMySettingsUserPopTips.visibility = View.VISIBLE
+        mAdapter.notifyDataSetChanged()
     }
 
     override fun showAtLocation(parent: View?, gravity: Int, x: Int, y: Int) {
@@ -205,5 +291,14 @@ class PopCitySelect : PopupWindow {
         //0.0-1.0
         lp?.alpha = bgAlpha
         mActivity.window.attributes = lp
+    }
+
+    //回调方法
+    fun setOnCitySelectListener(citySelectListener: CitySelectCallBack) {
+        mCitySelectCallBack = citySelectListener
+    }
+
+    interface CitySelectCallBack {
+        fun onCitySelectCallBack(city: AllCity)
     }
 }

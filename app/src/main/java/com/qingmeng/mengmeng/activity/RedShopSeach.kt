@@ -2,7 +2,7 @@ package com.qingmeng.mengmeng.activity
 
 /**
  * Created by fyf on 2019/1/8
- * 搜索结果页
+ * 搜索页
  */
 import android.view.View
 import com.qingmeng.mengmeng.BaseActivity

@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.widget.EditText
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -41,7 +42,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
             //设置输入类型 默认
             etMySettingsSetOrUpdateOld.inputType = InputType.TYPE_CLASS_TEXT
             ivMySettingsSetOrUpdateIcon.setImageResource(R.mipmap.my_settings_updatepass_user)
-        } else {//修改密码
+        } else {    //修改密码
             setHeadName(getString(R.string.my_settings_updatePassword))
             mIsSetPass = false
         }
@@ -55,12 +56,23 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
             this.finish()
         }
 
+        //根据格式 设置不同输入监听
+        if (mIsSetPass) {
+            setEditTextContentListener(etMySettingsSetOrUpdateOld, false)
+        } else {
+            setEditTextContentListener(etMySettingsSetOrUpdateOld)
+        }
         //内容输入监听
-        setEditTextContentListener(etMySettingsSetOrUpdateOld)
         setEditTextContentListener(etMySettingsSetOrUpdateNew)
         setEditTextContentListener(etMySettingsSetOrUpdateNewTwo)
+
+        //根据格式 设置不同焦点监听
+        if (mIsSetPass) {
+            setOnFocusChangeListener(etMySettingsSetOrUpdateOld, false)
+        } else {
+            setOnFocusChangeListener(etMySettingsSetOrUpdateOld)
+        }
         //焦点监听
-        setOnFocusChangeListener(etMySettingsSetOrUpdateOld)
         setOnFocusChangeListener(etMySettingsSetOrUpdateNew)
         setOnFocusChangeListener(etMySettingsSetOrUpdateNewTwo)
 
@@ -74,11 +86,11 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
             if (mIsSetPass) {
                 if (oldPass.isNotBlank() && newPass.isNotBlank() && newPassTwo.isNotBlank()) {
                     if (!checkPass(newPass) || !checkPass(newPassTwo)) {
-                        ToastUtil.showShort(getString(R.string.passMax_tips))
+                        ToastUtil.showShort(getString(R.string.passFormat_tips))
                     } else {
                         if (newPass == newPassTwo) {
                             //设置密码
-                            setPassHttp(oldPass, newPass, newPassTwo)
+                            setPassHttp(oldPass, newPassTwo)
                         } else {
                             ToastUtil.showShort(getString(R.string.passDissimilarity_tips))
                         }
@@ -93,7 +105,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
             } else {    //修改密码
                 if (oldPass.isNotBlank() && newPass.isNotBlank() && newPassTwo.isNotBlank()) {
                     if (!checkPass(oldPass) || !checkPass(newPass) || !checkPass(newPassTwo)) {
-                        ToastUtil.showShort(getString(R.string.passMax_tips))
+                        ToastUtil.showShort(getString(R.string.passFormat_tips))
                     } else {
                         if (newPass == newPassTwo) {
                             //修改密码
@@ -114,16 +126,16 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
     }
 
     //设置密码接口
-    private fun setPassHttp(oldPass: String, newPass: String, newPassTwo: String) {
+    private fun setPassHttp(name: String, pass: String) {
         ApiUtils.getApi()
-                .updatePass(oldPass, newPass, newPassTwo, "")
+                .setPass(name, pass, TEST_ACCESS_TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     if (it.code == 12000) {
-                        ToastUtil.showShort(getString(R.string.updatePass_success))
+                        ToastUtil.showShort(getString(R.string.setPass_success))
                         this.finish()
-                    } else if (it.code == 13000) {
+                    } else {
                         ToastUtil.showShort(it.msg)
                     }
                 }, {
@@ -134,14 +146,14 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
     //修改密码接口
     private fun updatePassHttp(oldPass: String, newPass: String, newPassTwo: String) {
         ApiUtils.getApi()
-                .updatePass(oldPass, newPass, newPassTwo, "")
+                .updatePass(oldPass, newPass, newPassTwo, TEST_ACCESS_TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     if (it.code == 12000) {
                         ToastUtil.showShort(getString(R.string.updatePass_success))
                         this.finish()
-                    } else if (it.code == 13000) {
+                    } else {
                         ToastUtil.showShort(it.msg)
                     }
                 }, {
@@ -150,9 +162,9 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
     }
 
     /**
-     *文本框内容监听
+     * 文本框内容监听
      */
-    private fun setEditTextContentListener(editText: EditText) {
+    private fun setEditTextContentListener(editText: EditText, isPass: Boolean = true) {
         editText.addTextChangedListener(object : TextWatcher {
             private var temp: CharSequence? = null
             private var editStart: Int = 0
@@ -178,26 +190,34 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
                     val tempSelection = editStart
                     editText.text = s
                     editText.setSelection(tempSelection)
-                    ToastUtil.showShort(getString(R.string.passMax_tips))
+                    if (isPass) {
+                        ToastUtil.showShort(getString(R.string.passMax_tips))
+                    } else {  //设置用户名限制提示
+                        ToastUtil.showShort(getString(R.string.userNameMax_tips))
+                    }
                 }
+
             }
         })
     }
 
     /**
-     *文本框焦点监听
+     * 文本框焦点监听
      */
-    private fun setOnFocusChangeListener(editText: EditText) {
+    private fun setOnFocusChangeListener(editText: EditText, isPass: Boolean = true) {
         editText.setOnFocusChangeListener { _, hasFocus ->
-            if (hasFocus) {
-
-                //失去焦点
-            } else {
+            //失去焦点
+            if (!hasFocus) {
                 if (editText.text.toString().trim().isNotBlank()) {
-                    if (checkPass(editText.text.toString().trim())) {
-
-                    } else {
-                        ToastUtil.showShort(getString(R.string.passFormat_tips))
+                    //密码提示
+                    if (isPass) {
+                        if (!checkPass(editText.text.toString().trim())) {
+                            ToastUtil.showShort(getString(R.string.passFormat_tips))
+                        }
+                    } else {  //设置用户名限制提示
+                        if (!checkString(editText.text.toString().trim())) {
+                            ToastUtil.showShort(getString(R.string.userNameFormat_tips))
+                        }
                     }
                 }
             }
@@ -211,5 +231,12 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
         val pattern = Pattern.compile("^[a-zA-Z0-9]{6,12}$")
         val matcher = pattern.matcher(pass)
         return matcher.matches()
+    }
+
+    /**
+     * 4到16位字符
+     */
+    private fun checkString(str: String): Boolean {
+        return str.length in 4..16
     }
 }

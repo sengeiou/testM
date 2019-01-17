@@ -34,6 +34,7 @@
     <string name="getMsg">获取验证码</string>
     <string name="phoneTips">请输入手机号</string>
     <string name="msgTips">请输入验证码</string>
+    <string name="pleaseInput">请输入</string>
     <string name="photograph">拍照</string>
     <string name="albumSelect">从相册选择</string>
     <string name="boy">男</string>
@@ -54,6 +55,11 @@
     <string name="join_feedback_type">请选择反馈问题的类型</string>
     <string name="join_feedback">我要反馈</string>
     <string name="recommend_advisory">立即咨询</string>
+
+    <string name="join_feedback_type1">品牌信息有误</string>
+    <string name="join_feedback_type2">品牌不存在</string>
+    <string name="join_feedback_type3">存在欺诈骗钱行为</string>
+    <string name="join_feedback_type4">存在侵权行为</string>
 
     <!-- =======================================红铺===================================== -->
     <string name="seach_shop_count">门店数：</string>
@@ -86,7 +92,7 @@
     <string name="confirm_new_password">请确认新密码</string>
     <string name="user_name_empty">用户名不能为空</string>
     <string name="psw_hint">请输入6–12位密码</string>
-    <string name="psw_inconsistent">两次密码不一致</string>
+    <string name="psw_inconsistent">两次密码不一致1</string>
     <string name="phone_empty">手机号不能为空</string>
     <string name="password_empty">密码不能为空</string>
     <string name="login_success">登录成功</string>
@@ -105,8 +111,10 @@
     <string name="my_defaultNum">--</string>
     <string name="exitApp_tips">确定要退出账号吗？</string>
     <string name="clearCache_tips">确定要清除缓存吗？</string>
+    <string name="clearCache_defaultSize">0.00KB</string>
     <string name="my_myFollow">我的关注</string>
     <string name="my_myFollow_cancel">取消关注</string>
+    <string name="my_myFollow_cancel_fail">取消失败</string>
     <string name="my_myFollow_cateringType">餐饮类型：</string>
     <string name="my_myFollow_investmentAmount">投资金额：</string>
     <string name="my_myLeavingMessage">我的留言</string>
@@ -125,15 +133,25 @@
     <string name="my_settings_exitUser">退出账号</string>
     <string name="my_settings_user_title">个人资料</string>
     <string name="my_settings_user_head">头像</string>
+    <string name="my_settings_user_name">真实姓名</string>
     <string name="my_settings_user_telephone">固定电话</string>
     <string name="my_settings_user_city">所在城市</string>
     <string name="my_settings_user_money">创业资本</string>
     <string name="my_settings_user_interestIndustry">感兴趣行业</string>
+    <string name="my_settings_user_select_yes">已选择</string>
+    <string name="my_settings_user_select_no">未选择</string>
+    <string name="my_settings_user_name_tips">请输入真实姓名</string>
+    <string name="my_settings_user_money_tips">请选择创业资本</string>
+    <string name="my_settings_user_interestIndustry_tips">请选择感兴趣行业</string>
+    <string name="my_settings_user_telephone_tips">固定电话格式输入不正确</string>
+    <string name="my_settings_user_wechat_tips">微信格式不对，请输入6至20位字母或数字</string>
+    <string name="my_settings_user_qq_tips">qq格式不对，请输入6至11位数字</string>
+    <string name="my_settings_user_email_tips">邮箱格式输入不正确</string>
     <string name="my_settings_setOrUpdate_tips">必须是6-12位数字、英文字母（区分大小写），也可以是两者的组合。</string>
     <string name="my_settings_updatePhone_msgTips">请输入新手机号中的验证码</string>
-    <string name="my_settings_aboutUs_companyName">上海***公司</string>
+    <string name="my_settings_aboutUs_companyName">上海轻盟信息科技有限公司</string>
     <string name="my_settings_aboutUs_version">版本号：</string>
-    <string name="my_settings_aboutUs_website">http://www.***.com</string>
+    <string name="my_settings_aboutUs_website">http://www.717mm.com</string>
     <string name="my_settings_aboutUs_tips">通过本软件参加的任何商业活动均与Apple Inc.无关</string>
     <string name="my_threeBinding_yes">已绑定</string>
     <string name="my_threeBinding_not">未绑定</string>
@@ -152,11 +170,15 @@
     <string name="permission_openAlbum">请开启应用读取权限</string>
     <string name="passNew_tips">请输入新密码</string>
     <string name="passMax_tips">密码最多为12位</string>
+    <string name="userNameMax_tips">用户名最多为12位</string>
+    <string name="setPass_success">设置成功</string>
     <string name="updatePass_success">修改成功</string>
     <string name="passSystemIn_tips">请输入当前密码</string>
     <string name="passFormat_tips">密码格式不对，请输入6至12位密码</string>
+    <string name="userNameFormat_tips">用户名格式不对，请输入4至12位字符</string>
     <string name="passDissimilarity_tips">设置的新密码两次输入不一致</string>
     <string name="phoneFormat_tips">手机号格式输入不正确</string>
+    <string name="updatePhone_success_tips">修改成功后，再次登录请使用更改后的手机号码</string>
     <string name="sendBrand">发送品牌</string>
     <string name="mm_customerService">盟盟客服</string>
     <string name="hold_to_talk">按住 说话</string>

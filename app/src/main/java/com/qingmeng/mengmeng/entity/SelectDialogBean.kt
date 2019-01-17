@@ -10,6 +10,12 @@ package com.qingmeng.mengmeng.entity
  *  Date: 2019/1/5
  */
 class SelectDialogBean(
-        var menu: String,                   //菜单
-        var checkState: Boolean = false     //是否点击
+        val industry: List<SelectBean>,
+        val capitalList: List<SelectBean>
+)
+
+data class SelectBean(
+        val id: Int = 0,
+        var name: String,                     //菜单名
+        var checkState: Boolean = false      //是否点击
 )

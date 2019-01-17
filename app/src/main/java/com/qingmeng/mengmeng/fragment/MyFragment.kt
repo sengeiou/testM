@@ -1,5 +1,7 @@
 package com.qingmeng.mengmeng.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.view.View
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
@@ -16,6 +18,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_my.*
 import org.jetbrains.anko.support.v4.startActivity
+import org.jetbrains.anko.support.v4.startActivityForResult
 
 /**
  * 我的板块
@@ -23,6 +26,11 @@ import org.jetbrains.anko.support.v4.startActivity
 
 class MyFragment : BaseFragment() {
     private lateinit var mMyInformation: MyInformation   //个人信息bean
+    private val REQUEST_MY = 23015                       //下一页返回数据的requestCode
+
+    companion object {
+        var mSettingsOrUpdate: Int = 0                   //是设置密码或修改密码   1设置 2修改
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_my
@@ -38,9 +46,13 @@ class MyFragment : BaseFragment() {
         rlMyTop.layoutParams.height = rlMyTop.layoutParams.height + getBarHeight(context!!)
         ivMySettings.setMarginExt(top = statusBarHeight + context!!.dp2px(15))
 
-        swlMy.isRefreshing = true
-        //用户信息查询
-        httpLoad()
+        slMy.isRefreshing = true
+        if (mSettingsOrUpdate != 0) {
+            httpLoad()
+        } else {
+            //先请求用户校验是设置密码还是修改密码接口
+            settingsOrUpdatePass()
+        }
     }
 
     //点击事件
@@ -48,8 +60,13 @@ class MyFragment : BaseFragment() {
         super.initListener()
 
         //下拉刷新
-        swlMy.setOnRefreshListener {
-            httpLoad()
+        slMy.setOnRefreshListener {
+            //如果该字段不为空 那么就直接请求信息查询
+            if (mSettingsOrUpdate != 0) {
+                httpLoad()
+            } else {
+                settingsOrUpdatePass()
+            }
         }
 
         //头像
@@ -65,7 +82,7 @@ class MyFragment : BaseFragment() {
 
         //我的关注
         llMyMyFollow.setOnClickListener {
-            startActivity<MyMyFollowActivity>("title" to tvMyMyFootprint.text as String)
+            startActivityForResult<MyMyFollowActivity>(REQUEST_MY, "title" to tvMyMyFollow.text as String)
         }
 
         //我的留言
@@ -75,7 +92,7 @@ class MyFragment : BaseFragment() {
 
         //我的足迹
         llMyMyFootprint.setOnClickListener {
-            startActivity<MyMyFollowActivity>("title" to tvMyMyFootprint.text as String)
+            startActivityForResult<MyMyFollowActivity>(REQUEST_MY, "title" to tvMyMyFootprint.text as String)
         }
 
         //企业入驻
@@ -106,32 +123,69 @@ class MyFragment : BaseFragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    swlMy.isRefreshing = false
-                    if (it.code == 12000) {
-                        llMyNoLogin.visibility = View.VISIBLE
-                        tvMyLogin.visibility = View.GONE
-                        //信息赋值
-                        mMyInformation = it.data as MyInformation
-                        //页面赋值
-                        setData(it.data as MyInformation)
-                    } else {
-                        llMyNoLogin.visibility = View.GONE
-                        tvMyLogin.visibility = View.VISIBLE
+                    slMy.isRefreshing = false
+                    it.apply {
+                        if (code == 12000) {
+                            llMyNoLogin.visibility = View.VISIBLE
+                            tvMyLogin.visibility = View.GONE
+                            //信息赋值
+                            mMyInformation = data as MyInformation
+                            //页面赋值
+                            setData(data as MyInformation)
+                        } else {
+                            llMyNoLogin.visibility = View.GONE
+                            tvMyLogin.visibility = View.VISIBLE
+                        }
                     }
                 }, {
-                    swlMy.isRefreshing = false
-                    llMyNoLogin.visibility = View.GONE
-                    tvMyLogin.visibility = View.VISIBLE
+                    slMy.isRefreshing = false
+                })
+    }
+
+    //校验是设置密码还是修改密码
+    private fun settingsOrUpdatePass() {
+        ApiUtils.getApi()
+                .mySettingsOrUpdatePass(TEST_ACCESS_TOKEN)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    it.apply {
+                        if (code == 12000) {    //修改密码
+                            mSettingsOrUpdate = 2
+                        } else if (code == 30001) { //设置密码
+                            mSettingsOrUpdate = 1
+                        }
+                    }
+                    //请求下一个接口
+                    httpLoad()
+                }, {
+                    slMy.isRefreshing = false
                 })
     }
 
     //页面内容赋值
     private fun setData(myInformation: MyInformation) {
         //头像
-        GlideLoader.load(this, myInformation.avatar, ivMyHeadPortrait, cacheType = CacheType.All, placeholder = R.mipmap.ic_launcher)
+        GlideLoader.load(this, myInformation.avatar, ivMyHeadPortrait, cacheType = CacheType.All)
         tvMyUserName.text = myInformation.userName
         tvMyMyFollowNum.text = "${myInformation.myAttention}"
         tvMyMyLeavingMessageNum.text = "${myInformation.myComment}"
         tvMyMyFootprintNum.text = "${myInformation.myFootprint}"
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent) {
+        super.onActivityResult(requestCode, resultCode, intent)
+        if (requestCode == REQUEST_MY && resultCode == Activity.RESULT_OK) {
+            val isDelete = intent.getBooleanExtra("isDelete", false)
+            //如果下一页删掉过数据 就刷新下本页
+            if (isDelete) {
+                slMy.isRefreshing = true
+                if (mSettingsOrUpdate != 0) {
+                    httpLoad()
+                } else {
+                    settingsOrUpdatePass()
+                }
+            }
+        }
     }
 }

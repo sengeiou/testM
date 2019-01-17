@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.base
 
+import com.luck.picture.lib.entity.LocalMedia
 import com.qingmeng.mengmeng.entity.*
 import io.reactivex.Observable
 import retrofit2.http.*
@@ -32,7 +33,7 @@ interface Api {
     //注册
     @POST("app/user/phone_register")
     @FormUrlEncoded
-    fun register(@Field("userName") userName: String, @Field("phone") phone: String, @Field("msmCode") msmCode: String,
+    fun register(@Field("userName") userName: String, @Field("phone") phone: String, @Field("smsCode") smsCode: String,
                  @Field("password") password: String, @Field("verifyPassword") verifyPassword: String,
                  @Field("type") type: Int, @Field("isUserProtocol") isUserProtocol: Int = 1): Observable<BaseBean<UserBean>>
 
@@ -56,8 +57,8 @@ interface Api {
     fun accountlogin(@Query("account") account: String, @Query("password") password: String): Observable<BaseBean<UserBean>>
 
     //短信登录
-    @POST("app/user/msm_login")
-    fun msmlogin(@Query("phone") phone: String, @Query("msmCode") msmCode: String): Observable<BaseBean<UserBean>>
+    @POST("app/user/sms_login")
+    fun smslogin(@Query("phone") phone: String, @Query("smsCode") smsCode: String): Observable<BaseBean<UserBean>>
 
     /**
      * =========================================我的板块=========================================
@@ -66,18 +67,47 @@ interface Api {
     @GET("api/personal/get_center_personal")
     fun myInformation(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyInformation>>
 
+    //校验是设置密码还是修改密码
+    @GET("api/validate/validate_user_info?type=1")
+    fun mySettingsOrUpdatePass(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyInformation>>
+
     //获取个人设置页面信息
     @GET("api/personal/get_personal")
     fun mySettingsUser(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MySettingsUserBean>>
 
+    //静态数据 创业资本
+    @GET("api/get_capital")
+    fun getMoneyStatic(): Observable<BaseBean<SelectDialogBean>>
+
+    //静态数据 感兴趣行业
+    @GET("api/get_industry")
+    fun getInterestStatic(): Observable<BaseBean<SelectDialogBean>>
+
+    //静态数据 所有城市
+    @GET("api/get_city_all")
+    fun getCityStatic(): Observable<BaseBean<AllCityBean>>
+
     //修改个人信息
     @POST("api/personal/personal_modify")
     @FormUrlEncoded
-    fun updateMySettingsUser(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MySettingsUserBean>>
+    fun updateMySettingsUser(
+            @Field("avatar") avatar: String?,//头像
+            @Field("name") name: String?,//真实姓名*
+            @Field("sex") sex: Int?,//年龄
+            @Field("phone") phone: String?,//手机号*
+            @Field("telephone") telephone: String?,//固定电话
+            @Field("wx") wx: String?,//微信
+            @Field("qq") qq: String?,//qq
+            @Field("email") email: String?,//邮箱
+            @Field("districtId") districtId: Int?,//城市id*
+            @Field("capitalId") capitalId: Int?,//创业资本*
+            @Field("industryOfInterest") industryOfInterest: String?,//感兴趣行业*
+            @Header("ACCESS-TOKEN") token: String//token*
+    ): Observable<BaseBean<MySettingsUserBean>>
 
-    //我的关注
-    @GET("api_my/get_attention")
-    fun myFollow(@Query("userId") userId: Int, @Query("pageNum") pageNum: Int): Observable<BaseBean<MyMyFollowBean>>
+    //设置密码
+    @GET("app/user/setting_password")
+    fun setPass(@Query("name") name: String, @Query("password") password: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
 
     //修改密码
     @POST("app/user/update_password")
@@ -98,4 +128,46 @@ interface Api {
     //获取oss令牌
     @GET("http://zng535.natappfree.cc/oss/authorization_app?name=mm")
     fun getOssToken(): Observable<BaseBean<OssDataBean>>
+
+    //我的反馈
+    @POST("/api/feedback/add_feedback")
+    fun join_feedback(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int, @Query("type") type: Int, @Query("content") content: String, @Query("urlList") urlList: ArrayList<String>): Observable<BaseBean<Any>>
+
+    //第三方登录
+    @POST("/app/user/third_party_login")
+    fun thirdlogin(@Query("openId") openId: String, @Query("type") type: Int): Observable<BaseBean<UserBean>>
+
+    //获取热门词汇
+    @GET("api/join/hot_search")
+    fun get_hot_search(@Header("VERSION") version: String): Observable<BaseBean<HotSearchBean>>
+
+    //爱加盟首页搜索
+    @POST("/api/join/get_search_brands")
+    fun join_search_brands(@Query("keyWord") keyWord: String, @Query("fatherId") fatherId: Int,
+                           @Query("typeId") typeId: Int, @Query("cityIds") cityIds: String, @Query("capitalIds") capitalIds: String,
+                           @Query("modeIds") modeIds: String, @Query("integratedSortId") integratedSortId: Int, @Query("pageNum") pageNum: Int): Observable<BaseBean<SearchDtoListBean>>
+
+    //我的关注
+    @GET("api/my_attention/get_attention")
+    fun myFollow(@Query("pageNum") pageNum: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyMyFollowBean>>
+
+    //取消我的关注
+    @GET("api/my_attention/un_subscribe")
+    fun deleteMyFollow(@Query("brandId") brandId: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+
+    //我的留言
+    @GET("api/my_comment/get_comments")
+    fun myLeavingMessage(@Query("pageNum") pageNum: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyMyFollowBean>>
+
+    //删除我的留言
+    @GET("api/my_comment/del_comment")
+    fun deleteMyLeavingMessage(@Query("commentId") commentId: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+
+    //我的足迹
+    @GET("api/my_footprint/get_footprint")
+    fun myFootprint(@Query("pageNum") pageNum: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyMyFollowBean>>
+
+    //删除我的足迹
+    @GET("api/my_footprint/del_footprint")
+    fun deleteMyFootprint(@Query("brandId") brandId: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
 }
