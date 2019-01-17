@@ -128,7 +128,7 @@ class MyFragment : BaseFragment() {
     //页面内容赋值
     private fun setData(myInformation: MyInformation) {
         //头像
-        GlideLoader.load(this, myInformation.avatar, ivMyHeadPortrait, cacheType = CacheType.All, placeholder = R.mipmap.ic_launcher)
+        GlideLoader.load(this, myInformation.avatar, ivMyHeadPortrait, cacheType = CacheType.All)
         tvMyUserName.text = myInformation.userName
         tvMyMyFollowNum.text = "${myInformation.myAttention}"
         tvMyMyLeavingMessageNum.text = "${myInformation.myComment}"

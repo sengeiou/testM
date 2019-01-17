@@ -10,8 +10,9 @@
         android:layout_width="@dimen/padding_dp_60"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/padding_dp_20"
-        android:text="分类"
-        android:textSize="@dimen/text_size_20" />
+        android:layout_marginTop="@dimen/padding_dp_10"
+        android:textColor="@color/color_333333"
+        android:textSize="@dimen/text_size_14" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/red_shop_right_inrecycler"
