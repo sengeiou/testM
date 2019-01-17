@@ -130,7 +130,7 @@ interface Api {
 
     //我的留言
     @GET("api/my_comment/get_comments")
-    fun myLeavingMessage(@Query("pageNum") pageNum: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyMyFollowBean>>
+    fun myLeavingMessage(@Query("pageNum") pageNum: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyMyLeavingMessageBean>>
 
     //删除我的留言
     @GET("api/my_comment/del_comment")

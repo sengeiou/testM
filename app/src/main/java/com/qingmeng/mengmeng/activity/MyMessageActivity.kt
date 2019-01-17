@@ -47,7 +47,7 @@ class MyMessageActivity : BaseActivity() {
 
         //返回
         mBack.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
 
         //下拉刷新

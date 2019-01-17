@@ -18,7 +18,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_my.*
 import org.jetbrains.anko.support.v4.startActivity
-import org.jetbrains.anko.support.v4.startActivityForResult
 
 /**
  * 我的板块
@@ -26,7 +25,7 @@ import org.jetbrains.anko.support.v4.startActivityForResult
 
 class MyFragment : BaseFragment() {
     private lateinit var mMyInformation: MyInformation   //个人信息bean
-    private val REQUEST_MY = 23015                       //下一页返回数据的requestCode
+    private val REQUEST_MY = 746                         //下一页返回数据的requestCode
 
     companion object {
         var mSettingsOrUpdate: Int = 0                   //是设置密码或修改密码   1设置 2修改
@@ -77,22 +76,22 @@ class MyFragment : BaseFragment() {
         //设置
         ivMySettings.setOnClickListener {
             //跳转aty
-            startActivity<MySettingsActivity>("avatar" to mMyInformation?.avatar, "userName" to mMyInformation?.userName)
+            startActivity<MySettingsActivity>("avatar" to mMyInformation.avatar, "userName" to mMyInformation.userName)
         }
 
         //我的关注
         llMyMyFollow.setOnClickListener {
-            startActivityForResult<MyMyFollowActivity>(REQUEST_MY, "title" to tvMyMyFollow.text as String)
+            startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFollow.text), REQUEST_MY)
         }
 
         //我的留言
         llMyMyLeavingMessage.setOnClickListener {
-            startActivity<MyMyLeavingMessageActivity>()
+            startActivityForResult(Intent(context, MyMyLeavingMessageActivity::class.java), REQUEST_MY)
         }
 
         //我的足迹
         llMyMyFootprint.setOnClickListener {
-            startActivityForResult<MyMyFollowActivity>(REQUEST_MY, "title" to tvMyMyFootprint.text as String)
+            startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFootprint.text), REQUEST_MY)
         }
 
         //企业入驻
@@ -173,10 +172,10 @@ class MyFragment : BaseFragment() {
         tvMyMyFootprintNum.text = "${myInformation.myFootprint}"
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent) {
-        super.onActivityResult(requestCode, resultCode, intent)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_MY && resultCode == Activity.RESULT_OK) {
-            val isDelete = intent.getBooleanExtra("isDelete", false)
+            val isDelete = data?.getBooleanExtra("isDelete", false) ?: false
             //如果下一页删掉过数据 就刷新下本页
             if (isDelete) {
                 slMy.isRefreshing = true

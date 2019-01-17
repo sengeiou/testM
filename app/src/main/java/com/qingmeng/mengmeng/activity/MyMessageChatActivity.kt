@@ -81,7 +81,7 @@ class MyMessageChatActivity : BaseActivity() {
 
         //返回
         mBack.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
 
         //输入框上部分点击事件

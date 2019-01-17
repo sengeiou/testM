@@ -53,7 +53,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
 
         //返回
         mBack.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
 
         //根据格式 设置不同输入监听
@@ -134,7 +134,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
                 .subscribe({
                     if (it.code == 12000) {
                         ToastUtil.showShort(getString(R.string.setPass_success))
-                        this.finish()
+                        onBackPressed()
                     } else {
                         ToastUtil.showShort(it.msg)
                     }
@@ -152,7 +152,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
                 .subscribe({
                     if (it.code == 12000) {
                         ToastUtil.showShort(getString(R.string.updatePass_success))
-                        this.finish()
+                        onBackPressed()
                     } else {
                         ToastUtil.showShort(it.msg)
                     }

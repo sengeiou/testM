@@ -76,7 +76,7 @@ class LoginpwActivity : BaseActivity() {
         setOnFocusChangeListener(edt_login_pwd_password_login)
         //返回
         mBack.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
         //注册
         mMenu.setOnClickListener {

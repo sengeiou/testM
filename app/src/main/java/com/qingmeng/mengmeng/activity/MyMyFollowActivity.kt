@@ -81,10 +81,7 @@ class MyMyFollowActivity : BaseActivity() {
 
         //返回
         mBack.setOnClickListener {
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra("isDelete", mIsDelete)
-            })
-            this.finish()
+            onBackPressed()
         }
 
         rvMyMyFollow.setOnTouchListener { v, event ->
@@ -191,11 +188,8 @@ class MyMyFollowActivity : BaseActivity() {
                                 if (pageNum == 1) {
                                     llMyMyFollowTips.visibility = View.GONE
                                 }
-                                //防止内容为空
-                                data?.let {
-                                    //把内容添加到mList里去
-                                    mList.addAll(it.data)
-                                }
+                                //把内容添加到mList里去
+                                mList.addAll(data?.data!!)
                                 mPageNum++
                             }
                             mAdapter.notifyDataSetChanged()
@@ -271,9 +265,9 @@ class MyMyFollowActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
         setResult(Activity.RESULT_OK, Intent().apply {
             putExtra("isDelete", mIsDelete)
         })
+        super.onBackPressed()
     }
 }

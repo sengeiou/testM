@@ -33,7 +33,7 @@ class MyThreeBindingActivity : BaseActivity() {
 
         //返回
         mBack.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
 
         //QQ

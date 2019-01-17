@@ -9,18 +9,40 @@
 
     <include layout="@layout/layout_head"/>
 
-    <android.support.v4.widget.SwipeRefreshLayout
-        android:id="@+id/srlMyMyLeavingMessage"
+    <com.qingmeng.mengmeng.view.SwipeLayout
+        android:id="@+id/slMyMyLeavingMessage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/rvMyMyLeavingMessage"
+        <LinearLayout
+            android:id="@+id/swipe_target"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:orientation="vertical"
             >
 
-        </android.support.v7.widget.RecyclerView>
-    </android.support.v4.widget.SwipeRefreshLayout>
+            <LinearLayout
+                android:id="@+id/llMyMyLeavingMessageTips"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/my_settings_aboutus_icon"
+                    />
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rvMyMyLeavingMessage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+        </LinearLayout>
+    </com.qingmeng.mengmeng.view.SwipeLayout>
 </LinearLayout>

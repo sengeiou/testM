@@ -56,7 +56,7 @@ class LoginChangePswActivity : BaseActivity() {
         super.initListener()
         //返回
         mBack.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
         //点击页面其他地方取消EditText的焦点并且隐藏软键盘
         mlogchangepsw.setOnTouchListener(object : View.OnTouchListener {

@@ -37,7 +37,7 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
 
         //返回
         mBack.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
 
         //获取验证码

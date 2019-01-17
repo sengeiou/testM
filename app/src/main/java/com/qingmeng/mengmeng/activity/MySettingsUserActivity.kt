@@ -85,7 +85,7 @@ class MySettingsUserActivity : BaseActivity() {
 
         //返回
         mBack.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
 
         //保存
