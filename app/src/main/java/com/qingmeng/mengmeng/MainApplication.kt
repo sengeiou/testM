@@ -3,10 +3,17 @@ package com.qingmeng.mengmeng
 import AppManager
 import android.annotation.SuppressLint
 import android.app.Application
+import android.support.multidex.MultiDexApplication
 import android.text.TextUtils
+import android.util.Log
+import com.qingmeng.mengmeng.entity.MyObjectBox
 import com.qingmeng.mengmeng.entity.UserBean
 import com.qingmeng.mengmeng.utils.SharedSingleton
 import com.tencent.bugly.crashreport.CrashReport
+import io.objectbox.BoxStore
+import io.objectbox.android.AndroidObjectBrowser
+import com.tencent.mm.opensdk.openapi.IWXAPI
+import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import java.io.BufferedReader
 import java.io.FileReader
 import java.io.IOException
@@ -15,13 +22,20 @@ import java.io.IOException
  * Created by zq on 2018/8/6
  */
 @SuppressLint("CheckResult")
-class MainApplication : Application() {
+class MainApplication : MultiDexApplication() {
     var TOKEN: String = ""
     lateinit var user: UserBean
+    lateinit var mWxApi: IWXAPI
     private lateinit var sharedSingleton: SharedSingleton
 
     init {
         AppManager.instance
+    }
+
+    //注册到微信
+    private fun registToWX() {
+        mWxApi = WXAPIFactory.createWXAPI(this, "APP_ID", false);//此处的APP_ID替换为你在微信开放平台上申请到的APP_ID
+        mWxApi.registerApp("APP_ID");
     }
 
     override fun onCreate() {
@@ -30,7 +44,21 @@ class MainApplication : Application() {
         sharedSingleton = SharedSingleton.instance
         user = UserBean.fromString()
         TOKEN = user.token
+        initBox()
         initBugly()
+        registToWX();
+
+    }
+
+    private fun initBox() {
+        boxStore = MyObjectBox.builder().androidContext(this).build()
+        if (BuildConfig.DEBUG) {
+            boxStore.let {
+                //可以理解为初始化连接浏览器(可以在浏览器中查看数据，下面再说)
+                val started = AndroidObjectBrowser(boxStore).start(this)
+                Log.i("ObjectBrowser", "Started: " + started)
+            }
+        }
     }
 
     private fun initBugly() {
@@ -49,6 +77,7 @@ class MainApplication : Application() {
 
     companion object {
         lateinit var instance: MainApplication
+        lateinit var boxStore: BoxStore
     }
 
     private fun getProcessName(pid: Int): String? {

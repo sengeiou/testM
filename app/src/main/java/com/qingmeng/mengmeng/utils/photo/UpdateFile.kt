@@ -14,7 +14,6 @@ import java.io.File
 import java.io.FileNotFoundException
 
 
-
 /**
  * 下载文件后通知系统更新
  * Created by wangru

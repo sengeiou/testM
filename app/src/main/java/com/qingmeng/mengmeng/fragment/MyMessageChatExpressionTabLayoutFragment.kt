@@ -54,6 +54,6 @@ class MyMessageChatExpressionTabLayoutFragment : Fragment() {
 
     //外部调用 设置想要内容
     fun setContent(content: String) {
-        mTitlesString =content
+        mTitlesString = content
     }
 }

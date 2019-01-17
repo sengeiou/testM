@@ -31,9 +31,9 @@
                     <LinearLayout
                         android:id="@+id/bottomSearch"
                         android:layout_width="325dp"
-                        android:layout_height="@dimen/padding_dp_24"
+                        android:layout_height="@dimen/padding_dp_29"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/padding_dp_30"
+                        android:layout_marginTop="@dimen/padding_dp_25"
                         android:background="@drawable/bg_search"
                         android:gravity="center">
 
@@ -48,6 +48,18 @@
                     </LinearLayout>
 
                 </RelativeLayout>
+
+                <com.qingmeng.mengmeng.view.MyGridView
+                    android:id="@+id/mJoinMenu"
+                    android:numColumns="4"
+                    android:paddingTop="@dimen/padding_dp_20"
+                    android:paddingBottom="@dimen/padding_dp_20"
+                    android:paddingStart="@dimen/padding_dp_25"
+                    android:paddingEnd="0dp"
+                    android:verticalSpacing="@dimen/padding_dp_30"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:layout_scrollFlags="scroll"/>
 
                 <View
                     android:layout_width="match_parent"
@@ -93,7 +105,7 @@
             android:layout_width="325dp"
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/padding_dp_30"
+            android:layout_marginTop="@dimen/padding_dp_25"
             android:layout_marginBottom="@dimen/padding_dp_10"
             android:background="@drawable/bg_search"
             android:gravity="center">
@@ -107,6 +119,14 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_14"/>
         </LinearLayout>
+
+        <Button
+            android:id="@+id/test_intface"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:text="Button"/>
 
     </RelativeLayout>
 

@@ -1,13 +1,11 @@
 package com.qingmeng.mengmeng.fragment
 
 import android.annotation.SuppressLint
-import android.os.Bundle
 import android.support.design.widget.AppBarLayout
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.util.Log
 import android.util.SparseArray
 import android.view.View
 import android.view.ViewGroup
@@ -19,29 +17,36 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.activity.JoinFeedbackActivity
+import com.qingmeng.mengmeng.adapter.JoinMenuAdapter
 import com.qingmeng.mengmeng.adapter.JoinRecommendAdapter
 import com.qingmeng.mengmeng.adapter.UnderLineNavigatorAdapter
-import com.qingmeng.mengmeng.entity.BannersBean
+import com.qingmeng.mengmeng.entity.Banner
 import com.qingmeng.mengmeng.entity.JoinRecommendBean
+import com.qingmeng.mengmeng.entity.StaticBean
 import com.qingmeng.mengmeng.entity.StaticDataBean
 import com.qingmeng.mengmeng.utils.ApiUtils
+import com.qingmeng.mengmeng.utils.BoxUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_join.*
 import kotlinx.android.synthetic.main.layout_banner.*
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
+import org.jetbrains.anko.support.v4.startActivity
 
 @SuppressLint("CheckResult")
 class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppBarLayout.OnOffsetChangedListener,
-        BGABanner.Delegate<ImageView, BannersBean.BannerBean>, BGABanner.Adapter<ImageView, String> {
+        BGABanner.Delegate<ImageView, Banner>, BGABanner.Adapter<ImageView, String> {
     private lateinit var listPagerAdapter: PagerAdapter
     private lateinit var indicatorAdapter: UnderLineNavigatorAdapter
     private lateinit var commonNavigator: CommonNavigator
+    private lateinit var mMenuAdapter: JoinMenuAdapter
 
-    private val mImgList = ArrayList<BannersBean.BannerBean>()
-    private val tabList = ArrayList<StaticDataBean.StaticBean>()
-    private val recommendList = ArrayList<JoinRecommendBean.JoinBean>()
+    private val mImgList = ArrayList<Banner>()
+    private val menuList = ArrayList<StaticBean>()
+    private val tabList = ArrayList<StaticBean>()
     private val viewSparseArray = SparseArray<RecyclerView>()
 
     private var isLoading = false
@@ -50,23 +55,51 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 
     override fun getLayoutId(): Int = R.layout.fragment_join
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        initView()
-        initVPIndicator()
+    override fun initData() {
+        getCacheData()
     }
 
-    override fun initData() {
-        getBanners()
-        getTabs()
+    //获取缓存数据
+    private fun getCacheData() {
+        Observable.create<JoinRecommendBean> {
+            val bannerData = BoxUtils.getBannersByType(1)
+            val menuData = BoxUtils.getStaticByType(1)
+            val tabData = BoxUtils.getStaticByType(2)
+            mImgList.addAll(bannerData)
+            menuList.addAll(menuData)
+            tabList.addAll(tabData)
+            var recommendBean = JoinRecommendBean(ArrayList())
+            if (!tabList.isEmpty()) {
+                recommendBean = JoinRecommendBean.fromString(tabList[vpList.currentItem].id)
+            }
+            it.onNext(recommendBean)
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    initView()
+                    initVPIndicator()
+                    setBanner()
+                    if (!tabList.isEmpty()) {
+                        val view = getView(tabList[vpList.currentItem].id)
+                        val adapter = view.adapter as JoinRecommendAdapter
+                        adapter.updateItems(it.data)
+                        view.tag = 2
+                    }
+                    getNewData()
+                }, {
+                    getNewData()
+                }, {}, { addSubscription(it) })
     }
 
     override fun initListener() {
+        //暴露接口测试
+        test_intface.setOnClickListener {
+            startActivity<JoinFeedbackActivity>()
+        }
+
         barLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             //verticalOffset始终为0以下的负数
             val percent = Math.abs(verticalOffset * 1.0f) / appBarLayout.totalScrollRange
-            Log.e("joinFragment", "percent == $percent")
-            Log.e("joinFragment", "verticalOffset == $verticalOffset")
             mSearchBg.alpha = percent
             if (percent == 0f) {
                 bottomSearch.visibility = View.VISIBLE
@@ -75,7 +108,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 bottomSearch.visibility = View.GONE
                 topSearch.visibility = View.VISIBLE
             }
-            if (offset > verticalOffset && percent > 0.67550504) {
+            if (offset > verticalOffset && percent > 0.8474676) {
                 mBaffle.visibility = View.VISIBLE
             } else if (percent < 1) {
                 mBaffle.visibility = View.GONE
@@ -84,34 +117,29 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         })
     }
 
-    private fun getTabs() {
-        ApiUtils.getApi().getStaticInfo("", 2)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ bean ->
-                    if (bean.code == 12000) {
-                        bean.data?.let {
-                            if (!it.systemStatic.isEmpty()) {
-                                if (!tabList.isEmpty()) {
-                                    tabList.clear()
-                                }
-                                tabList.addAll(it.systemStatic)
-                                listPagerAdapter.notifyDataSetChanged()
-                                indicatorAdapter.notifyDataSetChanged()
-                                commonNavigator.notifyDataSetChanged()
-                                onRefresh()
-                            } else {
-                                endLoadEverything()
-                            }
-                        }
-                    } else {
-                        endLoadEverything()
-                        ToastUtil.showShort(bean.msg)
-                    }
-                }, {
-                    endLoadEverything()
-                    ToastUtil.showNetError()
-                }, {}, { addSubscription(it) })
+    //设置分类icon
+    private fun setMenus(bean: StaticDataBean) {
+        if (!menuList.isEmpty()) {
+            BoxUtils.removeStatic(menuList)
+            menuList.clear()
+        }
+        BoxUtils.saveStatic(bean.systemStatic)
+        menuList.addAll(bean.systemStatic)
+        mMenuAdapter.notifyDataSetChanged()
+    }
+
+    //设置分类导航
+    private fun setTabs(bean: StaticDataBean) {
+        if (!tabList.isEmpty()) {
+            BoxUtils.removeStatic(tabList)
+            tabList.clear()
+        }
+        BoxUtils.saveStatic(bean.systemStatic)
+        tabList.addAll(bean.systemStatic)
+        listPagerAdapter.notifyDataSetChanged()
+        indicatorAdapter.notifyDataSetChanged()
+        commonNavigator.notifyDataSetChanged()
+        getData(tabList[vpList.currentItem].id)
     }
 
     private fun initView() {
@@ -145,6 +173,8 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
             }
         }
         vpList.adapter = listPagerAdapter
+        mMenuAdapter = JoinMenuAdapter(menuList, context!!)
+        mJoinMenu.adapter = mMenuAdapter
     }
 
     private fun initVPIndicator() {
@@ -165,9 +195,6 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 
             override fun onPageScrollStateChanged(state: Int) {
                 channelIndicator.onPageScrollStateChanged(state)
-                if (state == ViewPager.SCROLL_STATE_IDLE) {
-
-                }
             }
         })
     }
@@ -180,7 +207,9 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         val recyclerView = RecyclerView(context!!)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        val adapter = JoinRecommendAdapter(context!!, recommendList) {}
+        val adapter = JoinRecommendAdapter(context!!) {
+
+        }
         recyclerView.adapter = adapter
         viewSparseArray.put(tagId, recyclerView)
         return recyclerView
@@ -192,8 +221,14 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     }
 
     override fun onRefresh() {
+        getNewData()
+    }
+
+    private fun getNewData() {
         isRefresh = true
-        getData(tabList[vpList.currentItem].id)
+        getBanners(getVersion(0))
+        getStaticData(getVersion(1), 1)
+        getStaticData(getVersion(2), 2)
     }
 
     /**
@@ -210,7 +245,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
             view.tag?.let { page = it as Int }
         }
         val adapter = view.adapter as JoinRecommendAdapter
-        ApiUtils.getApi().getRecommend(id, page)
+        ApiUtils.getApi().getRecommend(0, page)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -218,19 +253,16 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                     isLoading = false
                     if (bean.code == 12000) {
                         bean.data?.let {
-                            val recommend = ArrayList<JoinRecommendBean.JoinBean>()
-                            (0..2).forEach {
-                                recommend.add(JoinRecommendBean.JoinBean(it + page * 10, "${it + page * 10}", "${it + page * 10}", "${it + page * 10}"))
-                            }
                             if (isRefresh) {
                                 page = 1
-                                adapter.updateItems(recommend)
+                                it.upDate(id)
+                                adapter.updateItems(it.data)
                                 isRefresh = false
                             } else {
-                                adapter.addItems(recommend)
+                                adapter.addItems(it.data)
                                 swipeLayout.isLoadMoreEnabled = false
                             }
-                            getView(id).tag = ++page
+                            view.tag = ++page
                         }
                     } else {
                         ToastUtil.showShort(bean.msg)
@@ -242,9 +274,43 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 }, {}, { addSubscription(it) })
     }
 
+    /**
+     * 获取静态数据
+     * @param type 类型：1.首页banner8个icon 2.首页列表模块 3.列表筛选标题 4.综合排序 5.反馈类型
+     */
+    private fun getStaticData(version: String, type: Int) {
+        ApiUtils.getApi().getStaticInfo(version, type)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ bean ->
+                    if (bean.code == 12000) {
+                        bean.data?.let {
+                            if (!it.systemStatic.isEmpty()) {
+                                it.setVersion()
+                                when (type) {
+                                    1 -> setMenus(it)
+                                    2 -> setTabs(it)
+                                }
+                            } else if (type == 2) {
+                                endLoadEverything()
+                            }
+                        }
+                    } else {
+                        if (type == 2) endLoadEverything()
+                        if (bean.code != 20000) ToastUtil.showShort(bean.msg)
+                        if (type == 2 && bean.code == 20000 && !tabList.isEmpty()) {
+                            getData(tabList[vpList.currentItem].id)
+                        }
+                    }
+                }, {
+                    if (type == 2) endLoadEverything()
+                    ToastUtil.showNetError()
+                }, {}, { addSubscription(it) })
+    }
+
     //获取banner图
-    private fun getBanners() {
-        ApiUtils.getApi().getBanners("", 1)
+    private fun getBanners(version: String) {
+        ApiUtils.getApi().getBanners(version, 1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -252,13 +318,16 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                         bean.data?.let {
                             if (!it.banners.isEmpty()) {
                                 if (!mImgList.isEmpty()) {
+                                    BoxUtils.removeBanners(mImgList)
                                     mImgList.clear()
                                 }
+                                it.setVersion()
                                 mImgList.addAll(it.banners)
+                                BoxUtils.saveBanners(mImgList)
                                 setBanner()
                             }
                         }
-                    } else {
+                    } else if (bean.code != 20000) {
                         ToastUtil.showShort(bean.msg)
                     }
                 }, {
@@ -293,12 +362,12 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     }
 
     //banner点击事件
-    override fun onBannerItemClick(banner: BGABanner?, itemView: ImageView?, model: BannersBean.BannerBean?, position: Int) {
+    override fun onBannerItemClick(banner: BGABanner?, itemView: ImageView?, model: Banner?, position: Int) {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     //banner加载图片
-    override fun fillBannerItem(banner: BGABanner?, itemView: ImageView?, model: String?, position: Int) {
+    override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: String?, position: Int) {
         model?.let {
             Glide.with(this).load(it).apply(RequestOptions()
                     .placeholder(R.drawable.image_holder).error(R.drawable.image_holder)
@@ -310,5 +379,22 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         mJoinBanner.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
         mJoinBanner.setDelegate(this)//设置点击事件，重写点击回调方法
         mJoinBanner.setData(mImgList, null)
+        if (mImgList.size > 1) {
+            mJoinBanner.setAutoPlayAble(true)
+        } else {
+            mJoinBanner.setAutoPlayAble(false)
+        }
+    }
+
+    /**
+     * @param type 0:banner 1:icon 2:title
+     **/
+    private fun getVersion(type: Int): String {
+        return when {
+            type == 0 && !mImgList.isEmpty() -> mImgList[0].version
+            type == 1 && !menuList.isEmpty() -> menuList[0].version
+            type == 2 && !tabList.isEmpty() -> tabList[0].version
+            else -> ""
+        }
     }
 }

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/red_shop_left_lineralayout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/page_background_f5"
-    android:orientation="horizontal">
+              android:id="@+id/red_shop_left_lineralayout"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/page_background_f5"
+              android:orientation="horizontal">
 
 
     <TextView
@@ -14,7 +14,7 @@
         android:gravity="center"
         android:layout_gravity="left"
         android:textColor="@color/color_666666"
-        android:textSize="@dimen/text_size_14" />
+        android:textSize="@dimen/text_size_14"/>
 
 
 </LinearLayout>

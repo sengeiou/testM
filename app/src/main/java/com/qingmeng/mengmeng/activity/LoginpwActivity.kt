@@ -157,11 +157,11 @@ class LoginpwActivity : BaseActivity() {
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
                     when (bean.code) {
-                    //登录成功
+                        //登录成功
                         12000 -> {
                             bean.data?.let {
                                 MainApplication.instance.user = it
-                                MainApplication.instance.TOKEN = it.userInfo.token
+                                MainApplication.instance.TOKEN = it.token
                                 it.upDate()
                             }
                             sharedSingleton.setString(IConstants.USER, username)
@@ -171,12 +171,12 @@ class LoginpwActivity : BaseActivity() {
                             //  在我的/消息板块点击登录的回到盟盟首页；
                             ToastUtil.showShort(getString(R.string.login_success))
                         }
-                    //错误次数
+                        //错误次数
                         15001 -> {
                             ToastUtil.showShort("$bean.msg,还有${bean.data}次机会")
 
                         }
-                    //密码错误三次以上
+                        //密码错误三次以上
                         25094 -> {
                             ToastUtil.showShort(bean.msg)
                             //找回密码弹窗
@@ -186,15 +186,15 @@ class LoginpwActivity : BaseActivity() {
                             mDialog.show()
 
                         }
-                    //参数有误
+                        //参数有误
                         13000 -> {
                             ToastUtil.showShort(bean.msg)
                         }
-                    //用户名不存在
+                        //用户名不存在
                         25092 -> {
                             ToastUtil.showShort(bean.msg)
                         }
-                    //手机号不存在
+                        //手机号不存在
                         25091 -> {
                             //提示“该手机号尚未注册，是否前去注册？” “注册”和“取消”两个按钮
                             mDialog = DialogCommon(this, getString(R.string.register), getString(R.string.cancel), onRightClick = {

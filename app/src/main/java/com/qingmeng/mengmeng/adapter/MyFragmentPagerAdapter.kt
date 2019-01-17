@@ -13,7 +13,7 @@ import android.support.v4.app.FragmentPagerAdapter
 
  *  Date: 2019/01/10
  */
-class MyFragmentPagerAdapter(fm: FragmentManager, var list:ArrayList<Fragment>, private var titles: Array<String>) : FragmentPagerAdapter(fm) {
+class MyFragmentPagerAdapter(fm: FragmentManager, var list: ArrayList<Fragment>, private var titles: Array<String>) : FragmentPagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
         return list[position]

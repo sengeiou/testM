@@ -11,13 +11,13 @@ package com.qingmeng.mengmeng.entity
  */
 
 data class MyInformation(
-    val id: Int,
-    val avatar: String,
-    val state: Int,
-    val phone: String,
-    val userName: String,
-    val userType: Int,
-    val myAttention: Int,
-    val myFootprint: Int,
-    val myComment: Int
+        val id: Int,
+        val avatar: String,
+        val state: Int,
+        val phone: String,
+        val userName: String,
+        val userType: Int,
+        val myAttention: Int,
+        val myFootprint: Int,
+        val myComment: Int
 )

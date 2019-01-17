@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".activity.RedShopSeachResult">
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context=".activity.RedShopSeachResult">
 
     <include
         android:id="@+id/head_search_include"
-        layout="@layout/layout_head_seach" />
+        layout="@layout/layout_head_seach"/>
 
     <LinearLayout
         android:id="@+id/search_result_linear"
@@ -26,7 +26,7 @@
             android:gravity="center"
             android:text="@string/seach_food_type"
             android:textColor="@color/color_999999"
-            android:textSize="@dimen/text_size_14" />
+            android:textSize="@dimen/text_size_14"/>
 
         <TextView
             android:id="@+id/search_add_area"
@@ -36,7 +36,7 @@
             android:gravity="center"
             android:text="@string/seach_add_area"
             android:textColor="@color/color_999999"
-            android:textSize="@dimen/text_size_14" />
+            android:textSize="@dimen/text_size_14"/>
 
         <TextView
             android:id="@+id/search_ranking"
@@ -46,7 +46,7 @@
             android:gravity="center"
             android:text="@string/seach_ranking"
             android:textColor="@color/color_999999"
-            android:textSize="@dimen/text_size_14" />
+            android:textSize="@dimen/text_size_14"/>
 
         <TextView
             android:id="@+id/search_screning_conditon"
@@ -56,17 +56,17 @@
             android:gravity="center"
             android:text="@string/seach_screning_conditon"
             android:textColor="@color/color_999999"
-            android:textSize="@dimen/text_size_14" />
+            android:textSize="@dimen/text_size_14"/>
     </LinearLayout>
 
     <View
         android:id="@+id/search_result_view"
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/color_999999" />
+        android:background="@color/color_999999"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/search_result_recylerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 </LinearLayout>

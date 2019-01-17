@@ -117,9 +117,11 @@ class LoginChangePswActivity : BaseActivity() {
             override fun afterTextChanged(s: Editable) {
             }
         })
+        //获取验证码
         tv_get_code_change_psw.setOnClickListener {
             hasRegistered(edt_input_phone_change_psw.text.toString())
         }
+        //确定
         btn_sure_change_psw.setOnClickListener {
             forgetpsw(edt_input_phone_change_psw.text.toString(), edt_input_code_change_psw.text.toString(), edt_input_new_psw_change_psw.text.toString(), edt_input_sure_new_psw_change_psw.text.toString())
         }
@@ -209,46 +211,48 @@ class LoginChangePswActivity : BaseActivity() {
      * password:新密码
      * surepassword：确认密码
      */
-    private fun forgetpsw(phone: String, msmCode: String, password: String, surepassword: String) {
+    private fun forgetpsw(phone: String, smsCode: String, password: String, surepassword: String) {
         ApiUtils.getApi()
-                .forgetpassword(phone, msmCode, password, surepassword)
+                .forgetpassword(phone, smsCode, password, surepassword)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
                     when (bean.code) {
-                    //手机号没有注册
+                        //手机号没有注册
                         25088 -> {
                             ToastUtil.showShort(getString(R.string.phone_not_registered))
                         }
-                    //登录成功
+                        //登录成功
                         12000 -> {
                             bean.data?.let {
                                 MainApplication.instance.user = it
-                                MainApplication.instance.TOKEN = it.userInfo.token
+                                MainApplication.instance.TOKEN = it.token
                                 it.upDate()
                             }
                             sharedSingleton.setString(IConstants.LOGIN_PHONE, phone)
                             sharedSingleton.setString(IConstants.LOGIN_PSW, password)
                             ToastUtil.showShort(getString(R.string.login_success))
-                            this.finish()
+                            //   this.finish()
                             //登录成功跳转首页
-                            val i = Intent()
-                            i.setClass(this@LoginChangePswActivity, JoinFragment::class.java!!)
-                            startActivity(i)
+//                            val i = Intent()
+//                            i.setClass(this@LoginChangePswActivity, JoinFragment::class.java!!)
+//                            startActivity(i)
 
 
                         }
-                    //参数有误
+                        //参数有误
                         13000 -> {
-                            //         ToastUtil.showShort("错误")
-                            ToastUtil.showShort(bean.msg)
+                            ToastUtil.showShort("错误")
+                            //  ToastUtil.showShort(bean.msg)
                         }
-                    //验证码不正确
+                        //验证码不正确
                         10000 -> {
+                            //   ToastUtil.showShort("错误2")
                             ToastUtil.showShort(bean.msg)
                         }
-                    //验证码不正确
+                        //验证码不正确
                         15002 -> {
+                            //      ToastUtil.showShort("错误3")
                             ToastUtil.showShort(bean.msg)
                         }
                     }

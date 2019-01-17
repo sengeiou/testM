@@ -15,6 +15,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_log_binding_phone.*
 import kotlinx.android.synthetic.main.activity_log_register.*
 import org.json.JSONObject
+
 /**
  * Created by mingyue
  * Date: 2019/1/14
@@ -22,7 +23,7 @@ import org.json.JSONObject
  * describe: 绑定手机
  */
 @SuppressLint("CheckResult")
-class LoginBindingPhone : BaseActivity() {
+class LoginBindingPhoneActivity : BaseActivity() {
     private var mRead = false
     override fun getLayoutId(): Int = R.layout.activity_log_binding_phone
 
@@ -70,10 +71,11 @@ class LoginBindingPhone : BaseActivity() {
             }
         }
     }
-/*
-*接口需等第三方登录之后再调试
-*
- */
+
+    /*
+    *接口需等第三方登录之后再调试
+    *
+     */
     //注册
     private fun register(userName: String, phone: String, code: String, psw: String, confirmPsw: String) {
         ApiUtils.getApi().register(userName, phone, code, psw, confirmPsw, 2)

@@ -21,18 +21,18 @@ import com.qingmeng.mengmeng.utils.ToastUtil
 
  *  Date: 2018/8/14
  */
-class EmailAutoCompleteTextView : AutoCompleteTextView{
+class EmailAutoCompleteTextView : AutoCompleteTextView {
     private var emailSufixs = arrayOf("@qq.com", "@163.com", "@126.com", "@gmail.com", "@sina.com", "@hotmail.com", "@yahoo.cn", "@sohu.com", "@foxmail.com", "@139.com", "@yeah.net", "@vip.qq.com", "@vip.sina.com")
 
-    constructor(context:Context) : super(context){
+    constructor(context: Context) : super(context) {
         init(context)
     }
 
-    constructor(context:Context,attrs:AttributeSet) : super(context,attrs){
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
         init(context)
     }
 
-    constructor(context:Context,attrs:AttributeSet,defStyle:Int) : super(context,attrs,defStyle){
+    constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle) {
         init(context)
     }
 
@@ -97,7 +97,7 @@ class EmailAutoCompleteTextView : AutoCompleteTextView{
     private inner class EmailAutoCompleteAdapter(context: Context, textViewResourceId: Int, email_s: Array<String>) : ArrayAdapter<String>(context, textViewResourceId, email_s) {
 
         override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-            var v: View ?= convertView
+            var v: View? = convertView
             if (v == null)
                 v = LayoutInflater.from(context).inflate(
                         R.layout.my_settings_user_autocompletetextview_item, null)

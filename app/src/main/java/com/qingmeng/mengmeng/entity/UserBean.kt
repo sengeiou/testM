@@ -19,7 +19,8 @@ data class UserBean(var userInfo: UserInfo = UserInfo(), var token: String = "")
     }
 
     class UserInfo(var id: Int = 0, var type: Int = 0, var lastLoginTime: Long = 0, var phone: String = "",
-                         var avatar: String = "", var nickname: String = "", var userName: String = "", var qqToken: String = "",
-                         var qqOpenid: String = "", var weChatToken: String = "", var weChatOpenid: String = "",
-                         var weChatUnionid: String = "", var wxName: String = "" ,var token: String="") : Serializable
+                   var avatar: String = "", var nickname: String = "", var userName: String = "", var qqToken: String = "",
+                   var qqOpenid: String = "", var weChatToken: String = "", var weChatOpenid: String = "",
+                   var weChatUnionid: String = "", var wxName: String = "") : Serializable
+
 }
