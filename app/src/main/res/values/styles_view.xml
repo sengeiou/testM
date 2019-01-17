@@ -19,7 +19,13 @@
         <item name="android:windowExitAnimation">@anim/dialog_out_anim</item>
     </style>
 
-    <!-- 输入框样式 -->
+    <!--搜索页筛选菜单PopWindow-->
+    <style name="TopPopWindow_animStyle">
+        <item name="android:windowEnterAnimation">@anim/fade_in_anim</item>
+        <item name="android:windowExitAnimation">@anim/fade_out_anim</item>
+    </style>
+
+    <!-- 修改个人信息输入框样式 -->
     <style name="my_settings_user_edt">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>

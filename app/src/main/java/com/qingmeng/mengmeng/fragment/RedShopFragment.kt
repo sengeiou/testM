@@ -23,9 +23,9 @@ class RedShopFragment : BaseFragment() {
     private lateinit var mRightInAdapter: CommonAdapter<String>
     private lateinit var mLauyoutManger: LinearLayoutManager
     private lateinit var mGridLayoutManager: GridLayoutManager
-    private var mLeftList = ArrayList<String>()
-    private var mRightList = ArrayList<String>()
-    private var mRightInList = ArrayList<String>()
+    private var mLeftList = arrayListOf<String>("火锅", "烧烤", "快餐", "西餐", "麻辣烫", "小面", "拉面", "日韩料理", "甜品蛋糕")
+    private var mRightList = arrayListOf<String>("分类", "热门品牌")
+    private var mRightInList = arrayListOf<String>("砂锅", "米线", "馄饨", "炸酱面", "花甲粉", "重庆小面", "拉面", "包子")
     override fun getLayoutId(): Int = R.layout.fragment_red_shop
     override fun initObject() {
         super.initObject()
@@ -39,8 +39,8 @@ class RedShopFragment : BaseFragment() {
 
         initLeftAdapter()
         initRightAdapter()
-        setData()
-        setRightdata()
+//        setData()
+//        setRightdata()
     }
 
     //加载   左边适配
@@ -49,6 +49,7 @@ class RedShopFragment : BaseFragment() {
         red_shop_left_recyclerview.layoutManager = mLauyoutManger
         mLeftAdapter = CommonAdapter(context!!, R.layout.red_shop_left_item, mLeftList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
+                setText(R.id.red_shop_left_textview, data)
                 //                getView<LinearLayout>(R.id.red_shop_left_lineralayout).setOnClickListener {
 //
 //                }
@@ -56,7 +57,7 @@ class RedShopFragment : BaseFragment() {
 
         }, onItemClick = { view, holder, position ->
 
-            ToastUtil.showShort("我是左边1级菜单")
+            ToastUtil.showShort("我是" + mLeftList[position])
             view.findViewById<TextView>(R.id.red_shop_left_textview).setBackgroundResource(R.drawable.ripple_bg_drawable_white)
         })
         red_shop_left_recyclerview.adapter = mLeftAdapter
@@ -67,15 +68,14 @@ class RedShopFragment : BaseFragment() {
         red_shop_right_recyclerview.layoutManager = mLauyoutManger
         mRightAdapter = CommonAdapter(context!!, R.layout.red_shop_right_item, mRightList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
-                if (mRightList.size > 1) {
-
-                }
-
+                setText(R.id.red_shop_right_tittle, data)
                 getView<RecyclerView>(R.id.red_shop_right_inrecycler).apply {
                     mGridLayoutManager = GridLayoutManager(context, 3)
                     layoutManager = mGridLayoutManager
                     mRightInAdapter = CommonAdapter(context, R.layout.fragment_red_shop_right_in_item, mRightInList, holderConvert = { holder, data, position, payloads ->
-
+                        holder.apply {
+                            setText(R.id.red_shop_right_inContent, data)
+                        }
                     }, onItemClick = { view, holder, position ->
                         startActivity<RedShopSeachResult>()
                     })
@@ -89,25 +89,25 @@ class RedShopFragment : BaseFragment() {
         red_shop_right_recyclerview.adapter = mRightAdapter
     }
 
-    private fun setData() {
-        mLeftList.clear()
-        for (i in 0 until 9) {
-            mLeftList.add("")
-        }
-        mLeftAdapter.notifyDataSetChanged()
-    }
-
-    private fun setRightdata() {
-        mRightList.clear()
-        for (i in 0 until 5) {
-            mRightList.add("")
-        }
-        for (i in 0 until 20) {
-            mRightInList.add("")
-        }
-
-        mRightAdapter.notifyDataSetChanged()
-    }
+//    private fun setData() {
+//        mLeftList.clear()
+//        for (i in 0 until 9) {
+//            mLeftList.add("")
+//        }
+//        mLeftAdapter.notifyDataSetChanged()
+//    }
+//
+//    private fun setRightdata() {
+//        mRightList.clear()
+//        for (i in 0 until 5) {
+//            mRightList.add("")
+//        }
+//        for (i in 0 until 20) {
+//            mRightInList.add("")
+//        }
+//
+//        mRightAdapter.notifyDataSetChanged()
+//    }
 
     override fun initData() {
         super.initData()

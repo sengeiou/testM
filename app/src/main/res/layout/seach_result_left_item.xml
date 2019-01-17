@@ -1,20 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/red_shop_left_lineralayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/page_background_f5"
-    android:orientation="horizontal">
-
+    android:orientation="vertical">
 
     <TextView
-        android:id="@+id/red_shop_left_textview"
-        android:layout_width="@dimen/padding_dp_90"
-        android:layout_height="45dp"
+        android:id="@+id/search_result_pop_left_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_dp_20"
+        android:layout_marginTop="@dimen/padding_dp_15"
         android:gravity="center"
-        android:layout_gravity="left"
+        android:text="content"
         android:textColor="@color/color_666666"
         android:textSize="@dimen/text_size_14" />
-
-
 </LinearLayout>
