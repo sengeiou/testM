@@ -56,37 +56,91 @@ interface Api {
     fun msmlogin(@Query("phone") phone: String, @Query("msmCode") msmCode: String): Observable<BaseBean<UserBean>>
 
     /**
+     * 获取banner图信息
+     * @param  type 1、首页；3、头报 5.登录banner 6.引导页
+     **/
+    @POST("api/banner/get_banner")
+    fun getbanner(@Query("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
+
+    //忘记密码
+    @POST("app/user/forget_password")
+    fun forgetpassword(@Query("phone") phone: String, @Query("msmCode") msmCode: String, @Query("password") password: String, @Header("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
+
+    /**
      * =========================================我的板块=========================================
      */
     //获取我的页面信息
     @GET("api/personal/get_center_personal")
     fun myInformation(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyInformation>>
 
+    //校验是设置密码还是修改密码
+    @GET("api/validate/validate_user_info?type=1")
+    fun mySettingsOrUpdatePass(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyInformation>>
+
     //获取个人设置页面信息
     @GET("api/personal/get_personal")
     fun mySettingsUser(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MySettingsUserBean>>
 
+    //静态数据 创业资本
+    @GET("api/get_capital")
+    fun getMoneyStatic(): Observable<BaseBean<SelectDialogBean>>
+
+    //静态数据 感兴趣行业
+    @GET("api/get_industry")
+    fun getInterestStatic(): Observable<BaseBean<SelectDialogBean>>
+
+    //静态数据 所有城市
+    @GET("api/get_city_all")
+    fun getCityStatic(): Observable<BaseBean<AllCityBean>>
+
     //修改个人信息
     @POST("api/personal/personal_modify")
     @FormUrlEncoded
-    fun updateMySettingsUser(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MySettingsUserBean>>
+    fun updateMySettingsUser(
+            @Field("avatar") avatar: String?,//头像
+            @Field("name") name: String?,//真实姓名*
+            @Field("sex") sex: Int?,//年龄
+            @Field("phone") phone: String?,//手机号*
+            @Field("telephone") telephone: String?,//固定电话
+            @Field("wx") wx: String?,//微信
+            @Field("qq") qq: String?,//qq
+            @Field("email") email: String?,//邮箱
+            @Field("districtId") districtId: Int?,//城市id*
+            @Field("capitalId") capitalId: Int?,//创业资本*
+            @Field("industryOfInterest") industryOfInterest: String?,//感兴趣行业*
+            @Header("ACCESS-TOKEN") token: String//token*
+    ): Observable<BaseBean<MySettingsUserBean>>
 
-    //我的关注
-    @GET("api_my/get_attention")
-    fun myFollow(@Query("userId") userId: Int, @Query("pageNum") pageNum: Int): Observable<BaseBean<MyMyFollowBean>>
+    //设置密码
+    @GET("app/user/setting_password")
+    fun setPass(@Query("name") name: String, @Query("password") password: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
 
     //修改密码
     @POST("app/user/update_password")
     @FormUrlEncoded
     fun updatePass(@Field("password") password: String, @Field("newPassword") newPassword: String, @Field("verifyPassword") verifyPassword: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
 
-    /**
-     * 获取banner图信息
-     * @param  type 1、首页；3、头报 5.登录banner 6.引导页
-     **/
-    @POST("api/banner/get_banner")
-    fun getbanner( @Query("VERSION") version: String,@Query("type") type: Int): Observable<BaseBean<BannerData>>
-    //忘记密码
-    @POST("app/user/forget_password")
-    fun forgetpassword(@Query("phone") phone: String, @Query("msmCode") msmCode: String, @Query("password") password: String, @Header("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
+    //我的关注
+    @GET("api/my_attention/get_attention")
+    fun myFollow(@Query("pageNum") pageNum: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyMyFollowBean>>
+
+    //取消我的关注
+    @GET("api/my_attention/un_subscribe")
+    fun deleteMyFollow(@Query("brandId") brandId: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+
+    //我的留言
+    @GET("api/my_comment/get_comments")
+    fun myLeavingMessage(@Query("pageNum") pageNum: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyMyFollowBean>>
+
+    //删除我的留言
+    @GET("api/my_comment/del_comment")
+    fun deleteMyLeavingMessage(@Query("commentId") commentId: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+
+    //我的足迹
+    @GET("api/my_footprint/get_footprint")
+    fun myFootprint(@Query("pageNum") pageNum: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyMyFollowBean>>
+
+    //删除我的足迹
+    @GET("api/my_footprint/del_footprint")
+    fun deleteMyFootprint(@Query("brandId") brandId: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
 }

@@ -2,6 +2,7 @@ package com.qingmeng.mengmeng.activity
 
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.utils.GlideCacheUtils
 import com.qingmeng.mengmeng.utils.TimerHandler
 import com.qingmeng.mengmeng.utils.ToastUtil
 import kotlinx.android.synthetic.main.activity_my_settings_updatephone.*
@@ -18,7 +19,6 @@ import java.util.regex.Pattern
  *  Date: 2019/1/3
  */
 class MySettingsUpdatePhoneActivity : BaseActivity() {
-    private var mTime = 60
 
     override fun getLayoutId(): Int {
         return R.layout.activity_my_settings_updatephone
@@ -83,6 +83,7 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
     //换绑手机接口
     private fun updatePhone(phone: String, msg: String) {
 
+        ToastUtil.showShort(getString(R.string.updatePhone_success_tips))
     }
 
     /**

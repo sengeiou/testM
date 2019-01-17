@@ -2,6 +2,8 @@ package com.qingmeng.mengmeng.activity
 
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.fragment.MyFragment
+import com.qingmeng.mengmeng.utils.GlideCacheUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.utils.imageLoader.CacheType
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
@@ -35,6 +37,16 @@ class MySettingsActivity : BaseActivity() {
         GlideLoader.load(this, intent.getStringExtra("avatar"), ivMySettingsHead, cacheType = CacheType.All)
         //设置用户名
         tvMySettingsUserName.text = intent.getStringExtra("userName")
+
+        //修改密码
+        if (MyFragment.mSettingsOrUpdate == 2) {
+            tvMySettingsNewOrOldPassword.text = getString(R.string.my_settings_updatePassword)
+        } else {    //设置密码
+            tvMySettingsNewOrOldPassword.text = getString(R.string.my_settings_setPassword)
+        }
+
+        //设置缓存大小
+        tvMySettingsCache.text = GlideCacheUtils.getCacheSize(this)
     }
 
     override fun initListener() {
@@ -63,7 +75,9 @@ class MySettingsActivity : BaseActivity() {
         //清理缓存
         llMySettingsClearCache.setOnClickListener {
             mDialog = DialogCommon(this, getString(R.string.tips), getString(R.string.clearCache_tips), onRightClick = {
-                ToastUtil.showShort("确定")
+                GlideCacheUtils.clearImageAllCache(this)
+                tvMySettingsCache.text = getString(R.string.clearCache_defaultSize)
+                ToastUtil.showShort("清除成功")
             })
             mDialog.show()
         }
