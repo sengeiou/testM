@@ -19,6 +19,8 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.activity.JoinFeedbackActivity
+import com.qingmeng.mengmeng.activity.LoginMainActivity
 import com.qingmeng.mengmeng.adapter.JoinRecommendAdapter
 import com.qingmeng.mengmeng.adapter.UnderLineNavigatorAdapter
 import com.qingmeng.mengmeng.entity.BannersBean
@@ -31,6 +33,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_join.*
 import kotlinx.android.synthetic.main.layout_banner.*
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
+import org.jetbrains.anko.support.v4.startActivity
 
 @SuppressLint("CheckResult")
 class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppBarLayout.OnOffsetChangedListener,
@@ -62,6 +65,11 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     }
 
     override fun initListener() {
+        //暴露接口测试
+        test_intface.setOnClickListener {
+            startActivity<JoinFeedbackActivity>()
+        }
+
         barLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             //verticalOffset始终为0以下的负数
             val percent = Math.abs(verticalOffset * 1.0f) / appBarLayout.totalScrollRange
@@ -298,7 +306,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     }
 
     //banner加载图片
-    override fun fillBannerItem(banner: BGABanner?, itemView: ImageView?, model: String?, position: Int) {
+    override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: String?, position: Int) {
         model?.let {
             Glide.with(this).load(it).apply(RequestOptions()
                     .placeholder(R.drawable.image_holder).error(R.drawable.image_holder)

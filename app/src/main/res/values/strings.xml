@@ -56,6 +56,11 @@
     <string name="join_feedback">我要反馈</string>
     <string name="recommend_advisory">立即咨询</string>
 
+    <string name="join_feedback_type1">品牌信息有误</string>
+    <string name="join_feedback_type2">品牌不存在</string>
+    <string name="join_feedback_type3">存在欺诈骗钱行为</string>
+    <string name="join_feedback_type4">存在侵权行为</string>
+
     <!-- =======================================红铺===================================== -->
     <string name="seach_shop_count">门店数：</string>
     <string name="seach_visit_count">浏览量：</string>
@@ -87,7 +92,7 @@
     <string name="confirm_new_password">请确认新密码</string>
     <string name="user_name_empty">用户名不能为空</string>
     <string name="psw_hint">请输入6–12位密码</string>
-    <string name="psw_inconsistent">两次密码不一致</string>
+    <string name="psw_inconsistent">两次密码不一致1</string>
     <string name="phone_empty">手机号不能为空</string>
     <string name="password_empty">密码不能为空</string>
     <string name="login_success">登录成功</string>

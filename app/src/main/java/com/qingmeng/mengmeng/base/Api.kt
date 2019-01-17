@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.base
 
+import com.luck.picture.lib.entity.LocalMedia
 import com.qingmeng.mengmeng.entity.*
 import io.reactivex.Observable
 import retrofit2.http.*
@@ -31,7 +32,7 @@ interface Api {
 
     @POST("app/user/phone_register")
     @FormUrlEncoded
-    fun register(@Field("userName") userName: String, @Field("phone") phone: String, @Field("msmCode") msmCode: String,
+    fun register(@Field("userName") userName: String, @Field("phone") phone: String, @Field("smsCode") smsCode: String,
                  @Field("password") password: String, @Field("verifyPassword") verifyPassword: String,
                  @Field("type") type: Int, @Field("isUserProtocol") isUserProtocol: Int = 1): Observable<BaseBean<UserBean>>
 
@@ -52,19 +53,8 @@ interface Api {
     fun accountlogin(@Query("account") account: String, @Query("password") password: String): Observable<BaseBean<UserBean>>
 
     //短信登录
-    @POST("app/user/msm_login")
-    fun msmlogin(@Query("phone") phone: String, @Query("msmCode") msmCode: String): Observable<BaseBean<UserBean>>
-
-    /**
-     * 获取banner图信息
-     * @param  type 1、首页；3、头报 5.登录banner 6.引导页
-     **/
-    @POST("api/banner/get_banner")
-    fun getbanner(@Query("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
-
-    //忘记密码
-    @POST("app/user/forget_password")
-    fun forgetpassword(@Query("phone") phone: String, @Query("msmCode") msmCode: String, @Query("password") password: String, @Header("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
+    @POST("app/user/sms_login")
+    fun smslogin(@Query("phone") phone: String, @Query("smsCode") smsCode: String): Observable<BaseBean<UserBean>>
 
     /**
      * =========================================我的板块=========================================
@@ -119,6 +109,30 @@ interface Api {
     @POST("app/user/update_password")
     @FormUrlEncoded
     fun updatePass(@Field("password") password: String, @Field("newPassword") newPassword: String, @Field("verifyPassword") verifyPassword: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+
+    /**
+     * 获取banner图信息
+     * @param  type 1、首页；3、头报 5.登录banner 6.引导页
+     **/
+    @GET("api/banner/get_banner")
+    fun getbanner(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannersBean>>
+    //忘记密码
+    @POST("app/user/forget_password")
+    fun forgetpassword(@Query("phone") phone: String, @Query("smsCode") smsCode: String, @Query("password") password: String, @Query("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
+    //我的反馈
+   @POST("/api/feedback/add_feedback")
+    fun join_feedback(@Header("ACCESS-TOKEN") token: String,@Query("brandId") brandId: Int, @Query("type") type: Int, @Query("content") content: String,  @Query("urlList") urlList: ArrayList<String> ): Observable<BaseBean<Any>>
+    //第三方登录
+    @POST("/app/user/third_party_login")
+    fun thirdlogin(@Query("openId") openId: String, @Query("type") type: Int): Observable<BaseBean<UserBean>>
+    //获取热门词汇
+    @GET("api/join/hot_search")
+    fun get_hot_search(@Header("VERSION") version: String): Observable<BaseBean<HotSearchBean>>
+    //爱加盟首页搜索
+    @POST("/api/join/get_search_brands")
+    fun join_search_brands(@Query("keyWord") keyWord: String, @Query("fatherId") fatherId: Int,
+                           @Query("typeId") typeId: Int, @Query("cityIds") cityIds: String, @Query("capitalIds") capitalIds: String,
+                           @Query("modeIds") modeIds: String,@Query("integratedSortId") integratedSortId: Int,@Query("pageNum") pageNum: Int): Observable<BaseBean<SearchDtoListBean>>
 
     //我的关注
     @GET("api/my_attention/get_attention")

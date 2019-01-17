@@ -22,7 +22,7 @@ import org.json.JSONObject
  * describe: 绑定手机
  */
 @SuppressLint("CheckResult")
-class LoginBindingPhone : BaseActivity() {
+class LoginBindingPhoneActivity : BaseActivity() {
     private var mRead = false
     override fun getLayoutId(): Int = R.layout.activity_log_binding_phone
 
