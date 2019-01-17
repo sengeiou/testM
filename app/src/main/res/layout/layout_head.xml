@@ -13,7 +13,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="@dimen/padding_dp_5"
         android:padding="@dimen/padding_dp_10"
-        android:src="@drawable/common_btn_back" />
+        android:src="@drawable/common_btn_back"/>
 
     <TextView
         android:id="@+id/mTitle"
@@ -21,7 +21,7 @@
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_20" />
+        android:textSize="@dimen/text_size_20"/>
 
     <TextView
         android:id="@+id/mMenu"

@@ -5,7 +5,7 @@
               android:background="@color/common_bg"
               android:orientation="vertical">
 
-    <include layout="@layout/layout_head" />
+    <include layout="@layout/layout_head"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         android:background="@color/color_ffffff"
         android:orientation="vertical">
 
-        <include layout="@layout/layout_line_no_padding" />
+        <include layout="@layout/layout_line_no_padding"/>
 
         <EditText
             android:id="@+id/edt_input_username_binding_phone"
@@ -29,8 +29,10 @@
             android:maxLength="12"
             android:textColor="@color/color_333333"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="@dimen/text_size_16" />
-        <View style="@style/cutting_line" />
+            android:textSize="@dimen/text_size_16"/>
+
+        <View style="@style/cutting_line"/>
+
         <EditText
             android:id="@+id/edt_input_phone_binding_phone"
             android:layout_width="match_parent"
@@ -44,10 +46,10 @@
             android:maxLength="11"
             android:textColor="@color/color_333333"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_16"/>
 
 
-        <View style="@style/cutting_line" />
+        <View style="@style/cutting_line"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -69,7 +71,7 @@
                 android:singleLine="true"
                 android:textColor="@color/color_333333"
                 android:textCursorDrawable="@drawable/color_cursor"
-                android:textSize="@dimen/text_size_16" />
+                android:textSize="@dimen/text_size_16"/>
 
             <TextView
                 android:id="@+id/tv_get_code_binding_phone"
@@ -82,11 +84,11 @@
                 android:paddingRight="@dimen/padding_dp_10"
                 android:text="@string/getMsg"
                 android:textColor="@color/color_5ab1e1"
-                android:textSize="@dimen/text_size_16" />
+                android:textSize="@dimen/text_size_16"/>
 
         </LinearLayout>
 
-        <View style="@style/cutting_line" />
+        <View style="@style/cutting_line"/>
 
         <EditText
             android:id="@+id/edt_input_password_binding_phone"
@@ -103,9 +105,9 @@
             android:singleLine="true"
             android:textColor="@color/color_333333"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_16"/>
 
-        <View style="@style/cutting_line" />
+        <View style="@style/cutting_line"/>
 
         <EditText
             android:id="@+id/edt_input_sure_password_binding_phone"
@@ -122,9 +124,9 @@
             android:singleLine="true"
             android:textColor="@color/color_333333"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="@dimen/text_size_16" />
+            android:textSize="@dimen/text_size_16"/>
 
-        <include layout="@layout/layout_line_no_padding" />
+        <include layout="@layout/layout_line_no_padding"/>
     </LinearLayout>
 
 
@@ -138,7 +140,7 @@
         android:gravity="center"
         android:text="@string/login"
         android:textColor="@color/color_ffffff"
-        android:textSize="@dimen/text_size_18" />
+        android:textSize="@dimen/text_size_18"/>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -152,7 +154,7 @@
             android:id="@+id/img_read_binding_phone"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@drawable/login_icon_not_read_n" />
+            android:src="@drawable/login_icon_not_read_n"/>
 
         <TextView
             android:layout_marginStart="10dp"
@@ -160,7 +162,7 @@
             android:layout_height="wrap_content"
             android:text="@string/read_accept"
             android:textColor="@color/color_909090"
-            android:textSize="@dimen/text_size_12" />
+            android:textSize="@dimen/text_size_12"/>
 
         <TextView
             android:id="@+id/tv_useragreement_binding_phone"
@@ -168,6 +170,6 @@
             android:layout_height="wrap_content"
             android:text="@string/user_agreement"
             android:textColor="@color/color_5ab1e1"
-            android:textSize="@dimen/text_size_12" />
+            android:textSize="@dimen/text_size_12"/>
     </LinearLayout>
 </LinearLayout>

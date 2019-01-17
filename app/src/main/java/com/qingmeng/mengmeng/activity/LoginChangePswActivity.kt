@@ -218,11 +218,11 @@ class LoginChangePswActivity : BaseActivity() {
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
                     when (bean.code) {
-                    //手机号没有注册
+                        //手机号没有注册
                         25088 -> {
                             ToastUtil.showShort(getString(R.string.phone_not_registered))
                         }
-                    //登录成功
+                        //登录成功
                         12000 -> {
                             bean.data?.let {
                                 MainApplication.instance.user = it
@@ -232,7 +232,7 @@ class LoginChangePswActivity : BaseActivity() {
                             sharedSingleton.setString(IConstants.LOGIN_PHONE, phone)
                             sharedSingleton.setString(IConstants.LOGIN_PSW, password)
                             ToastUtil.showShort(getString(R.string.login_success))
-                         //   this.finish()
+                            //   this.finish()
                             //登录成功跳转首页
 //                            val i = Intent()
 //                            i.setClass(this@LoginChangePswActivity, JoinFragment::class.java!!)
@@ -240,17 +240,17 @@ class LoginChangePswActivity : BaseActivity() {
 
 
                         }
-                    //参数有误
+                        //参数有误
                         13000 -> {
                             ToastUtil.showShort("错误")
                             //  ToastUtil.showShort(bean.msg)
                         }
-                    //验证码不正确
+                        //验证码不正确
                         10000 -> {
                             //   ToastUtil.showShort("错误2")
                             ToastUtil.showShort(bean.msg)
                         }
-                    //验证码不正确
+                        //验证码不正确
                         15002 -> {
                             //      ToastUtil.showShort("错误3")
                             ToastUtil.showShort(bean.msg)

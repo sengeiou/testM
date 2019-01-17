@@ -2,12 +2,17 @@ apply plugin: 'com.android.application'
 
 apply plugin: 'kotlin-android'
 
+apply plugin: 'kotlin-kapt'
+
 apply plugin: 'kotlin-android-extensions'
+
+apply plugin: 'io.objectbox'
 
 android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.qingmeng.mengmeng"
+        multiDexEnabled true
         minSdkVersion 19
         targetSdkVersion 28
         versionCode 1
@@ -15,7 +20,7 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构
-            abiFilters 'armeabi', 'x86', 'x86_64'
+            abiFilters 'armeabi-v7a', 'armeabi', 'x86', 'x86_64'
         }
     }
     buildTypes {
@@ -58,6 +63,7 @@ version = [
 ]
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:multidex:1.0.3'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     //noinspection NotInterpolated,GradleCompatible
     implementation "com.android.support:support-v4:$version.support"
@@ -94,5 +100,7 @@ dependencies {
     implementation 'com.aliyun.dpa:oss-android-sdk:+'
     implementation 'com.github.Aspsine:SwipeToLoadLayout:1.0.3'
     implementation 'com.github.hackware1993:MagicIndicator:1.4.2'
+    implementation "io.objectbox:objectbox-kotlin:$objectboxVersion"
+    implementation 'com.aliyun.dpa:oss-android-sdk:2.4.5'
     implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
 }

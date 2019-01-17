@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical">
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
 
     <TextView
         android:id="@+id/red_shop_right_tittle"
@@ -12,11 +12,11 @@
         android:layout_marginLeft="@dimen/padding_dp_20"
         android:layout_marginTop="@dimen/padding_dp_10"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/text_size_14" />
+        android:textSize="@dimen/text_size_14"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/red_shop_right_inrecycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

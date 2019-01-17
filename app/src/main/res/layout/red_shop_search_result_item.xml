@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/search_linearlayout"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    android:orientation="vertical">
+              android:id="@+id/search_linearlayout"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:orientation="vertical">
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/padding_dp_10"
-        android:background="@color/white" />
+        android:background="@color/white"/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -20,7 +20,7 @@
             android:layout_width="@dimen/padding_dp_80"
             android:layout_height="@dimen/padding_dp_100"
             android:layout_marginLeft="@dimen/padding_dp_10"
-            android:src="@color/colorPrimary" />
+            android:src="@color/colorPrimary"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,7 +39,7 @@
                     android:gravity="center"
                     android:text="认证"
                     android:textColor="@color/white"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_12"/>
 
                 <TextView
                     android:layout_width="match_parent"
@@ -47,7 +47,7 @@
                     android:maxLines="2"
                     android:text="我是标题 我是标题我是标题我是标题我是标题我是标题我是标题我是标题我是标题我是标题"
                     android:textColor="@color/color_333333"
-                    android:textSize="@dimen/text_size_16" />
+                    android:textSize="@dimen/text_size_16"/>
             </LinearLayout>
 
             <LinearLayout
@@ -63,7 +63,7 @@
                     android:gravity="center"
                     android:text="@string/my_myFollow_investmentAmount"
                     android:textColor="@color/color_666666"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_12"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -71,7 +71,7 @@
                     android:gravity="center_vertical"
                     android:text="¥12万"
                     android:textColor="@color/red"
-                    android:textSize="@dimen/text_size_15" />
+                    android:textSize="@dimen/text_size_15"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -79,7 +79,7 @@
                     android:gravity="center"
                     android:text="@string/seach_shop_count"
                     android:textColor="@color/color_666666"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_12"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -88,7 +88,7 @@
                     android:maxLines="1"
                     android:text="3325"
                     android:textColor="@color/color_666666"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_12"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -97,7 +97,7 @@
                     android:gravity="center"
                     android:text="@string/seach_visit_count"
                     android:textColor="@color/color_666666"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_12"/>
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -107,7 +107,7 @@
                     android:maxLines="1"
                     android:text="3325"
                     android:textColor="@color/color_666666"
-                    android:textSize="@dimen/text_size_12" />
+                    android:textSize="@dimen/text_size_12"/>
             </LinearLayout>
 
 
@@ -125,7 +125,7 @@
                     android:gravity="center_vertical"
                     android:text="加盟支持"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/text_size_11" />
+                    android:textSize="@dimen/text_size_11"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -134,7 +134,7 @@
                     android:gravity="center_vertical"
                     android:text="加盟支持"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/text_size_11" />
+                    android:textSize="@dimen/text_size_11"/>
 
                 <TextView
                     android:layout_width="0dp"
@@ -143,7 +143,7 @@
                     android:gravity="center_vertical"
                     android:text="加盟支持"
                     android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/text_size_11" />
+                    android:textSize="@dimen/text_size_11"/>
             </LinearLayout>
 
         </LinearLayout>
@@ -153,5 +153,5 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/padding_dp_5"
-        android:background="@color/white" />
+        android:background="@color/white"/>
 </LinearLayout>

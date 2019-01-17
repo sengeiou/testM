@@ -39,19 +39,19 @@ import kotlinx.android.synthetic.main.layout_head.*
  * mail: 153705849@qq.com
  * describe: 我的反馈
  */
-class JoinFeedbackActivity: BaseActivity() {
+class JoinFeedbackActivity : BaseActivity() {
     private val maxSelectNum = 4  //最大图片数
     private lateinit var mBottomDialog: SelectDialog
     private val selectList = java.util.ArrayList<LocalMedia>()
     private val murlList = ArrayList<String>()
     private lateinit var adapter: GridImageAdapter
     private var pop: PopupWindow? = null
-    lateinit var token:String
- //*****************
+    lateinit var token: String
+    //*****************
     //品牌ID
-    var brandId =10
-    var type =0
-    lateinit var content:String
+    var brandId = 10
+    var type = 0
+    lateinit var content: String
     override fun getLayoutId(): Int {
 
         return R.layout.activity_join_feedback
@@ -87,14 +87,14 @@ class JoinFeedbackActivity: BaseActivity() {
         btn_join_feedback.setOnClickListener {
             //菜单内容
             val menuList = ArrayList<SelectBean>()
-            menuList.add(SelectBean(name =getString(R.string.join_feedback_type1),id = 1))
-            menuList.add(SelectBean(name =getString(R.string.join_feedback_type2),id = 2))
-            menuList.add(SelectBean(name =getString(R.string.join_feedback_type3),id = 3))
-            menuList.add(SelectBean(name =getString(R.string.join_feedback_type4),id = 4))
+            menuList.add(SelectBean(name = getString(R.string.join_feedback_type1), id = 1))
+            menuList.add(SelectBean(name = getString(R.string.join_feedback_type2), id = 2))
+            menuList.add(SelectBean(name = getString(R.string.join_feedback_type3), id = 3))
+            menuList.add(SelectBean(name = getString(R.string.join_feedback_type4), id = 4))
             mBottomDialog = SelectDialog(this, menuList, onItemClick = { id ->
-                 run  {
+                run {
                     btn_join_feedback.setText("" + menuList.get(id).name)
-                    type=id
+                    type = id
                 }
 
             })
@@ -102,12 +102,13 @@ class JoinFeedbackActivity: BaseActivity() {
         }
         //提交
         mMenu.setOnClickListener {
-            token=IConstants.TEST_ACCESS_TOKEN
-            content=edt_join_feedback.text.toString()
+            token = IConstants.TEST_ACCESS_TOKEN
+            content = edt_join_feedback.text.toString()
 
-            setfeedback(token,brandId,type,content,murlList)
+            setfeedback(token, brandId, type, content, murlList)
         }
     }
+
     //反馈
     /*ACCESS-TOKEN  用户token
     *brandId    品牌id
@@ -116,20 +117,21 @@ class JoinFeedbackActivity: BaseActivity() {
     * urlList 反馈图片（多张逗号隔开）
      */
     //
-    private fun setfeedback(token :String,brandId: Int, type: Int, content: String, urlList: ArrayList<String>) {
+    private fun setfeedback(token: String, brandId: Int, type: Int, content: String, urlList: ArrayList<String>) {
         ApiUtils.getApi().join_feedback(token, brandId, type, content, urlList)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         ToastUtil.showShort(bean.msg)
-                            Log.e("aaaa","aaaa")
+                        Log.e("aaaa", "aaaa")
 
                     } else {
                         ToastUtil.showShort(bean.msg)
                     }
                 })
     }
+
     private fun initWidget() {
         val manager = FullyGridLayoutManager(this, 5, GridLayoutManager.VERTICAL, false)
         recy_join_feedback.setLayoutManager(manager)
@@ -138,7 +140,7 @@ class JoinFeedbackActivity: BaseActivity() {
         adapter.setSelectMax(maxSelectNum)
         recy_join_feedback.setAdapter(adapter)
         adapter.setOnItemClickListener(object : GridImageAdapter.OnItemClickListener {
-         override   fun onItemClick(position: Int, v: View) {
+            override fun onItemClick(position: Int, v: View) {
                 if (selectList.size > 0) {
                     val media = selectList.get(position)
                     val pictureType = media.getPictureType()
@@ -160,9 +162,9 @@ class JoinFeedbackActivity: BaseActivity() {
         })
     }
 
-    private val onAddPicClickListener = object : GridImageAdapter.onAddPicClickListener{
+    private val onAddPicClickListener = object : GridImageAdapter.onAddPicClickListener {
 
-        override  fun onAddPicClick() {
+        override fun onAddPicClick() {
 
             //第一种方式，弹出选择和拍照的dialog
             showPop()
@@ -218,7 +220,7 @@ class JoinFeedbackActivity: BaseActivity() {
             lp.alpha = 1f
             window.attributes = lp
         })
-   //     pop.setAnimationStyle(R.style.main_menu_photo_anim)
+        //     pop.setAnimationStyle(R.style.main_menu_photo_anim)
         pop?.showAtLocation(window.decorView, Gravity.BOTTOM, 0, 0)
 
         val clickListener = View.OnClickListener { view ->
@@ -255,6 +257,7 @@ class JoinFeedbackActivity: BaseActivity() {
             pop = null
         }
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val images: List<LocalMedia>

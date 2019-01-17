@@ -3,8 +3,12 @@
     <external-path
         path="Android/data/com.qingmeng.mengmeng/"
         name="files_root"/>
-    <external-path path="." name="external_storage_root" />
-    <root-path path="" name="camera_photos" />
+    <external-path
+        path="."
+        name="external_storage_root"/>
+    <root-path
+        path=""
+        name="camera_photos"/>
 </paths>
 
 

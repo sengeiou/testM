@@ -23,7 +23,6 @@ class MainActivity : BaseActivity(), TabHost.OnTabChangeListener {
     override fun getLayoutId(): Int = R.layout.activity_main
 
 
-
     @SuppressLint("ObsoleteSdkInt")
     override fun initObject() {
         //设置状态栏隐藏

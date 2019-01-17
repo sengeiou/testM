@@ -13,6 +13,7 @@ import android.view.ViewGroup;
  * email：893855882@qq.com
  * data：16/12/31
  */
+
 /**
  * Created by mingyue
  * Date: 2019/1/14
@@ -43,9 +44,9 @@ public class FullyGridLayoutManager extends GridLayoutManager {
         int span = getSpanCount();
         for (int i = 0; i < count; i++) {
             measureScrapChild(recycler, i,
-                    View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),
-                    View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),
-                    mMeasuredDimension);
+            View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),
+            View.MeasureSpec.makeMeasureSpec(i, View.MeasureSpec.UNSPECIFIED),
+            mMeasuredDimension);
 
             if (getOrientation() == HORIZONTAL) {
                 if (i % span == 0) {
@@ -92,9 +93,9 @@ public class FullyGridLayoutManager extends GridLayoutManager {
                 if (view != null) {
                     RecyclerView.LayoutParams p = (RecyclerView.LayoutParams) view.getLayoutParams();
                     int childWidthSpec = ViewGroup.getChildMeasureSpec(widthSpec,
-                            getPaddingLeft() + getPaddingRight(), p.width);
+                    getPaddingLeft() + getPaddingRight(), p.width);
                     int childHeightSpec = ViewGroup.getChildMeasureSpec(heightSpec,
-                            getPaddingTop() + getPaddingBottom(), p.height);
+                    getPaddingTop() + getPaddingBottom(), p.height);
                     view.measure(childWidthSpec, childHeightSpec);
                     measuredDimension[0] = view.getMeasuredWidth() + p.leftMargin + p.rightMargin;
                     measuredDimension[1] = view.getMeasuredHeight() + p.bottomMargin + p.topMargin;

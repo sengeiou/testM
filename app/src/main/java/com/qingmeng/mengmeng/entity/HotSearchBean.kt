@@ -8,6 +8,6 @@ import java.io.Serializable
  * mail: 153705849@qq.com
  * describe:
  */
-data class HotSearchBean(var hotSearchesList: ArrayList<HotSearchesList>, var version: String = "") : Serializable{
+data class HotSearchBean(var hotSearchesList: ArrayList<HotSearchesList>, var version: String = "") : Serializable {
     class HotSearchesList(var id: Int, var name: String)
 }

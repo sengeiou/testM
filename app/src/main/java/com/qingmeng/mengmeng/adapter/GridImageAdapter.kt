@@ -123,7 +123,7 @@ class GridImageAdapter(private val context: Context,
                     list.removeAt(index)
                     notifyItemRemoved(index)
                     notifyItemRangeChanged(index, list.size)
-              //      DebugUtil.i("delete position:", index.toString() + "--->remove after:" + list.size)
+                    //      DebugUtil.i("delete position:", index.toString() + "--->remove after:" + list.size)
                 }
             }
             val media = list[position]

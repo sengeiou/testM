@@ -9,6 +9,7 @@ object IConstants {
     val BASE_URL = BuildConfig.SERVER_IP
     val ERROR_MSG = "网络获取失败"
     val USER = "userBean"
+    val JOIN_RECOMMEND = "joinRecommend"
     val HOME_PAGE = "homePageBean"
     val LOGIN_TIME = "loginTime"
     val LOGIN_PHONE = "loginPhone"

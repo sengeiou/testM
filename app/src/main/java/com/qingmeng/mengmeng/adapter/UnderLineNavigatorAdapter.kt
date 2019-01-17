@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Color
 import android.support.v4.view.ViewPager
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.entity.StaticDataBean
+import com.qingmeng.mengmeng.entity.StaticBean
 import com.qingmeng.mengmeng.view.ScaleTransitionPagerTitleView
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.CommonNavigatorAdapter
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.abs.IPagerIndicator
@@ -16,7 +16,7 @@ import java.util.*
  * Created by tgy on 2017/2/26.
  */
 @Suppress("DEPRECATION")
-class UnderLineNavigatorAdapter(var tagList: ArrayList<StaticDataBean.StaticBean>) : CommonNavigatorAdapter() {
+class UnderLineNavigatorAdapter(var tagList: ArrayList<StaticBean>) : CommonNavigatorAdapter() {
     private lateinit var viewPager: ViewPager
 
     fun setRelateViewPager(viewPager: ViewPager) {
