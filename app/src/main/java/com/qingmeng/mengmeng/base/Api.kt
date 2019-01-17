@@ -29,13 +29,17 @@ interface Api {
                 @Field("geetest_challenge") geetest_challenge: String = "", @Field("geetest_validate") geetest_validate: String = "",
                 @Field("geetest_seccode") geetest_seccode: String = ""): Observable<BaseBean<Any>>
 
+    //注册
     @POST("app/user/phone_register")
     @FormUrlEncoded
     fun register(@Field("userName") userName: String, @Field("phone") phone: String, @Field("msmCode") msmCode: String,
                  @Field("password") password: String, @Field("verifyPassword") verifyPassword: String,
                  @Field("type") type: Int, @Field("isUserProtocol") isUserProtocol: Int = 1): Observable<BaseBean<UserBean>>
 
-    //获取静态数据
+    /**
+     * 获取静态数据
+     * @param type 类型：1.首页banner8个icon 2.首页列表模块 3.列表筛选标题 4.综合排序 5.反馈类型
+     */
     @GET("api/get_system_static_info")
     fun getStaticInfo(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<StaticDataBean>>
 
@@ -45,7 +49,7 @@ interface Api {
 
     //获取首页推荐列表
     @GET("api/banner/get_banner")
-    fun getBanners(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannersBean>>
+    fun getBanners(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
 
     //账号登录
     @POST("app/user/account_login")
@@ -85,8 +89,13 @@ interface Api {
      * @param  type 1、首页；3、头报 5.登录banner 6.引导页
      **/
     @POST("api/banner/get_banner")
-    fun getbanner( @Query("VERSION") version: String,@Query("type") type: Int): Observable<BaseBean<BannerData>>
+    fun getbanner(@Query("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
+
     //忘记密码
     @POST("app/user/forget_password")
     fun forgetpassword(@Query("phone") phone: String, @Query("msmCode") msmCode: String, @Query("password") password: String, @Header("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
+
+    //获取oss令牌
+    @GET("http://zng535.natappfree.cc/oss/authorization_app?name=mm")
+    fun getOssToken(): Observable<BaseBean<OssDataBean>>
 }

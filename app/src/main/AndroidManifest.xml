@@ -42,6 +42,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- 爱加盟 -->
+        <activity android:name=".activity.ShopDetailActivity" />
         <!-- 我的 -->
         <activity android:name=".activity.MySettingsActivity" />
         <activity android:name=".activity.MySettingsUserActivity" />

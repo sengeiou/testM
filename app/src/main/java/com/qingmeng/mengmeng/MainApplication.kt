@@ -4,9 +4,13 @@ import AppManager
 import android.annotation.SuppressLint
 import android.app.Application
 import android.text.TextUtils
+import android.util.Log
+import com.qingmeng.mengmeng.entity.MyObjectBox
 import com.qingmeng.mengmeng.entity.UserBean
 import com.qingmeng.mengmeng.utils.SharedSingleton
 import com.tencent.bugly.crashreport.CrashReport
+import io.objectbox.BoxStore
+import io.objectbox.android.AndroidObjectBrowser
 import java.io.BufferedReader
 import java.io.FileReader
 import java.io.IOException
@@ -30,7 +34,19 @@ class MainApplication : Application() {
         sharedSingleton = SharedSingleton.instance
         user = UserBean.fromString()
         TOKEN = user.token
+        initBox()
         initBugly()
+    }
+
+    private fun initBox() {
+        boxStore = MyObjectBox.builder().androidContext(this).build()
+        if (BuildConfig.DEBUG) {
+            boxStore.let {
+                //可以理解为初始化连接浏览器(可以在浏览器中查看数据，下面再说)
+                val started = AndroidObjectBrowser(boxStore).start(this)
+                Log.i("ObjectBrowser", "Started: " + started)
+            }
+        }
     }
 
     private fun initBugly() {
@@ -49,6 +65,7 @@ class MainApplication : Application() {
 
     companion object {
         lateinit var instance: MainApplication
+        lateinit var boxStore: BoxStore
     }
 
     private fun getProcessName(pid: Int): String? {

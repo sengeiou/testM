@@ -1,8 +1,13 @@
 package com.qingmeng.mengmeng.view.dialog
 
+import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
 import android.content.Context
+import android.graphics.drawable.AnimationDrawable
+import android.os.Build
 import android.support.v4.content.ContextCompat
+import android.view.Gravity
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageView
@@ -21,6 +26,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
 @Suppress("IMPLICIT_BOXING_IN_IDENTITY_EQUALS", "DEPRECATED_IDENTITY_EQUALS")
+@SuppressLint("ObsoleteSdkInt")
 class DialogCustom(private var mContext: Context?) {
     private var remindDialog: Dialog? = null
     private var loadingDialog: Dialog? = null
@@ -31,6 +37,41 @@ class DialogCustom(private var mContext: Context?) {
         mContext = null
         remindDialog?.let { remindDialog = null }
         loadingDialog?.let { loadingDialog = null }
+    }
+
+    fun dismissLoadingDialog() {
+        if (mContext != null && !(mContext as Activity).isFinishing) {
+            loadingDialog?.let {
+                if (it.isShowing) {
+                    it.dismiss()
+                }
+            }
+        }
+    }
+
+    fun showLoadingDialog() {
+        loadingDialog?.let {
+            if (it.isShowing) {
+                return@let
+            }
+        }
+        val view = View.inflate(mContext, R.layout.layout_dialog_loading, null)
+        val imageView = view.findViewById<ImageView>(R.id.load_iv)
+        imageView.setImageResource(R.drawable.loading_small)
+        val drawable = imageView.drawable as AnimationDrawable
+        drawable.start()
+        loadingDialog = Dialog(mContext!!, R.style.dialog_loading)
+        loadingDialog?.apply {
+            setContentView(view)
+            window?.setGravity(Gravity.CENTER)
+            setCanceledOnTouchOutside(false)
+            setCancelable(true)
+            val activity = mContext as Activity
+            if (activity.isFinishing || (Build.VERSION.SDK_INT >= 17 && activity.isDestroyed)) {
+                return
+            }
+            show()
+        }
     }
 
     fun showImageCodeDialog(phone: String, type: Int, sureClick: (disposable: Disposable) -> Unit, startTiming: () -> Unit) {

@@ -1,5 +1,7 @@
 package com.qingmeng.mengmeng.entity
 
+import io.objectbox.annotation.Entity
+import io.objectbox.annotation.Id
 
 
 /**
@@ -8,18 +10,23 @@ package com.qingmeng.mengmeng.entity
  * mail: 153705849@qq.com
  * describe:
  */
-data class BannerData(
-        val banners: List<Banner>,
-        val version: String
-)
+data class BannerData(var banners: List<Banner>, var version: String) {
+    fun setVersion() {
+        banners.forEach { it.version = version }
+    }
+}
+
+@Entity
 data class Banner(
-        val id: Int,
-        val imgUrl: String,
-        val interiorDetailsId: Int,
-        val isDel: Boolean,
-        val skipType: Int,
-        val sort: Int,
-        val title: String,
-        val type: Int,
-        val url: String
+        @Id var cacheId: Long,
+        var id: Int,
+        var imgUrl: String,
+        var interiorDetailsId: Int,
+        var isDel: Boolean,
+        var skipType: Int,
+        var sort: Int,
+        var title: String,
+        var type: Long,
+        var url: String,
+        var version: String
 )
