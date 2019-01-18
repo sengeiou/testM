@@ -8,7 +8,7 @@
     >
 
     <com.qingmeng.mengmeng.view.SwipeLayout
-        android:id="@+id/slMy"
+        android:id="@+id/srlMy"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:load_more_enabled="false"

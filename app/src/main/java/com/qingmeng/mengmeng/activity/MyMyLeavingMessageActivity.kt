@@ -49,21 +49,20 @@ class MyMyLeavingMessageActivity : BaseActivity() {
 
         initAdapter()
 
-        slMyMyLeavingMessage.isRefreshing = true
-        //接口请求
-        httpLoad(1)
+        //自动刷新请求
+        srlMyMyLeavingMessage.isRefreshing = true
     }
 
     override fun initListener() {
         super.initListener()
 
         //下拉刷新
-        slMyMyLeavingMessage.setOnRefreshListener {
+        srlMyMyLeavingMessage.setOnRefreshListener {
             httpLoad(1)
         }
 
         //上滑加载
-        slMyMyLeavingMessage.setOnLoadMoreListener {
+        srlMyMyLeavingMessage.setOnLoadMoreListener {
             httpLoad(mPageNum)
         }
 
@@ -78,25 +77,25 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                 super.onScrollStateChanged(recyclerView, newState)
                 //滑到顶部了
                 if (!recyclerView.canScrollVertically(-1)) {
-                    if (!slMyMyLeavingMessage.isLoadingMore) {
-                        slMyMyLeavingMessage.isRefreshEnabled = true
+                    if (!srlMyMyLeavingMessage.isLoadingMore) {
+                        srlMyMyLeavingMessage.isRefreshEnabled = true
                     }
                 } else if (!recyclerView.canScrollVertically(1)) {  //滑到底部了
                     //如果下拉刷新没有刷新的话
-                    if (!slMyMyLeavingMessage.isRefreshing) {
+                    if (!srlMyMyLeavingMessage.isRefreshing) {
                         if (mList.isNotEmpty()) {
                             //是否有下一页
                             if (mHasNextPage) {
                                 //是否可以请求接口
                                 if (mCanHttpLoad) {
-                                    slMyMyLeavingMessage.isLoadMoreEnabled = true
+                                    srlMyMyLeavingMessage.isLoadMoreEnabled = true
                                 }
                             }
                         }
                     }
                 } else {
-                    slMyMyLeavingMessage.isRefreshEnabled = false
-                    slMyMyLeavingMessage.isLoadMoreEnabled = false
+                    srlMyMyLeavingMessage.isRefreshEnabled = false
+                    srlMyMyLeavingMessage.isLoadMoreEnabled = false
                 }
             }
         })
@@ -160,7 +159,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                                 if (pageNum == 1) {
                                     //空白页提示
                                     llMyMyLeavingMessageTips.visibility = View.VISIBLE
-                                    slMyMyLeavingMessage.isRefreshEnabled = true
+                                    srlMyMyLeavingMessage.isRefreshEnabled = true
                                 }
                             } else {
                                 mHasNextPage = true
@@ -178,12 +177,13 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                     setRefreshAsFalse()
                     mCanHttpLoad = true
                     llMyMyLeavingMessageTips.visibility = View.VISIBLE
-                    slMyMyLeavingMessage.isRefreshEnabled = true
+                    srlMyMyLeavingMessage.isRefreshEnabled = true
                 })
     }
 
     //删除留言接口 先把下一页的数据查出来传给删除方法
     private fun httpDelLoadOne(pageNum: Int, myLeavingMessageDel: MyLeavingMessage) {
+        myDialog.showLoadingDialog()
         ApiUtils.getApi()
                 .myLeavingMessage(pageNum, TEST_ACCESS_TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -194,10 +194,11 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                             httpDelLoadTwo(data?.data!!, myLeavingMessageDel)
                         } else {
                             ToastUtil.showShort(getString(R.string.my_myFollow_cancel_fail))
+                            myDialog.dismissLoadingDialog()
                         }
                     }
                 }, {
-
+                    myDialog.dismissLoadingDialog()
                 })
     }
 
@@ -208,6 +209,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    myDialog.dismissLoadingDialog()
                     it.apply {
                         if (code == 12000) {
                             mIsDelete = true
@@ -221,16 +223,16 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                         }
                     }
                 }, {
-
+                    myDialog.dismissLoadingDialog()
                 })
     }
 
     //关闭刷新状态
     private fun setRefreshAsFalse() {
-        slMyMyLeavingMessage.isRefreshing = false
-        slMyMyLeavingMessage.isLoadingMore = false
-        slMyMyLeavingMessage.isRefreshEnabled = false
-        slMyMyLeavingMessage.isLoadMoreEnabled = false
+        srlMyMyLeavingMessage.isRefreshing = false
+        srlMyMyLeavingMessage.isLoadingMore = false
+        srlMyMyLeavingMessage.isRefreshEnabled = false
+        srlMyMyLeavingMessage.isLoadMoreEnabled = false
     }
 
     override fun onBackPressed() {

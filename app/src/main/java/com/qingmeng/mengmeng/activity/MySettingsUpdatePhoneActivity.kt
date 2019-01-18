@@ -162,11 +162,13 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
 
     //换绑手机接口
     private fun httpUpdatePhone(phone: String, msg: String) {
+        myDialog.showLoadingDialog()
         ApiUtils.getApi()
                 .updatePhone(phone, msg, TEST_ACCESS_TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    myDialog.dismissLoadingDialog()
                     it.apply {
                         if (code == 12000) {
                             ToastUtil.showShort(getString(R.string.updatePhone_success_tips))
@@ -180,7 +182,7 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
                         }
                     }
                 }, {
-
+                    myDialog.dismissLoadingDialog()
                 })
     }
 

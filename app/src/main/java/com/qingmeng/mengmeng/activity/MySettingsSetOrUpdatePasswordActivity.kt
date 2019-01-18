@@ -1,5 +1,7 @@
 package com.qingmeng.mengmeng.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
@@ -34,17 +36,17 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
-        //设置密码标题
-        if (intent.getStringExtra("title") == getString(R.string.my_settings_setPassword)) {
+        //修改密码
+        if (intent.getBooleanExtra("isUpdatePass", false)) {
+            setHeadName(getString(R.string.my_settings_updatePassword))
+            mIsSetPass = false
+        } else {    //设置密码
             setHeadName(getString(R.string.my_settings_setPassword))
             mIsSetPass = true
             etMySettingsSetOrUpdateOld.setHint(R.string.username)
             //设置输入类型 默认
             etMySettingsSetOrUpdateOld.inputType = InputType.TYPE_CLASS_TEXT
             ivMySettingsSetOrUpdateIcon.setImageResource(R.mipmap.my_settings_updatepass_user)
-        } else {    //修改密码
-            setHeadName(getString(R.string.my_settings_updatePassword))
-            mIsSetPass = false
         }
     }
 
@@ -127,29 +129,36 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
 
     //设置密码接口
     private fun setPassHttp(name: String, pass: String) {
+        myDialog.showLoadingDialog()
         ApiUtils.getApi()
                 .setPass(name, pass, TEST_ACCESS_TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    myDialog.dismissLoadingDialog()
                     if (it.code == 12000) {
                         ToastUtil.showShort(getString(R.string.setPass_success))
+                        setResult(Activity.RESULT_OK, Intent().apply {
+                            putExtra("isSetPass", true)
+                        })
                         onBackPressed()
                     } else {
                         ToastUtil.showShort(it.msg)
                     }
                 }, {
-
+                    myDialog.dismissLoadingDialog()
                 })
     }
 
     //修改密码接口
     private fun updatePassHttp(oldPass: String, newPass: String, newPassTwo: String) {
+        myDialog.showLoadingDialog()
         ApiUtils.getApi()
                 .updatePass(oldPass, newPass, newPassTwo, TEST_ACCESS_TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    myDialog.dismissLoadingDialog()
                     if (it.code == 12000) {
                         ToastUtil.showShort(getString(R.string.updatePass_success))
                         onBackPressed()
@@ -157,7 +166,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
                         ToastUtil.showShort(it.msg)
                     }
                 }, {
-
+                    myDialog.dismissLoadingDialog()
                 })
     }
 

@@ -4,9 +4,9 @@ import android.app.Activity
 import android.content.Intent
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.fragment.MyFragment
 import com.qingmeng.mengmeng.utils.GlideCacheUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.getLoacalBitmap
 import com.qingmeng.mengmeng.utils.imageLoader.CacheType
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.view.dialog.DialogCommon
@@ -28,6 +28,7 @@ class MySettingsActivity : BaseActivity() {
     private lateinit var mDialog: DialogCommon   //弹框
     private val REQUEST_MY_SETTINGS = 9264       //下一页返回数据的requestCode
     private var mPhone = ""                      //上个页面传过来的手机号
+    private var mIsUpdatePass = false            //上个页面传过来的是否是修改密码
     private var mPhoneChange = false             //上个页面传过来的手机号是否改变过
 
     override fun getLayoutId(): Int {
@@ -39,19 +40,20 @@ class MySettingsActivity : BaseActivity() {
 
         //设置标题
         setHeadName(getString(R.string.setting))
+        mPhone = intent.getStringExtra("phone")
+        mIsUpdatePass = intent.getBooleanExtra("isUpdatePass", false)
         //设置头像
         GlideLoader.load(this, intent.getStringExtra("avatar"), ivMySettingsHead, cacheType = CacheType.All)
         //设置用户名
         tvMySettingsUserName.text = intent.getStringExtra("userName")
 
         //修改密码
-        if (MyFragment.mSettingsOrUpdate == 2) {
+        if (mIsUpdatePass) {
             tvMySettingsNewOrOldPassword.text = getString(R.string.my_settings_updatePassword)
         } else {    //设置密码
             tvMySettingsNewOrOldPassword.text = getString(R.string.my_settings_setPassword)
         }
 
-        mPhone = intent.getStringExtra("phone")
         //设置缓存大小
         tvMySettingsCache.text = GlideCacheUtils.getCacheSize(this)
     }
@@ -66,12 +68,12 @@ class MySettingsActivity : BaseActivity() {
 
         //用户
         llMySettingsUserInformation.setOnClickListener {
-            startActivity<MySettingsUserActivity>()
+            startActivityForResult<MySettingsUserActivity>(REQUEST_MY_SETTINGS)
         }
 
         //设置或修改密码
         llMySettingsUpdatePassword.setOnClickListener {
-            startActivity<MySettingsSetOrUpdatePasswordActivity>("title" to tvMySettingsNewOrOldPassword.text as String)
+            startActivityForResult<MySettingsSetOrUpdatePasswordActivity>(REQUEST_MY_SETTINGS, "isUpdatePass" to mIsUpdatePass)
         }
 
         //换绑手机
@@ -107,8 +109,19 @@ class MySettingsActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_MY_SETTINGS && resultCode == Activity.RESULT_OK) {
             val phone = data?.getStringExtra("phone")
-            if (phone != null) {
-                mPhone = phone
+            val path = data?.getStringExtra("mPath")
+            val isSetPass = data?.getBooleanExtra("isSetPass", false) ?: false
+            if (!phone.isNullOrBlank() || !path.isNullOrBlank() || isSetPass) {
+                if (!phone.isNullOrBlank()) {
+                    mPhone = phone!!
+                }
+                if (!path.isNullOrBlank()) {
+                    val bitmap = getLoacalBitmap(path!!)
+                    ivMySettingsHead.setImageBitmap(bitmap)
+                }
+                if (isSetPass) {
+                    mIsUpdatePass = true
+                }
                 //设置返回时告诉上一个页面刷新
                 mPhoneChange = true
             }

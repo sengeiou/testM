@@ -23,7 +23,7 @@ class MySettingsUserBean {
     val provinceId: Int = 0
     val address: String = ""
     var capitalId: Int = 0
-    val industryOfInterest: String = ""
+    var industryOfInterest: String = ""
     val capital: String = ""
     val industryOfInterestName: List<String> = ArrayList()
     val userName: String = ""

@@ -10,7 +10,7 @@
     <include layout="@layout/layout_head"/>
 
     <com.qingmeng.mengmeng.view.SwipeLayout
-        android:id="@+id/slMyMyLeavingMessage"
+        android:id="@+id/srlMyMyLeavingMessage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >

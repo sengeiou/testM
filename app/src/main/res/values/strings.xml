@@ -132,6 +132,7 @@
     <string name="my_settings_aboutUs">关于我们</string>
     <string name="my_settings_exitUser">退出账号</string>
     <string name="my_settings_user_title">个人资料</string>
+    <string name="my_settings_user_no_tips">点击空白处重试</string>
     <string name="my_settings_user_head">头像</string>
     <string name="my_settings_user_name">真实姓名</string>
     <string name="my_settings_user_telephone">固定电话</string>
@@ -155,6 +156,8 @@
     <string name="my_settings_aboutUs_tips">通过本软件参加的任何商业活动均与Apple Inc.无关</string>
     <string name="my_threeBinding_yes">已绑定</string>
     <string name="my_threeBinding_not">未绑定</string>
+    <string name="my_threeBinding_qq_tips">获取用户信息失败</string>
+    <string name="my_threeBinding_no_wechat">未检测到微信客户端</string>
     <string name="my_threeBinding_untying">解绑</string>
     <string name="my_threeBinding_qqTips">解除绑定后，你将不能通过QQ进行第三方登录</string>
     <string name="my_threeBinding_wechatTips">解除绑定后，你将不能通过微信进行第三方登录</string>

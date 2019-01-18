@@ -3,17 +3,16 @@ package com.qingmeng.mengmeng.fragment
 import android.app.Activity
 import android.content.Intent
 import android.view.View
+import com.dragger2.activitytest0718.util.SharedPreferencesHelper
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.*
 import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.entity.MyInformation
-import com.qingmeng.mengmeng.utils.ApiUtils
-import com.qingmeng.mengmeng.utils.dp2px
-import com.qingmeng.mengmeng.utils.getBarHeight
+import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.imageLoader.CacheType
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
-import com.qingmeng.mengmeng.utils.setMarginExt
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_my.*
@@ -24,12 +23,9 @@ import org.jetbrains.anko.support.v4.startActivity
  */
 
 class MyFragment : BaseFragment() {
-    private lateinit var mMyInformation: MyInformation   //个人信息bean
+    private lateinit var spf: SharedPreferencesHelper
+    private var mMyInformation = MyInformation()         //个人信息bean
     private val REQUEST_MY = 746                         //下一页返回数据的requestCode
-
-    companion object {
-        var mSettingsOrUpdate: Int = 0                   //是设置密码或修改密码   1设置 2修改
-    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_my
@@ -45,13 +41,10 @@ class MyFragment : BaseFragment() {
         rlMyTop.layoutParams.height = rlMyTop.layoutParams.height + getBarHeight(context!!)
         ivMySettings.setMarginExt(top = statusBarHeight + context!!.dp2px(15))
 
-        slMy.isRefreshing = true
-        if (mSettingsOrUpdate != 0) {
-            httpLoad()
-        } else {
-            //先请求用户校验是设置密码还是修改密码接口
-            settingsOrUpdatePass()
-        }
+        spf = SharedPreferencesHelper(context!!, "myFragment")
+
+        //设置缓存数据
+        getCacheData()
     }
 
     //点击事件
@@ -59,9 +52,9 @@ class MyFragment : BaseFragment() {
         super.initListener()
 
         //下拉刷新
-        slMy.setOnRefreshListener {
-            //如果该字段不为空 那么就直接请求信息查询
-            if (mSettingsOrUpdate != 0) {
+        srlMy.setOnRefreshListener {
+            //如果该字段是修改密码 那么就直接请求信息查询
+            if (spf.getSharedPreference("isUpdatePass", false) as Boolean) {
                 httpLoad()
             } else {
                 settingsOrUpdatePass()
@@ -80,6 +73,7 @@ class MyFragment : BaseFragment() {
                 putExtra("avatar", mMyInformation.avatar)
                 putExtra("userName", mMyInformation.userName)
                 putExtra("phone", mMyInformation.phone)
+                putExtra("isUpdatePass", spf.getSharedPreference("isUpdatePass", false) as Boolean)
             }, REQUEST_MY)
         }
 
@@ -126,22 +120,26 @@ class MyFragment : BaseFragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    slMy.isRefreshing = false
+                    srlMy.isRefreshing = false
                     it.apply {
                         if (code == 12000) {
                             llMyNoLogin.visibility = View.VISIBLE
                             tvMyLogin.visibility = View.GONE
+                            //数据库删除
+                            BoxUtils.removeMyInformation(mMyInformation)
                             //信息赋值
                             mMyInformation = data as MyInformation
+                            //数据库保存
+                            BoxUtils.saveMyInformation(mMyInformation)
                             //页面赋值
-                            setData(data as MyInformation)
+                            setData(mMyInformation)
                         } else {
                             llMyNoLogin.visibility = View.GONE
                             tvMyLogin.visibility = View.VISIBLE
                         }
                     }
                 }, {
-                    slMy.isRefreshing = false
+                    srlMy.isRefreshing = false
                 })
     }
 
@@ -154,16 +152,35 @@ class MyFragment : BaseFragment() {
                 .subscribe({
                     it.apply {
                         if (code == 12000) {    //修改密码
-                            mSettingsOrUpdate = 2
+                            spf.put("isUpdatePass", true)
                         } else if (code == 30001) { //设置密码
-                            mSettingsOrUpdate = 1
+                            spf.put("isUpdatePass", false)
                         }
                     }
                     //请求下一个接口
                     httpLoad()
                 }, {
-                    slMy.isRefreshing = false
+                    srlMy.isRefreshing = false
                 })
+    }
+
+    //获取缓存数据
+    private fun getCacheData() {
+        Observable.create<MyInformation> {
+            mMyInformation = BoxUtils.getMyInformation()!!
+            it.onNext(mMyInformation)
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    llMyNoLogin.visibility = View.VISIBLE
+                    tvMyLogin.visibility = View.GONE
+                    //页面赋值
+                    setData(it)
+                    //自动下拉刷新请求接口
+                    srlMy.isRefreshing = true
+                }, {
+                    srlMy.isRefreshing = true
+                }, {}, { addSubscription(it) })
     }
 
     //页面内容赋值
@@ -181,14 +198,9 @@ class MyFragment : BaseFragment() {
         if (requestCode == REQUEST_MY && resultCode == Activity.RESULT_OK) {
             val isDelete = data?.getBooleanExtra("isDelete", false) ?: false
             val mPhoneChange = data?.getBooleanExtra("mPhoneChange", false) ?: false
-            //如果下一页删掉过数据 就刷新下本页
+            //如果下一页删掉过数据 或改变过手机号 设置过密码 就刷新本页
             if (isDelete || mPhoneChange) {
-                slMy.isRefreshing = true
-                if (mSettingsOrUpdate != 0) {
-                    httpLoad()
-                } else {
-                    settingsOrUpdatePass()
-                }
+                srlMy.isRefreshing = true
             }
         }
     }

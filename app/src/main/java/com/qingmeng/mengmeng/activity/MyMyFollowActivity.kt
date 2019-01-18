@@ -61,21 +61,20 @@ class MyMyFollowActivity : BaseActivity() {
         //适配器初始化
         initAdapter()
 
-        slMyMyFollow.isRefreshing = true
-        //接口请求
-        httpLoad(1)
+        //自动刷新请求
+        srlMyMyFollow.isRefreshing = true
     }
 
     override fun initListener() {
         super.initListener()
 
         //下拉刷新
-        slMyMyFollow.setOnRefreshListener {
+        srlMyMyFollow.setOnRefreshListener {
             httpLoad(1)
         }
 
         //上滑加载
-        slMyMyFollow.setOnLoadMoreListener {
+        srlMyMyFollow.setOnLoadMoreListener {
             httpLoad(mPageNum)
         }
 
@@ -98,25 +97,25 @@ class MyMyFollowActivity : BaseActivity() {
                 super.onScrollStateChanged(recyclerView, newState)
                 //滑到顶部了
                 if (!recyclerView.canScrollVertically(-1)) {
-                    if (!slMyMyFollow.isLoadingMore) {
-                        slMyMyFollow.isRefreshEnabled = true
+                    if (!srlMyMyFollow.isLoadingMore) {
+                        srlMyMyFollow.isRefreshEnabled = true
                     }
                 } else if (!recyclerView.canScrollVertically(1)) {  //滑到底部了
                     //如果下拉刷新没有刷新的话
-                    if (!slMyMyFollow.isRefreshing) {
+                    if (!srlMyMyFollow.isRefreshing) {
                         if (mList.isNotEmpty()) {
                             //是否有下一页
                             if (mHasNextPage) {
                                 //是否可以请求接口
                                 if (mCanHttpLoad) {
-                                    slMyMyFollow.isLoadMoreEnabled = true
+                                    srlMyMyFollow.isLoadMoreEnabled = true
                                 }
                             }
                         }
                     }
                 } else {
-                    slMyMyFollow.isRefreshEnabled = false
-                    slMyMyFollow.isLoadMoreEnabled = false
+                    srlMyMyFollow.isRefreshEnabled = false
+                    srlMyMyFollow.isLoadMoreEnabled = false
                 }
             }
         })
@@ -182,7 +181,7 @@ class MyMyFollowActivity : BaseActivity() {
                                 if (pageNum == 1) {
                                     //空白页提示
                                     llMyMyFollowTips.visibility = View.VISIBLE
-                                    slMyMyFollow.isRefreshEnabled = true
+                                    srlMyMyFollow.isRefreshEnabled = true
                                 }
                             } else {
                                 mHasNextPage = true
@@ -200,12 +199,13 @@ class MyMyFollowActivity : BaseActivity() {
                     setRefreshAsFalse()
                     mCanHttpLoad = true
                     llMyMyFollowTips.visibility = View.VISIBLE
-                    slMyMyFollow.isRefreshEnabled = true
+                    srlMyMyFollow.isRefreshEnabled = true
                 })
     }
 
     //取消关注接口 先把下一页的数据查出来传给删除方法
     private fun httpDelLoadOne(pageNum: Int, myFollowDel: MyFollow) {
+        myDialog.showLoadingDialog()
         ApiUtils.getApi().let {
             if (mIsMyFollow) {
                 it.myFollow(pageNum, TEST_ACCESS_TOKEN)
@@ -221,10 +221,11 @@ class MyMyFollowActivity : BaseActivity() {
                             httpDelLoadTwo(data?.data!!, myFollowDel)
                         } else {
                             ToastUtil.showShort(getString(R.string.my_myFollow_cancel_fail))
+                            myDialog.dismissLoadingDialog()
                         }
                     }
                 }, {
-
+                    myDialog.dismissLoadingDialog()
                 })
     }
 
@@ -240,6 +241,7 @@ class MyMyFollowActivity : BaseActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    myDialog.dismissLoadingDialog()
                     it.apply {
                         if (code == 12000) {
                             mIsDelete = true
@@ -253,16 +255,16 @@ class MyMyFollowActivity : BaseActivity() {
                         }
                     }
                 }, {
-
+                    myDialog.dismissLoadingDialog()
                 })
     }
 
     //用到的地方偏多 统一一下
     private fun setRefreshAsFalse() {
-        slMyMyFollow.isRefreshing = false
-        slMyMyFollow.isLoadingMore = false
-        slMyMyFollow.isRefreshEnabled = false
-        slMyMyFollow.isLoadMoreEnabled = false
+        srlMyMyFollow.isRefreshing = false
+        srlMyMyFollow.isLoadingMore = false
+        srlMyMyFollow.isRefreshEnabled = false
+        srlMyMyFollow.isLoadMoreEnabled = false
     }
 
     override fun onBackPressed() {
