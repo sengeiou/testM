@@ -71,7 +71,8 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     //初始化Listener
     override fun initListener() {
         super.initListener()
-
+        //返回
+        iv_login_main_back.setOnClickListener { this.finish() }
         //账号密码登录
         btn_login_pw_main.setOnClickListener { startActivity<LoginpwActivity>() }
         //短信验证登录

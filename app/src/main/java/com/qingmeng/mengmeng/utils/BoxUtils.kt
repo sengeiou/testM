@@ -1,16 +1,14 @@
 package com.qingmeng.mengmeng.utils
 
 import com.qingmeng.mengmeng.MainApplication
-import com.qingmeng.mengmeng.entity.Banner
-import com.qingmeng.mengmeng.entity.Banner_
-import com.qingmeng.mengmeng.entity.StaticBean
-import com.qingmeng.mengmeng.entity.StaticBean_
+import com.qingmeng.mengmeng.entity.*
 
 object BoxUtils {
     private val boxStore = MainApplication.boxStore
     private val bannerBox = boxStore.boxFor(Banner::class.java)
     private val staticBox = boxStore.boxFor(StaticBean::class.java)
-
+    private val hotsearchBox = boxStore.boxFor(HotSearchesList::class.java)
+    private val searchBox = boxStore.boxFor(SearchHistoryList::class.java)
     //保存banner到数据库
     fun saveBanners(banners: MutableList<Banner>) {
         boxStore.runInTxAsync({ bannerBox.put(banners) }, { _, _ -> })
@@ -34,6 +32,40 @@ object BoxUtils {
     fun saveStatic(statics: MutableList<StaticBean>) {
         boxStore.runInTxAsync({ staticBox.put(statics) }, { _, _ -> })
     }
+    //保存热门数据到数据库
+    fun saveHotSearch(statics: MutableList<HotSearchesList>) {
+        boxStore.runInTxAsync({ hotsearchBox.put(statics) }, { _, _ -> })
+    }
+    //根据版本号获取热门数据
+    fun getHotSearch(version :String):MutableList<HotSearchesList>{
+        return hotsearchBox.query().equal(HotSearchesList_.version,version).build().find()
+    }
+    //根据cacheId获取热门数据
+    fun getIdHotSearch(cacheId :Long):MutableList<HotSearchesList>{
+        return hotsearchBox.query().equal(HotSearchesList_.cacheId,cacheId).build().find()
+    }
+    //删除已过期热门数据
+    fun removeHotSearch(search: MutableList<HotSearchesList>) {
+        boxStore.runInTxAsync({ hotsearchBox.remove(search) }, { _, _ -> })
+    }
+    //保存搜索记录到数据库
+    fun saveSearch(search: SearchHistoryList) {
+        boxStore.runInTxAsync({ searchBox.put(search) }, { _, _ -> })
+    }
+
+    //根据name获取搜索记录
+    fun getnameSearch(name :String):MutableList<SearchHistoryList>{
+        return searchBox.query().equal(SearchHistoryList_.name,name).build().find()
+    }
+    //根据Id获取搜索记录
+    fun getIdSearch(id :Long):MutableList<SearchHistoryList>{
+        return searchBox.query().equal(SearchHistoryList_.id,id).build().find()
+    }
+    //删除搜索记录
+    fun removeSearchs(search: MutableList<SearchHistoryList>) {
+        boxStore.runInTxAsync({ searchBox.remove(search) }, { _, _ -> })
+    }
+
 
     /**
      * 根据类型获取静态数据
@@ -44,8 +76,11 @@ object BoxUtils {
         return staticBox.query().equal(StaticBean_.type, type).build().find()
     }
 
+
     //删除已过期静态数据
     fun removeStatic(statics: MutableList<StaticBean>) {
         boxStore.runInTxAsync({ staticBox.remove(statics) }, { _, _ -> })
     }
+
+
 }

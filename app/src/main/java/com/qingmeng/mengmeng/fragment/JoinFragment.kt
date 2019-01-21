@@ -18,6 +18,7 @@ import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.JoinFeedbackActivity
+import com.qingmeng.mengmeng.activity.LoginMainActivity
 import com.qingmeng.mengmeng.adapter.JoinMenuAdapter
 import com.qingmeng.mengmeng.adapter.JoinRecommendAdapter
 import com.qingmeng.mengmeng.adapter.UnderLineNavigatorAdapter
