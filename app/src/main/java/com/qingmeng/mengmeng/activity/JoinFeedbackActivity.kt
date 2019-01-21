@@ -112,9 +112,9 @@ class JoinFeedbackActivity : BaseActivity() {
                 {
                     callUrl.add(it);
                     if (callUrl.size == selectList.size) {
-                    setfeedback(token, brandId, type, content, callUrl)
+                        setfeedback(token, brandId, type, content, callUrl)
 
-                }
+                    }
                 })
             }
 

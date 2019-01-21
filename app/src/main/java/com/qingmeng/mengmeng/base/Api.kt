@@ -118,8 +118,8 @@ interface Api {
      * 获取banner图信息
      * @param  type 1、首页；3、头报 5.登录banner 6.引导页
      **/
-    @POST("api/banner/get_banner")
-    fun getbanner(@Query("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
+    @GET("api/banner/get_banner")
+    fun getbanner(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
 
     //忘记密码
     @POST("app/user/forget_password")

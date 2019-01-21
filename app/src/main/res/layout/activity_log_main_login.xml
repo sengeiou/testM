@@ -36,7 +36,9 @@
             android:id="@+id/banner_login_main"
             android:layout_width="wrap_content"
             android:layout_height="200dp"
-            app:srcCompat="@drawable/login_logo"/>
+            app:banner_placeholderDrawable="@drawable/image_holder"
+            app:srcCompat="@drawable/login_logo">
+    </cn.bingoogolapple.bgabanner.BGABanner>
 
         <RelativeLayout
             android:layout_width="match_parent"

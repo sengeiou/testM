@@ -1,8 +1,10 @@
 package com.qingmeng.mengmeng.activity
 
 /**
- * Created by fyf on 2019/1/8
- * 搜索页
+ * Created by mingyue
+ * Date: 2019/1/16
+ * mail: 153705849@qq.com
+ * describe: 搜索
  */
 import android.content.Context
 import android.view.KeyEvent
@@ -82,9 +84,9 @@ class RedShopSeach : BaseActivity() {
             }
         })
 
-        //     head_search2.setOnClickListener { }
-        head_search_mMenu2.setOnClickListener { this.finish() }
-
+        head_search_mMenu2.setOnClickListener {
+            this.finish()
+        }
 
         head_search2.setOnEditorActionListener(object : TextView.OnEditorActionListener {
 
@@ -118,37 +120,29 @@ class RedShopSeach : BaseActivity() {
         })
         //删除按钮
         search_cancel_search.setOnClickListener {
-            //            if (bhistorySearch){
-
             BoxUtils.removeSearchs(historySearchData)
             shistory.clear()
             setSearchHistory(shistory)
             adapter.notifyDataChanged()
-//            }
         }
 
     }
 
     override fun initData() {
         super.initData()
-
         //判断数据库是否为空
         bhotversion = hotidSearchData.isEmpty()
         bhistorySearch = historySearchData.isEmpty()
         //get热门标签
         getHotSearch()
         if (bhistorySearch) {
-
         } else {
             getSearchHistory()
         }
-
-
     }
 
     //get热门标签
     fun getHotSearch() {
-
         if (bhotversion) {
             //空
             mversion = ""
@@ -189,7 +183,6 @@ class RedShopSeach : BaseActivity() {
                             }
                         }
                         setHotSearch(mList)
-
                     } else
                     //版本相同
                         if (bean.code == 20000) {
@@ -206,26 +199,19 @@ class RedShopSeach : BaseActivity() {
 
     //set热门标签
     private fun setHotSearch(htagList: List<HotSearchesList>) {
-
         tfl_hot_search.adapter = object : TagAdapter<HotSearchesList>(htagList) {
-
             override fun getView(parent: FlowLayout?, position: Int, data: HotSearchesList?): View {
                 return LayoutInflater.from(this@RedShopSeach).inflate(R.layout.red_shop_view_flowlayout_reasons_text, tfl_hot_search, false).apply {
                     findViewById<TextView>(R.id.tvTag).setText(data!!.name)
                 }
             }
-
             //选中搜索
             override fun onSelected(position: Int, view: View?) {
                 super.onSelected(position, view)
                 mbackHotSearch = mList[position].name
-                //      ToastUtil.showShort("" + mbackHotSearch)
                 startActivity<RedShopSeachResult>()
             }
-
         }
-
-
     }
 
     //get搜索历史
@@ -240,7 +226,6 @@ class RedShopSeach : BaseActivity() {
             for (i in historySearchData.indices) {
                 shistory.add(historySearchData[i].name)
             }
-//
 //            //只输出10个
             for (i in shistory.indices) {
                 if (shistory.size > 10) {
@@ -261,16 +246,12 @@ class RedShopSeach : BaseActivity() {
                     findViewById<TextView>(R.id.tvTag).setText(data)
                 }
             }
-
             //选中搜索
             override fun onSelected(position: Int, view: View?) {
                 super.onSelected(position, view)
                 mbackHistorySearch = shistory[position]
-                //   ToastUtil.showShort(""+mbackHistorySearch)
                 startActivity<RedShopSeachResult>()
             }
-
-
         }
         tfl_search_history.adapter = adapter
     }

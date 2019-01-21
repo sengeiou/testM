@@ -39,7 +39,7 @@ import org.jetbrains.anko.support.v4.startActivity
 
 @SuppressLint("CheckResult")
 class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppBarLayout.OnOffsetChangedListener,
-        BGABanner.Delegate<ImageView, Banner>, BGABanner.Adapter<ImageView, String> {
+        BGABanner.Delegate<ImageView, Banner>, BGABanner.Adapter<ImageView, Banner> {
     private lateinit var listPagerAdapter: PagerAdapter
     private lateinit var indicatorAdapter: UnderLineNavigatorAdapter
     private lateinit var commonNavigator: CommonNavigator
@@ -95,7 +95,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     override fun initListener() {
         //暴露接口测试
         test_intface.setOnClickListener {
-            startActivity<JoinFeedbackActivity>()
+            startActivity<LoginMainActivity>()
         }
 
         barLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
@@ -368,9 +368,9 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     }
 
     //banner加载图片
-    override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: String?, position: Int) {
+    override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: Banner?, position: Int) {
         model?.let {
-            Glide.with(this).load(it).apply(RequestOptions()
+            Glide.with(this).load(it.imgUrl).apply(RequestOptions()
                     .placeholder(R.drawable.image_holder).error(R.drawable.image_holder)
                     .centerCrop()).into(itemView)
         }
