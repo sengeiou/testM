@@ -119,21 +119,25 @@ interface Api {
     @GET("api/get_city_all")
     fun getCityStatic(): Observable<BaseBean<AllCityBean>>
 
+    @GET("api/get_city_all")
+    fun getCityStatic(@Header("VERSION") version: String): Observable<BaseBean<AllCityBean>>
+
     //修改个人信息
     @POST("api/personal/personal_modify")
     @FormUrlEncoded
     fun updateMySettingsUser(
             @Field("avatar") avatar: String?,//头像
-            @Field("name") name: String?,//真实姓名*
+            @Field("name") name: String,//真实姓名*
             @Field("sex") sex: Int?,//年龄
-            @Field("phone") phone: String?,//手机号*
+            @Field("phone") phone: String,//手机号*
             @Field("telephone") telephone: String?,//固定电话
             @Field("wx") wx: String?,//微信
             @Field("qq") qq: String?,//qq
             @Field("email") email: String?,//邮箱
-            @Field("districtId") districtId: Int?,//城市id*
-            @Field("capitalId") capitalId: Int?,//创业资本*
-            @Field("industryOfInterest") industryOfInterest: String?,//感兴趣行业*
+            @Field("districtId") districtId: Int,//城市id*
+            @Field("capitalId") capitalId: Int,//创业资本*
+            @Field("industryOfInterest") industryOfInterest: String,//感兴趣行业*
+            @Field("wxUid") wxUid: Int,//完信uId*
             @Header("ACCESS-TOKEN") token: String//token*
     ): Observable<BaseBean<MySettingsUserBean>>
 

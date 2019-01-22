@@ -1,6 +1,7 @@
 package com.qingmeng.mengmeng.activity
 
 import android.app.Dialog
+import android.content.Intent
 import android.support.v4.app.Fragment
 import android.support.v4.view.PagerAdapter
 import android.support.v7.widget.LinearLayoutManager
@@ -12,20 +13,30 @@ import android.view.Window
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.ChatAdapter
 import com.qingmeng.mengmeng.adapter.ChatType
 import com.qingmeng.mengmeng.adapter.MultiItemTypeAdapter
 import com.qingmeng.mengmeng.adapter.MyFragmentPagerAdapter
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.fragment.MyMessageChatExpressionTabLayoutFragment
 import com.qingmeng.mengmeng.utils.KeyboardUtil
+import com.qingmeng.mengmeng.utils.PermissionUtils
+import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.audio.AudioManager
+import com.qingmeng.mengmeng.utils.audio.MediaManager
+import com.qingmeng.mengmeng.utils.getLoacalBitmap
 import com.qingmeng.mengmeng.utils.imageLoader.CacheType
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
+import com.qingmeng.mengmeng.utils.photo.PhotoConfig
+import com.qingmeng.mengmeng.utils.photo.SimplePhotoUtil
 import kotlinx.android.synthetic.main.activity_my_message_chat.*
 import kotlinx.android.synthetic.main.layout_head.*
 import kotlinx.android.synthetic.main.view_dialog_sound_volume.*
 import java.util.*
+
 
 /**
  *  Description :设置 - 消息 - 聊天界面
@@ -41,15 +52,17 @@ class MyMessageChatActivity : BaseActivity() {
     private lateinit var mLayoutManager: LinearLayoutManager
     private lateinit var mAdapter: MultiItemTypeAdapter<Int>
     private lateinit var mPageAdapter: PagerAdapter
+    private var mAudioManager = AudioManager.getInstance(IConstants.DIR_AUDIO_STR)    //语音工具类
     private lateinit var mSoundVolumeDialog: Dialog             //语音弹出框
     private lateinit var mSoundVolumeImg: ImageView
     private lateinit var mSoundVolumeLayout: LinearLayout
     private var y1 = 0                                          //手指坐标
     private var y2 = 0
     private var mExpressionOrFunction = 0                       //变量 0默认（都不受理） 1表情点击 2工具+点击
-    private var mFragmentList = ArrayList<Fragment>()
+    private var mFragmentList = ArrayList<Fragment>()           //表情fragment
     private val mTabTitles = arrayOf("", "", "")                //tabLayout头部 先加3个试试
     private var mList = ArrayList<Int>()
+    private var mLocalVideoPath = ""                            //语音本地路径
 
     override fun getLayoutId(): Int {
         return R.layout.activity_my_message_chat
@@ -86,27 +99,25 @@ class MyMessageChatActivity : BaseActivity() {
 
         //输入框上部分点击事件
         rvMyMessageChat.setOnTouchListener { _, _ ->
-            //表情和工具布局隐藏
-            llMyMessageChatFunction.visibility = View.GONE
-            rlMyMessageChatExpression.visibility = View.GONE
-            //关闭软键盘
-            mKeyboardUtil.hideInputKeyboard()
+            hiddenViewAndInputKeyboard()
             false
         }
 
         //音频
         ivMyMessageChatAudio.setOnClickListener {
-            //关闭软键盘
-            mKeyboardUtil.hideInputKeyboard()
-            //表情和工具布局隐藏
-            llMyMessageChatFunction.visibility = View.GONE
-            rlMyMessageChatExpression.visibility = View.GONE
-            //按住说话不显示就显示 反之隐藏
-            tvMyMessageChatClickSay.visibility = if (tvMyMessageChatClickSay.visibility == View.GONE) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
+            //判断是否有权限
+            PermissionUtils.audio(this, {
+                PermissionUtils.readAndWrite(this, {
+                    //表情和工具布局隐藏 关闭软键盘
+                    hiddenViewAndInputKeyboard()
+                    //按住说话不显示就显示 反之隐藏
+                    tvMyMessageChatClickSay.visibility = if (tvMyMessageChatClickSay.visibility == View.GONE) {
+                        View.VISIBLE
+                    } else {
+                        View.GONE
+                    }
+                })
+            })
         }
 
         //按住说话
@@ -120,6 +131,10 @@ class MyMessageChatActivity : BaseActivity() {
                     mSoundVolumeImg.visibility = View.VISIBLE
                     mSoundVolumeImg.setBackgroundResource(R.drawable.view_dialog_sound_volume_01)
                     mSoundVolumeLayout.setBackgroundResource(R.drawable.view_dialog_sound_volume_default_bg)
+                    //录音
+                    mAudioManager.readyAudio({
+                        onReceiveMaxVolume(it)
+                    })
                     //显示弹框
                     mSoundVolumeDialog.show()
                     true
@@ -163,6 +178,12 @@ class MyMessageChatActivity : BaseActivity() {
                     } else {  //取消发送
                         mSoundVolumeDialog.dismiss()
                     }
+                    //释放录音
+                    mAudioManager.releaseAudio({
+                        ToastUtil.showShort(it)
+                        //录制路径赋值
+                        mLocalVideoPath = it
+                    })
                     false
                 }
                 else -> true
@@ -287,18 +308,85 @@ class MyMessageChatActivity : BaseActivity() {
         tvMyMessageChatSend.setOnClickListener {
 
         }
+
+        //拍照
+        llMyMessageChatFunctionCamera.setOnClickListener {
+            PermissionUtils.camera(this, {
+                //打开相机
+                openCamera()
+            })
+        }
+
+        //照片
+        llMyMessageChatFunctionPhoto.setOnClickListener {
+            PermissionUtils.readAndWrite(this, {
+                //打开相册
+                openAlbum()
+            })
+        }
+
+        //视频
+        llMyMessageChatFunctionVideo.setOnClickListener {
+            PermissionUtils.readAndWrite(this, {
+                //打开视频
+                openVideo()
+            })
+        }
+
+        //语音听筒扬声器切换
+        ivMyMessageChatSwitchAudio.setOnClickListener {
+            if (MediaManager.mIsCall) {
+                MediaManager.switchPlay(false)
+                ToastUtil.showShort(getString(R.string.play_audio_music))
+            } else {
+                MediaManager.switchPlay(true)
+                ToastUtil.showShort(getString(R.string.play_audio_call))
+            }
+        }
     }
 
     private fun initAdapter() {
         //消息适配器
         mLayoutManager = LinearLayoutManager(this)
         rvMyMessageChat.layoutManager = mLayoutManager
-        mAdapter = MultiItemTypeAdapter(this, mList, itemClick = { view, holder, position ->
-            //表情和工具布局隐藏
-            llMyMessageChatFunction.visibility = View.GONE
-            rlMyMessageChatExpression.visibility = View.GONE
-            //关闭软键盘
-            mKeyboardUtil.hideInputKeyboard()
+        mAdapter = MultiItemTypeAdapter(this, mList, holderConvert = { holder, data, position, payloads ->
+            holder.apply {
+                when (mList[position]) {
+                    ChatType.CHAT_TYPE_BRAND -> {   //品牌详情
+                        //品牌详情
+                        getView<LinearLayout>(R.id.llMyMessageChatRvBrand).setOnClickListener {
+                            ToastUtil.showShort("品牌详情")
+                        }
+                        //发送品牌
+                        getView<TextView>(R.id.tvMyMessageChatRvBrandSend).setOnClickListener {
+                            ToastUtil.showShort("发送品牌")
+                        }
+                    }
+                    ChatType.CHAT_TYPE_OTHER -> {   //别人消息
+                        getView<ImageView>(R.id.ivMyMessageChatRvOtherHead).setOnClickListener {
+                            ToastUtil.showShort("别人头像")
+                        }
+                    }
+                    ChatType.CHAT_TYPE_MINE -> {    //自己消息
+                        getView<LinearLayout>(R.id.llMyMessageChatRvMine).setOnClickListener {
+                            hiddenViewAndInputKeyboard()
+                        }
+                        getView<LinearLayout>(R.id.llMyMessageChatRvMineAudio).setOnClickListener {
+                            ToastUtil.showShort("自己语音")
+                            //测试播放语音
+                            MediaManager.play(this@MyMessageChatActivity, mLocalVideoPath, {
+                                //语音开始播放了
+                                ivMyMessageChatSwitchAudio.visibility = View.VISIBLE
+                                ToastUtil.showShort(getString(R.string.play_audio_call))
+                            }, {
+                                //语音播放结束
+                                MediaManager.release()
+                                ivMyMessageChatSwitchAudio.visibility = View.GONE
+                            })
+                        }
+                    }
+                }
+            }
         })
         mAdapter.addItemViewDelegate(ChatAdapter.TimeLayout())
         mAdapter.addItemViewDelegate(ChatAdapter.BrandLayout())
@@ -340,19 +428,19 @@ class MyMessageChatActivity : BaseActivity() {
 
     //根据分贝值设置录音时的音量动画
     private fun onReceiveMaxVolume(voiceValue: Int) {
-        if (voiceValue < 200.0) {
+        if (voiceValue < 500.0) {   //200.0
             mSoundVolumeImg.setBackgroundResource(R.drawable.view_dialog_sound_volume_01)
-        } else if (voiceValue > 200.0 && voiceValue < 600) {
+        } else if (voiceValue > 500.0 && voiceValue < 1000.0) { //200.0 600.0
             mSoundVolumeImg.setBackgroundResource(R.drawable.view_dialog_sound_volume_02)
-        } else if (voiceValue > 600.0 && voiceValue < 1200) {
+        } else if (voiceValue > 1000.0 && voiceValue < 1500.0) {    //600 1200.0
             mSoundVolumeImg.setBackgroundResource(R.drawable.view_dialog_sound_volume_03)
-        } else if (voiceValue > 1200.0 && voiceValue < 2400) {
+        } else if (voiceValue > 1500.0 && voiceValue < 2000.0) {    //1200.0 2400.0
             mSoundVolumeImg.setBackgroundResource(R.drawable.view_dialog_sound_volume_04)
-        } else if (voiceValue > 2400.0 && voiceValue < 10000) {
+        } else if (voiceValue > 2000.0 && voiceValue < 3000.0) {    //2400.0 10000.0
             mSoundVolumeImg.setBackgroundResource(R.drawable.view_dialog_sound_volume_05)
-        } else if (voiceValue > 10000.0 && voiceValue < 28000.0) {
+        } else if (voiceValue > 3000.0 && voiceValue < 5000.0) {    //10000.0 28000.0
             mSoundVolumeImg.setBackgroundResource(R.drawable.view_dialog_sound_volume_06)
-        } else if (voiceValue > 28000.0) {
+        } else if (voiceValue > 5000.0) {   //28000.0
             mSoundVolumeImg.setBackgroundResource(R.drawable.view_dialog_sound_volume_07)
         }
     }
@@ -372,6 +460,15 @@ class MyMessageChatActivity : BaseActivity() {
         fragmentParams.height = 0
     }
 
+    //表情和工具布局隐藏 关闭软键盘
+    private fun hiddenViewAndInputKeyboard() {
+        //表情和工具布局隐藏
+        llMyMessageChatFunction.visibility = View.GONE
+        rlMyMessageChatExpression.visibility = View.GONE
+        //关闭软键盘
+        mKeyboardUtil.hideInputKeyboard()
+    }
+
     private fun setData() {
         mList.clear()
         mList.add(ChatType.CHAT_TYPE_TIME)
@@ -383,6 +480,48 @@ class MyMessageChatActivity : BaseActivity() {
         mAdapter.notifyDataSetChanged()
         //滚到最后一个
         rvMyMessageChat.scrollToPosition(mList.size - 1)
+    }
+
+    //权限申请结果
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        PermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    //打开相机拍照返回路径
+    private fun openCamera() {
+        SimplePhotoUtil.instance.setConfig(PhotoConfig(this, true, onPathCallback = { path ->
+            //用ImageView显示出来
+            val bitmap = getLoacalBitmap(path)
+            ToastUtil.showShort(path)
+        }))
+    }
+
+    //打开相册读取文件返回路径
+    private fun openAlbum() {
+        SimplePhotoUtil.instance.setConfig(PhotoConfig(this, false, onPathCallback = { path ->
+            val bitmap = getLoacalBitmap(path)
+            ToastUtil.showShort(path)
+        }))
+    }
+
+    //打开视频文件读取返回路径
+    private fun openVideo() {
+        SimplePhotoUtil.instance.setConfig(this, { path ->
+            ToastUtil.showShort(path)
+        })
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        //选择照片（图库，拍照）
+        SimplePhotoUtil.instance.onPhotoResult(requestCode, resultCode, data)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        MediaManager.release()
     }
 
     override fun onBackPressed() {

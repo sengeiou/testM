@@ -39,14 +39,14 @@ class MyThreeBindingActivity : BaseActivity() {
     override fun initListener() {
         super.initListener()
 
-        //返回
-        mBack.setOnClickListener {
-            onBackPressed()
-        }
-
         //下拉刷新
         srlMyThreeBinding.setOnRefreshListener {
             httpLoad()
+        }
+
+        //返回
+        mBack.setOnClickListener {
+            onBackPressed()
         }
 
         //QQ

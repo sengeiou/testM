@@ -14,6 +14,7 @@ import com.qingmeng.mengmeng.adapter.util.ViewHolder
  * Created by zhy on 16/4/9.
  */
 open class MultiItemTypeAdapter<T>(protected var mContext: Context, open var datas: List<T>?,
+                                   var holderConvert: (holder: ViewHolder, data: T, position: Int, payloads: List<Any>?) -> Unit,
                                    var itemClick: ((view: View, holder: RecyclerView.ViewHolder, position: Int) -> Unit?)? = null,
                                    var itemLongClick: ((view: View, holder: RecyclerView.ViewHolder, position: Int) -> Boolean?)? = null
 ) : RecyclerView.Adapter<ViewHolder>() {
@@ -41,8 +42,9 @@ open class MultiItemTypeAdapter<T>(protected var mContext: Context, open var dat
 
     }
 
-    fun convert(holder: ViewHolder, item: T, payloads: List<Any>?) {
+    fun convert(holder: ViewHolder, item: T, position: Int, payloads: List<Any>?) {
         mItemViewDelegateManager.convert(holder, item, holder.adapterPosition, payloads)
+        holderConvert(holder, item, position, payloads)
     }
 
     protected fun isEnabled(viewType: Int): Boolean {
@@ -67,7 +69,7 @@ open class MultiItemTypeAdapter<T>(protected var mContext: Context, open var dat
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        convert(holder, datas!![position], null)
+        convert(holder, datas!![position], position, null)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -75,7 +77,7 @@ open class MultiItemTypeAdapter<T>(protected var mContext: Context, open var dat
             onBindViewHolder(holder, position)
         } else {
             Log.d(TAG, "onBindViewHolder: #$position payloads is can use")
-            convert(holder, datas!![position], payloads)
+            convert(holder, datas!![position], position, payloads)
         }
     }
 

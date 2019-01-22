@@ -109,14 +109,14 @@ class MySettingsActivity : BaseActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_MY_SETTINGS && resultCode == Activity.RESULT_OK) {
             val phone = data?.getStringExtra("phone")
-            val path = data?.getStringExtra("mPath")
+            val localPath = data?.getStringExtra("mLocalPath")
             val isSetPass = data?.getBooleanExtra("isSetPass", false) ?: false
-            if (!phone.isNullOrBlank() || !path.isNullOrBlank() || isSetPass) {
+            if (!phone.isNullOrBlank() || !localPath.isNullOrBlank() || isSetPass) {
                 if (!phone.isNullOrBlank()) {
                     mPhone = phone!!
                 }
-                if (!path.isNullOrBlank()) {
-                    val bitmap = getLoacalBitmap(path!!)
+                if (!localPath.isNullOrBlank()) {
+                    val bitmap = getLoacalBitmap(localPath!!)
                     ivMySettingsHead.setImageBitmap(bitmap)
                 }
                 if (isSetPass) {

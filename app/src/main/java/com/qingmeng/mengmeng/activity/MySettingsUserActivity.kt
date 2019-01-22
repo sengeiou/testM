@@ -1,25 +1,16 @@
 package com.qingmeng.mengmeng.activity
 
-import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.view.Gravity
 import android.view.View
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.constant.IConstants.RESULT_CODE_OPEN_ALBUM
-import com.qingmeng.mengmeng.constant.IConstants.RESULT_CODE_TAKE_CAMERA
 import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.entity.AllCity
 import com.qingmeng.mengmeng.entity.MySettingsUserBean
 import com.qingmeng.mengmeng.entity.SelectBean
-import com.qingmeng.mengmeng.utils.ApiUtils
-import com.qingmeng.mengmeng.utils.InputCheckUtils
-import com.qingmeng.mengmeng.utils.ToastUtil
-import com.qingmeng.mengmeng.utils.getLoacalBitmap
+import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.imageLoader.CacheType
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.utils.photo.PhotoConfig
@@ -47,25 +38,21 @@ class MySettingsUserActivity : BaseActivity() {
     private var mMySettingsUserBean = MySettingsUserBean()     //个人信息bean
     private var mMoneyList = ArrayList<SelectBean>()           //创业资本数据
     private var mInterestList = ArrayList<SelectBean>()        //感兴趣行业数据
-    private var mPath = ""                                     //本地选好的图片路径
+    private var mLocalPath = ""                                //本地选好的图片路径
     private var mCanHttpLoad = true                            //是否可以再次请求
     //一些必填的内容
-    private var mName: String? = null                //真实姓名
-    private var mPhone: String? = null               //手机号
-    private var mDistrictId: Int? = null             //县id
-    private var mCapitalId: Int? = null              //创业资本
-    private var mIndustryOfInterest: String? = null  //感兴趣行业
+    private var mName: String = ""                   //真实姓名
+    private var mPhone: String = ""                  //手机号
+    private var mDistrictId: Int = 0                 //县id
+    private var mCapitalId: Int = 0                  //创业资本
+    private var mIndustryOfInterest = ""             //感兴趣行业
     //一些选填的内容
-    private var mAvatar: String? = null              //头像地址
-    private var mSex: Int? = null                    //年龄
-    private var mTelephone: String? = null           //固定电话
-    private var mWx: String? = null                  //微信
-    private var mQQ: String? = null                  //qq
-    private var mEmail: String? = null               //邮箱
-
-    companion object {
-        var mAllCityList = ArrayList<AllCity>()      //所有城市
-    }
+    private var mAvatar: String = ""                 //头像地址
+    private var mSex: Int = 0                        //年龄
+    private var mTelephone: String = ""              //固定电话
+    private var mWx: String = ""                     //微信
+    private var mQQ: String = ""                     //qq
+    private var mEmail: String = ""                  //邮箱
 
     override fun getLayoutId(): Int {
         return R.layout.activity_my_settings_user
@@ -112,23 +99,15 @@ class MySettingsUserActivity : BaseActivity() {
             mBottomDialog = SelectDialog(this, menuList, onItemClick = {
                 //拍照
                 if (menuList[it].name == getString(R.string.photograph)) {
-                    //判断是否有权限
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    PermissionUtils.camera(this, {
                         //打开相机方法
                         openCameraAndUploadServer()
-                    } else {
-                        //申请权限
-                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), RESULT_CODE_TAKE_CAMERA)
-                    }
+                    })
                 } else {  //相册选择
-                    //判断是否有权限
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    PermissionUtils.readAndWrite(this, {
                         //打开相册方法
                         openAlbumAndUploadServer()
-                    } else {
-                        //申请权限
-                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), RESULT_CODE_OPEN_ALBUM)
-                    }
+                    })
                 }
             })
             mBottomDialog.show()
@@ -142,8 +121,8 @@ class MySettingsUserActivity : BaseActivity() {
             menuList.add(SelectBean(name = getString(R.string.girl)))
             when (mMySettingsUserBean.sex) {
                 1 -> {
-                    menuList[0].checkState = true
-                    menuList[1].checkState = false
+                    menuList[1].checkState = true
+                    menuList[0].checkState = false
                 }
                 2 -> {
                     menuList[0].checkState = false
@@ -154,9 +133,18 @@ class MySettingsUserActivity : BaseActivity() {
                 //设置内容
                 tvMySettingsUserGender.text = menuList[it].name
                 tvMySettingsUserGender.setTextColor(resources.getColor(R.color.color_333333))
-                //年龄赋值
-                mSex = it + 1
-                mMySettingsUserBean.sex = it + 1
+                //1女2男
+                when (it) {
+                    0 -> {
+                        //年龄赋值
+                        mSex = 2
+                        mMySettingsUserBean.sex = 2
+                    }
+                    1 -> {
+                        mSex = 1
+                        mMySettingsUserBean.sex = 1
+                    }
+                }
             })
             mBottomDialog.show()
         }
@@ -229,7 +217,7 @@ class MySettingsUserActivity : BaseActivity() {
     private fun updateUserHttp() {
         myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .updateMySettingsUser(mAvatar, mName, mSex, mPhone, mTelephone, mWx, mQQ, mEmail, mDistrictId, mCapitalId, mIndustryOfInterest, token = TEST_ACCESS_TOKEN)
+                .updateMySettingsUser(mAvatar, mName, mSex, mPhone, mTelephone, mWx, mQQ, mEmail, mDistrictId, mCapitalId, mIndustryOfInterest, 1, token = TEST_ACCESS_TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -239,7 +227,7 @@ class MySettingsUserActivity : BaseActivity() {
                             ToastUtil.showShort("修改成功")
                             //把本地图片地址返回给上一页
                             setResult(Activity.RESULT_OK, Intent().apply {
-                                putExtra("mPath", mPath)
+                                putExtra("mLocalPath", mLocalPath)
                             })
                             onBackPressed()
                         }
@@ -321,7 +309,7 @@ class MySettingsUserActivity : BaseActivity() {
     private fun openInterestDialog(interestList: ArrayList<SelectBean>) {
         //先填充内容 加入已选择的行业
         val list: List<String> = mMySettingsUserBean.industryOfInterest.split(",")
-        list?.forEach {
+        list.forEach {
             interestList.forEachIndexed { _, selectBean ->
                 //如果相等就把interestList里的选中状态改变下
                 if (it == "${selectBean.id}") {
@@ -332,9 +320,9 @@ class MySettingsUserActivity : BaseActivity() {
         //全局变量赋值
         mInterestList = interestList
         //打开弹框
-        mBottomDialog = SelectDialog(this, mInterestList, isDefaultLayout = false, onCalcelClick = { _, list ->
+        mBottomDialog = SelectDialog(this, mInterestList, isDefaultLayout = false, onCalcelClick = { _, resultList ->
             var str = ""
-            list.forEach {
+            resultList.forEach {
                 if (it.checkState) {
                     str = str + it.id + ","
                 }
@@ -349,7 +337,7 @@ class MySettingsUserActivity : BaseActivity() {
                 tvMySettingsUserInterestIndustry.setTextColor(resources.getColor(R.color.color_999999))
             }
             //选择好后重新赋值
-            mInterestList = list
+            mInterestList = resultList
             //改变感兴趣行业
             mIndustryOfInterest = str
         })
@@ -358,61 +346,27 @@ class MySettingsUserActivity : BaseActivity() {
 
     //接口请求前内容验证
     private fun contentVerification() {
-        if (!mName.isNullOrBlank()) {   //真实姓名
-            if (!mPhone.isNullOrBlank() && InputCheckUtils.checkPhone(mPhone!!)) {    // 手机号
-                if (mDistrictId != null && mDistrictId != 0) {  //城市id
-                    if (mCapitalId != null && mCapitalId != 0) {    //创业资本
-                        if (!mIndustryOfInterest.isNullOrBlank()) { //感兴趣行业
-                            //一路过关斩将 终于过来了！(缓一缓还有第二轮！)
-                            //如果这些选填的内容不为空的话 那么就判断它们格式正不正确 然后请求接口
-                            if (!mTelephone.isNullOrBlank() && !InputCheckUtils.checkTel(mTelephone!!)) {
-                                ToastUtil.showShort(getString(R.string.my_settings_user_telephone_tips))
-                                return
-                            }
-                            if (!mWx.isNullOrBlank() && !InputCheckUtils.checkWechat(mWx!!)) {
-                                ToastUtil.showShort(getString(R.string.my_settings_user_wechat_tips))
-                                return
-                            }
-                            if (!mQQ.isNullOrBlank() && !InputCheckUtils.checkQQ(mQQ!!)) {
-                                ToastUtil.showShort(getString(R.string.my_settings_user_qq_tips))
-                                return
-                            }
-                            if (!mEmail.isNullOrBlank() && !InputCheckUtils.checkEmail(mEmail!!)) {
-                                ToastUtil.showShort(getString(R.string.my_settings_user_email_tips))
-                                return
-                            }
-                            //这。。。比过五关斩六将还牛批啊
-                            //如果本地图片路径不为空 就先上传oss服务器 再修改个人信息
-                            if (mPath != "") {
-                                myDialog.showLoadingDialog()
-                                //上传oss 返回http地址
-                                ApiUtils.updateImg(this, mPath, callback = { url ->
-                                    mAvatar = if (url != "") url else mAvatar
-                                    //请求修改个人信息接口
-                                    updateUserHttp()
-                                })
-                            } else {
-                                //请求修改个人信息接口
-                                updateUserHttp()
-                            }
-                        } else {
-                            ToastUtil.showShort(getString(R.string.my_settings_user_interestIndustry_tips))
-                        }
-                    } else {
-                        ToastUtil.showShort(getString(R.string.my_settings_user_money_tips))
-                    }
-                } else {
-                    ToastUtil.showShort(getString(R.string.popCitySelect_twoTips))
-                }
-            } else {
-                if (mPhone.isNullOrBlank()) {   //空
-                    ToastUtil.showShort(getString(R.string.phoneTips))
-                } else {    //格式错误
-                    ToastUtil.showShort(getString(R.string.phoneFormat_tips))
-                }
+        when {
+            mName.isBlank() -> ToastUtil.showShort(getString(R.string.my_settings_user_name_tips))   //真实姓名
+            mPhone.isBlank() -> ToastUtil.showShort(getString(R.string.phoneTips))  //手机号
+            !InputCheckUtils.checkPhone(mPhone) -> ToastUtil.showShort(getString(R.string.phoneFormat_tips))   //手机号格式错误
+            mDistrictId == 0 -> ToastUtil.showShort(getString(R.string.popCitySelect_twoTips))   //城市id
+            mCapitalId == 0 -> ToastUtil.showShort(getString(R.string.my_settings_user_money_tips))   //创业资本
+            mIndustryOfInterest.isBlank() -> ToastUtil.showShort(getString(R.string.my_settings_user_interestIndustry_tips)) //感兴趣行业
+            !mTelephone.isBlank() && !InputCheckUtils.checkTel(mTelephone) -> ToastUtil.showShort(getString(R.string.my_settings_user_telephone_tips))
+            !mWx.isBlank() && !InputCheckUtils.checkWechat(mWx) -> ToastUtil.showShort(getString(R.string.my_settings_user_wechat_tips))
+            !mQQ.isBlank() && !InputCheckUtils.checkQQ(mQQ) -> ToastUtil.showShort(getString(R.string.my_settings_user_qq_tips))
+            !mEmail.isBlank() && !InputCheckUtils.checkEmail(mEmail) -> ToastUtil.showShort(getString(R.string.my_settings_user_email_tips))
+            mLocalPath != "" -> {
+                myDialog.showLoadingDialog()
+                //上传oss 返回http地址
+                ApiUtils.updateImg(this, mLocalPath, callback = { url ->
+                    mAvatar = if (url != "") url else mAvatar
+                    //请求修改个人信息接口
+                    updateUserHttp()
+                })
             }
-        } else {
-            ToastUtil.showShort(getString(R.string.my_settings_user_name_tips))
+            else -> updateUserHttp()
         }
     }
 
@@ -423,10 +377,10 @@ class MySettingsUserActivity : BaseActivity() {
         tvMySettingsUserUserName.text = mySettingsUserBean.userName
         etMySettingsName.setText(mySettingsUserBean.name)
         if (mySettingsUserBean.sex == 1) {
-            tvMySettingsUserGender.text = getString(R.string.boy)
+            tvMySettingsUserGender.text = getString(R.string.girl)
             tvMySettingsUserGender.setTextColor(resources.getColor(R.color.color_333333))
         } else if (mySettingsUserBean.sex == 2) {
-            tvMySettingsUserGender.text = getString(R.string.girl)
+            tvMySettingsUserGender.text = getString(R.string.boy)
             tvMySettingsUserGender.setTextColor(resources.getColor(R.color.color_333333))
         } else {
             tvMySettingsUserGender.text = getString(R.string.my_settings_user_select_no)
@@ -475,26 +429,7 @@ class MySettingsUserActivity : BaseActivity() {
     //权限申请结果
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        val cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED
-        when (requestCode) {
-            RESULT_CODE_TAKE_CAMERA -> {
-                if (cameraAccepted) {
-                    //授权成功
-                    openCameraAndUploadServer()
-                } else {
-                    //用户拒绝
-                    ToastUtil.showShort(getString(R.string.permission_takeCamera))
-                }
-            }
-            RESULT_CODE_OPEN_ALBUM -> {
-                if (cameraAccepted) {
-                    openAlbumAndUploadServer()
-                } else {
-                    ToastUtil.showShort(getString(R.string.permission_openAlbum))
-                }
-            }
-        }
+        PermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     //打开相机拍照上传服务器
@@ -504,7 +439,7 @@ class MySettingsUserActivity : BaseActivity() {
             val bitmap = getLoacalBitmap(path)
             ivMySettingsUserHead.setImageBitmap(bitmap)
             //先把选好的本地路径保存下 当用户点击保存时再上传oss
-            mPath = path
+            mLocalPath = path
         }).apply {
             isCuted = true  //是否剪裁
             cutHeight = 300 //剪裁宽高
@@ -517,18 +452,12 @@ class MySettingsUserActivity : BaseActivity() {
         SimplePhotoUtil.instance.setConfig(PhotoConfig(this, false, onPathCallback = { path ->
             val bitmap = getLoacalBitmap(path)
             ivMySettingsUserHead.setImageBitmap(bitmap)
-            mPath = path
+            mLocalPath = path
         }).apply {
             isCuted = true
             cutHeight = 300
             cutWidth = 300
         })
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        mAllCityList.clear()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

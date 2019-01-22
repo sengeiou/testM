@@ -1,6 +1,7 @@
 package com.qingmeng.mengmeng.constant
 
 import com.qingmeng.mengmeng.BuildConfig
+import com.qingmeng.mengmeng.utils.photo.StorageUtils
 
 /**
  * Created by zq on 2018/8/13
@@ -17,9 +18,14 @@ object IConstants {
     val LOGIN_PSW = "loginPsw"
     val FIRSTLOGIN = "first_login"
 
-    val RESULT_CODE_TAKE_CAMERA = 101    //拍照
-    val RESULT_CODE_OPEN_ALBUM = 102     //打开相册
-    val TEST_ACCESS_TOKEN = "233:0w4R281R7075d6q8Va688N718979ea48O2c8D2yQrF483j465BT2a86J964ezM3F"   //模拟token
+    val TEST_ACCESS_TOKEN = "233:3qN4hC319LG23vu0rtXZfZT9Id69K26Gix8Pq459M1870ND6vu7pAA16tX5SSZ9Z"   //模拟token
 
     val GET_IMAGE_CODE = BASE_URL + "api/captcha_app/image_app?account="
+
+    /**
+     * ==============================路径==============================
+     */
+    const val ROOT_NAME = BuildConfig.APP_DIR
+    //语音路径
+    val DIR_AUDIO_STR = StorageUtils.getPublicStorageDir("${ROOT_NAME}/audio")
 }
