@@ -2,7 +2,6 @@ package com.qingmeng.mengmeng.activity
 
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.utils.GlideCacheUtils
 import com.qingmeng.mengmeng.utils.TimerHandler
 import com.qingmeng.mengmeng.utils.ToastUtil
 import kotlinx.android.synthetic.main.activity_my_settings_updatephone.*

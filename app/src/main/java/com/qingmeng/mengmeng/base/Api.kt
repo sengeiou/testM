@@ -118,15 +118,15 @@ interface Api {
      * 获取banner图信息
      * @param  type 1、首页；3、头报 5.登录banner 6.引导页
      **/
-    @POST("api/banner/get_banner")
-    fun getbanner(@Query("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
+    @GET("api/banner/get_banner")
+    fun getbanner(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
 
     //忘记密码
     @POST("app/user/forget_password")
     fun forgetpassword(@Query("phone") phone: String, @Query("msmCode") msmCode: String, @Query("password") password: String, @Header("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
 
     //获取oss令牌
-    @GET("http://zng535.natappfree.cc/oss/authorization_app?name=mm")
+    @GET("http://oss.ilashou.com/oss/authorization_app?name=mm")
     fun getOssToken(): Observable<BaseBean<OssDataBean>>
 
     //我的反馈

@@ -55,7 +55,8 @@
     <string name="join_feedback_type">请选择反馈问题的类型</string>
     <string name="join_feedback">我要反馈</string>
     <string name="recommend_advisory">立即咨询</string>
-
+    <string name="hot_seach">热门搜索</string>
+    <string name="seach_history">历史搜索</string>
     <string name="join_feedback_type1">品牌信息有误</string>
     <string name="join_feedback_type2">品牌不存在</string>
     <string name="join_feedback_type3">存在欺诈骗钱行为</string>

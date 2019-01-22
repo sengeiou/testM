@@ -63,7 +63,7 @@ object ApiUtils {
                         ToastUtil.showShort(bean.msg)
                     }
                 }, {
-                    GeetestUtil.showFailedDialog()
+//                    GeetestUtil.showFailedDialog()
                     ToastUtil.showNetError()
                 }, {}, { activity.addSubscription(it) })
     }

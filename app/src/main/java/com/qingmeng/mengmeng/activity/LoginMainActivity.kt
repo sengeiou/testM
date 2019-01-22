@@ -11,6 +11,7 @@ import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.entity.Banner
 import com.qingmeng.mengmeng.utils.ApiUtils
+import com.qingmeng.mengmeng.utils.BoxUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.tencent.connect.common.Constants
 import com.tencent.mm.opensdk.modelmsg.SendAuth
@@ -31,20 +32,21 @@ import org.json.JSONObject
  * mail: 153705849@qq.com
  * describe: 登录页面首页
  */
-class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>, BGABanner.Adapter<ImageView, String> {
-    lateinit var openid: String
+class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>, BGABanner.Adapter<ImageView, Banner> {
     //banner加载图片
-    override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: String?, position: Int) {
+    override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: Banner?, position: Int) {
         model?.let {
-            Glide.with(this).load(it).apply(RequestOptions()
+            Glide.with(this).load(it.imgUrl).apply(RequestOptions()
                     .placeholder(R.drawable.image_holder).error(R.drawable.image_holder)
                     .centerCrop()).into(itemView)
         }
     }
 
+    lateinit var openid: String
+
     //banner点击事件
     override fun onBannerItemClick(banner: BGABanner?, itemView: ImageView?, model: Banner, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     private val mImgList = ArrayList<Banner>()
@@ -55,7 +57,12 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     }
 
     override fun initData() {
-        setBGABannerLogin()
+        val bannerData = BoxUtils.getBannersByType(5)
+        mImgList.addAll(bannerData)
+        if (!mImgList.isEmpty()) {
+            setBGABannerLogin(mImgList[0].version)
+        } else setBGABannerLogin("")
+
 
     }
 
@@ -71,7 +78,8 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     //初始化Listener
     override fun initListener() {
         super.initListener()
-
+        //返回
+        iv_login_main_back.setOnClickListener { this.finish() }
         //账号密码登录
         btn_login_pw_main.setOnClickListener { startActivity<LoginpwActivity>() }
         //短信验证登录
@@ -112,33 +120,47 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
 
 
     //设置登录页面BGAbanner
-    fun setBGABannerLogin() {
-        ApiUtils.getApi().getbanner("", 5)
+    fun setBGABannerLogin(version: String) {
+        ApiUtils.getApi().getbanner(version, 5)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         bean.data?.let {
-                            if (!it.banners.isEmpty()) {
-                                if (!mImgList.isEmpty()) {
+                            if (!mImgList.isEmpty()) {
+                                if (mImgList[0].version == null) {
+                                    it.setVersion()
+                                } else if (mImgList[0].version == it.version) {
+                                } else {
+                                    BoxUtils.removeBanners(mImgList)
                                     mImgList.clear()
+                                    it.setVersion()
+                                    mImgList.addAll(it.banners)
+                                    BoxUtils.saveBanners(mImgList)
                                 }
+                            } else {
+                                it.setVersion()
                                 mImgList.addAll(it.banners)
-                                setBanner()
+                                BoxUtils.saveBanners(mImgList)
                             }
                         }
+                    } else if (bean.code == 20000) {
+                        setBanner()
                     } else {
                         ToastUtil.showShort(bean.msg)
                     }
-                }, {
-                    ToastUtil.showNetError()
-                }, {}, { addSubscription(it) })
+                })
     }
 
     private fun setBanner() {
         banner_login_main.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
         banner_login_main.setDelegate(this)//设置点击事件，重写点击回调方法
         banner_login_main.setData(mImgList, null)
+        if (mImgList.size > 1) {
+            banner_login_main.setAutoPlayAble(true)
+        } else {
+            banner_login_main.setAutoPlayAble(false)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

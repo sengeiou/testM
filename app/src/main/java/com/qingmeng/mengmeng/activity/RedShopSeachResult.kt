@@ -6,8 +6,6 @@ package com.qingmeng.mengmeng.activity
  */
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
-import android.view.Gravity
-import android.view.View
 import android.widget.LinearLayout
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
@@ -16,7 +14,6 @@ import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.view.dialog.PopSeachSelect
 import kotlinx.android.synthetic.main.activity_red_shop_seach_result.*
 import kotlinx.android.synthetic.main.layout_head_seach.*
-import org.jetbrains.anko.isSelectable
 import org.jetbrains.anko.startActivity
 import java.util.*
 

@@ -217,11 +217,11 @@ class LogincodeActivity : BaseActivity() {
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
                     when (bean.code) {
-                        //手机号没有注册
+                    //手机号没有注册
                         25088 -> {
                             ToastUtil.showShort(getString(R.string.phone_not_registered))
                         }
-                        //登录成功
+                    //登录成功
                         12000 -> {
                             bean.data?.let {
                                 MainApplication.instance.user = it
@@ -235,15 +235,15 @@ class LogincodeActivity : BaseActivity() {
                             //  在我的/消息板块点击登录的回到盟盟首页；
 
                         }
-                        //参数有误
+                    //参数有误
                         13000 -> {
                             ToastUtil.showShort(bean.msg)
                         }
-                        //验证码不正确
+                    //验证码不正确
                         10000 -> {
                             ToastUtil.showShort(bean.msg)
                         }
-                        //验证码不正确
+                    //验证码不正确
                         15002 -> {
                             ToastUtil.showShort(bean.msg)
                         }

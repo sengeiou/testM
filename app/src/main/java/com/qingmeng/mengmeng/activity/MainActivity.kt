@@ -14,7 +14,6 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.base.MainTab
 import com.qingmeng.mengmeng.utils.ToastUtil
-import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity(), TabHost.OnTabChangeListener {
