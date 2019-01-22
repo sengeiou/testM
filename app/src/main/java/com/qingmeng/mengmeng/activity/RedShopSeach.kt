@@ -205,6 +205,7 @@ class RedShopSeach : BaseActivity() {
                     findViewById<TextView>(R.id.tvTag).setText(data!!.name)
                 }
             }
+
             //选中搜索
             override fun onSelected(position: Int, view: View?) {
                 super.onSelected(position, view)
@@ -246,6 +247,7 @@ class RedShopSeach : BaseActivity() {
                     findViewById<TextView>(R.id.tvTag).setText(data)
                 }
             }
+
             //选中搜索
             override fun onSelected(position: Int, view: View?) {
                 super.onSelected(position, view)

@@ -46,7 +46,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
 
     //banner点击事件
     override fun onBannerItemClick(banner: BGABanner?, itemView: ImageView?, model: Banner, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     private val mImgList = ArrayList<Banner>()
@@ -59,9 +59,9 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     override fun initData() {
         val bannerData = BoxUtils.getBannersByType(5)
         mImgList.addAll(bannerData)
-        if (!mImgList.isEmpty()){
+        if (!mImgList.isEmpty()) {
             setBGABannerLogin(mImgList[0].version)
-        }else setBGABannerLogin("")
+        } else setBGABannerLogin("")
 
 
     }
@@ -120,24 +120,32 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
 
 
     //设置登录页面BGAbanner
-    fun setBGABannerLogin(version:String) {
+    fun setBGABannerLogin(version: String) {
         ApiUtils.getApi().getbanner(version, 5)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         bean.data?.let {
-                            if (!it.banners.isEmpty()) {
-                                if (!mImgList.isEmpty()) {
+                            if (!mImgList.isEmpty()) {
+                                if (mImgList[0].version == null) {
+                                    it.setVersion()
+                                } else if (mImgList[0].version == it.version) {
+                                } else {
                                     BoxUtils.removeBanners(mImgList)
                                     mImgList.clear()
+                                    it.setVersion()
+                                    mImgList.addAll(it.banners)
+                                    BoxUtils.saveBanners(mImgList)
                                 }
+                            } else {
                                 it.setVersion()
                                 mImgList.addAll(it.banners)
                                 BoxUtils.saveBanners(mImgList)
-                                setBanner()
                             }
                         }
+                    } else if (bean.code == 20000) {
+                        setBanner()
                     } else {
                         ToastUtil.showShort(bean.msg)
                     }

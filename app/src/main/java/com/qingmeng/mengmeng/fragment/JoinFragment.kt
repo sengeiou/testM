@@ -95,7 +95,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     override fun initListener() {
         //暴露接口测试
         test_intface.setOnClickListener {
-            startActivity<LoginMainActivity>()
+            startActivity<JoinFeedbackActivity>()
         }
 
         barLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
