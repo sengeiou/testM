@@ -137,7 +137,6 @@ class JoinFeedbackActivity : BaseActivity() {
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         ToastUtil.showShort(bean.msg)
-                        Log.e("aaaa", "aaaa")
 
                     } else {
                         ToastUtil.showShort(bean.msg)
