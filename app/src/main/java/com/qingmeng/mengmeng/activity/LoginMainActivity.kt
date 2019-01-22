@@ -10,6 +10,7 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.entity.Banner
+import com.qingmeng.mengmeng.entity.Banner_.imgUrl
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.BoxUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -36,9 +37,8 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     //banner加载图片
     override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: Banner?, position: Int) {
         model?.let {
-            Glide.with(this).load(it.imgUrl).apply(RequestOptions()
-                    .placeholder(R.drawable.image_holder).error(R.drawable.image_holder)
-                    .centerCrop()).into(itemView)
+            Glide.with(this).load(it.imgUrl).apply(RequestOptions().centerCrop()
+                    .placeholder(R.drawable.login_icon_banner1).error(R.drawable.login_icon_banner1)).into(itemView)
         }
     }
 
@@ -127,23 +127,49 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         bean.data?.let {
+                            if (!it.banners.isEmpty()){
+                                //api banner如果有数据
                             if (!mImgList.isEmpty()) {
+                                //本地有数据
                                 if (mImgList[0].version == null) {
+                                    //本地没有版本号，同步版本号
                                     it.setVersion()
-                                } else if (mImgList[0].version == it.version) {
+                                } else
+                                    if (mImgList[0].version == it.version) {
+                                        //版本号相同
                                 } else {
+                                        //版本号不同
+                                        //清除本地
                                     BoxUtils.removeBanners(mImgList)
+                                        //清除list
                                     mImgList.clear()
+                                        //同步版本号
                                     it.setVersion()
+                                        //list添加api数据
                                     mImgList.addAll(it.banners)
+                                        //数据库保存数据
                                     BoxUtils.saveBanners(mImgList)
+                                        setBanner()
                                 }
                             } else {
+                                //本地没有数据
+                                //同步版本号
                                 it.setVersion()
+                                //list添加数据
                                 mImgList.addAll(it.banners)
+                                //本地保存数据
                                 BoxUtils.saveBanners(mImgList)
+                                setBanner()
+                            }
+                        } else{//api banner没有数据
+                                mImgList.clear()
+                                banner_login_main.setData(R.drawable.login_icon_banner1,R.drawable.login_icon_banner2,R.drawable.login_icon_banner3)
+                                (0..2).forEach {
+                                    banner_login_main.getItemImageView(it).scaleType = ImageView.ScaleType.FIT_CENTER
+                                }
                             }
                         }
+
                     } else if (bean.code == 20000) {
                         setBanner()
                     } else {
