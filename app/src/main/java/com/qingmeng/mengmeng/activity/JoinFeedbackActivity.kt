@@ -20,9 +20,7 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.GridImageAdapter
-import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.SelectBean
-import com.qingmeng.mengmeng.entity.SelectDialogBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.view.FullyGridLayoutManager
@@ -30,7 +28,6 @@ import com.qingmeng.mengmeng.view.dialog.SelectDialog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_join_feedback.*
-import kotlinx.android.synthetic.main.activity_login_change_password.*
 import kotlinx.android.synthetic.main.layout_head.*
 
 /**
@@ -102,7 +99,7 @@ class JoinFeedbackActivity : BaseActivity() {
         }
         //提交
         mMenu.setOnClickListener {
-            token = IConstants.TEST_ACCESS_TOKEN
+            token = MainApplication.instance.TOKEN
             content = edt_join_feedback.text.toString()
 
             setfeedback(token, brandId, type, content, murlList)

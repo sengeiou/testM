@@ -55,6 +55,11 @@ interface Api {
     @POST("app/user/account_login")
     fun accountlogin(@Query("account") account: String, @Query("password") password: String): Observable<BaseBean<UserBean>>
 
+    //完信登录
+    @POST("http://www.wxjishu.com:9999/login")
+    @FormUrlEncoded
+    fun wanxinlogin(@Field("wxUserName") wxUserName: String, @Field("wxPassWord") wxPassWord: String, @Field("wxProjectId") wxProjectId: Int = 6): Observable<BaseBean<WanxinUserBean>>
+
     //短信登录
     @POST("app/user/sms_login")
     fun smslogin(@Query("phone") phone: String, @Query("smsCode") smsCode: String): Observable<BaseBean<UserBean>>

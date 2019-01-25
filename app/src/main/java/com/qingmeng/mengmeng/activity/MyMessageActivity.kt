@@ -7,9 +7,9 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
-import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.view.SwipeMenuLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -131,7 +131,7 @@ class MyMessageActivity : BaseActivity() {
     private fun httpLoad(pageNum: Int) {
         mCanHttpLoad = false
         ApiUtils.getApi()
-                .threeBindingState(TEST_ACCESS_TOKEN)
+                .threeBindingState(MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({

@@ -5,9 +5,9 @@ import android.content.Intent
 import android.view.View
 import com.dragger2.activitytest0718.util.SharedPreferencesHelper
 import com.qingmeng.mengmeng.BaseFragment
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.*
-import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.entity.MyInformation
 import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.imageLoader.CacheType
@@ -24,6 +24,7 @@ import org.jetbrains.anko.support.v4.startActivity
 
 class MyFragment : BaseFragment() {
     private lateinit var spf: SharedPreferencesHelper
+    private var mLoginSuccess = false                    //登录状态
     private var mMyInformation = MyInformation()         //个人信息bean
     private val REQUEST_MY = 746                         //下一页返回数据的requestCode
 
@@ -39,7 +40,7 @@ class MyFragment : BaseFragment() {
         val statusBarHeight = getBarHeight(context!!)
         //给布局的高度重新设置一下 加上状态栏高度
         rlMyTop.layoutParams.height = rlMyTop.layoutParams.height + getBarHeight(context!!)
-        ivMySettings.setMarginExt(top = statusBarHeight + context!!.dp2px(15))
+        ivMySettings.setMarginExt(top = statusBarHeight + context!!.dp2px(10))
 
         spf = SharedPreferencesHelper(context!!, "myFragment")
 
@@ -68,28 +69,44 @@ class MyFragment : BaseFragment() {
 
         //设置
         ivMySettings.setOnClickListener {
-            //跳转aty
-            startActivityForResult(Intent(context, MySettingsActivity::class.java).apply {
-                putExtra("avatar", mMyInformation.avatar)
-                putExtra("userName", mMyInformation.userName)
-                putExtra("phone", mMyInformation.phone)
-                putExtra("isUpdatePass", spf.getSharedPreference("isUpdatePass", false) as Boolean)
-            }, REQUEST_MY)
+            if (mLoginSuccess) {
+                //跳转aty
+                startActivityForResult(Intent(context, MySettingsActivity::class.java).apply {
+                    putExtra("avatar", mMyInformation.avatar)
+                    putExtra("userName", mMyInformation.userName)
+                    putExtra("phone", mMyInformation.phone)
+                    putExtra("isUpdatePass", spf.getSharedPreference("isUpdatePass", false) as Boolean)
+                }, REQUEST_MY)
+            } else {
+                startActivity<LoginMainActivity>()
+            }
         }
 
         //我的关注
         llMyMyFollow.setOnClickListener {
-            startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFollow.text), REQUEST_MY)
+            if (mLoginSuccess) {
+                startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFollow.text), REQUEST_MY)
+            } else {
+                startActivity<LoginMainActivity>()
+            }
         }
 
         //我的留言
         llMyMyLeavingMessage.setOnClickListener {
-            startActivityForResult(Intent(context, MyMyLeavingMessageActivity::class.java), REQUEST_MY)
+            if (mLoginSuccess) {
+                startActivityForResult(Intent(context, MyMyLeavingMessageActivity::class.java), REQUEST_MY)
+            } else {
+                startActivity<LoginMainActivity>()
+            }
         }
 
         //我的足迹
         llMyMyFootprint.setOnClickListener {
-            startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFootprint.text), REQUEST_MY)
+            if (mLoginSuccess) {
+                startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFootprint.text), REQUEST_MY)
+            } else {
+                startActivity<LoginMainActivity>()
+            }
         }
 
         //企业入驻
@@ -111,12 +128,17 @@ class MyFragment : BaseFragment() {
         tvMyLogin.setOnClickListener {
             startActivity<LoginMainActivity>()
         }
+
+        //测试登录
+        tvMyLoginTest.setOnClickListener {
+            startActivity<LoginpwActivity>()
+        }
     }
 
     //查询用户接口
     private fun httpLoad() {
         ApiUtils.getApi()
-                .myInformation(TEST_ACCESS_TOKEN)
+                .myInformation(MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -133,20 +155,32 @@ class MyFragment : BaseFragment() {
                             BoxUtils.saveMyInformation(mMyInformation)
                             //页面赋值
                             setData(mMyInformation)
+                            mLoginSuccess = true
+                            ToastUtil.showShort("${MainApplication.instance.wanxinUser.uId} ${MainApplication.instance.wanxinUser.token}")
                         } else {
                             llMyNoLogin.visibility = View.GONE
                             tvMyLogin.visibility = View.VISIBLE
+                            //设置默认名称头像等。
+                            tvMyUserName.text = getString(R.string.my_username)
+                            ivMyHeadPortrait.setImageResource(R.drawable.view_dialog_sound_volume_short_tip_bg)
+                            tvMyMyFollowNum.text = getString(R.string.my_defaultNum)
+                            tvMyMyLeavingMessageNum.text = getString(R.string.my_defaultNum)
+                            tvMyMyFootprintNum.text = getString(R.string.my_defaultNum)
+                            mLoginSuccess = false
+                            //数据库删除
+                            BoxUtils.removeMyInformation(mMyInformation)
                         }
                     }
                 }, {
                     srlMy.isRefreshing = false
+                    mLoginSuccess = mMyInformation.userName != ""
                 })
     }
 
     //校验是设置密码还是修改密码
     private fun settingsOrUpdatePass() {
         ApiUtils.getApi()
-                .mySettingsOrUpdatePass(TEST_ACCESS_TOKEN)
+                .mySettingsOrUpdatePass(MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({

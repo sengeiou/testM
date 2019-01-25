@@ -3,8 +3,8 @@ package com.qingmeng.mengmeng.activity
 import android.app.Activity
 import android.content.Intent
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.utils.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -164,7 +164,7 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
     private fun httpUpdatePhone(phone: String, msg: String) {
         myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .updatePhone(phone, msg, TEST_ACCESS_TOKEN)
+                .updatePhone(phone, msg, MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({

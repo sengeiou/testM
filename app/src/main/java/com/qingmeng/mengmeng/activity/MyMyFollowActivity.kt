@@ -9,9 +9,9 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
-import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.entity.MyFollow
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -156,9 +156,9 @@ class MyMyFollowActivity : BaseActivity() {
         mCanHttpLoad = false
         ApiUtils.getApi().let {
             if (mIsMyFollow) {
-                it.myFollow(pageNum, TEST_ACCESS_TOKEN)
+                it.myFollow(pageNum, MainApplication.instance.TOKEN)
             } else {
-                it.myFootprint(pageNum, TEST_ACCESS_TOKEN)
+                it.myFootprint(pageNum, MainApplication.instance.TOKEN)
             }
         }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -208,9 +208,9 @@ class MyMyFollowActivity : BaseActivity() {
         myDialog.showLoadingDialog()
         ApiUtils.getApi().let {
             if (mIsMyFollow) {
-                it.myFollow(pageNum, TEST_ACCESS_TOKEN)
+                it.myFollow(pageNum, MainApplication.instance.TOKEN)
             } else {
-                it.myFootprint(pageNum, TEST_ACCESS_TOKEN)
+                it.myFootprint(pageNum, MainApplication.instance.TOKEN)
             }
         }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -233,9 +233,9 @@ class MyMyFollowActivity : BaseActivity() {
     private fun httpDelLoadTwo(myFollowList: List<MyFollow>, myFollowDel: MyFollow) {
         ApiUtils.getApi().let {
             if (mIsMyFollow) {
-                it.deleteMyFollow(myFollowDel.id, TEST_ACCESS_TOKEN)
+                it.deleteMyFollow(myFollowDel.id, MainApplication.instance.TOKEN)
             } else {
-                it.deleteMyFootprint(myFollowDel.brandId, TEST_ACCESS_TOKEN)
+                it.deleteMyFootprint(myFollowDel.brandId, MainApplication.instance.TOKEN)
             }
         }
                 .observeOn(AndroidSchedulers.mainThread())

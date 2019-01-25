@@ -35,7 +35,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning"
-        tools:replace="icon, label, theme">
+        tools:replace="android:icon,android:label,android:theme,android:name">
         <!-- 7.0 -->
         <provider
             android:name="android.support.v4.content.FileProvider"

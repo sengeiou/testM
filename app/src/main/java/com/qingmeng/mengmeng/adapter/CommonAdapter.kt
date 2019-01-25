@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.qingmeng.mengmeng.adapter.util.ItemViewDelegate
 import com.qingmeng.mengmeng.adapter.util.ViewHolder
 
@@ -14,7 +15,7 @@ import com.qingmeng.mengmeng.adapter.util.ViewHolder
 class CommonAdapter<T>(protected var context: Context, protected var mLayoutId: Int, data: List<T>?,
                        holderConvert: (holder: ViewHolder, data: T, position: Int, payloads: List<Any>?) -> Unit,
                        onItemClick: ((view: View, holder: RecyclerView.ViewHolder, position: Int) -> Unit)? = null,
-                       onItemLongClick: ((view: View, holder: RecyclerView.ViewHolder, position: Int) -> Boolean?)? = null
+                       onItemLongClick: ((view: View, holder: RecyclerView.ViewHolder, position: Int, parent: ViewGroup) -> Boolean?)? = null
 
 ) : MultiItemTypeAdapter<T>(context, data, holderConvert, onItemClick, onItemLongClick) {
     protected var mInflater: LayoutInflater

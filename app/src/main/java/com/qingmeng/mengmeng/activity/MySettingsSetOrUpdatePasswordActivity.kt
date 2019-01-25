@@ -7,8 +7,8 @@ import android.text.InputType
 import android.text.TextWatcher
 import android.widget.EditText
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.InputCheckUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -131,7 +131,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
     private fun setPassHttp(name: String, pass: String) {
         myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .setPass(name, pass, TEST_ACCESS_TOKEN)
+                .setPass(name, pass, MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -154,7 +154,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
     private fun updatePassHttp(oldPass: String, newPass: String, newPassTwo: String) {
         myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .updatePass(oldPass, newPass, newPassTwo, TEST_ACCESS_TOKEN)
+                .updatePass(oldPass, newPass, newPassTwo, MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({

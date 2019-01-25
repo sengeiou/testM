@@ -16,7 +16,7 @@ import com.qingmeng.mengmeng.adapter.util.ViewHolder
 open class MultiItemTypeAdapter<T>(protected var mContext: Context, open var datas: List<T>?,
                                    var holderConvert: (holder: ViewHolder, data: T, position: Int, payloads: List<Any>?) -> Unit,
                                    var itemClick: ((view: View, holder: RecyclerView.ViewHolder, position: Int) -> Unit?)? = null,
-                                   var itemLongClick: ((view: View, holder: RecyclerView.ViewHolder, position: Int) -> Boolean?)? = null
+                                   var itemLongClick: ((view: View, holder: RecyclerView.ViewHolder, position: Int, parent: ViewGroup) -> Boolean?)? = null
 ) : RecyclerView.Adapter<ViewHolder>() {
     protected var mItemViewDelegateManager: ItemViewDelegateManager<T> = ItemViewDelegateManager<T>()
 
@@ -63,7 +63,7 @@ open class MultiItemTypeAdapter<T>(protected var mContext: Context, open var dat
 
         viewHolder.convertView.setOnLongClickListener { v ->
             val position = viewHolder.adapterPosition
-            itemLongClick?.let { it(v, viewHolder, position) } ?: false
+            itemLongClick?.let { it(v, viewHolder, position, parent) } ?: false
         }
     }
 

@@ -2,8 +2,8 @@ package com.qingmeng.mengmeng.activity
 
 import android.view.View
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.view.dialog.DialogCommon
@@ -81,7 +81,7 @@ class MyThreeBindingActivity : BaseActivity() {
     //查询绑定状态
     private fun httpLoad() {
         ApiUtils.getApi()
-                .threeBindingState(TEST_ACCESS_TOKEN)
+                .threeBindingState(MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -103,7 +103,7 @@ class MyThreeBindingActivity : BaseActivity() {
     //第三方绑定接口
     private fun httpThreeBinding(type: Int) {
         ApiUtils.getApi()
-                .threeBinding(type, "", "", "", TEST_ACCESS_TOKEN)
+                .threeBinding(type, "", "", "", MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -134,7 +134,7 @@ class MyThreeBindingActivity : BaseActivity() {
     private fun httpUnThreeBinding(type: Int) {
         myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .unThreeBinding(type, TEST_ACCESS_TOKEN)
+                .unThreeBinding(type, MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({

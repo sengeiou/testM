@@ -8,9 +8,9 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
-import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.entity.MyLeavingMessage
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -138,7 +138,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
     private fun httpLoad(pageNum: Int) {
         mCanHttpLoad = false
         ApiUtils.getApi()
-                .myLeavingMessage(pageNum, TEST_ACCESS_TOKEN)
+                .myLeavingMessage(pageNum, MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -185,7 +185,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
     private fun httpDelLoadOne(pageNum: Int, myLeavingMessageDel: MyLeavingMessage) {
         myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .myLeavingMessage(pageNum, TEST_ACCESS_TOKEN)
+                .myLeavingMessage(pageNum, MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -205,7 +205,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
     //真.删除留言接口
     private fun httpDelLoadTwo(myLeavingMessageList: List<MyLeavingMessage>, myLeavingMessageDel: MyLeavingMessage) {
         ApiUtils.getApi()
-                .deleteMyLeavingMessage(myLeavingMessageDel.id, TEST_ACCESS_TOKEN)
+                .deleteMyLeavingMessage(myLeavingMessageDel.id, MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({

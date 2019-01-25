@@ -5,8 +5,8 @@ import android.content.Intent
 import android.view.Gravity
 import android.view.View
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.entity.AllCity
 import com.qingmeng.mengmeng.entity.MySettingsUserBean
 import com.qingmeng.mengmeng.entity.SelectBean
@@ -191,7 +191,7 @@ class MySettingsUserActivity : BaseActivity() {
     private fun httpLoad() {
         myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .mySettingsUser(TEST_ACCESS_TOKEN)
+                .mySettingsUser(MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -217,7 +217,7 @@ class MySettingsUserActivity : BaseActivity() {
     private fun updateUserHttp() {
         myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .updateMySettingsUser(mAvatar, mName, mSex, mPhone, mTelephone, mWx, mQQ, mEmail, mDistrictId, mCapitalId, mIndustryOfInterest, 1, token = TEST_ACCESS_TOKEN)
+                .updateMySettingsUser(mAvatar, mName, mSex, mPhone, mTelephone, mWx, mQQ, mEmail, mDistrictId, mCapitalId, mIndustryOfInterest, 1, token = MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({

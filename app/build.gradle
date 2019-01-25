@@ -18,6 +18,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
         ndk {
             // 设置支持的SO库架构
             abiFilters 'armeabi-v7a', 'armeabi', 'x86', 'x86_64'
@@ -107,4 +108,7 @@ dependencies {
     implementation "io.objectbox:objectbox-kotlin:$objectboxVersion"
     implementation 'com.aliyun.dpa:oss-android-sdk:2.4.5'
     implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
+    implementation project(':wanxin')
+    implementation 'com.android.support:multidex:1.0.0'
+    implementation 'de.greenrobot:eventbus:2.4.0'
 }

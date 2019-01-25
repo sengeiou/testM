@@ -67,11 +67,31 @@
                 />
         </LinearLayout>
 
-        <VideoView
-            android:id="@+id/vvMyMessageChatRvOtherVideo"
+        <RelativeLayout
+            android:id="@+id/rlMyMessageChatRvOtherVideo"
             android:layout_width="150dp"
             android:layout_height="200dp"
             android:visibility="gone"
-            />
+            >
+
+            <VideoView
+                android:id="@+id/vvMyMessageChatRvOtherVideo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+            <ImageView
+                android:id="@+id/ivMyMessageChatRvOtherVideoCover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/my_settings_aboutus_icon"
+                />
+        </RelativeLayout>
     </RelativeLayout>
 </LinearLayout>
