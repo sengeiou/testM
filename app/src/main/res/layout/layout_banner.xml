@@ -9,7 +9,6 @@
         android:id="@+id/mJoinBanner"
         android:layout_width="match_parent"
         android:layout_height="188dp"
-        android:layout_centerHorizontal="true"
         app:banner_indicatorGravity="bottom|center_horizontal"
         app:banner_isNumberIndicator="false"
         app:banner_pageChangeDuration="800"

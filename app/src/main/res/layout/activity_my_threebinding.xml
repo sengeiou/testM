@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/page_background_f5"
@@ -9,79 +10,111 @@
 
     <include layout="@layout/layout_head"/>
 
-    <LinearLayout
-        android:id="@+id/llMyThreeBindingQQ"
+    <com.qingmeng.mengmeng.view.SwipeLayout
+        android:id="@+id/srlMyThreeBinding"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_dp_70"
-        android:background="@drawable/ripple_bg_white"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        android:layout_height="match_parent"
+        app:load_more_enabled="false"
         >
 
-        <ImageView
-            android:layout_width="@dimen/padding_dp_50"
-            android:layout_height="@dimen/padding_dp_50"
-            android:layout_marginStart="@dimen/padding_dp_10"
-            android:src="@mipmap/my_threebinding_qq"
-            />
+        <LinearLayout
+            android:id="@+id/swipe_target"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            >
 
-        <TextView
-            android:id="@+id/tvMyThreeBindingQQ"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding_dp_10"
-            android:layout_weight="1"
-            android:text="@string/my_threeBinding_not"
-            android:textColor="@color/color_999999"
-            android:textSize="@dimen/text_size_15"
-            />
+            <LinearLayout
+                android:id="@+id/llMyThreeBindingTips"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/padding_dp_10"
-            android:src="@mipmap/item_navigation"
-            />
-    </LinearLayout>
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@mipmap/my_settings_aboutus_icon"
+                    />
+            </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:background="@color/line_color_e5"
-        />
+            <LinearLayout
+                android:id="@+id/llMyThreeBindingQQ"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_70"
+                android:background="@drawable/ripple_bg_white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                >
 
-    <LinearLayout
-        android:id="@+id/llMyThreeBindingWechat"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_dp_60"
-        android:background="@drawable/ripple_bg_white"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        >
+                <ImageView
+                    android:layout_width="@dimen/padding_dp_50"
+                    android:layout_height="@dimen/padding_dp_50"
+                    android:layout_marginStart="@dimen/padding_dp_10"
+                    android:src="@mipmap/my_threebinding_qq"
+                    />
 
-        <ImageView
-            android:layout_width="@dimen/padding_dp_50"
-            android:layout_height="@dimen/padding_dp_50"
-            android:layout_marginStart="@dimen/padding_dp_10"
-            android:src="@mipmap/my_threebinding_wechat"
-            />
+                <TextView
+                    android:id="@+id/tvMyThreeBindingQQ"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_dp_10"
+                    android:layout_weight="1"
+                    android:text="@string/my_threeBinding_not"
+                    android:textColor="@color/color_999999"
+                    android:textSize="@dimen/text_size_15"
+                    />
 
-        <TextView
-            android:id="@+id/tvMyThreeBindingWechat"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding_dp_10"
-            android:layout_weight="1"
-            android:text="@string/my_threeBinding_yes"
-            android:textColor="@color/color_333333"
-            android:textSize="@dimen/text_size_15"
-            />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_dp_10"
+                    android:src="@mipmap/item_navigation"
+                    />
+            </LinearLayout>
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/padding_dp_10"
-            android:src="@mipmap/item_navigation"
-            />
-    </LinearLayout>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/line_color_e5"
+                />
+
+            <LinearLayout
+                android:id="@+id/llMyThreeBindingWechat"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/padding_dp_60"
+                android:background="@drawable/ripple_bg_white"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                >
+
+                <ImageView
+                    android:layout_width="@dimen/padding_dp_50"
+                    android:layout_height="@dimen/padding_dp_50"
+                    android:layout_marginStart="@dimen/padding_dp_10"
+                    android:src="@mipmap/my_threebinding_wechat"
+                    />
+
+                <TextView
+                    android:id="@+id/tvMyThreeBindingWechat"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/padding_dp_10"
+                    android:layout_weight="1"
+                    android:text="@string/my_threeBinding_yes"
+                    android:textColor="@color/color_333333"
+                    android:textSize="@dimen/text_size_15"
+                    />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_dp_10"
+                    android:src="@mipmap/item_navigation"
+                    />
+            </LinearLayout>
+        </LinearLayout>
+    </com.qingmeng.mengmeng.view.SwipeLayout>
 </LinearLayout>

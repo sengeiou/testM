@@ -17,7 +17,7 @@ class TimerHandler(activity: BaseActivity, private val tv: TextView) : Handler()
         when (msg?.what) {
             activity.timingOver -> {
                 tv.setText(R.string.getMsg)
-                tv.setTextColor(activity.resources.getColor(R.color.colorOrange))
+                tv.setTextColor(activity.resources.getColor(R.color.colorPrimary))
                 tv.isClickable = true
                 activity.totalTime = -1
             }
@@ -34,6 +34,7 @@ class TimerHandler(activity: BaseActivity, private val tv: TextView) : Handler()
                     activity.timerHandler.sendEmptyMessageDelayed(activity.timing, 1000)
                 }
                 tv.text = "${activity.totalTime}秒后重试"
+                tv.setTextColor(activity.resources.getColor(R.color.color_999999))
             }
         }
     }

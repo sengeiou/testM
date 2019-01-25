@@ -1,0 +1,6 @@
+所有收到消息返回的是 proto协议序列化对象的二进制数据，
+使用的protobuf根据相同的proto协议解析序列化的数据对象。
+
+使用google proto 可根据proto文件生成协议。
+Andorid Studio 集成 Google Protocol Buffer(简称protobuf)
+http://blog.csdn.net/qq_33890656/article/details/56845613

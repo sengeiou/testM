@@ -43,9 +43,12 @@
                 android:layout_height="match_parent"
                 android:layout_marginStart="@dimen/padding_dp_10"
                 android:background="@null"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
                 android:hint="@string/phoneTips"
                 android:inputType="phone"
                 android:textSize="@dimen/text_size_14"
+                android:textColor="@color/color_666666"
                 />
         </LinearLayout>
 
@@ -84,6 +87,7 @@
                 android:hint="@string/phoneTips"
                 android:inputType="phone"
                 android:textSize="@dimen/text_size_14"
+                android:textColor="@color/color_333333"
                 />
 
             <TextView
@@ -130,6 +134,7 @@
                 android:background="@null"
                 android:hint="@string/my_settings_updatePhone_msgTips"
                 android:textSize="@dimen/text_size_14"
+                android:textColor="@color/color_333333"
                 />
         </LinearLayout>
     </LinearLayout>

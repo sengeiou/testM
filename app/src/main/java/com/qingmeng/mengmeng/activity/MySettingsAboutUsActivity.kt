@@ -35,7 +35,7 @@ class MySettingsAboutUsActivity : BaseActivity() {
 
         //返回
         mBack.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
     }
 

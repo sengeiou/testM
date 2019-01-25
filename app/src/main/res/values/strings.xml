@@ -16,9 +16,11 @@
     <string name="save">保存</string>
     <string name="delete">删除</string>
     <string name="submit">提交</string>
+    <string name="submit_success">提交成功</string>
     <string name="cancel">取消</string>
     <string name="sure">确定</string>
     <string name="tips">提示</string>
+    <string name="complete">完成</string>
     <string name="retrieve_password">找回密码</string>
     <string name="message">消息</string>
     <string name="gender">性别</string>
@@ -53,10 +55,40 @@
     <!-- =======================================爱加盟===================================== -->
     <string name="join_feedback_description">请输入反馈描述，上传照片有助于我们判断，提升投诉通过率哦！</string>
     <string name="join_feedback_type">请选择反馈问题的类型</string>
+    <string name="homepage">首页</string>
+    <string name="feedback">反馈</string>
+    <string name="share">分享</string>
+    <string name="no_net">嗨呀~没有网络链接o(┬﹏┬)o</string>
     <string name="join_feedback">我要反馈</string>
+    <string name="want_to_join">我要加盟</string>
+    <string name="investment_amount">投资金额</string>
     <string name="recommend_advisory">立即咨询</string>
     <string name="hot_seach">热门搜索</string>
     <string name="seach_history">历史搜索</string>
+    <string name="customer_service">客服</string>
+    <string name="collection">收藏</string>
+    <string name="get_join_data">获取加盟信息</string>
+    <string name="join_support">加盟支持</string>
+    <string name="brand_information">品牌信息</string>
+    <string name="join_money">加盟费用</string>
+    <string name="join_money_total">加盟金</string>
+    <string name="join_money_ensure">保证金</string>
+    <string name="join_money_equipment">设备费用</string>
+    <string name="join_money_other">其他费用</string>
+    <string name="join_data_name">请输入你的姓名</string>
+    <string name="join_data_sex">请选择你的性别</string>
+    <string name="join_data_phone">请输入你的手机号</string>
+    <string name="join_data_msg">请输入留言</string>
+    <string name="brand_detail">品牌详情</string>
+    <string name="brand_ownership">品牌所属</string>
+    <string name="franchise_mode">加盟模式</string>
+    <string name="attracting_investment_area">招商区域</string>
+    <string name="regional_authorization">区域授权</string>
+    <string name="suitable_for_crowd">适合人群</string>
+    <string name="join_data_message" formatted="false">我想了解%s项目的加盟详情和方案</string>
+    <string name="join_count" formatted="false">加盟店数量：%s</string>
+    <string name="direct_count" formatted="false">直营店数量：%s</string>
+
     <string name="join_feedback_type1">品牌信息有误</string>
     <string name="join_feedback_type2">品牌不存在</string>
     <string name="join_feedback_type3">存在欺诈骗钱行为</string>
@@ -77,6 +109,7 @@
     <string name="seach_ranking">综合排序</string>
     <string name="seach_screning_conditon">筛选条件</string>
     <string name="seach_nothing">嗨呀~没有找到相关内容 o(╥﹏╥)o</string>
+
     <!-- ======================================头报====================================== -->
     <string name="head_detail">详情</string>
 
@@ -141,6 +174,7 @@
     <string name="my_settings_aboutUs">关于我们</string>
     <string name="my_settings_exitUser">退出账号</string>
     <string name="my_settings_user_title">个人资料</string>
+    <string name="my_settings_user_no_tips">点击空白处重试</string>
     <string name="my_settings_user_head">头像</string>
     <string name="my_settings_user_name">真实姓名</string>
     <string name="my_settings_user_telephone">固定电话</string>
@@ -193,6 +227,8 @@
     <string name="hold_to_talk">按住 说话</string>
     <string name="release_to_over">松开 结束</string>
     <string name="cancel_to_send">取消 发送</string>
+    <string name="play_audio_call">当前是听筒模式</string>
+    <string name="play_audio_music">当前是扬声器模式</string>
 
     <!-- 上拉下拉 -->
     <string name="txt_before_refresh">下拉刷新</string>
