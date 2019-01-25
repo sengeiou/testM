@@ -155,7 +155,6 @@
                 android:id="@+id/rlMyMessageChatExpression"
                 android:layout_width="match_parent"
                 android:layout_height="280dp"
-                android:visibility="gone"
                 >
 
                 <android.support.v4.view.ViewPager
