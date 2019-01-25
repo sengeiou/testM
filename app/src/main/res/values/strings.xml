@@ -128,7 +128,7 @@
     <string name="my_myFollow_investmentAmount">投资金额：</string>
     <string name="my_myLeavingMessage">我的留言</string>
     <string name="my_myLeavingMessage_reply">已回复</string>
-    <string name="my_myLeavingMessage_noReply">待回复</string>
+    <string name="my_myLeavingMessage_noReply">待查看</string>
     <string name="my_myLeavingMessage_StoreNum">门店数：</string>
     <string name="my_myFootprint">我的足迹</string>
     <string name="my_enterpriseEntry">企业入驻</string>
@@ -141,6 +141,7 @@
     <string name="my_settings_aboutUs">关于我们</string>
     <string name="my_settings_exitUser">退出账号</string>
     <string name="my_settings_user_title">个人资料</string>
+    <string name="my_settings_user_no_tips">点击空白处重试</string>
     <string name="my_settings_user_head">头像</string>
     <string name="my_settings_user_name">真实姓名</string>
     <string name="my_settings_user_telephone">固定电话</string>
@@ -153,8 +154,8 @@
     <string name="my_settings_user_money_tips">请选择创业资本</string>
     <string name="my_settings_user_interestIndustry_tips">请选择感兴趣行业</string>
     <string name="my_settings_user_telephone_tips">固定电话格式输入不正确</string>
-    <string name="my_settings_user_wechat_tips">微信格式不对，请输入6至20位字母或数字</string>
-    <string name="my_settings_user_qq_tips">qq格式不对，请输入6至11位数字</string>
+    <string name="my_settings_user_wechat_tips">微信格式输入不正确</string>
+    <string name="my_settings_user_qq_tips">qq格式不对，请输入5至12位数字</string>
     <string name="my_settings_user_email_tips">邮箱格式输入不正确</string>
     <string name="my_settings_setOrUpdate_tips">必须是6-12位数字、英文字母（区分大小写），也可以是两者的组合。</string>
     <string name="my_settings_updatePhone_msgTips">请输入新手机号中的验证码</string>
@@ -164,6 +165,8 @@
     <string name="my_settings_aboutUs_tips">通过本软件参加的任何商业活动均与Apple Inc.无关</string>
     <string name="my_threeBinding_yes">已绑定</string>
     <string name="my_threeBinding_not">未绑定</string>
+    <string name="my_threeBinding_qq_tips">获取用户信息失败</string>
+    <string name="my_threeBinding_no_wechat">未检测到微信客户端</string>
     <string name="my_threeBinding_untying">解绑</string>
     <string name="my_threeBinding_qqTips">解除绑定后，你将不能通过QQ进行第三方登录</string>
     <string name="my_threeBinding_wechatTips">解除绑定后，你将不能通过微信进行第三方登录</string>
@@ -177,6 +180,7 @@
     <string name="popCitySelect_threeTips">请选择县</string>
     <string name="permission_takeCamera">请开启应用拍照权限</string>
     <string name="permission_openAlbum">请开启应用读取权限</string>
+    <string name="permission_soundRecord">请开启应用录音权限</string>
     <string name="passNew_tips">请输入新密码</string>
     <string name="passMax_tips">密码最多为12位</string>
     <string name="userNameMax_tips">用户名最多为12位</string>
@@ -193,6 +197,8 @@
     <string name="hold_to_talk">按住 说话</string>
     <string name="release_to_over">松开 结束</string>
     <string name="cancel_to_send">取消 发送</string>
+    <string name="play_audio_call">当前是听筒模式</string>
+    <string name="play_audio_music">当前是扬声器模式</string>
 
     <!-- 上拉下拉 -->
     <string name="txt_before_refresh">下拉刷新</string>

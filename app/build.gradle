@@ -16,6 +16,7 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
         ndk {
             // 设置支持的SO库架构
             abiFilters 'armeabi-v7a', 'armeabi', 'x86', 'x86_64'
@@ -26,6 +27,8 @@ android {
             minifyEnabled false
             //请求地址
             buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
+            //SD目录名
+            buildConfigField("String", "APP_DIR", "\"mengmeng\"")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //bugly
             buildConfigField("String", "BUGLY_APPID", "\"0bf47d1cec\"")
@@ -34,6 +37,8 @@ android {
             minifyEnabled false
             //请求地址
             buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
+            //SD目录名
+            buildConfigField("String", "APP_DIR", "\"mengmeng\"")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //bugly
             buildConfigField("String", "BUGLY_APPID", "\"0bf47d1cec\"")
@@ -101,4 +106,7 @@ dependencies {
     implementation "io.objectbox:objectbox-kotlin:$objectboxVersion"
     implementation 'com.aliyun.dpa:oss-android-sdk:2.4.5'
     implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
+    implementation project(':wanxin')
+    implementation 'com.android.support:multidex:1.0.0'
+    implementation 'de.greenrobot:eventbus:2.4.0'
 }

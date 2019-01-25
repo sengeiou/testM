@@ -11,7 +11,7 @@
     <include layout="@layout/layout_head"/>
 
     <com.qingmeng.mengmeng.view.SwipeLayout
-        android:id="@+id/slMyMyFollow"
+        android:id="@+id/srlMyMyFollow"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:load_more_enabled="false"

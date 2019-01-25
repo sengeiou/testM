@@ -13,7 +13,7 @@
     <FrameLayout
         android:id="@+id/flMyMessageChat"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_weight="1"
         >
 
@@ -39,6 +39,17 @@
             />
 
         <ImageView
+            android:id="@+id/ivMyMessageChatSwitchAudio"
+            android:layout_width="@dimen/padding_dp_40"
+            android:layout_height="@dimen/padding_dp_40"
+            android:layout_gravity="end|bottom"
+            android:layout_marginBottom="@dimen/padding_dp_10"
+            android:layout_marginEnd="@dimen/padding_dp_10"
+            android:src="@mipmap/my_settings_aboutus_icon"
+            android:visibility="gone"
+            />
+
+        <ImageView
             android:id="@+id/ivMyMessageChatScreenshot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -55,9 +66,8 @@
         />
 
     <LinearLayout
-        android:layout_width="fill_parent"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0"
         android:orientation="vertical"
         >
 
@@ -89,6 +99,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:background="@null"
+                    android:focusableInTouchMode="false"
                     android:paddingEnd="@dimen/padding_dp_25"
                     android:paddingStart="@dimen/padding_dp_15"
                     android:textColor="@color/color_333333"
@@ -202,6 +213,7 @@
                     android:id="@+id/llMyMessageChatFunctionCamera"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/ripple_bg_gray"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
                     >
@@ -225,6 +237,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/padding_dp_30"
+                    android:background="@drawable/ripple_bg_gray"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
                     >
@@ -248,6 +261,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/padding_dp_30"
+                    android:background="@drawable/ripple_bg_gray"
                     android:gravity="center_horizontal"
                     android:orientation="vertical"
                     >

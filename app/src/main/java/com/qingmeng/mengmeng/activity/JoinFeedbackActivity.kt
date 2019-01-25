@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -17,9 +16,9 @@ import com.luck.picture.lib.config.PictureConfig
 import com.luck.picture.lib.config.PictureMimeType
 import com.luck.picture.lib.entity.LocalMedia
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.GridImageAdapter
-import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.SelectBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -100,7 +99,7 @@ class JoinFeedbackActivity : BaseActivity() {
         }
         //提交
         mMenu.setOnClickListener {
-            token = IConstants.TEST_ACCESS_TOKEN
+            token = MainApplication.instance.TOKEN
             content = edt_join_feedback.text.toString()
             for (i in selectList.indices) {
                 if (selectList[i].isCompressed()) {

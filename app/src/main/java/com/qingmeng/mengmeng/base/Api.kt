@@ -55,6 +55,11 @@ interface Api {
     @POST("app/user/account_login")
     fun accountlogin(@Query("account") account: String, @Query("password") password: String): Observable<BaseBean<UserBean>>
 
+    //完信登录
+    @POST("http://www.wxjishu.com:9999/login")
+    @FormUrlEncoded
+    fun wanxinlogin(@Field("wxUserName") wxUserName: String, @Field("wxPassWord") wxPassWord: String, @Field("wxProjectId") wxProjectId: Int = 6): Observable<BaseBean<WanxinUserBean>>
+
     //短信登录
     @POST("app/user/sms_login")
     fun smslogin(@Query("phone") phone: String, @Query("smsCode") smsCode: String): Observable<BaseBean<UserBean>>
@@ -86,21 +91,25 @@ interface Api {
     @GET("api/get_city_all")
     fun getCityStatic(): Observable<BaseBean<AllCityBean>>
 
+    @GET("api/get_city_all")
+    fun getCityStatic(@Header("VERSION") version: String): Observable<BaseBean<AllCityBean>>
+
     //修改个人信息
     @POST("api/personal/personal_modify")
     @FormUrlEncoded
     fun updateMySettingsUser(
             @Field("avatar") avatar: String?,//头像
-            @Field("name") name: String?,//真实姓名*
+            @Field("name") name: String,//真实姓名*
             @Field("sex") sex: Int?,//年龄
-            @Field("phone") phone: String?,//手机号*
+            @Field("phone") phone: String,//手机号*
             @Field("telephone") telephone: String?,//固定电话
             @Field("wx") wx: String?,//微信
             @Field("qq") qq: String?,//qq
             @Field("email") email: String?,//邮箱
-            @Field("districtId") districtId: Int?,//城市id*
-            @Field("capitalId") capitalId: Int?,//创业资本*
-            @Field("industryOfInterest") industryOfInterest: String?,//感兴趣行业*
+            @Field("districtId") districtId: Int,//城市id*
+            @Field("capitalId") capitalId: Int,//创业资本*
+            @Field("industryOfInterest") industryOfInterest: String,//感兴趣行业*
+            @Field("wxUid") wxUid: Int,//完信uId*
             @Header("ACCESS-TOKEN") token: String//token*
     ): Observable<BaseBean<MySettingsUserBean>>
 
@@ -112,6 +121,10 @@ interface Api {
     @POST("app/user/update_password")
     @FormUrlEncoded
     fun updatePass(@Field("password") password: String, @Field("newPassword") newPassword: String, @Field("verifyPassword") verifyPassword: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+
+    //换绑手机
+    @GET("app/user/exchange_Phone")
+    fun updatePhone(@Query("newPhone") newPhone: String, @Query("smsCode") smsCode: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
 
     /**
      * 获取banner图信息
@@ -173,7 +186,7 @@ interface Api {
 
     //我的留言
     @GET("api/my_comment/get_comments")
-    fun myLeavingMessage(@Query("pageNum") pageNum: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyMyFollowBean>>
+    fun myLeavingMessage(@Query("pageNum") pageNum: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyMyLeavingMessageBean>>
 
     //删除我的留言
     @GET("api/my_comment/del_comment")
@@ -186,6 +199,19 @@ interface Api {
     //删除我的足迹
     @GET("api/my_footprint/del_footprint")
     fun deleteMyFootprint(@Query("brandId") brandId: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+
+    //第三方绑定状态查询
+    @GET("api/get_industry")
+    fun threeBindingState(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+
+    //第三方绑定
+    @POST("app/user/third_party_binding")
+    @FormUrlEncoded
+    fun threeBinding(@Field("type") type: Int, @Field("openId") openId: String, @Field("token") token: String, @Field("weChatUnionId") weChatUnionId: String, @Header("ACCESS-TOKEN") accessToken: String): Observable<BaseBean<Any>>
+
+    //第三方解绑绑定 1.QQ 2.微信
+    @GET("app/user/third_party_unbind")
+    fun unThreeBinding(@Query("type") type: Int, @Header("ACCESS-TOKEN") accessToken: String): Observable<BaseBean<Any>>
 
     //获取头报文章列表
     @GET("/api/newspaper/article_list")

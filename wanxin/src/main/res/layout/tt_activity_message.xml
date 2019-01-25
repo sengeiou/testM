@@ -1,0 +1,320 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/baseRoot"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="#ebebeb"
+                android:orientation="vertical"
+    >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        >
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            >
+
+            <com.handmark.pulltorefresh.library.PullToRefreshListView
+                xmlns:ptr="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/pullToRefreshMessageList"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#ffffff"
+                android:cacheColorHint="@android:color/transparent"
+                android:clipToPadding="false"
+                android:divider="@null"
+                android:paddingBottom="1dp"
+                android:transcriptMode="normal"
+                ptr:ptrMode="pullFromStart"
+                ptr:ptrOverScroll="false"/>
+
+            <TextView
+                android:id="@+id/tvNewMsgTip"
+                android:layout_width="58dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|bottom"
+                android:background="@drawable/tt_new_msg_bk"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="15dp"
+                android:paddingTop="5dp"
+                android:paddingBottom="8dp"
+                android:text="新消息"
+                android:textColor="#01aff4"
+                android:visibility="gone"
+                />
+
+        </FrameLayout>
+
+
+        <RelativeLayout
+            android:id="@+id/tt_layout_bottom"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0">
+
+            <RelativeLayout
+                android:id="@+id/pannel_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/tt_pannel_bk"
+                android:clickable="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:orientation="horizontal"
+                android:paddingLeft="3dp"
+                android:paddingTop="7dp"
+                android:paddingRight="3dp"
+                android:paddingBottom="7dp">
+
+                <com.mogujie.tt.ui.widget.CustomEditView
+                    android:id="@+id/edtMessageTxt"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginRight="9dp"
+                    android:background="@drawable/tt_message_text_bg"
+                    android:maxLines="4"
+                    android:minHeight="30dp"
+                    android:paddingLeft="10dp"
+                    android:paddingRight="0dp"
+                    android:scrollbarStyle="outsideInset"
+                    android:scrollbars="vertical"
+                    android:textColor="@color/default_light_black_color"
+                    android:textSize="16sp"
+                    />
+
+                <ImageView
+                    android:id="@+id/btnVoice"
+                    android:layout_width="31dp"
+                    android:layout_height="31dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/tt_voice_btn_btn"/>
+
+                <ImageView
+                    android:id="@+id/btnKeyboard"
+                    android:layout_width="31dp"
+                    android:layout_height="31dp"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/tt_switch_to_keyboard_btn"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:id="@+id/btnAddPhoto"
+                    android:layout_width="53dp"
+                    android:layout_height="31dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/tt_show_add_photo_btn"/>
+
+                <ImageView
+                    android:id="@+id/btnEmo"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginRight="60dp"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/tt_show_emo_btn"/>
+
+                <TextView
+                    android:id="@+id/btnSendMessage"
+                    android:layout_width="53dp"
+                    android:layout_height="31dp"
+                    android:layout_alignBottom="@id/btnVoice"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/tt_send_btn_bg"
+                    android:gravity="center"
+                    android:text="@string/send_message"
+                    android:textColor="@android:color/white"
+                    android:textSize="15sp"
+                    android:visibility="gone"/>
+
+                <Button
+                    android:id="@+id/btnRecordVoice"
+                    android:layout_width="match_parent"
+                    android:layout_height="34dp"
+                    android:layout_alignBottom="@id/edtMessageTxt"
+                    android:layout_centerInParent="true"
+                    android:layout_marginLeft="9dp"
+                    android:layout_marginRight="9dp"
+                    android:layout_toLeftOf="@id/btnEmo"
+                    android:layout_toRightOf="@id/btnKeyboard"
+                    android:background="@drawable/tt_panel_voice_forward"
+                    android:gravity="center"
+                    android:text="@string/tip_for_voice_forward"
+                    android:textColor="@color/default_light_black_color"
+                    android:textSize="15sp"
+                    android:visibility="gone"/>
+            </RelativeLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutEmo"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pannel_container"
+                android:background="@color/emo_bk_color"
+                android:gravity="bottom"
+                android:orientation="vertical"
+                android:visibility="gone"
+                >
+
+                <View
+                    android:layout_width="fill_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_weight="0"
+                    android:background="@color/default_line_color"/>
+
+                <com.mogujie.tt.ui.widget.EmoGridView
+                    android:id="@+id/gridviewEmo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:visibility="gone"/>
+
+                <com.mogujie.tt.ui.widget.YayaEmoGridView
+                    android:id="@+id/gridviewEmoYaya"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentLeft="true"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical"
+                    android:visibility="gone"/>
+
+                <RadioGroup
+                    android:id="@+id/rgEmo"
+                    android:layout_width="match_parent"
+                    android:layout_height="30dp"
+                    android:layout_gravity="bottom"
+                    android:background="@color/group_manager_user_title"
+                    android:checkedButton="@+id/tab1"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- 第一个标签，注意button属性设置成null，以此去掉自带的radio button -->
+                    <!-- 注意：id="@id/tab1"，为什么不是+id呢？这个和加载先后有关系,Google一下吧 -->
+                    <RadioButton
+                        android:id="@id/tab1"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="bottom"
+                        android:layout_weight="1.0"
+                        android:background="@drawable/tab_bg_selector"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:tag="tab1"
+                        android:text="@string/yaya_emo"
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp"/>
+
+                    <RadioButton
+                        android:id="@+id/tab2"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_gravity="bottom"
+                        android:layout_weight="1.0"
+                        android:background="@drawable/tab_bg_selector"
+                        android:button="@null"
+                        android:gravity="center"
+                        android:text="@string/default_emo"
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp"/>
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layoutAddOtherPanel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/pannel_container"
+                android:background="#ffe6e6e6"
+                android:orientation="horizontal"
+                android:padding="22dp"
+                android:visibility="visible">
+
+                <LinearLayout
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <View
+                        android:id="@+id/take_camera_btn"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:background="@drawable/tt_take_camera_btn_bg"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/take_camera_btn_text"
+                        android:textColor="@color/default_light_black_color"
+                        android:textSize="13sp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:orientation="vertical">
+
+                    <View
+                        android:id="@+id/take_photo_btn"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:background="@drawable/tt_take_photo_btn_bg"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/take_photo_btn_text"
+                        android:textColor="@color/default_light_black_color"
+                        android:textSize="13sp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="55dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="30dp"
+                    android:orientation="vertical">
+
+                    <View
+                        android:id="@+id/take_video_btn"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
+                        android:background="@drawable/tt_take_photo_btn_bg"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="8dp"
+                        android:text="@string/take_video_btn_text"
+                        android:textColor="@color/default_light_black_color"
+                        android:textSize="13sp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <com.mogujie.tt.ui.view.SoundVolumeView
+        android:id="@+id/soundVolumeView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:layout_centerInParent="true"/>
+</RelativeLayout>

@@ -10,7 +10,25 @@
 
     <include layout="@layout/layout_head"/>
 
-    <android.support.v4.widget.NestedScrollView
+    <LinearLayout
+        android:id="@+id/llMySettingsUserTips"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/my_settings_user_no_tips"
+            android:textColor="@color/color_999999"
+            />
+    </LinearLayout>
+
+    <ScrollView
+        android:id="@+id/slMySettingsUser"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:fillViewport="true"
@@ -582,5 +600,5 @@
                     />
             </LinearLayout>
         </LinearLayout>
-    </android.support.v4.widget.NestedScrollView>
+    </ScrollView>
 </LinearLayout>

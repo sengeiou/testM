@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/llMyMessageChatRvMine"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="top"
@@ -35,6 +36,7 @@
             android:layout_height="@dimen/padding_dp_15"
             android:layout_marginEnd="@dimen/padding_dp_5"
             android:background="@color/red"
+            android:visibility="gone"
             />
     </RelativeLayout>
 
@@ -53,6 +55,7 @@
             android:maxWidth="200dp"
             android:text="你也好啊"
             android:textColor="@color/color_333333"
+            android:visibility="gone"
             />
 
         <ImageView
@@ -71,7 +74,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/padding_dp_5"
             android:gravity="center_vertical"
-            android:visibility="gone"
             >
 
             <TextView
@@ -89,12 +91,32 @@
                 />
         </LinearLayout>
 
-        <VideoView
-            android:id="@+id/vvMyMessageChatRvMineVideo"
+        <RelativeLayout
+            android:id="@+id/rlMyMessageChatRvMineVideo"
             android:layout_width="150dp"
             android:layout_height="200dp"
             android:visibility="gone"
-            />
+            >
+
+            <VideoView
+                android:id="@+id/vvMyMessageChatRvMineVideo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+            <ImageView
+                android:id="@+id/ivMyMessageChatRvMineVideoCover"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/my_settings_aboutus_icon"
+                />
+        </RelativeLayout>
     </RelativeLayout>
 
     <ImageView
