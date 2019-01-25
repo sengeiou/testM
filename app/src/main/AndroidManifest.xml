@@ -46,15 +46,30 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"/>
         </provider>
-        <activity android:name=".activity.MainActivity">
+
+        <activity
+            android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.Translucent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"/>
         <!-- 爱加盟 -->
-        <activity android:name=".activity.ShopDetailActivity"/>
+        <activity
+            android:name=".activity.ShopDetailActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.VideoDetailActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"/>
         <activity android:name=".activity.JoinFeedbackActivity"/>
         <!-- 我的 -->
         <activity android:name=".activity.MySettingsActivity"/>
@@ -68,6 +83,7 @@
         <activity android:name=".activity.MyThreeBindingActivity"/>
         <activity android:name=".activity.MyMessageActivity"/>
         <activity android:name=".activity.MyMessageChatActivity"/>
+        <activity android:name=".activity.WebViewActivity"/>
         <!-- 登录注册 -->
         <activity android:name=".activity.LoginMainActivity"/>
         <activity android:name=".activity.LoginpwActivity"/>

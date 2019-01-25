@@ -7,7 +7,6 @@ import android.support.v4.content.ContextCompat
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
-import android.widget.TabHost
 import android.widget.TabWidget
 import android.widget.TextView
 import com.qingmeng.mengmeng.BaseActivity
@@ -16,7 +15,7 @@ import com.qingmeng.mengmeng.base.MainTab
 import com.qingmeng.mengmeng.utils.ToastUtil
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : BaseActivity(), TabHost.OnTabChangeListener {
+class MainActivity : BaseActivity() {
     private var firstTime = 0L
 
     override fun getLayoutId(): Int = R.layout.activity_main
@@ -25,8 +24,13 @@ class MainActivity : BaseActivity(), TabHost.OnTabChangeListener {
     @SuppressLint("ObsoleteSdkInt")
     override fun initObject() {
         //设置状态栏隐藏
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+            window.statusBarColor = ContextCompat.getColor(this, R.color.transparent)
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         }
 
         tabhost.setup(this, supportFragmentManager, R.id.realtabcontent)
@@ -34,13 +38,6 @@ class MainActivity : BaseActivity(), TabHost.OnTabChangeListener {
             tabhost.tabWidget.showDividers = TabWidget.SHOW_DIVIDER_NONE
         }
         initTabs()
-        tabhost.setOnTabChangedListener(this)
-        if (Build.VERSION.SDK_INT >= 21) {
-            window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-            //设置状态栏颜色为透明
-            window.statusBarColor = ContextCompat.getColor(this, R.color.transparent)
-            supportActionBar?.hide()
-        }
         setShowBack(false)
     }
 
@@ -68,22 +65,6 @@ class MainActivity : BaseActivity(), TabHost.OnTabChangeListener {
             firstTime = secondTime//更新firstTime
         } else {//两次按键小于2秒时，退出应用
             AppManager.instance.appExit(this)
-        }
-    }
-
-    override fun onTabChanged(tabId: String?) {
-        tabId?.let {
-            if (Build.VERSION.SDK_INT >= 21) {
-                if (tabId == getString(R.string.tab_name_love_to_join)) {
-                    window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-                    window.statusBarColor = ContextCompat.getColor(this, R.color.transparent)
-                    supportActionBar?.hide()
-                } else {
-                    window.clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
-                    window.statusBarColor = ContextCompat.getColor(this, R.color.main_theme)
-                    supportActionBar?.show()
-                }
-            }
         }
     }
 }

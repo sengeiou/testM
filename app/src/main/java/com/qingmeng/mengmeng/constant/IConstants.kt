@@ -18,6 +18,11 @@ object IConstants {
     val LOGIN_TYPE = "loginType"
     val LOGIN_PSW = "loginPsw"
     val FIRSTLOGIN = "first_login"
+    val BRANDID = "brandId"
+    val POSITION = "position"
+    val IMGS = "imgs"
+    val detailUrl = "detailUrl"
+    val title = "title"
 
     val GET_IMAGE_CODE = BASE_URL + "api/captcha_app/image_app?account="
 

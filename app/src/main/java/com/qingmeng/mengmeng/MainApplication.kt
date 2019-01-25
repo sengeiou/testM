@@ -9,12 +9,14 @@ import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
 import android.text.TextUtils
 import android.util.Log
+import cn.jzvd.JzvdStd
 import com.mogujie.tt.imservice.service.IMService
 import com.mogujie.tt.utils.ImageLoaderUtil
 import com.qingmeng.mengmeng.entity.MyObjectBox
 import com.qingmeng.mengmeng.entity.UserBean
 import com.qingmeng.mengmeng.entity.WanxinUserBean
 import com.qingmeng.mengmeng.utils.SharedSingleton
+import com.qingmeng.mengmeng.view.MyVideoView
 import com.tencent.bugly.crashreport.CrashReport
 import com.tencent.mm.opensdk.openapi.IWXAPI
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
@@ -27,7 +29,7 @@ import java.io.IOException
 /**
  * Created by zq on 2018/8/6
  */
-@SuppressLint("CheckResult")
+@SuppressLint("StaticFieldLeak", "CheckResult")
 class MainApplication : MultiDexApplication() {
     var TOKEN: String = ""
     lateinit var user: UserBean
@@ -108,6 +110,8 @@ class MainApplication : MultiDexApplication() {
     companion object {
         lateinit var instance: MainApplication
         lateinit var boxStore: BoxStore
+        var firstVideo: MyVideoView? = null
+        var secondVideo: JzvdStd? = null
     }
 
     private fun getProcessName(pid: Int): String? {

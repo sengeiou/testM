@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/transparent">
+
+    <LinearLayout
+        android:id="@+id/data_content"
+        android:layout_width="310dp"
+        android:layout_height="430.5dp"
+        android:layout_centerInParent="true"
+        android:background="@drawable/join_data_bg"
+        android:gravity="center_horizontal"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/join_data_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="120dp"
+            android:text="@string/want_to_join"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/text_size_20"/>
+
+        <EditText
+            android:id="@+id/join_data_name"
+            android:layout_width="185dp"
+            android:layout_height="@dimen/padding_dp_30"
+            android:layout_marginTop="@dimen/padding_dp_15"
+            android:background="@drawable/join_data_bg_text"
+            android:gravity="center"
+            android:hint="@string/join_data_name"
+            android:singleLine="true"
+            android:textColor="@color/color_5ab1e1"
+            android:textColorHint="@color/color_5ab1e1"
+            android:textSize="@dimen/text_size_15"/>
+
+        <EditText
+            android:id="@+id/join_data_phone"
+            android:layout_width="185dp"
+            android:layout_height="@dimen/padding_dp_30"
+            android:layout_marginTop="@dimen/padding_dp_15"
+            android:background="@drawable/join_data_bg_text"
+            android:gravity="center"
+            android:hint="@string/join_data_phone"
+            android:singleLine="true"
+            android:textColor="@color/color_5ab1e1"
+            android:textColorHint="@color/color_5ab1e1"
+            android:textSize="@dimen/text_size_15"/>
+
+        <EditText
+            android:id="@+id/join_data_message"
+            android:layout_width="185dp"
+            android:layout_height="101.5dp"
+            android:layout_marginTop="@dimen/padding_dp_10"
+            android:background="@drawable/join_data_bg_message"
+            android:gravity="start"
+            android:text="@string/join_data_message"
+            android:padding="@dimen/padding_dp_10"
+            android:textColor="@color/color_999999"
+            android:textSize="@dimen/text_size_12"/>
+
+        <TextView
+            android:id="@+id/join_data_submit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/padding_dp_10"
+            android:background="@drawable/join_data_submit"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/join_data_close"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/padding_dp_10"
+        android:paddingBottom="@dimen/padding_dp_10"
+        android:src="@drawable/join_data_close"
+        android:layout_alignTop="@+id/data_content"
+        android:layout_alignEnd="@+id/data_content"/>
+
+</RelativeLayout>

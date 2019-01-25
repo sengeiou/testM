@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/mImgDetail"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/black">
+
+    <com.qingmeng.mengmeng.view.photoview.ImageOriginViewPager
+        android:id="@+id/mImgDetailVp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <ImageView
+        android:id="@+id/mImgDetailClose"
+        android:layout_width="@dimen/padding_dp_30"
+        android:layout_height="@dimen/padding_dp_30"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="@dimen/padding_dp_20"
+        android:layout_marginEnd="@dimen/padding_dp_20"
+        android:src="@drawable/join_data_close"/>
+
+    <TextView
+        android:id="@+id/mImgDetailCount"
+        android:layout_width="@dimen/padding_dp_30"
+        android:layout_height="@dimen/padding_dp_17"
+        android:gravity="center"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_12"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/padding_dp_20"
+        android:layout_marginBottom="@dimen/padding_dp_40"
+        android:visibility="gone"
+        android:background="@drawable/color_white_radius_8_5"/>
+
+</RelativeLayout>

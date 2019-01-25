@@ -47,9 +47,22 @@ interface Api {
     @GET("api/join/get_setting_brands")
     fun getRecommend(@Query("sysStaticId") sysStaticId: Int, @Query("pageNum") pageNum: Int): Observable<BaseBean<JoinRecommendBean>>
 
-    //获取首页推荐列表
+    //获取Banner图
     @GET("api/banner/get_banner")
     fun getBanners(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
+
+    //品牌详情接口
+    @GET("api/brand_detail")
+    fun getBrandDetail(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int): Observable<BaseBean<BrandBean>>
+
+    //添加我的关注
+    @GET("api/my_attention/add_attention")
+    fun addAttention(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int): Observable<BaseBean<Any>>
+
+    //申请加盟接口
+    @GET("api/add_comment")
+    fun join(@Query("brandId") brandId: Int, @Query("name") name: String,
+                     @Query("phone") phone: String, @Query("brandId") message: String): Observable<BaseBean<Any>>
 
     //账号登录
     @POST("app/user/account_login")
