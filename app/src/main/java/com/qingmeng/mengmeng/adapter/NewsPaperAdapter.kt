@@ -1,6 +1,5 @@
 package com.qingmeng.mengmeng.adapter
 
-import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -9,13 +8,14 @@ import android.widget.ImageView
 import android.widget.TextView
 import cn.bingoogolapple.bgabanner.BGABanner
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.entity.Banner
 
 /**
  * Created by fyf on 2019/1/2
  * 头报适配器
  */
 
-class NewspaperAdapter(context: Context, var imgs: IntArray, var mList: ArrayList<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class NewsPaperAdapter(var imgs: ArrayList<Banner>, var mList: ArrayList<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val ITEM_BANNER = 0
     private val ITEM_NEWS = 1
     override fun getItemViewType(position: Int): Int = when (position) {

@@ -1,6 +1,5 @@
 package com.qingmeng.mengmeng.base
 
-import com.luck.picture.lib.entity.LocalMedia
 import com.qingmeng.mengmeng.entity.*
 import io.reactivex.Observable
 import retrofit2.http.*
@@ -143,9 +142,26 @@ interface Api {
 
     //爱加盟首页搜索
     @POST("/api/join/get_search_brands")
-    fun join_search_brands(@Query("keyWord") keyWord: String, @Query("fatherId") fatherId: Int,
-                           @Query("typeId") typeId: Int, @Query("cityIds") cityIds: String, @Query("capitalIds") capitalIds: String,
-                           @Query("modeIds") modeIds: String, @Query("integratedSortId") integratedSortId: Int, @Query("pageNum") pageNum: Int): Observable<BaseBean<SearchDtoListBean>>
+    @FormUrlEncoded
+    fun join_search_brands(@Field("keyWord") keyWord: String,//搜索关键字
+                           @Field("fatherId") fatherId: Int?,//餐饮类型父ID
+                           @Field("typeId") typeId: Int?,//餐饮类型ID
+                           @Field("cityIds") cityIds: String?,//爱加盟区域ID
+                           @Field("capitalIds") capitalIds: String?,//投资金额ID
+                           @Field("modeIds") modeIds: String?,//加盟模式ID
+                           @Field("integratedSortId") integratedSortId: Int?,//综合排序（12345）
+                           @Field("pageNum") pageNum: Int)//页数1页10条
+            : Observable<BaseBean<SeachResult>>
+    @POST("/api/join/get_search_brands")
+    @FormUrlEncoded
+    fun join_search_brands(@Field("keyWord") keyWord: String,//搜索关键字
+                           @Field("typeId") typeId: Int?,//餐饮类型ID
+                           @Field("cityIds") cityIds: String?,//爱加盟区域ID
+                           @Field("capitalIds") capitalIds: String?,//投资金额ID
+                           @Field("modeIds") modeIds: String?,//加盟模式ID
+                           @Field("integratedSortId") integratedSortId: Int?,//综合排序（12345）
+                           @Field("pageNum") pageNum: Int)//页数1页10条
+            : Observable<BaseBean<SeachResult>>
 
     //我的关注
     @GET("api/my_attention/get_attention")
@@ -170,4 +186,32 @@ interface Api {
     //删除我的足迹
     @GET("api/my_footprint/del_footprint")
     fun deleteMyFootprint(@Query("brandId") brandId: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+
+    //获取头报文章列表
+    @GET("/api/newspaper/article_list")
+    fun getNewsHeadList(@Query("pageNum") pageNum: Int): Observable<BaseBean<NewsPagerListBean>>
+
+    //搜索食物分类列表
+    @GET("api/get_food")
+    fun getRedShopLeft(@Query("id") id: Int): Observable<BaseBean<RedShopLeftListBean>>
+
+    //红铺列表
+    @GET("api/shop/popular_brands")
+    fun getRedShopRight(@Query("type") type: Int, @Header("VERSION") version: String = ""): Observable<BaseBean<RedShopLeftListBean>>
+
+    //筛选栏投资金额
+    @GET("api/get_capital")
+    fun getSeachConditionMoney(): Observable<BaseBean<SeachConditionBean>>
+
+    //筛选栏加盟模式
+    @GET("api/get_mode")
+    fun getSeachConditionJoinModel(): Observable<BaseBean<SeachConditionBean>>
+
+    //筛选栏加盟区域
+    @GET("api/get_municipality")
+    fun getSeachJoinArea(@Header("VERSION") version: String = ""): Observable<BaseBean<SeachJoinAreaBean>>
+
+    //筛选栏餐饮类型
+    @GET("api/get_food_filter")
+    fun getSeachFoodType(@Header("VERSION") version: String): Observable<BaseBean<SeachFoodTypeBean>>
 }
