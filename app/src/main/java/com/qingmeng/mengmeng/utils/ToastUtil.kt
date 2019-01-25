@@ -39,8 +39,15 @@ class ToastUtil {
         fun showShort(message: CharSequence) {
             if (isShow) {
                 cancel()
-
                 mToast = createToast(MainApplication.instance, message, Toast.LENGTH_SHORT)
+                mToast?.show()
+            }
+        }
+
+        fun showShort(resId: Int) {
+            if (isShow) {
+                cancel()
+                mToast = createToast(MainApplication.instance, MainApplication.instance.getString(resId), Toast.LENGTH_SHORT)
                 mToast?.show()
             }
         }

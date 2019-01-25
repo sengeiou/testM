@@ -1,6 +1,7 @@
 package com.qingmeng.mengmeng.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.support.design.widget.AppBarLayout
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
@@ -18,9 +19,11 @@ import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.JoinFeedbackActivity
+import com.qingmeng.mengmeng.activity.ShopDetailActivity
 import com.qingmeng.mengmeng.adapter.JoinMenuAdapter
 import com.qingmeng.mengmeng.adapter.JoinRecommendAdapter
 import com.qingmeng.mengmeng.adapter.UnderLineNavigatorAdapter
+import com.qingmeng.mengmeng.constant.IConstants.BRANDID
 import com.qingmeng.mengmeng.entity.Banner
 import com.qingmeng.mengmeng.entity.JoinRecommendBean
 import com.qingmeng.mengmeng.entity.StaticBean
@@ -38,7 +41,7 @@ import org.jetbrains.anko.support.v4.startActivity
 
 @SuppressLint("CheckResult")
 class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppBarLayout.OnOffsetChangedListener,
-        BGABanner.Delegate<ImageView, Banner>, BGABanner.Adapter<ImageView, String> {
+        BGABanner.Delegate<ImageView, Banner>, BGABanner.Adapter<ImageView, Banner> {
     private lateinit var listPagerAdapter: PagerAdapter
     private lateinit var indicatorAdapter: UnderLineNavigatorAdapter
     private lateinit var commonNavigator: CommonNavigator
@@ -96,7 +99,26 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         test_intface.setOnClickListener {
             startActivity<JoinFeedbackActivity>()
         }
+        vpList.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+            override fun onPageScrollStateChanged(state: Int) {
+            }
 
+            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
+            }
+
+            override fun onPageSelected(position: Int) {
+                if (!tabList.isEmpty()) {
+                    val id = tabList[position].id
+                    val adapter = getView(id).adapter as JoinRecommendAdapter
+                    if (adapter.isEmpty()) {
+                        val recommendBean = JoinRecommendBean.fromString(id)
+                        adapter.updateItems(recommendBean.data)
+                        isRefresh = true
+                        getData(id)
+                    }
+                }
+            }
+        })
         barLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             //verticalOffset始终为0以下的负数
             val percent = Math.abs(verticalOffset * 1.0f) / appBarLayout.totalScrollRange
@@ -208,7 +230,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         val adapter = JoinRecommendAdapter(context!!) {
-
+            startActivity(Intent(context!!, ShopDetailActivity::class.java).putExtra(BRANDID, it.id))
         }
         recyclerView.adapter = adapter
         viewSparseArray.put(tagId, recyclerView)
@@ -245,7 +267,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
             view.tag?.let { page = it as Int }
         }
         val adapter = view.adapter as JoinRecommendAdapter
-        ApiUtils.getApi().getRecommend(0, page)
+        ApiUtils.getApi().getRecommend(id, page)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -310,7 +332,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 
     //获取banner图
     private fun getBanners(version: String) {
-        ApiUtils.getApi().getBanners(version, 1)
+        ApiUtils.getApi().getBanners(version, 3)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -361,15 +383,21 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         return !getView(tagId).canScrollVertically(1)
     }
 
-    //banner点击事件
+    //banner点击事件  skipType 跳转类型 1.不做任何跳转 2.普通链接 3.头报文章链接 4.品牌详情
     override fun onBannerItemClick(banner: BGABanner?, itemView: ImageView?, model: Banner?, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        model?.apply {
+            when(skipType){
+                2->{}
+                3->{}
+                4->{}
+            }
+        }
     }
 
     //banner加载图片
-    override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: String?, position: Int) {
+    override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: Banner?, position: Int) {
         model?.let {
-            Glide.with(this).load(it).apply(RequestOptions()
+            Glide.with(this).load(it.imgUrl).apply(RequestOptions()
                     .placeholder(R.drawable.image_holder).error(R.drawable.image_holder)
                     .centerCrop()).into(itemView)
         }

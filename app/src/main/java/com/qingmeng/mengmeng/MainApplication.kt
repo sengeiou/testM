@@ -2,18 +2,19 @@ package com.qingmeng.mengmeng
 
 import AppManager
 import android.annotation.SuppressLint
-import android.app.Application
 import android.support.multidex.MultiDexApplication
 import android.text.TextUtils
 import android.util.Log
+import cn.jzvd.JzvdStd
 import com.qingmeng.mengmeng.entity.MyObjectBox
 import com.qingmeng.mengmeng.entity.UserBean
 import com.qingmeng.mengmeng.utils.SharedSingleton
+import com.qingmeng.mengmeng.view.MyVideoView
 import com.tencent.bugly.crashreport.CrashReport
-import io.objectbox.BoxStore
-import io.objectbox.android.AndroidObjectBrowser
 import com.tencent.mm.opensdk.openapi.IWXAPI
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
+import io.objectbox.BoxStore
+import io.objectbox.android.AndroidObjectBrowser
 import java.io.BufferedReader
 import java.io.FileReader
 import java.io.IOException
@@ -21,7 +22,7 @@ import java.io.IOException
 /**
  * Created by zq on 2018/8/6
  */
-@SuppressLint("CheckResult")
+@SuppressLint("StaticFieldLeak", "CheckResult")
 class MainApplication : MultiDexApplication() {
     var TOKEN: String = ""
     lateinit var user: UserBean
@@ -78,6 +79,8 @@ class MainApplication : MultiDexApplication() {
     companion object {
         lateinit var instance: MainApplication
         lateinit var boxStore: BoxStore
+        var firstVideo: MyVideoView? = null
+        var secondVideo: JzvdStd? = null
     }
 
     private fun getProcessName(pid: Int): String? {

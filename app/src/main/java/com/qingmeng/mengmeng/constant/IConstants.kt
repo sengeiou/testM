@@ -16,6 +16,11 @@ object IConstants {
     val LOGIN_TYPE = "loginType"
     val LOGIN_PSW = "loginPsw"
     val FIRSTLOGIN = "first_login"
+    val BRANDID = "brandId"
+    val POSITION = "position"
+    val IMGS = "imgs"
+    val detailUrl = "detailUrl"
+    val title = "title"
 
     val RESULT_CODE_TAKE_CAMERA = 101    //拍照
     val RESULT_CODE_OPEN_ALBUM = 102     //打开相册

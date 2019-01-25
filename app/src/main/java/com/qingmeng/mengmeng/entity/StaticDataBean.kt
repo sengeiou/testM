@@ -18,4 +18,5 @@ class StaticBean(@Id var cacheId: Long,
                  var type: Long,
                  var skipId: Int,
                  var skipType: Int,
+                 var fatherSkipId: Int,
                  var version: String)

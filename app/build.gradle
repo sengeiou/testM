@@ -23,6 +23,10 @@ android {
             abiFilters 'armeabi-v7a', 'armeabi', 'x86', 'x86_64'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     buildTypes {
         release {
             minifyEnabled false
@@ -103,4 +107,5 @@ dependencies {
     implementation "io.objectbox:objectbox-kotlin:$objectboxVersion"
     implementation 'com.aliyun.dpa:oss-android-sdk:2.4.5'
     implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
+    implementation 'cn.jzvd:jiaozivideoplayer:6.4.1'
 }

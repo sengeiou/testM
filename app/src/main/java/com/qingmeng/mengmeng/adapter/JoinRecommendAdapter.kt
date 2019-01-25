@@ -25,6 +25,8 @@ class JoinRecommendAdapter(val context: Context, val onItemClick: (JoinRecommend
         viewHolder.bindViewHolder(list[position])
     }
 
+    fun isEmpty(): Boolean = list.isEmpty()
+
     /** 更新数据，替换原有数据  */
     fun updateItems(items: ArrayList<JoinRecommendBean.JoinBean>) {
         if (!list.isEmpty()) {

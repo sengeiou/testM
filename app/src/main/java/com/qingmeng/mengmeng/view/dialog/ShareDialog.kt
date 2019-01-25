@@ -17,7 +17,7 @@ class ShareDialog(context: Context) : Dialog(context, R.style.dialog_share) {
     private val shareMoments: LinearLayout
     private val shareQQ: LinearLayout
     private val shareSina: LinearLayout
-    private val shareCancle: TextView
+    private val shareCancel: TextView
 
     init {
         setContentView(R.layout.dialog_share)
@@ -28,7 +28,7 @@ class ShareDialog(context: Context) : Dialog(context, R.style.dialog_share) {
         shareMoments = findViewById(R.id.share_moments)
         shareQQ = findViewById(R.id.share_qq)
         shareSina = findViewById(R.id.share_sina)
-        shareCancle = findViewById(R.id.share_cancel)
+        shareCancel = findViewById(R.id.share_cancel)
         initListener()
     }
 
@@ -37,7 +37,7 @@ class ShareDialog(context: Context) : Dialog(context, R.style.dialog_share) {
         shareMoments.setOnClickListener { ToastUtil.showShort("分享到朋友圈") }
         shareQQ.setOnClickListener { ToastUtil.showShort("分享到QQ") }
         shareSina.setOnClickListener { ToastUtil.showShort("分享到新浪微博") }
-        shareCancle.setOnClickListener { dismiss() }
+        shareCancel.setOnClickListener { dismiss() }
     }
 
 }

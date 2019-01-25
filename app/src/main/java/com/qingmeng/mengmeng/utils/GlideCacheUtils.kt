@@ -1,13 +1,22 @@
 package com.qingmeng.mengmeng.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Bitmap
+import android.media.MediaMetadataRetriever
 import android.os.Looper
 import android.text.TextUtils
+import android.widget.ImageView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory
 import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory
+import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
+import com.bumptech.glide.load.resource.bitmap.VideoDecoder
+import com.bumptech.glide.request.RequestOptions
 import java.io.File
 import java.math.BigDecimal
+import java.security.MessageDigest
 
 
 /**Glide缓存工具类
@@ -170,5 +179,32 @@ object GlideCacheUtils {
         val result4 = BigDecimal(teraBytes)
 
         return result4.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "TB"
+    }
+
+    /**
+     *  获取视频某一帧加载为缩略图
+     *  @param context 上下文
+     *  @param uri 视频地址
+     *  @param imageView 设置image
+     *  @param frameTimeMicros 获取某一时间帧
+     */
+    @SuppressLint("CheckResult")
+    fun loadVideoScreenshot(context: Context, uri: String, imageView: ImageView, frameTimeMicros: Long) {
+        val requestOptions = RequestOptions.frameOf(frameTimeMicros)
+        requestOptions.set(VideoDecoder.FRAME_OPTION, MediaMetadataRetriever.OPTION_CLOSEST)
+        requestOptions.transform(object : BitmapTransformation() {
+            override fun updateDiskCacheKey(messageDigest: MessageDigest) {
+                try {
+                    messageDigest.update((context.packageName + "RotateTransform").toByteArray())
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+
+            override fun transform(pool: BitmapPool, toTransform: Bitmap, outWidth: Int, outHeight: Int): Bitmap {
+                return toTransform
+            }
+        })
+        Glide.with(context).load(uri).apply(requestOptions).into(imageView)
     }
 }
