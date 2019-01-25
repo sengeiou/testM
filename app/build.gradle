@@ -112,8 +112,8 @@ dependencies {
     implementation "io.objectbox:objectbox-kotlin:$objectboxVersion"
     implementation 'com.aliyun.dpa:oss-android-sdk:2.4.5'
     implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
-    implementation project(':wanxin')
     implementation 'com.android.support:multidex:1.0.0'
     implementation 'de.greenrobot:eventbus:2.4.0'
     implementation 'cn.jzvd:jiaozivideoplayer:6.4.1'
+    implementation project(':wanxin')
 }

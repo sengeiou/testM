@@ -14,7 +14,7 @@
         android:drawableStart="@drawable/detail_icon_message"
         android:drawablePadding="@dimen/padding_dp_10"
         android:padding="@dimen/padding_dp_5"
-        android:text="消息"
+        android:text="@string/message"
         android:textColor="@color/color_666666"
         android:textSize="@dimen/text_size_14"/>
 

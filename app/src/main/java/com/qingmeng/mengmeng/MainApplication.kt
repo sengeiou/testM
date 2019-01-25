@@ -110,6 +110,8 @@ class MainApplication : MultiDexApplication() {
     companion object {
         lateinit var instance: MainApplication
         lateinit var boxStore: BoxStore
+        var firstVideo: MyVideoView? = null
+        var secondVideo: JzvdStd? = null
     }
 
     private fun getProcessName(pid: Int): String? {
