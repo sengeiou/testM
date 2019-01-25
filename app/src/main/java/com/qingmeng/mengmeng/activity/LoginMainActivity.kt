@@ -10,7 +10,9 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.entity.Banner
+import com.qingmeng.mengmeng.entity.Banner_.imgUrl
 import com.qingmeng.mengmeng.utils.ApiUtils
+import com.qingmeng.mengmeng.utils.BoxUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.tencent.connect.common.Constants
 import com.tencent.mm.opensdk.modelmsg.SendAuth
@@ -31,20 +33,20 @@ import org.json.JSONObject
  * mail: 153705849@qq.com
  * describe: 登录页面首页
  */
-class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>, BGABanner.Adapter<ImageView, String> {
-    lateinit var openid: String
+class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>, BGABanner.Adapter<ImageView, Banner> {
     //banner加载图片
-    override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: String?, position: Int) {
+    override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: Banner?, position: Int) {
         model?.let {
-            Glide.with(this).load(it).apply(RequestOptions()
-                    .placeholder(R.drawable.image_holder).error(R.drawable.image_holder)
-                    .centerCrop()).into(itemView)
+            Glide.with(this).load(it.imgUrl).apply(RequestOptions().centerCrop()
+                    .placeholder(R.drawable.login_icon_banner1).error(R.drawable.login_icon_banner1)).into(itemView)
         }
     }
 
+    lateinit var openid: String
+
     //banner点击事件
     override fun onBannerItemClick(banner: BGABanner?, itemView: ImageView?, model: Banner, position: Int) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+
     }
 
     private val mImgList = ArrayList<Banner>()
@@ -55,7 +57,12 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     }
 
     override fun initData() {
-        setBGABannerLogin()
+        val bannerData = BoxUtils.getBannersByType(5)
+        mImgList.addAll(bannerData)
+        if (!mImgList.isEmpty()) {
+            setBGABannerLogin(mImgList[0].version)
+        } else setBGABannerLogin("")
+
 
     }
 
@@ -71,7 +78,8 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     //初始化Listener
     override fun initListener() {
         super.initListener()
-
+        //返回
+        iv_login_main_back.setOnClickListener { this.finish() }
         //账号密码登录
         btn_login_pw_main.setOnClickListener { startActivity<LoginpwActivity>() }
         //短信验证登录
@@ -112,33 +120,73 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
 
 
     //设置登录页面BGAbanner
-    fun setBGABannerLogin() {
-        ApiUtils.getApi().getbanner("", 5)
+    fun setBGABannerLogin(version: String) {
+        ApiUtils.getApi().getbanner(version, 5)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         bean.data?.let {
-                            if (!it.banners.isEmpty()) {
-                                if (!mImgList.isEmpty()) {
+                            if (!it.banners.isEmpty()){
+                                //api banner如果有数据
+                            if (!mImgList.isEmpty()) {
+                                //本地有数据
+                                if (mImgList[0].version == null) {
+                                    //本地没有版本号，同步版本号
+                                    it.setVersion()
+                                } else
+                                    if (mImgList[0].version == it.version) {
+                                        //版本号相同
+                                } else {
+                                        //版本号不同
+                                        //清除本地
+                                    BoxUtils.removeBanners(mImgList)
+                                        //清除list
                                     mImgList.clear()
+                                        //同步版本号
+                                    it.setVersion()
+                                        //list添加api数据
+                                    mImgList.addAll(it.banners)
+                                        //数据库保存数据
+                                    BoxUtils.saveBanners(mImgList)
+                                        setBanner()
                                 }
+                            } else {
+                                //本地没有数据
+                                //同步版本号
+                                it.setVersion()
+                                //list添加数据
                                 mImgList.addAll(it.banners)
+                                //本地保存数据
+                                BoxUtils.saveBanners(mImgList)
                                 setBanner()
                             }
+                        } else{//api banner没有数据
+                                mImgList.clear()
+                                banner_login_main.setData(R.drawable.login_icon_banner1,R.drawable.login_icon_banner2,R.drawable.login_icon_banner3)
+                                (0..2).forEach {
+                                    banner_login_main.getItemImageView(it).scaleType = ImageView.ScaleType.FIT_CENTER
+                                }
+                            }
                         }
+
+                    } else if (bean.code == 20000) {
+                        setBanner()
                     } else {
                         ToastUtil.showShort(bean.msg)
                     }
-                }, {
-                    ToastUtil.showNetError()
-                }, {}, { addSubscription(it) })
+                })
     }
 
     private fun setBanner() {
         banner_login_main.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
         banner_login_main.setDelegate(this)//设置点击事件，重写点击回调方法
         banner_login_main.setData(mImgList, null)
+        if (mImgList.size > 1) {
+            banner_login_main.setAutoPlayAble(true)
+        } else {
+            banner_login_main.setAutoPlayAble(false)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

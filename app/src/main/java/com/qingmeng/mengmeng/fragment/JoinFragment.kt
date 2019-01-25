@@ -1,7 +1,6 @@
 package com.qingmeng.mengmeng.fragment
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.support.design.widget.AppBarLayout
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
@@ -20,6 +19,7 @@ import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.JoinFeedbackActivity
 import com.qingmeng.mengmeng.activity.ShopDetailActivity
+import com.qingmeng.mengmeng.activity.LoginMainActivity
 import com.qingmeng.mengmeng.adapter.JoinMenuAdapter
 import com.qingmeng.mengmeng.adapter.JoinRecommendAdapter
 import com.qingmeng.mengmeng.adapter.UnderLineNavigatorAdapter
@@ -332,7 +332,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 
     //获取banner图
     private fun getBanners(version: String) {
-        ApiUtils.getApi().getBanners(version, 3)
+        ApiUtils.getApi().getBanners(version, 1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->

@@ -63,6 +63,8 @@
     <string name="want_to_join">我要加盟</string>
     <string name="investment_amount">投资金额</string>
     <string name="recommend_advisory">立即咨询</string>
+    <string name="hot_seach">热门搜索</string>
+    <string name="seach_history">历史搜索</string>
     <string name="customer_service">客服</string>
     <string name="collection">收藏</string>
     <string name="get_join_data">获取加盟信息</string>
@@ -93,6 +95,13 @@
     <string name="join_feedback_type4">存在侵权行为</string>
 
     <!-- =======================================红铺===================================== -->
+    <string name="red_shop_food_type">分类</string>
+    <string name="red_shop_hot">热门品牌</string>
+
+    <string name="seach_button_sure">确定</string>
+    <string name="seach_button_exit">重置</string>
+    <string name="seach_money">投资金额</string>
+    <string name="seach_join_type">加盟模式</string>
     <string name="seach_shop_count">门店数：</string>
     <string name="seach_visit_count">浏览量：</string>
     <string name="seach_food_type">餐饮类型</string>

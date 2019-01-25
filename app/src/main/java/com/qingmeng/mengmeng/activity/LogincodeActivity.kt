@@ -10,6 +10,11 @@ import android.text.TextWatcher
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import com.mogujie.tt.config.UrlConstant
+import com.mogujie.tt.db.sp.SystemConfigSp
+import com.mogujie.tt.imservice.event.LoginEvent
+import com.mogujie.tt.imservice.service.IMService
+import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
@@ -18,6 +23,7 @@ import com.qingmeng.mengmeng.constant.ImageCodeHandler
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.GeetestUtil
 import com.qingmeng.mengmeng.utils.ToastUtil
+import de.greenrobot.event.EventBus
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_log_sms_login.*
@@ -32,6 +38,18 @@ import org.json.JSONObject
  * describe: 验证码登录
  */
 class LogincodeActivity : BaseActivity() {
+    private var mImService: IMService? = null
+
+    //完信相关
+    private val imServiceConnector = object : IMServiceConnector() {
+        override fun onServiceDisconnected() {}
+
+        override fun onIMServiceConnected() {
+            IMServiceConnector.logger.d("login#onIMServiceConnected")
+            mImService = this.imService
+        }
+    }
+
     override fun getLayoutId(): Int {
 
 
@@ -42,7 +60,15 @@ class LogincodeActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
         imgHandler = ImageCodeHandler(this, tv_login_get_code_sms_login)
+
+        //完信相关
         GeetestUtil.init(this)
+        SystemConfigSp.instance().init(applicationContext)
+        if (TextUtils.isEmpty(SystemConfigSp.instance().getStrConfig(SystemConfigSp.SysCfgDimension.LOGINSERVER))) {
+            SystemConfigSp.instance().setStrConfig(SystemConfigSp.SysCfgDimension.LOGINSERVER, UrlConstant.ACCESS_MSG_ADDRESS)
+        }
+        imServiceConnector.connect(this)
+        EventBus.getDefault().register(this)
     }
 
 
@@ -57,7 +83,7 @@ class LogincodeActivity : BaseActivity() {
         super.initListener()
         //返回
         mBack.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
         //点击页面其他地方取消EditText的焦点并且隐藏软键盘
         mlogsmslogin.setOnTouchListener(object : View.OnTouchListener {
@@ -211,48 +237,97 @@ class LogincodeActivity : BaseActivity() {
      * msmCode：短信验证码
      */
     private fun msmlogin(phone: String, msmCode: String) {
+        myDialog.showLoadingDialog()
         ApiUtils.getApi()
                 .smslogin(phone, msmCode)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
                     when (bean.code) {
-                        //手机号没有注册
+                    //手机号没有注册
                         25088 -> {
+                            myDialog.dismissLoadingDialog()
                             ToastUtil.showShort(getString(R.string.phone_not_registered))
                         }
-                        //登录成功
+                    //登录成功
                         12000 -> {
                             bean.data?.let {
                                 MainApplication.instance.user = it
                                 MainApplication.instance.TOKEN = it.token
                                 it.upDate()
+                                //取wxName和wxPwd登录完信
+                                wanxinLogin(it.userInfo.wxName, it.userInfo.wxPwd)
                             }
                             sharedSingleton.setString(IConstants.LOGIN_PHONE, phone)
-                            ToastUtil.showShort(getString(R.string.login_success))
-                            this.finish()
-                            //	如果是在应用内操作时提示跳转到登录页面的，登录成功后回到原页面；
-                            //  在我的/消息板块点击登录的回到盟盟首页；
-
                         }
-                        //参数有误
+                    //参数有误
                         13000 -> {
+                            myDialog.dismissLoadingDialog()
                             ToastUtil.showShort(bean.msg)
                         }
-                        //验证码不正确
+                    //验证码不正确
                         10000 -> {
+                            myDialog.dismissLoadingDialog()
                             ToastUtil.showShort(bean.msg)
                         }
-                        //验证码不正确
+                    //验证码不正确
                         15002 -> {
+                            myDialog.dismissLoadingDialog()
                             ToastUtil.showShort(bean.msg)
                         }
                     }
+                }, {
+                    myDialog.dismissLoadingDialog()
                 })
+    }
+
+    //完信登录
+    private fun wanxinLogin(wxName: String, wxPwd: String) {
+        ApiUtils.getApi()
+                .wanxinlogin(wxName, wxPwd)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    it.apply {
+                        when (code) {
+                            12000 -> {
+                                data?.let {
+                                    MainApplication.instance.wanxinUser = it
+                                    it.upDate()
+                                    //还要登录完信..
+                                    mImService?.loginManager?.login("${it.uId}", it.token)
+                                }
+                            }
+                            else -> {
+                                ToastUtil.showShort(msg)
+                            }
+                        }
+                    }
+                }, {
+                    myDialog.dismissLoadingDialog()
+                })
+    }
+
+    //EventBus消费事件
+    fun onEventMainThread(event: LoginEvent) {
+        when (event) {
+            LoginEvent.LOCAL_LOGIN_SUCCESS, LoginEvent.LOGIN_OK -> {
+                myDialog.dismissLoadingDialog()
+                ToastUtil.showShort(getString(R.string.login_success))
+                this@LogincodeActivity.finish()
+                //	如果是在应用内操作时提示跳转到登录页面的，登录成功后回到原页面；
+                //  在我的/消息板块点击登录的回到盟盟首页；
+            }
+            LoginEvent.LOGIN_AUTH_FAILED, LoginEvent.LOGIN_INNER_FAILED -> {
+
+            }
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         GeetestUtil.destroy()
+        imServiceConnector.disconnect(this)
+        EventBus.getDefault().unregister(this)
     }
 }

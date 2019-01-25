@@ -1,6 +1,7 @@
 package com.qingmeng.mengmeng.constant
 
 import com.qingmeng.mengmeng.BuildConfig
+import com.qingmeng.mengmeng.utils.photo.StorageUtils
 
 /**
  * Created by zq on 2018/8/13
@@ -9,6 +10,7 @@ object IConstants {
     val BASE_URL = BuildConfig.SERVER_IP
     val ERROR_MSG = "网络获取失败"
     val USER = "userBean"
+    val WANXIN_USER = "wanxinUserBean"
     val JOIN_RECOMMEND = "joinRecommend"
     val HOME_PAGE = "homePageBean"
     val LOGIN_TIME = "loginTime"
@@ -22,9 +24,12 @@ object IConstants {
     val detailUrl = "detailUrl"
     val title = "title"
 
-    val RESULT_CODE_TAKE_CAMERA = 101    //拍照
-    val RESULT_CODE_OPEN_ALBUM = 102     //打开相册
-    val TEST_ACCESS_TOKEN = "233:0w4R281R7075d6q8Va688N718979ea48O2c8D2yQrF483j465BT2a86J964ezM3F"   //模拟token
-
     val GET_IMAGE_CODE = BASE_URL + "api/captcha_app/image_app?account="
+
+    /**
+     * ==============================路径==============================
+     */
+    const val ROOT_NAME = BuildConfig.APP_DIR
+    //语音路径
+    val DIR_AUDIO_STR = StorageUtils.getPublicStorageDir("${ROOT_NAME}/audio")
 }

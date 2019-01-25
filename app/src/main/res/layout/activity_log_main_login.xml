@@ -5,35 +5,44 @@
               android:layout_height="match_parent"
               android:background="@color/common_bg"
               android:orientation="vertical">
+<RelativeLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <ImageView
+        android:id="@+id/iv_login_main_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="15dp"
+        app:srcCompat="@drawable/login_icon_main_back" />
 
     <ImageView
         android:id="@+id/iv_login_mm_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
         app:srcCompat="@drawable/login_logo"/>
 
-    <cn.bingoogolapple.bgabanner.BGABanner
-        android:id="@+id/banner_login_main"
-        android:layout_width="wrap_content"
-        android:layout_height="200dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="45dp"
-        app:srcCompat="@drawable/login_logo"/>
 
+</RelativeLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="45dp"
         android:background="@color/common_bg"
         android:orientation="vertical">
-
+        <cn.bingoogolapple.bgabanner.BGABanner
+            android:id="@+id/banner_login_main"
+            android:layout_width="wrap_content"
+            android:layout_height="170dp"
+            app:banner_placeholderDrawable="@drawable/login_icon_banner1">
+    </cn.bingoogolapple.bgabanner.BGABanner>
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp">
+            android:layout_marginTop="45dp">
 
 
             <LinearLayout
@@ -106,6 +115,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:paddingBottom="20dp"
             android:layout_marginTop="40dp">
 
 
@@ -116,10 +126,10 @@
                 android:clickable="true"
                 android:drawablePadding="5dp"
                 android:drawableStart="@drawable/login_icon_wx"
-                android:gravity="center"
                 android:text="@string/wechat"
                 android:layout_marginStart="102dp"
                 android:textColor="@color/color_666666"
+                android:paddingRight="30dp"
                 android:textSize="@dimen/text_size_14"/>
 
             <TextView
@@ -127,12 +137,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="true"
+                android:paddingLeft="30dp"
                 android:drawablePadding="5dp"
                 android:drawableStart="@drawable/login_icon_qq"
-                android:gravity="center"
-                android:layout_marginStart="60dp"
                 android:textColor="@color/color_666666"
                 android:text="@string/qq"
+
                 android:textSize="@dimen/text_size_14"/>
 
         </LinearLayout>

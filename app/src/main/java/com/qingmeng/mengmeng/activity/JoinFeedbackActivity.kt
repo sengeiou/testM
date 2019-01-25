@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -20,9 +19,7 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.GridImageAdapter
-import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.SelectBean
-import com.qingmeng.mengmeng.entity.SelectDialogBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.view.FullyGridLayoutManager
@@ -30,7 +27,6 @@ import com.qingmeng.mengmeng.view.dialog.SelectDialog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_join_feedback.*
-import kotlinx.android.synthetic.main.activity_login_change_password.*
 import kotlinx.android.synthetic.main.layout_head.*
 
 /**
@@ -44,6 +40,7 @@ class JoinFeedbackActivity : BaseActivity() {
     private lateinit var mBottomDialog: SelectDialog
     private val selectList = java.util.ArrayList<LocalMedia>()
     private val murlList = ArrayList<String>()
+    var callUrl = ArrayList<String>()
     private lateinit var adapter: GridImageAdapter
     private var pop: PopupWindow? = null
     lateinit var token: String
@@ -102,10 +99,25 @@ class JoinFeedbackActivity : BaseActivity() {
         }
         //提交
         mMenu.setOnClickListener {
-            token = IConstants.TEST_ACCESS_TOKEN
+            token = MainApplication.instance.TOKEN
             content = edt_join_feedback.text.toString()
+            for (i in selectList.indices) {
+                if (selectList[i].isCompressed()) {
+                    murlList.add(selectList[i].compressPath)
+                } else {
+                    murlList.add(selectList[i].path)
+                }
+                ApiUtils.updateImg(this@JoinFeedbackActivity, murlList[i], callback =
+                {
+                    callUrl.add(it);
+                    if (callUrl.size == selectList.size) {
+                        setfeedback(token, brandId, type, content, callUrl)
 
-            setfeedback(token, brandId, type, content, murlList)
+                    }
+                })
+            }
+
+
         }
     }
 
@@ -124,7 +136,6 @@ class JoinFeedbackActivity : BaseActivity() {
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         ToastUtil.showShort(bean.msg)
-                        Log.e("aaaa", "aaaa")
 
                     } else {
                         ToastUtil.showShort(bean.msg)
@@ -267,6 +278,7 @@ class JoinFeedbackActivity : BaseActivity() {
                     // 图片选择结果回调
 
                     images = PictureSelector.obtainMultipleResult(data)
+
                     selectList.addAll(images)
 
                     //                    selectList = PictureSelector.obtainMultipleResult(data);

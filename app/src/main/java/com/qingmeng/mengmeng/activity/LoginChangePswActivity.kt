@@ -1,7 +1,6 @@
 package com.qingmeng.mengmeng.activity
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.support.annotation.RequiresApi
@@ -16,7 +15,6 @@ import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.ImageCodeHandler
-import com.qingmeng.mengmeng.fragment.JoinFragment
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.GeetestUtil
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -56,7 +54,7 @@ class LoginChangePswActivity : BaseActivity() {
         super.initListener()
         //返回
         mBack.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
         //点击页面其他地方取消EditText的焦点并且隐藏软键盘
         mlogchangepsw.setOnTouchListener(object : View.OnTouchListener {
@@ -218,11 +216,11 @@ class LoginChangePswActivity : BaseActivity() {
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
                     when (bean.code) {
-                        //手机号没有注册
+                    //手机号没有注册
                         25088 -> {
                             ToastUtil.showShort(getString(R.string.phone_not_registered))
                         }
-                        //登录成功
+                    //登录成功
                         12000 -> {
                             bean.data?.let {
                                 MainApplication.instance.user = it
@@ -240,17 +238,17 @@ class LoginChangePswActivity : BaseActivity() {
 
 
                         }
-                        //参数有误
+                    //参数有误
                         13000 -> {
                             ToastUtil.showShort("错误")
                             //  ToastUtil.showShort(bean.msg)
                         }
-                        //验证码不正确
+                    //验证码不正确
                         10000 -> {
                             //   ToastUtil.showShort("错误2")
                             ToastUtil.showShort(bean.msg)
                         }
-                        //验证码不正确
+                    //验证码不正确
                         15002 -> {
                             //      ToastUtil.showShort("错误3")
                             ToastUtil.showShort(bean.msg)

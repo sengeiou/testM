@@ -1,19 +1,21 @@
 package com.qingmeng.mengmeng.activity
 
+import android.app.Activity
+import android.content.Intent
 import android.text.Editable
 import android.text.InputType
 import android.text.TextWatcher
 import android.widget.EditText
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.utils.ApiUtils
+import com.qingmeng.mengmeng.utils.InputCheckUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_settings_setorupdate.*
 import kotlinx.android.synthetic.main.layout_head.*
-import java.util.regex.Pattern
 
 /**
  *  Description :设置 - 设置或修改密码
@@ -34,17 +36,17 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
-        //设置密码标题
-        if (intent.getStringExtra("title") == getString(R.string.my_settings_setPassword)) {
+        //修改密码
+        if (intent.getBooleanExtra("isUpdatePass", false)) {
+            setHeadName(getString(R.string.my_settings_updatePassword))
+            mIsSetPass = false
+        } else {    //设置密码
             setHeadName(getString(R.string.my_settings_setPassword))
             mIsSetPass = true
             etMySettingsSetOrUpdateOld.setHint(R.string.username)
             //设置输入类型 默认
             etMySettingsSetOrUpdateOld.inputType = InputType.TYPE_CLASS_TEXT
             ivMySettingsSetOrUpdateIcon.setImageResource(R.mipmap.my_settings_updatepass_user)
-        } else {    //修改密码
-            setHeadName(getString(R.string.my_settings_updatePassword))
-            mIsSetPass = false
         }
     }
 
@@ -53,7 +55,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
 
         //返回
         mBack.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
 
         //根据格式 设置不同输入监听
@@ -85,7 +87,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
             //设置密码判断
             if (mIsSetPass) {
                 if (oldPass.isNotBlank() && newPass.isNotBlank() && newPassTwo.isNotBlank()) {
-                    if (!checkPass(newPass) || !checkPass(newPassTwo)) {
+                    if (!InputCheckUtils.checkPass6_16(newPass) || !InputCheckUtils.checkPass6_16(newPassTwo)) {
                         ToastUtil.showShort(getString(R.string.passFormat_tips))
                     } else {
                         if (newPass == newPassTwo) {
@@ -104,7 +106,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
                 }
             } else {    //修改密码
                 if (oldPass.isNotBlank() && newPass.isNotBlank() && newPassTwo.isNotBlank()) {
-                    if (!checkPass(oldPass) || !checkPass(newPass) || !checkPass(newPassTwo)) {
+                    if (!InputCheckUtils.checkPass6_16(oldPass) || !InputCheckUtils.checkPass6_16(newPass) || !InputCheckUtils.checkPass6_16(newPassTwo)) {
                         ToastUtil.showShort(getString(R.string.passFormat_tips))
                     } else {
                         if (newPass == newPassTwo) {
@@ -127,37 +129,44 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
 
     //设置密码接口
     private fun setPassHttp(name: String, pass: String) {
+        myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .setPass(name, pass, TEST_ACCESS_TOKEN)
+                .setPass(name, pass, MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    myDialog.dismissLoadingDialog()
                     if (it.code == 12000) {
                         ToastUtil.showShort(getString(R.string.setPass_success))
-                        this.finish()
+                        setResult(Activity.RESULT_OK, Intent().apply {
+                            putExtra("isSetPass", true)
+                        })
+                        onBackPressed()
                     } else {
                         ToastUtil.showShort(it.msg)
                     }
                 }, {
-
+                    myDialog.dismissLoadingDialog()
                 })
     }
 
     //修改密码接口
     private fun updatePassHttp(oldPass: String, newPass: String, newPassTwo: String) {
+        myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .updatePass(oldPass, newPass, newPassTwo, TEST_ACCESS_TOKEN)
+                .updatePass(oldPass, newPass, newPassTwo, MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    myDialog.dismissLoadingDialog()
                     if (it.code == 12000) {
                         ToastUtil.showShort(getString(R.string.updatePass_success))
-                        this.finish()
+                        onBackPressed()
                     } else {
                         ToastUtil.showShort(it.msg)
                     }
                 }, {
-
+                    myDialog.dismissLoadingDialog()
                 })
     }
 
@@ -211,32 +220,16 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
                 if (editText.text.toString().trim().isNotBlank()) {
                     //密码提示
                     if (isPass) {
-                        if (!checkPass(editText.text.toString().trim())) {
+                        if (!InputCheckUtils.checkPass6_16(editText.text.toString().trim())) {
                             ToastUtil.showShort(getString(R.string.passFormat_tips))
                         }
                     } else {  //设置用户名限制提示
-                        if (!checkString(editText.text.toString().trim())) {
+                        if (!InputCheckUtils.checkString4_6(editText.text.toString().trim())) {
                             ToastUtil.showShort(getString(R.string.userNameFormat_tips))
                         }
                     }
                 }
             }
         }
-    }
-
-    /**
-     * 6到16位区分大小写密码
-     */
-    private fun checkPass(pass: String): Boolean {
-        val pattern = Pattern.compile("^[a-zA-Z0-9]{6,12}$")
-        val matcher = pattern.matcher(pass)
-        return matcher.matches()
-    }
-
-    /**
-     * 4到16位字符
-     */
-    private fun checkString(str: String): Boolean {
-        return str.length in 4..16
     }
 }

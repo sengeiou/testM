@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/popup_list"
+    android:layout_width="wrap_content"
+    android:layout_height="@dimen/message_item_popup_height"
+    android:background="@drawable/tt_bg_popup_normal"
+    android:clickable="true"
+    android:orientation="horizontal"
+    android:paddingLeft="7dp"
+    android:paddingRight="7dp"
+    >
+
+    <TextView
+        android:id="@+id/speaker_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:gravity="center"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
+        android:text="@string/call_mode"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/copy_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:gravity="center"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
+        android:text="@string/copy"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/resend_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:gravity="center"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
+        android:text="@string/resend"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/revoke_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:gravity="center"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
+        android:text="@string/revoke"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        android:visibility="gone"
+        />
+
+    <TextView
+        android:id="@+id/delete_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp"
+        android:clickable="true"
+        android:gravity="center"
+        android:paddingLeft="7dp"
+        android:paddingRight="7dp"
+        android:text="@string/delete"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"
+        />
+
+</LinearLayout>

@@ -1,46 +1,63 @@
 package com.qingmeng.mengmeng.fragment
 
+import android.annotation.SuppressLint
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import android.widget.TextView
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.RedShopSeachResult
 import com.qingmeng.mengmeng.adapter.CommonAdapter
-import com.qingmeng.mengmeng.utils.ToastUtil
-import com.qingmeng.mengmeng.utils.dp2px
-import com.qingmeng.mengmeng.utils.getBarHeight
-import com.qingmeng.mengmeng.utils.setMarginExt
+import com.qingmeng.mengmeng.entity.RedShopLeftBean
+import com.qingmeng.mengmeng.utils.*
+import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_red_shop.*
-import kotlinx.android.synthetic.main.layout_head.*
+import kotlinx.android.synthetic.main.layout_red_news_head.*
+import org.jetbrains.anko.backgroundColor
 import org.jetbrains.anko.support.v4.startActivity
 
+@SuppressLint("CheckResult")
 class RedShopFragment : BaseFragment() {
-    private lateinit var mLeftAdapter: CommonAdapter<String>
-    private lateinit var mRightAdapter: CommonAdapter<String>
-    private lateinit var mRightInAdapter: CommonAdapter<String>
     private lateinit var mLauyoutManger: LinearLayoutManager
     private lateinit var mGridLayoutManager: GridLayoutManager
-    private var mLeftList = arrayListOf<String>("火锅", "烧烤", "快餐", "西餐", "麻辣烫", "小面", "拉面", "日韩料理", "甜品蛋糕")
-    private var mRightList = arrayListOf<String>("分类", "热门品牌")
-    private var mRightInList = arrayListOf<String>("砂锅", "米线", "馄饨", "炸酱面", "花甲粉", "重庆小面", "拉面", "包子")
+    private lateinit var mLeftAdapter: CommonAdapter<RedShopLeftBean>
+    private lateinit var mRightAdapterType: CommonAdapter<RedShopLeftBean>
+    private lateinit var mRightAdapterHost: CommonAdapter<RedShopLeftBean>
+    private var mLeftList = ArrayList<RedShopLeftBean>()
+    private var mRightInListType = ArrayList<RedShopLeftBean>()
+    private var mRightInListHost = ArrayList<RedShopLeftBean>()
     override fun getLayoutId(): Int = R.layout.fragment_red_shop
     override fun initObject() {
         super.initObject()
-        mTitle.setText(R.string.tab_name_red_shop)
+        mRedNewsTitle.setText(R.string.tab_name_red_shop)
         // 获得状态栏高度
         val statusBarHeight = getBarHeight(context!!)
         //给布局的高度重新设置一下 加上状态栏高度
-        mTopView.layoutParams.height = mTopView.layoutParams.height + getBarHeight(context!!)
-        mTitle.setMarginExt(top = statusBarHeight + context!!.dp2px(60))
-        mBack.visibility = View.GONE
+        mRedNewsHead.layoutParams.height = mRedNewsHead.layoutParams.height + getBarHeight(context!!)
+        mRedNewsTitle.setMarginExt(top = statusBarHeight + context!!.dp2px(60))
+        mRedNewsBack.visibility = View.GONE
 
         initLeftAdapter()
         initRightAdapter()
+        httpLoad()
 //        setData()
 //        setRightdata()
+    }
+
+    override fun initData() {
+        super.initData()
+    }
+
+    override fun initListener() {
+        super.initListener()
+        mRedNewsTitle.setOnClickListener {
+            httpLoad()
+        }
     }
 
     //加载   左边适配
@@ -49,72 +66,134 @@ class RedShopFragment : BaseFragment() {
         red_shop_left_recyclerview.layoutManager = mLauyoutManger
         mLeftAdapter = CommonAdapter(context!!, R.layout.red_shop_left_item, mLeftList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
-                setText(R.id.red_shop_left_textview, data)
-                //                getView<LinearLayout>(R.id.red_shop_left_lineralayout).setOnClickListener {
-//
-//                }
+                if (position == 0) {
+                    data.checkState = true
+                }
+                if (data.checkState) {
+                    getView<RelativeLayout>(R.id.red_shop_left_lineralayout).backgroundColor = resources.getColor(R.color.white)
+                } else {
+                    getView<RelativeLayout>(R.id.red_shop_left_lineralayout).backgroundColor = resources.getColor(R.color.page_background_f5)
+                }
+                setText(R.id.red_shop_left_textview, data.name)
             }
 
         }, onItemClick = { view, holder, position ->
-
-            ToastUtil.showShort("我是" + mLeftList[position])
-            view.findViewById<TextView>(R.id.red_shop_left_textview).setBackgroundResource(R.drawable.ripple_bg_drawable_white)
+            mLeftList.forEach {
+                it.checkState = false
+            }
+            mLeftList[position].checkState = true
+            httpLoad(mLeftList[position].id)
+            mLeftAdapter.notifyDataSetChanged()
         })
         red_shop_left_recyclerview.adapter = mLeftAdapter
     }
 
+    //右边适配
     private fun initRightAdapter() {
-        mLauyoutManger = LinearLayoutManager(context)
-        red_shop_right_recyclerview.layoutManager = mLauyoutManger
-        mRightAdapter = CommonAdapter(context!!, R.layout.red_shop_right_item, mRightList, holderConvert = { holder, data, position, payloads ->
+        //分类列表
+        mGridLayoutManager = GridLayoutManager(context, 3)
+        red_shop_right_recyclerview_type.layoutManager = mGridLayoutManager
+        //recyclerView禁止滑动
+        red_shop_right_recyclerview_type.isNestedScrollingEnabled = false
+        mRightAdapterType = CommonAdapter(context!!, R.layout.red_shop_right_in_item, mRightInListType, holderConvert = { holder, data, position, payloads ->
             holder.apply {
-                setText(R.id.red_shop_right_tittle, data)
-                getView<RecyclerView>(R.id.red_shop_right_inrecycler).apply {
-                    mGridLayoutManager = GridLayoutManager(context, 3)
-                    layoutManager = mGridLayoutManager
-                    mRightInAdapter = CommonAdapter(context, R.layout.fragment_red_shop_right_in_item, mRightInList, holderConvert = { holder, data, position, payloads ->
-                        holder.apply {
-                            setText(R.id.red_shop_right_inContent, data)
-                        }
-                    }, onItemClick = { view, holder, position ->
-                        startActivity<RedShopSeachResult>()
-                    })
-                    adapter = mRightInAdapter
+                if (mRightInListType.isNotEmpty()) {
+                    red_shop_right_text_type.visibility = View.VISIBLE
+                } else {
+                    red_shop_right_text_type.visibility = View.GONE
                 }
+                setText(R.id.red_shop_right_inContent, data.name)
+                GlideLoader.load(this@RedShopFragment, data.logo, getView(R.id.red_shop_right_inImageView))
             }
-
         }, onItemClick = { view, holder, position ->
-
+            startActivity<RedShopSeachResult>()
         })
-        red_shop_right_recyclerview.adapter = mRightAdapter
+        red_shop_right_recyclerview_type.adapter = mRightAdapterType
+
+        //热门品牌列表
+        mGridLayoutManager = GridLayoutManager(context, 3)
+        red_shop_right_recyclerview_host.layoutManager = mGridLayoutManager
+        red_shop_right_recyclerview_host.isNestedScrollingEnabled = false
+        mRightAdapterHost = CommonAdapter(context!!, R.layout.red_shop_right_in_item, mRightInListHost, holderConvert = { holder, data, position, payloads ->
+            holder.apply {
+                if (mRightInListHost.isNotEmpty()) {
+                    red_shop_right_text_host.visibility = View.VISIBLE
+                } else {
+                    red_shop_right_text_host.visibility = View.GONE
+                }
+                setText(R.id.red_shop_right_inContent, data.name)
+                GlideLoader.load(this@RedShopFragment, data.logo, getView(R.id.red_shop_right_inImageView))
+            }
+        }, onItemClick = { view, holder, position ->
+            startActivity<RedShopSeachResult>()
+        })
+        red_shop_right_recyclerview_host.adapter = mRightAdapterHost
     }
 
-//    private fun setData() {
-//        mLeftList.clear()
-//        for (i in 0 until 9) {
-//            mLeftList.add("")
-//        }
-//        mLeftAdapter.notifyDataSetChanged()
-//    }
-//
-//    private fun setRightdata() {
-//        mRightList.clear()
-//        for (i in 0 until 5) {
-//            mRightList.add("")
-//        }
-//        for (i in 0 until 20) {
-//            mRightInList.add("")
-//        }
-//
-//        mRightAdapter.notifyDataSetChanged()
-//    }
-
-    override fun initData() {
-        super.initData()
+    @SuppressLint("CheckResult")
+    private fun httpLoad(type: Int = 0, version: String? = null) {
+        ApiUtils.getApi()
+                .getRedShopRight(type)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    it.apply {
+                        if (code == 12000) {
+                            if (type == 0) {
+                                data?.let {
+                                    mLeftList.clear()
+                                    mLeftList.addAll(it.type.typeList)
+                                }
+                                httpLoad(1)
+                            } else {
+                                data?.let {
+                                    mRightInListType.clear()
+                                    mRightInListHost.clear()
+                                    mRightInListType.addAll(it.type.typeList)
+                                    mRightInListHost.addAll(it.popularBrands.hotBrands)
+                                    mLeftAdapter.notifyDataSetChanged()
+                                    mRightAdapterType.notifyDataSetChanged()
+                                    mRightAdapterHost.notifyDataSetChanged()
+                                }
+                            }
+                        } else {
+                            ToastUtil.showShort(it.msg)
+                        }
+                    }
+                }, {
+                    ToastUtil.showNetError()
+                }, {}, { addSubscription(it) })
     }
 
-    override fun initListener() {
-        super.initListener()
+//   @SuppressLint("CheckResult")
+//    private fun httpLoad2(type: Int = 0, version: String? = null) {
+//        ApiUtils.getApi()
+//                .getRedShopRight(type)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribeOn(Schedulers.io())
+//                .subscribe({
+//                    it.apply {
+//                        if (code == 12000) {
+//                            data?.let {
+//                                mRightInListType.clear()
+//                                mRightInListHost.clear()
+//                                mRightInListType.addAll(it.type.typeList)
+//                                mRightInListHost.addAll(it.popularBrands.hotBrands)
+//                                mLeftAdapter.notifyDataSetChanged()
+//                                mRightAdapterType.notifyDataSetChanged()
+//                                mRightAdapterHost.notifyDataSetChanged()
+//                            }
+//                        } else {
+//                            ToastUtil.showShort(it.msg)
+//                        }
+//                    }
+//                }, {
+//                    ToastUtil.showNetError()
+//                }, {}, { addSubscription(it) })
+//    }
+
+
+    private fun setData() {
 
     }
 }

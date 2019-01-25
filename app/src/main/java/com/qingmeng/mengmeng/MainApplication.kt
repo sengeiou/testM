@@ -2,12 +2,19 @@ package com.qingmeng.mengmeng
 
 import AppManager
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.os.Build
+import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
 import android.text.TextUtils
 import android.util.Log
 import cn.jzvd.JzvdStd
+import com.mogujie.tt.imservice.service.IMService
+import com.mogujie.tt.utils.ImageLoaderUtil
 import com.qingmeng.mengmeng.entity.MyObjectBox
 import com.qingmeng.mengmeng.entity.UserBean
+import com.qingmeng.mengmeng.entity.WanxinUserBean
 import com.qingmeng.mengmeng.utils.SharedSingleton
 import com.qingmeng.mengmeng.view.MyVideoView
 import com.tencent.bugly.crashreport.CrashReport
@@ -26,6 +33,7 @@ import java.io.IOException
 class MainApplication : MultiDexApplication() {
     var TOKEN: String = ""
     lateinit var user: UserBean
+    lateinit var wanxinUser: WanxinUserBean
     lateinit var mWxApi: IWXAPI
     private lateinit var sharedSingleton: SharedSingleton
 
@@ -33,10 +41,15 @@ class MainApplication : MultiDexApplication() {
         AppManager.instance
     }
 
+    override fun attachBaseContext(base: Context) {
+        super.attachBaseContext(base)
+        MultiDex.install(this)
+    }
+
     //注册到微信
     private fun registToWX() {
         mWxApi = WXAPIFactory.createWXAPI(this, "APP_ID", false);//此处的APP_ID替换为你在微信开放平台上申请到的APP_ID
-        mWxApi.registerApp("APP_ID");
+        mWxApi.registerApp("APP_ID")
     }
 
     override fun onCreate() {
@@ -44,11 +57,29 @@ class MainApplication : MultiDexApplication() {
         instance = this
         sharedSingleton = SharedSingleton.instance
         user = UserBean.fromString()
+        wanxinUser = WanxinUserBean.fromString()
         TOKEN = user.token
         initBox()
         initBugly()
-        registToWX();
+        registToWX()
 
+        startIMService()
+        ImageLoaderUtil.initImageLoaderConfig(applicationContext)
+    }
+
+    private fun startIMService() {
+        val intent = Intent()
+        intent.setClass(this, IMService::class.java)
+        if (Build.VERSION.SDK_INT >= 26) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
+
+//        val serviceIntent = Intent(this, MyJobService::class.java)
+//        serviceIntent.putExtra("messenger", Messenger(mHandler))
+//        startService(serviceIntent)
+//        MyJobService.startScheduler(applicationContext)
     }
 
     private fun initBox() {
@@ -79,8 +110,6 @@ class MainApplication : MultiDexApplication() {
     companion object {
         lateinit var instance: MainApplication
         lateinit var boxStore: BoxStore
-        var firstVideo: MyVideoView? = null
-        var secondVideo: JzvdStd? = null
     }
 
     private fun getProcessName(pid: Int): String? {

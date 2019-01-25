@@ -26,6 +26,7 @@ import java.util.*
 
 class SimplePhotoUtil {
     private var simplePhoto: PhotoConfig? = null
+    private var onPathCallback: ((path: String) -> Unit)? = null
 
     var cutPath = getPhotoCutPath()
     var cameraPath = getPhotoPath()
@@ -33,6 +34,19 @@ class SimplePhotoUtil {
     fun setConfig(simplePhoto: PhotoConfig) {
         this.simplePhoto = simplePhoto
         if (simplePhoto.isCamera) camera() else gallery()
+    }
+
+    //直接打开视频文件
+    fun setConfig(activity: Activity, onPathCallback: (path: String) -> Unit) {
+        this.onPathCallback = onPathCallback
+        val intent = Intent()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//ACTION_OPEN_DOCUMENT
+            intent.action = Intent.ACTION_PICK
+        } else {
+            intent.action = Intent.ACTION_GET_CONTENT
+        }
+        intent.type = "video/*"
+        activity.startActivityForResult(intent, PHOTO_REQUEST_VIDEO)
     }
 
     /*
@@ -155,9 +169,9 @@ class SimplePhotoUtil {
 
     fun onPhotoResult(requestCode: Int, resultCode: Int, data: Intent?) {
         //是否是拍照、裁剪或图库返回
-        val isPhoto = (requestCode == PHOTO_REQUEST_GALLERY || requestCode == PHOTO_REQUEST_CAMERA || requestCode == PHOTO_REQUEST_CUT) && resultCode == Activity.RESULT_OK
+        val isPhoto = (requestCode == PHOTO_REQUEST_GALLERY || requestCode == PHOTO_REQUEST_CAMERA || requestCode == PHOTO_REQUEST_CUT || requestCode == PHOTO_REQUEST_VIDEO) && resultCode == Activity.RESULT_OK
         if (!isPhoto) return
-        if (simplePhoto == null) {
+        if (simplePhoto == null && requestCode != PHOTO_REQUEST_VIDEO) {
             return
         }
         if (resultCode == Activity.RESULT_OK) {
@@ -172,12 +186,10 @@ class SimplePhotoUtil {
                             it.onPathCallback?.let { it(galleryPath) }
                         }
                     }
-
                 } else {
                     Toast.makeText(simplePhoto?.context, "获取相册照片失败", Toast.LENGTH_SHORT).show()
                 }
             }
-
             if (requestCode == PHOTO_REQUEST_CAMERA) {//拍照
                 if (!TextUtils.isEmpty(cameraPath)) {
                     simplePhoto?.let {
@@ -189,10 +201,8 @@ class SimplePhotoUtil {
                             UpdateFile.updateImageSysStatu(simplePhoto?.context, cameraPath, BuildConfig.APPLICATION_ID)
                         }
                     }
-
                 }
             }
-
             if (requestCode == PHOTO_REQUEST_CUT) {
                 simplePhoto?.let {
                     if (simplePhoto!!.isCamera && simplePhoto!!.isDeleteOld) {
@@ -204,10 +214,17 @@ class SimplePhotoUtil {
                         UpdateFile.updateImageSysStatu(simplePhoto?.context, cutPath, BuildConfig.APPLICATION_ID)
                     }
                 }
-
+            }
+            if (requestCode == PHOTO_REQUEST_VIDEO) { //视频
+                if (data != null) { //从视频返回的数据
+                    //得到视频的全路径
+                    val uri = data.data
+                    onPathCallback!!(UriUtil.getPath(simplePhoto?.context, uri))
+                } else {
+                    Toast.makeText(simplePhoto?.context, "获取视频文件失败", Toast.LENGTH_SHORT).show()
+                }
             }
         }
-
     }
 
 
@@ -216,6 +233,7 @@ class SimplePhotoUtil {
         val PHOTO_REQUEST_CAMERA = 5501
         val PHOTO_REQUEST_GALLERY = 5502
         val PHOTO_REQUEST_CUT = 5503
+        val PHOTO_REQUEST_VIDEO = 5504    //视频
         val CROP_SISE_DEFAULT = 1f
         private val TAG = SimplePhotoUtil::class.java.simpleName
     }

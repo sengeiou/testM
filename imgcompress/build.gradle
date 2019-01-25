@@ -1,0 +1,47 @@
+apply plugin: 'com.android.library'
+
+android {
+    compileSdkVersion 26
+
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        ndk {
+            // 设置支持的SO库架构
+            abiFilters 'armeabi', 'armeabi-v7a'
+            //, 'arm64-v8a','mips','mips64'
+        }
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+}
+
+
+//View ＞ Tool Windows ＞ Gradle ＞ module名称 ＞ Tasks ＞  other ＞ exportJar 执行生成jar包
+task deleteOldJar(type: Delete) {
+    delete 'build/outputs/imgcompress.jar'    //如果存在jar则删除掉
+}
+
+task exportJar(type: Copy) {
+    from('build/intermediates/bundles/debug/')   //jar文件来源
+    into('build/outputs/')    //生成路径
+    include('classes.jar')
+    rename ('classes.jar', 'imgcompress.jar')  //命名为test.jar这里根据需要自己定义
+}
+
+exportJar.dependsOn(deleteOldJar, build)
