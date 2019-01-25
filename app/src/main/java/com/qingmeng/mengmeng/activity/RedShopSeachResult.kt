@@ -70,7 +70,7 @@ class RedShopSeachResult : BaseActivity() {
         search_result_recylerview.layoutManager = mLauyoutManger
         mAdapter = CommonAdapter(this, R.layout.red_shop_search_result_item, mSeachResultList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
-                setText(R.id.search_result_name, data.name)
+                setText(R.id.search_result_name, "          " + data.name + "我是填充测试文本我是填充测试文本我是填充测试文本我是填充测试文本")
                 setText(R.id.search_result_capitalName, data.capitalName)
                 setText(R.id.search_result_joinStoreNum, data.joinStoreNum.toString())
                 setText(R.id.search_result_directStoreNum, data.directStoreNum.toString())
