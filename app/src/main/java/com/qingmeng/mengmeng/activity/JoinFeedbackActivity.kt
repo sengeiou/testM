@@ -5,7 +5,6 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.Gravity
 import android.view.MotionEvent
 import android.view.View
@@ -41,6 +40,7 @@ class JoinFeedbackActivity : BaseActivity() {
     private lateinit var mBottomDialog: SelectDialog
     private val selectList = java.util.ArrayList<LocalMedia>()
     private val murlList = ArrayList<String>()
+    var callUrl = ArrayList<String>()
     private lateinit var adapter: GridImageAdapter
     private var pop: PopupWindow? = null
     lateinit var token: String
@@ -101,8 +101,23 @@ class JoinFeedbackActivity : BaseActivity() {
         mMenu.setOnClickListener {
             token = MainApplication.instance.TOKEN
             content = edt_join_feedback.text.toString()
+            for (i in selectList.indices) {
+                if (selectList[i].isCompressed()) {
+                    murlList.add(selectList[i].compressPath)
+                } else {
+                    murlList.add(selectList[i].path)
+                }
+                ApiUtils.updateImg(this@JoinFeedbackActivity, murlList[i], callback =
+                {
+                    callUrl.add(it);
+                    if (callUrl.size == selectList.size) {
+                        setfeedback(token, brandId, type, content, callUrl)
 
-            setfeedback(token, brandId, type, content, murlList)
+                    }
+                })
+            }
+
+
         }
     }
 
@@ -121,7 +136,6 @@ class JoinFeedbackActivity : BaseActivity() {
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         ToastUtil.showShort(bean.msg)
-                        Log.e("aaaa", "aaaa")
 
                     } else {
                         ToastUtil.showShort(bean.msg)
@@ -264,6 +278,7 @@ class JoinFeedbackActivity : BaseActivity() {
                     // 图片选择结果回调
 
                     images = PictureSelector.obtainMultipleResult(data)
+
                     selectList.addAll(images)
 
                     //                    selectList = PictureSelector.obtainMultipleResult(data);

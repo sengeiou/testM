@@ -65,39 +65,6 @@ interface Api {
     fun smslogin(@Query("phone") phone: String, @Query("smsCode") smsCode: String): Observable<BaseBean<UserBean>>
 
     /**
-     * 获取banner图信息
-     * @param  type 1、首页；3、头报 5.登录banner 6.引导页
-     **/
-    @POST("api/banner/get_banner")
-    fun getbanner(@Query("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
-
-    //忘记密码
-    @POST("app/user/forget_password")
-    fun forgetpassword(@Query("phone") phone: String, @Query("msmCode") msmCode: String, @Query("password") password: String, @Header("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
-
-    //获取oss令牌
-    @GET("http://oss.ilashou.com/oss/authorization_app?name=mm")
-    fun getOssToken(): Observable<BaseBean<OssDataBean>>
-
-    //我的反馈
-    @POST("/api/feedback/add_feedback")
-    fun join_feedback(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int, @Query("type") type: Int, @Query("content") content: String, @Query("urlList") urlList: ArrayList<String>): Observable<BaseBean<Any>>
-
-    //第三方登录
-    @POST("/app/user/third_party_login")
-    fun thirdlogin(@Query("openId") openId: String, @Query("type") type: Int): Observable<BaseBean<UserBean>>
-
-    //获取热门词汇
-    @GET("api/join/hot_search")
-    fun get_hot_search(@Header("VERSION") version: String): Observable<BaseBean<HotSearchBean>>
-
-    //爱加盟首页搜索
-    @POST("/api/join/get_search_brands")
-    fun join_search_brands(@Query("keyWord") keyWord: String, @Query("fatherId") fatherId: Int,
-                           @Query("typeId") typeId: Int, @Query("cityIds") cityIds: String, @Query("capitalIds") capitalIds: String,
-                           @Query("modeIds") modeIds: String, @Query("integratedSortId") integratedSortId: Int, @Query("pageNum") pageNum: Int): Observable<BaseBean<SearchDtoListBean>>
-
-    /**
      * =========================================我的板块=========================================
      */
     //获取我的页面信息
@@ -159,6 +126,56 @@ interface Api {
     @GET("app/user/exchange_Phone")
     fun updatePhone(@Query("newPhone") newPhone: String, @Query("smsCode") smsCode: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
 
+    /**
+     * 获取banner图信息
+     * @param  type 1、首页；3、头报 5.登录banner 6.引导页
+     **/
+    @GET("api/banner/get_banner")
+    fun getbanner(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
+
+    //忘记密码
+    @POST("app/user/forget_password")
+    fun forgetpassword(@Query("phone") phone: String, @Query("msmCode") msmCode: String, @Query("password") password: String, @Header("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
+
+    //获取oss令牌
+    @GET("http://oss.ilashou.com/oss/authorization_app?name=mm")
+    fun getOssToken(): Observable<BaseBean<OssDataBean>>
+
+    //我的反馈
+    @POST("/api/feedback/add_feedback")
+    fun join_feedback(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int, @Query("type") type: Int, @Query("content") content: String, @Query("urlList") urlList: ArrayList<String>): Observable<BaseBean<Any>>
+
+    //第三方登录
+    @POST("/app/user/third_party_login")
+    fun thirdlogin(@Query("openId") openId: String, @Query("type") type: Int): Observable<BaseBean<UserBean>>
+
+    //获取热门词汇
+    @GET("api/join/hot_search")
+    fun get_hot_search(@Header("VERSION") version: String): Observable<BaseBean<HotSearchBean>>
+
+    //爱加盟首页搜索
+    @POST("/api/join/get_search_brands")
+    @FormUrlEncoded
+    fun join_search_brands(@Field("keyWord") keyWord: String,//搜索关键字
+                           @Field("fatherId") fatherId: Int?,//餐饮类型父ID
+                           @Field("typeId") typeId: Int?,//餐饮类型ID
+                           @Field("cityIds") cityIds: String?,//爱加盟区域ID
+                           @Field("capitalIds") capitalIds: String?,//投资金额ID
+                           @Field("modeIds") modeIds: String?,//加盟模式ID
+                           @Field("integratedSortId") integratedSortId: Int?,//综合排序（12345）
+                           @Field("pageNum") pageNum: Int)//页数1页10条
+            : Observable<BaseBean<SeachResult>>
+    @POST("/api/join/get_search_brands")
+    @FormUrlEncoded
+    fun join_search_brands(@Field("keyWord") keyWord: String,//搜索关键字
+                           @Field("typeId") typeId: Int?,//餐饮类型ID
+                           @Field("cityIds") cityIds: String?,//爱加盟区域ID
+                           @Field("capitalIds") capitalIds: String?,//投资金额ID
+                           @Field("modeIds") modeIds: String?,//加盟模式ID
+                           @Field("integratedSortId") integratedSortId: Int?,//综合排序（12345）
+                           @Field("pageNum") pageNum: Int)//页数1页10条
+            : Observable<BaseBean<SeachResult>>
+
     //我的关注
     @GET("api/my_attention/get_attention")
     fun myFollow(@Query("pageNum") pageNum: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyMyFollowBean>>
@@ -195,4 +212,32 @@ interface Api {
     //第三方解绑绑定 1.QQ 2.微信
     @GET("app/user/third_party_unbind")
     fun unThreeBinding(@Query("type") type: Int, @Header("ACCESS-TOKEN") accessToken: String): Observable<BaseBean<Any>>
+
+    //获取头报文章列表
+    @GET("/api/newspaper/article_list")
+    fun getNewsHeadList(@Query("pageNum") pageNum: Int): Observable<BaseBean<NewsPagerListBean>>
+
+    //搜索食物分类列表
+    @GET("api/get_food")
+    fun getRedShopLeft(@Query("id") id: Int): Observable<BaseBean<RedShopLeftListBean>>
+
+    //红铺列表
+    @GET("api/shop/popular_brands")
+    fun getRedShopRight(@Query("type") type: Int, @Header("VERSION") version: String = ""): Observable<BaseBean<RedShopLeftListBean>>
+
+    //筛选栏投资金额
+    @GET("api/get_capital")
+    fun getSeachConditionMoney(): Observable<BaseBean<SeachConditionBean>>
+
+    //筛选栏加盟模式
+    @GET("api/get_mode")
+    fun getSeachConditionJoinModel(): Observable<BaseBean<SeachConditionBean>>
+
+    //筛选栏加盟区域
+    @GET("api/get_municipality")
+    fun getSeachJoinArea(@Header("VERSION") version: String = ""): Observable<BaseBean<SeachJoinAreaBean>>
+
+    //筛选栏餐饮类型
+    @GET("api/get_food_filter")
+    fun getSeachFoodType(@Header("VERSION") version: String): Observable<BaseBean<SeachFoodTypeBean>>
 }

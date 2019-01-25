@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:orientation="vertical">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <include layout="@layout/layout_head"/>
+    <include layout="@layout/layout_red_news_head" />
 
-    <android.support.v7.widget.RecyclerView
+    <include layout="@layout/news_bgabanner_item" />
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:orientation="vertical">
 
+        <!--<com.qingmeng.mengmeng.view.SwipeLayout-->
+        <!--android:id="@+id/news_swipeLayout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--app:load_more_enabled="false">-->
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/news_pager_RecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+        <!--</com.qingmeng.mengmeng.view.SwipeLayout>-->
+    </LinearLayout>
 </LinearLayout>

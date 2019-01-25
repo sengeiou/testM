@@ -55,19 +55,28 @@
     <string name="join_feedback_type">请选择反馈问题的类型</string>
     <string name="join_feedback">我要反馈</string>
     <string name="recommend_advisory">立即咨询</string>
-
+    <string name="hot_seach">热门搜索</string>
+    <string name="seach_history">历史搜索</string>
     <string name="join_feedback_type1">品牌信息有误</string>
     <string name="join_feedback_type2">品牌不存在</string>
     <string name="join_feedback_type3">存在欺诈骗钱行为</string>
     <string name="join_feedback_type4">存在侵权行为</string>
 
     <!-- =======================================红铺===================================== -->
+    <string name="red_shop_food_type">分类</string>
+    <string name="red_shop_hot">热门品牌</string>
+
+    <string name="seach_button_sure">确定</string>
+    <string name="seach_button_exit">重置</string>
+    <string name="seach_money">投资金额</string>
+    <string name="seach_join_type">加盟模式</string>
     <string name="seach_shop_count">门店数：</string>
     <string name="seach_visit_count">浏览量：</string>
     <string name="seach_food_type">餐饮类型</string>
     <string name="seach_add_area">加盟区域</string>
     <string name="seach_ranking">综合排序</string>
     <string name="seach_screning_conditon">筛选条件</string>
+    <string name="seach_nothing">嗨呀~没有找到相关内容 o(╥﹏╥)o</string>
     <!-- ======================================头报====================================== -->
     <string name="head_detail">详情</string>
 
