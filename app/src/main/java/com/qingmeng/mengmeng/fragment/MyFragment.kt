@@ -79,10 +79,7 @@ class MyFragment : BaseFragment() {
                     putExtra("isUpdatePass", spf.getSharedPreference("isUpdatePass", false) as Boolean)
                 }, REQUEST_MY)
             } else {
-                startActivityForResult(Intent(context, LoginPwdActivity::class.java).apply {
-                    putExtra(IConstants.LOGIN_TYPE, 0)
-                    putExtra(IConstants.FROM_TYPE, 0)
-                }, IConstants.LOGIN_BACK)
+                startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
             }
         }
 
@@ -91,10 +88,7 @@ class MyFragment : BaseFragment() {
             if (mLoginSuccess) {
                 startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFollow.text), REQUEST_MY)
             } else {
-                startActivityForResult(Intent(context, LoginPwdActivity::class.java).apply {
-                    putExtra(IConstants.LOGIN_TYPE, 0)
-                    putExtra(IConstants.FROM_TYPE, 0)
-                }, IConstants.LOGIN_BACK)
+                startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
             }
         }
 
@@ -103,10 +97,7 @@ class MyFragment : BaseFragment() {
             if (mLoginSuccess) {
                 startActivityForResult(Intent(context, MyMyLeavingMessageActivity::class.java), REQUEST_MY)
             } else {
-                startActivityForResult(Intent(context, LoginPwdActivity::class.java).apply {
-                    putExtra(IConstants.LOGIN_TYPE, 0)
-                    putExtra(IConstants.FROM_TYPE, 0)
-                }, IConstants.LOGIN_BACK)
+                startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
             }
         }
 
@@ -115,10 +106,7 @@ class MyFragment : BaseFragment() {
             if (mLoginSuccess) {
                 startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFootprint.text), REQUEST_MY)
             } else {
-                startActivityForResult(Intent(context, LoginPwdActivity::class.java).apply {
-                    putExtra(IConstants.LOGIN_TYPE, 0)
-                    putExtra(IConstants.FROM_TYPE, 0)
-                }, IConstants.LOGIN_BACK)
+                startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
             }
         }
 
@@ -139,10 +127,7 @@ class MyFragment : BaseFragment() {
 
         //登录
         tvMyLogin.setOnClickListener {
-            startActivityForResult(Intent(context, LoginPwdActivity::class.java).apply {
-                putExtra(IConstants.LOGIN_TYPE, 0)
-                putExtra(IConstants.FROM_TYPE, 0)
-            }, IConstants.LOGIN_BACK)
+            startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
         }
     }
 
