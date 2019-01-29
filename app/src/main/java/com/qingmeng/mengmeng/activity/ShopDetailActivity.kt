@@ -143,7 +143,6 @@ class ShopDetailActivity : BaseActivity() {
         }
         vpAdapter.notifyDataSetChanged()
         mDetailWeb.loadUrl(bean.brandHtmlUrl)
-//        mDetailWeb.loadUrl("https://www.baidu.com/")
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -155,9 +154,9 @@ class ShopDetailActivity : BaseActivity() {
             }, {
 
             }, {
-
-            }, {
                 startActivity(Intent(this, JoinFeedbackActivity::class.java).putExtra(BRANDID, id))
+            }, {
+
             })
         }
         mDetailJoinSupport.setOnClickListener { myDialog.showBrandDialog(mJoinSupport) }

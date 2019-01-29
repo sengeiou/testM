@@ -227,7 +227,7 @@ class RedShopSeach : BaseActivity() {
             for (i in historySearchData.indices) {
                 shistory.add(historySearchData[i].name)
             }
-//            //只输出10个
+            //只输出10个
             for (i in shistory.indices) {
                 if (shistory.size > 10) {
                     shistory.removeAt(shistory.size - 1)

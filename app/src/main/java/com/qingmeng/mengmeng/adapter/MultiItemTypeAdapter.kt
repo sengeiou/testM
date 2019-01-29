@@ -5,8 +5,8 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import com.app.common.adapter.util.ItemViewDelegateManager
 import com.qingmeng.mengmeng.adapter.util.ItemViewDelegate
+import com.qingmeng.mengmeng.adapter.util.ItemViewDelegateManager
 import com.qingmeng.mengmeng.adapter.util.ViewHolder
 
 /**
