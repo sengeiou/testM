@@ -257,7 +257,10 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
         if (data != null) {
             Tencent.onActivityResultData(requestCode, resultCode, data, uiListener)
         }
-        if (requestCode == LOGIN_BACK && resultCode == Activity.RESULT_OK) finish()
+        if (requestCode == LOGIN_BACK && resultCode == Activity.RESULT_OK){
+            setResult(Activity.RESULT_OK)
+            finish()
+        }
     }
 
     //banner加载图片

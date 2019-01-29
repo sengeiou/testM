@@ -122,7 +122,7 @@ class MyMessageActivity : BaseActivity() {
                 setText(R.id.tvMyMessageRvTime, DateUtil.getSessionTime(t.updateTime))
                 //消息点击
                 getView<LinearLayout>(R.id.llMyMessageRv).setOnClickListener {
-//                    startActivity(Intent(this@MyMessageActivity, MessageActivity::class.java).apply {
+                    //                    startActivity(Intent(this@MyMessageActivity, MessageActivity::class.java).apply {
 //                        putExtra(IntentConstant.KEY_SESSION_KEY, t.sessionKey)
 //                    })
                     startActivity<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to t.sessionKey)
@@ -131,6 +131,7 @@ class MyMessageActivity : BaseActivity() {
                 getView<TextView>(R.id.tvMyMessageRvDelete).setOnClickListener {
                     //关闭view
                     getView<SwipeMenuLayout>(R.id.smlMyMessageRv).smoothClose()
+                    mImService?.sessionManager?.reqRemoveSession(mRecentSessionList[position])
                 }
             }
         }, onItemClick = { view, holder, position ->
@@ -388,6 +389,7 @@ class MyMessageActivity : BaseActivity() {
         val isGroupData = mImService?.groupManager?.isGroupReady
 
         if (!(isUserData!! && isSessionData!! && isGroupData!!)) {
+            srlMyMessage.isRefreshing = false
             return
         }
 
