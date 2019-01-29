@@ -16,15 +16,13 @@ import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.*
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
-import android.widget.Toast
+import android.widget.*
 import com.mogujie.tt.config.DBConstant
 import com.mogujie.tt.config.IntentConstant
 import com.mogujie.tt.config.MessageConstant
 import com.mogujie.tt.config.MessageExtConst
 import com.mogujie.tt.db.DBInterface
+import com.mogujie.tt.db.entity.GroupEntity
 import com.mogujie.tt.db.entity.MessageEntity
 import com.mogujie.tt.db.entity.PeerEntity
 import com.mogujie.tt.db.entity.UserEntity
@@ -47,7 +45,6 @@ import com.mogujie.tt.utils.DateUtil
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.ChatAdapter
-import com.qingmeng.mengmeng.adapter.ChatType
 import com.qingmeng.mengmeng.adapter.MultiItemTypeAdapter
 import com.qingmeng.mengmeng.adapter.MyFragmentPagerAdapter
 import com.qingmeng.mengmeng.constant.IConstants
@@ -100,8 +97,8 @@ class MyMessageChatActivity : BaseActivity() {
     /**
      * 消息用到的
      */
-    private var mImService: IMService? = null
     private var currentSessionKey: String? = null
+    private var mImService: IMService? = null
     private var loginUser: UserEntity? = null
     private var peerEntity: PeerEntity? = null
     private var msgObjectList = ArrayList<Any>()
@@ -125,7 +122,7 @@ class MyMessageChatActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
-        setHeadName(intent.getStringExtra("title"))
+//        setHeadName(intent.getStringExtra("title"))
 
         //实例化键盘工具
         mKeyboardUtil = KeyboardUtil(this, etMyMessageChatContent)
@@ -155,9 +152,13 @@ class MyMessageChatActivity : BaseActivity() {
     private fun initMsgData() {
         historyTimes = 0
         loginUser = mImService?.loginManager?.loginInfo
+        ChatAdapter.setData(mImService!!, loginUser!!)
         if (peerEntity == null) {
             peerEntity = mImService!!.sessionManager.findPeerEntity(currentSessionKey)
         }
+        // 头像、历史消息加载、取消通知
+        setTitleByUser()
+        reqHistoryMsg()
         mImService?.unReadMsgManager?.readUnreadSession(currentSessionKey)
         mImService?.notificationManager?.cancelSessionNotifications(currentSessionKey)
     }
@@ -382,6 +383,7 @@ class MyMessageChatActivity : BaseActivity() {
             //发送消息
             pushList(textMessage)
             scrollToBottomListItem()
+            etMyMessageChatContent.isFocusable = true
         }
 
         //拍照
@@ -424,22 +426,73 @@ class MyMessageChatActivity : BaseActivity() {
         //消息适配器
         mLayoutManager = LinearLayoutManager(this)
         rvMyMessageChat.layoutManager = mLayoutManager
-        mAdapter = MultiItemTypeAdapter(this, msgObjectList, holderConvert = { holder, data, position, payloads ->
+        mAdapter = MultiItemTypeAdapter(this, msgObjectList, holderConvert = { _, _, _, _ -> }, holderConvertP = { holder, t, position, _, parent ->
             holder.apply {
-                val typeIndex = getItemViewType(position)
-                val renderType = RenderType.values()[typeIndex]
-                when (renderType) {
-                    RenderType.MESSAGE_TYPE_INVALID -> {    //失败类型
+                when (RenderType.values()[getItemViewType(position)]) {
+                    RenderType.MESSAGE_TYPE_TIME_TITLE, RenderType.MESSAGE_TYPE_MINE_REVOKE, RenderType.MESSAGE_TYPE_OTHER_REVOKE -> {    //时间(撤回)
 
                     }
-                    RenderType.MESSAGE_TYPE_TIME_TITLE -> {    //时间
+                    RenderType.MESSAGE_TYPE_INVALID -> {    //品牌详情(失败类型)
 
+                    }
+                    RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF -> {    //自己文字(表情)
+                        getView<TextView>(R.id.tvMyMessageChatRvMineTextText).apply {
+                            //长按事件
+                            setOnLongClickListener {
+                                showPopWindow(position, parent, this)
+                                true
+                            }
+                        }
+                    }
+                    RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF -> {    //别人文字(表情)
+                        getView<TextView>(R.id.tvMyMessageChatRvOtherTextText).apply {
+                            //长按事件
+                            setOnLongClickListener {
+                                showPopWindow(position, parent, this)
+                                true
+                            }
+                        }
+                    }
+                    RenderType.MESSAGE_TYPE_MINE_IMAGE, RenderType.MESSAGE_TYPE_MINE_GIF_IMAGE -> {    //自己图片
+                        getView<ImageView>(R.id.ivMyMessageChatRvMineImageImage).setOnClickListener {
+                            val imageMessage = msgObjectList[position] as ImageMessage
+                            val imagePath = imageMessage.url
+                            ToastUtil.showShort("自己图片(gif)")
+                        }
+                        getView<ImageView>(R.id.ivMyMessageChatRvMineImageImage).apply {
+                            //长按事件
+                            setOnLongClickListener {
+                                showPopWindow(position, parent, this)
+                                true
+                            }
+                        }
+                    }
+                    RenderType.MESSAGE_TYPE_OTHER_IMAGE, RenderType.MESSAGE_TYPE_OTHER_GIF_IMAGE -> {    //别人图片
+                        getView<ImageView>(R.id.ivMyMessageChatRvOtherImageImage).setOnClickListener {
+                            val imageMessage = msgObjectList[position] as ImageMessage
+                            val imagePath = imageMessage.url
+                            ToastUtil.showShort("别人图片(gif)")
+                        }
+                        getView<ImageView>(R.id.ivMyMessageChatRvOtherImageImage).apply {
+                            //长按事件
+                            setOnLongClickListener {
+                                showPopWindow(position, parent, this)
+                                true
+                            }
+                        }
                     }
                     RenderType.MESSAGE_TYPE_MINE_AUDIO -> {    //自己语音
                         getView<LinearLayout>(R.id.llMyMessageChatRvMineAudio).setOnClickListener {
                             val audioMessage = msgObjectList[position] as AudioMessage
                             val audioPath = audioMessage.audioPath
                             ToastUtil.showShort("自己语音")
+                        }
+                        getView<LinearLayout>(R.id.llMyMessageChatRvMineAudio).apply {
+                            //长按事件
+                            setOnLongClickListener {
+                                showPopWindow(position, parent, this)
+                                true
+                            }
                         }
                     }
                     RenderType.MESSAGE_TYPE_OTHER_AUDIO -> {    //别人语音
@@ -448,46 +501,13 @@ class MyMessageChatActivity : BaseActivity() {
                             val audioPath = audioMessage.audioPath
                             ToastUtil.showShort("别人语音")
                         }
-                    }
-                    RenderType.MESSAGE_TYPE_MINE_GIF_IMAGE -> {    //自己gif图
-                        getView<ImageView>(R.id.ivMyMessageChatRvMineImage).setOnClickListener {
-                            val imageMessage = msgObjectList[position] as ImageMessage
-                            val imagePath = imageMessage.url
-                            ToastUtil.showShort("自己gif图")
+                        getView<LinearLayout>(R.id.llMyMessageChatRvOtherAudio).apply {
+                            //长按事件
+                            setOnLongClickListener {
+                                showPopWindow(position, parent, this)
+                                true
+                            }
                         }
-                    }
-                    RenderType.MESSAGE_TYPE_OTHER_GIF_IMAGE -> {    //别人gif图
-                        getView<ImageView>(R.id.ivMyMessageChatRvOtherImage).setOnClickListener {
-                            val imageMessage = msgObjectList[position] as ImageMessage
-                            val imagePath = imageMessage.url
-                            ToastUtil.showShort("别人gif图")
-                        }
-                    }
-                    RenderType.MESSAGE_TYPE_MINE_IMAGE -> {    //自己图片
-                        getView<ImageView>(R.id.ivMyMessageChatRvMineImage).setOnClickListener {
-                            val imageMessage = msgObjectList[position] as ImageMessage
-                            val imagePath = imageMessage.url
-                            ToastUtil.showShort("自己图片")
-                        }
-                    }
-                    RenderType.MESSAGE_TYPE_OTHER_IMAGE -> {    //别人图片
-                        getView<ImageView>(R.id.ivMyMessageChatRvOtherImage).setOnClickListener {
-                            val imageMessage = msgObjectList[position] as ImageMessage
-                            val imagePath = imageMessage.url
-                            ToastUtil.showShort("别人图片")
-                        }
-                    }
-                    RenderType.MESSAGE_TYPE_MINE_TEXT -> {    //自己文字
-
-                    }
-                    RenderType.MESSAGE_TYPE_OTHER_TEXT -> {    //别人文字
-
-                    }
-                    RenderType.MESSAGE_TYPE_MINE_GIF -> {    //自己表情
-
-                    }
-                    RenderType.MESSAGE_TYPE_OTHER_GIF -> {    //别人表情
-
                     }
                     RenderType.MESSAGE_TYPE_MINE_VIDEO -> {    //自己视频
                         getView<RelativeLayout>(R.id.rlMyMessageChatRvMineVideo).setOnClickListener {
@@ -502,6 +522,13 @@ class MyMessageChatActivity : BaseActivity() {
                             val intent = Intent(Intent.ACTION_VIEW)
                             intent.setDataAndType(uri, "video/mp4")
                             ctx.startActivity(intent)
+                        }
+                        getView<RelativeLayout>(R.id.rlMyMessageChatRvMineVideo).apply {
+                            //长按事件
+                            setOnLongClickListener {
+                                showPopWindow(position, parent, this)
+                                true
+                            }
                         }
                     }
                     RenderType.MESSAGE_TYPE_OTHER_VIDEO -> {    //别人视频
@@ -518,33 +545,30 @@ class MyMessageChatActivity : BaseActivity() {
                             intent.setDataAndType(uri, "video/mp4")
                             ctx.startActivity(intent)
                         }
-                    }
-                    RenderType.MESSAGE_TYPE_MINE_REVOKE -> {    //自己撤回
-
-                    }
-                    RenderType.MESSAGE_TYPE_OTHER_REVOKE -> {    //别人撤回
-
+                        getView<RelativeLayout>(R.id.rlMyMessageChatRvOtherVideo).apply {
+                            //长按事件
+                            setOnLongClickListener {
+                                showPopWindow(position, parent, this)
+                                true
+                            }
+                        }
                     }
                 }
             }
-        }, itemLongClick = { view, holder, position, parent ->
-            //只有是自己或他人消息再进来
-            if (msgObjectList[position] == ChatType.CHAT_TYPE_MINE || msgObjectList[position] == ChatType.CHAT_TYPE_OTHER) {
-                val isMine: Boolean = msgObjectList[position] == ChatType.CHAT_TYPE_MINE
-                val message = (msgObjectList[position] as MessageEntity)
-                // 创建一个pop对象，然后 分支判断状态，然后显示需要的内容
-                val popup = getPopMenu(parent, OperateItemClickListener(message, position))
-//                val bResend = imageMessage.getStatus() == MessageConstant.MSG_FAILURE || imageMessage.loadStatus == MessageConstant.IMAGE_UNLOAD
-                //消息是否在2分钟之内创建的
-                val bRevoke = (System.currentTimeMillis() / 1000) - message.created < mDefaultTimeDifference
-                popup.show(view, DBConstant.SHOW_IMAGE_TYPE, false, isMine, bRevoke, position)
-            }
-            true
+        }, itemClick = { _, _, _ ->
+            hiddenViewAndInputKeyboard()
         })
+        mAdapter.addItemViewDelegate(ChatAdapter.DefaultLayout())
         mAdapter.addItemViewDelegate(ChatAdapter.TimeLayout())
         mAdapter.addItemViewDelegate(ChatAdapter.BrandLayout())
-        mAdapter.addItemViewDelegate(ChatAdapter.MineLayout())
-        mAdapter.addItemViewDelegate(ChatAdapter.OtherLayout())
+        mAdapter.addItemViewDelegate(ChatAdapter.OtherVideoLayout())
+        mAdapter.addItemViewDelegate(ChatAdapter.MineVideoLayout())
+        mAdapter.addItemViewDelegate(ChatAdapter.OtherAudioLayout())
+        mAdapter.addItemViewDelegate(ChatAdapter.MineAudioLayout())
+        mAdapter.addItemViewDelegate(ChatAdapter.OtherImageLayout())
+        mAdapter.addItemViewDelegate(ChatAdapter.MineImageLayout())
+        mAdapter.addItemViewDelegate(ChatAdapter.OtherTextLayout())
+        mAdapter.addItemViewDelegate(ChatAdapter.MineTextLayout())
         rvMyMessageChat.adapter = mAdapter
 
         //表情viewPager适配器
@@ -659,6 +683,7 @@ class MyMessageChatActivity : BaseActivity() {
         if (msg is ImageMessage) {
             ImageMessage.addToImageMessageList(msg)
         }
+        ChatAdapter.msgObjectList = msgObjectList
         mAdapter.notifyDataSetChanged()
     }
 
@@ -738,19 +763,6 @@ class MyMessageChatActivity : BaseActivity() {
     }
 
     /**
-     * 取用户信息
-     */
-    private fun getUserEntity(textMessage: MessageEntity): UserEntity {
-        val userEntity: UserEntity?
-        if (textMessage.fromId == loginUser?.peerId) {//自己
-            userEntity = loginUser
-        } else {
-            userEntity = mImService?.contactManager?.findContact(textMessage.fromId)
-        }
-        return userEntity!!
-    }
-
-    /**
      * 下拉载入历史消息,从最上面开始添加
      */
     private fun loadHistoryList(historyList: List<MessageEntity>?) {
@@ -786,6 +798,7 @@ class MyMessageChatActivity : BaseActivity() {
         // 如果是历史消息，从头开始加
         msgObjectList.addAll(0, chatList)
         getImageList()
+        ChatAdapter.msgObjectList = msgObjectList
         mAdapter.notifyDataSetChanged()
     }
 
@@ -857,7 +870,7 @@ class MyMessageChatActivity : BaseActivity() {
         if (obj is Int) {
             type = RenderType.MESSAGE_TYPE_TIME_TITLE
         } else if (obj is MessageEntity) {
-            val isMine = obj.fromId == loginUser?.getPeerId()
+            val isMine = obj.fromId == loginUser?.peerId
             when (obj.displayType) {
                 DBConstant.SHOW_AUDIO_TYPE -> {
                     type = if (isMine) {
@@ -1017,6 +1030,36 @@ class MyMessageChatActivity : BaseActivity() {
      */
     private fun pushList(entityList: List<MessageEntity>?) {
         loadHistoryList(entityList)
+    }
+
+    /**
+     * 设定聊天名称
+     * 1. 如果是user类型， 点击触发UserProfile
+     * 2. 如果是群组，检测自己是不是还在群中
+     */
+    private fun setTitleByUser() {
+        if (peerEntity == null) {
+            return
+        }
+        title = peerEntity?.mainName
+        val peerType = peerEntity?.type
+        when (peerType) {
+            DBConstant.SESSION_TYPE_GROUP -> {
+                val group = peerEntity as GroupEntity?
+                val memberLists = group!!.getlistGroupMemberIds()
+                if (loginUser != null) {
+                    if (!memberLists.contains(loginUser!!.peerId)) {
+                        //                        Toast.makeText(MessageActivity2.this, R.string.no_group_member, Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+            DBConstant.SESSION_TYPE_SINGLE -> {
+//                topTitleTxt.setOnClickListener {
+//                    IMUIHelper.openUserProfileActivity(this@MessageActivity, peerEntity?.peerId
+//                            ?: 0)
+//                }
+            }
+        }
     }
 
     /**
@@ -1230,6 +1273,20 @@ class MyMessageChatActivity : BaseActivity() {
     }
 
     /**
+     * 显示气泡
+     */
+    private fun showPopWindow(position: Int, parent: ViewGroup, view: View) {
+        val message = (msgObjectList[position] as MessageEntity)
+        // 创建一个pop对象，然后 分支判断状态，然后显示需要的内容
+        val isMine = message.fromId == loginUser?.peerId
+        val popup = getPopMenu(parent, OperateItemClickListener(message, position))
+        val bResend = message.status == MessageConstant.MSG_FAILURE
+        //消息是否在2分钟之内创建的
+        val bRevoke = (System.currentTimeMillis() / 1000) - message.created < mDefaultTimeDifference
+        popup.show(view, message.displayType, bResend, isMine, bRevoke, position)
+    }
+
+    /**
      * -------------------------------------------------------------end-------------------------------------------------------------
      */
 
@@ -1280,23 +1337,23 @@ class MyMessageChatActivity : BaseActivity() {
     }
 
     override fun onResume() {
-        super.onResume()
-
         historyTimes = 0
+
+        super.onResume()
     }
 
     override fun onStop() {
-        super.onStop()
-
         hidePopup()
+
+        super.onStop()
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-
         historyTimes = 0
         MediaManager.release()
         imServiceConnector.disconnect(this)
         EventBus.getDefault().unregister(this)
+
+        super.onDestroy()
     }
 }

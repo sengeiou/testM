@@ -105,7 +105,10 @@ class LoginPwdActivity : BaseActivity() {
         //账号登录
         mPasswordLogin.setOnClickListener { login(loginType) }
         //使用短信验证登录
-        mPasswordSmsLogin.setOnClickListener { setLoginType(loginType) }
+        mPasswordSmsLogin.setOnClickListener {
+            loginType = if (loginType == 0) 1 else 0
+            setLoginType(loginType)
+        }
         //忘记密码
         mPasswordForget.setOnClickListener { startActivityForResult<LoginChangePswActivity>(LOGIN_BACK, FROM_TYPE to from) }
     }
@@ -113,8 +116,8 @@ class LoginPwdActivity : BaseActivity() {
     private fun login(loginType: Int) {
         when {
             TextUtils.isEmpty(mUsername) -> ToastUtil.showShort(R.string.user_name_empty)
-            loginType == 0 && TextUtils.isEmpty(mCode) -> ToastUtil.showShort(R.string.scuuess_code)
-            loginType == 1 && (mPassword.length > 12 || mPassword.length < 6) -> ToastUtil.showShort(R.string.psw_hint)
+            loginType == 0 && (mPassword.length > 12 || mPassword.length < 6) -> ToastUtil.showShort(R.string.psw_hint)
+            loginType == 1 && TextUtils.isEmpty(mCode) -> ToastUtil.showShort(R.string.scuuess_code)
             else -> if (loginType == 0) accountLogin(mUsername, mPassword) else codeLogin(mUsername, mCode)
         }
     }
@@ -159,7 +162,7 @@ class LoginPwdActivity : BaseActivity() {
                 .subscribe({ bean ->
                     if (bean.code != 12000) myDialog.dismissLoadingDialog()
                     when (bean.code) {
-                        //登录成功
+                    //登录成功
                         12000 -> bean.data?.let {
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
@@ -168,9 +171,9 @@ class LoginPwdActivity : BaseActivity() {
                             wanxinLogin(it.userInfo.wxName, it.userInfo.wxPwd)
                             loginOver()
                         }
-                        //错误次数
+                    //错误次数
                         15001 -> ToastUtil.showShort("${bean.msg},还有${bean.data}次机会")
-                        //密码错误三次以上
+                    //密码错误三次以上
                         25094 -> {
                             //找回密码弹窗
                             mDialog = DialogCommon(this, bean.msg, leftText = getString(R.string.cancel),
@@ -179,7 +182,7 @@ class LoginPwdActivity : BaseActivity() {
                             })
                             mDialog.show()
                         }
-                        //手机号不存在
+                    //手机号不存在
                         25091 -> {
                             //提示“该手机号尚未注册，是否前去注册？” “注册”和“取消”两个按钮
                             mDialog = DialogCommon(this, bean.msg, leftText = getString(R.string.cancel),
@@ -219,8 +222,9 @@ class LoginPwdActivity : BaseActivity() {
                                 //还要登录完信..
                                 mImService?.loginManager?.login("${it.uId}", it.token)
                             }
-                        } else{
+                        } else {
                             ToastUtil.showShort(msg)
+                            myDialog.dismissLoadingDialog()
                         }
                     }
                 }, {
@@ -303,13 +307,11 @@ class LoginPwdActivity : BaseActivity() {
         mPasswordPsw.setText("")
         mLoginCodeInput.setText("")
         if (type == 0) {
-            loginType = 1
             mLoginPsw.visibility = View.VISIBLE
             mLoginCode.visibility = View.GONE
             mPasswordPhone.setHint(R.string.please_input_user_name_or_phone_num)
             mPasswordSmsLogin.setText(R.string.use_sms_verify_login)
         } else {
-            loginType = 0
             mLoginPsw.visibility = View.GONE
             mLoginCode.visibility = View.VISIBLE
             mPasswordPhone.setHint(R.string.please_input_phone_num)
@@ -332,8 +334,8 @@ class LoginPwdActivity : BaseActivity() {
                 myDialog.dismissLoadingDialog()
                 ToastUtil.showShort(getString(R.string.login_success))
                 this@LoginPwdActivity.finish()
-                //	如果是在应用内操作时提示跳转到登录页面的，登录成功后回到原页面；
-                //  在我的/消息板块点击登录的回到盟盟首页；
+                //这里判断跳哪...
+
             }
             LoginEvent.LOGIN_AUTH_FAILED, LoginEvent.LOGIN_INNER_FAILED -> {
 

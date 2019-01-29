@@ -41,12 +41,6 @@
     <string name="albumSelect">从相册选择</string>
     <string name="boy">男</string>
     <string name="girl">女</string>
-    <string name="money_3">3万以下</string>
-    <string name="money_3_5">3–5万</string>
-    <string name="money_5_10">5–10万</string>
-    <string name="money_10_20">10–20万</string>
-    <string name="money_20_50">20–50万</string>
-    <string name="money_50">50万以上</string>
     <string name="send">发送</string>
     <string name="camera">拍照</string>
     <string name="photo">照片</string>

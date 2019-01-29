@@ -8,7 +8,7 @@ import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 
 /**
- *  Description :动态权限管理
+ *  Description :动态权限管理 * 记得在onRequestPermissionsResult方法里调一下当前的onRequestPermissionsResult方法
 
  *  Author:yang
 

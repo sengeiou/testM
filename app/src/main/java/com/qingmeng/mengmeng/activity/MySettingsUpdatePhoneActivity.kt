@@ -9,8 +9,6 @@ import com.qingmeng.mengmeng.utils.*
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_log_register.*
-import com.qingmeng.mengmeng.utils.TimerHandler
-import com.qingmeng.mengmeng.utils.ToastUtil
 import kotlinx.android.synthetic.main.activity_my_settings_updatephone.*
 import kotlinx.android.synthetic.main.layout_head.*
 import org.json.JSONObject
@@ -133,7 +131,7 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
 
     //展示图片验证码
     private fun showImgCode() {
-        myDialog.showImageCodeDialog(mRegisterPhone.text.toString(), 1,
+        myDialog.showImageCodeDialog(mRegisterPhone.text.toString(), 4,
                 { addSubscription(it) }, { imgHandler.sendEmptyMessage(timing) })
     }
 

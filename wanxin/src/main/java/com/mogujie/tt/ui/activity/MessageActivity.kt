@@ -1,33 +1,25 @@
 package com.mogujie.tt.ui.activity
 
-import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
-import android.media.AudioManager
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
-import android.os.Message
 import android.provider.MediaStore
 import android.text.Editable
-import android.text.Selection
 import android.text.TextWatcher
 import android.util.TypedValue
-import android.view.*
+import android.view.LayoutInflater
+import android.view.MotionEvent
+import android.view.View
 import android.view.View.OnTouchListener
+import android.view.ViewGroup
 import android.widget.AbsListView
 import android.widget.ListView
 import android.widget.RelativeLayout
 import android.widget.RelativeLayout.LayoutParams
-import android.widget.Toast
 import com.app.common.api.subscribeExtApi
 import com.handmark.pulltorefresh.library.PullToRefreshBase
 import com.handmark.pulltorefresh.library.PullToRefreshBase.OnRefreshListener2
@@ -35,12 +27,17 @@ import com.leimo.wanxin.R
 import com.mogujie.tt.api.RequestManager
 import com.mogujie.tt.api.composeDefault
 import com.mogujie.tt.app.IMApplication
-import com.mogujie.tt.config.*
+import com.mogujie.tt.config.DBConstant
+import com.mogujie.tt.config.IntentConstant
+import com.mogujie.tt.config.MessageExtConst
+import com.mogujie.tt.config.SysConstant
 import com.mogujie.tt.db.entity.GroupEntity
 import com.mogujie.tt.db.entity.MessageEntity
 import com.mogujie.tt.db.entity.PeerEntity
-import com.mogujie.tt.db.sp.SystemConfigSp
-import com.mogujie.tt.imservice.entity.*
+import com.mogujie.tt.imservice.entity.AudioMessage
+import com.mogujie.tt.imservice.entity.CmdMessage
+import com.mogujie.tt.imservice.entity.ImageMessage
+import com.mogujie.tt.imservice.entity.VideoMessage
 import com.mogujie.tt.imservice.event.MessageEvent
 import com.mogujie.tt.imservice.event.PriorityEvent
 import com.mogujie.tt.imservice.event.SelectEvent
@@ -50,14 +47,11 @@ import com.mogujie.tt.imservice.manager.IMUnreadMsgManager
 import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.mogujie.tt.protobuf.helper.EntityChangeEngine
 import com.mogujie.tt.ui.adapter.MessageAdapter
-import com.mogujie.tt.ui.adapter.album.AlbumHelper
 import com.mogujie.tt.ui.adapter.album.ImageItem
 import com.mogujie.tt.ui.helper.AudioPlayerHandler
 import com.mogujie.tt.ui.helper.Emoparser
 import com.mogujie.tt.ui.view.CustomDialog
-import com.mogujie.tt.ui.widget.EmoGridView.OnEmoGridViewItemClick
 import com.mogujie.tt.ui.widget.MGProgressbar
-import com.mogujie.tt.ui.widget.YayaEmoGridView
 import com.mogujie.tt.utils.Logger
 import com.mogujie.tt.utils.SDPathUtil
 import com.nostra13.universalimageloader.core.ImageLoader
@@ -129,7 +123,7 @@ class MessageActivity : MessageBaseActivity(), OnRefreshListener2<ListView>, Vie
         setTitleByUser()
         reqHistoryMsg()
         adapter.setImService(mImService, loginUser)
-        mImService?.unReadMsgManager?.readUnreadSession(currentSessionKey)
+//        mImService?.unReadMsgManager?.readUnreadSession(currentSessionKey)
         mImService?.notificationManager?.cancelSessionNotifications(currentSessionKey)
         //        logger.e("message_activity#chat#ToId=%s", peerEntity.getPeerId());
     }
@@ -455,7 +449,7 @@ class MessageActivity : MessageBaseActivity(), OnRefreshListener2<ListView>, Vie
         //LOADING
         val view = LayoutInflater.from(this@MessageActivity)
                 .inflate(R.layout.tt_progress_ly, null)
-        progressbar = view.findViewById(R.id.tt_progress) as MGProgressbar
+        progressbar = view.findViewById(R.id.tt_progress)
         val pgParms = LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT)
         pgParms.bottomMargin = 50
