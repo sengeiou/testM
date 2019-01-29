@@ -1,11 +1,20 @@
 package com.qingmeng.mengmeng.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.text.Editable
 import android.text.TextUtils
+import android.text.TextWatcher
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.constant.IConstants
+import com.qingmeng.mengmeng.constant.IConstants.AVATAR
+import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
+import com.qingmeng.mengmeng.constant.IConstants.THREE_OPENID
+import com.qingmeng.mengmeng.constant.IConstants.THREE_TOKEN
+import com.qingmeng.mengmeng.constant.IConstants.THREE_TYPE
+import com.qingmeng.mengmeng.constant.IConstants.TYPE
+import com.qingmeng.mengmeng.constant.IConstants.WE_CHAT_UNIONID
 import com.qingmeng.mengmeng.constant.ImageCodeHandler
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.GeetestUtil
@@ -13,61 +22,89 @@ import com.qingmeng.mengmeng.utils.ToastUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_log_register.*
+import org.jetbrains.anko.clearTask
+import org.jetbrains.anko.enabled
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.newTask
 import org.json.JSONObject
 
 @SuppressLint("CheckResult")
 class LoginRegisterActivity : BaseActivity() {
     private var mRead = false
+    private var from = 0
+    private var contentType = 1//1注册，5绑定
+    private var mUserName = ""
+    private var mPhone = ""
+    private var mCode = ""
+    private var mPsw = ""
+    private var mSurePsw = ""
+    private var openId = ""
+    private var token = ""
+    private var weChatUnionId = ""
+    private var avatar = ""
+    private var threeType = 1
+
     override fun getLayoutId(): Int = R.layout.activity_log_register
 
     override fun initObject() {
-        imgHandler = ImageCodeHandler(this, tv_get_code_register)
+        openId = intent.getStringExtra(THREE_OPENID) ?: ""
+        token = intent.getStringExtra(THREE_TOKEN) ?: ""
+        weChatUnionId = intent.getStringExtra(WE_CHAT_UNIONID) ?: ""
+        avatar = intent.getStringExtra(AVATAR) ?: ""
+        threeType = intent.getIntExtra(THREE_TYPE, 0)
+        from = intent.getIntExtra(FROM_TYPE, 0)
+        contentType = intent.getIntExtra(TYPE, 1)
+        imgHandler = ImageCodeHandler(this, mRegisterGetCode)
         GeetestUtil.init(this)
     }
 
     override fun initListener() {
+        mRegisterUsername.addTextChangedListener(RegisterTextWatcher())
+        mRegisterPhone.addTextChangedListener(RegisterTextWatcher())
+        mRegisterCode.addTextChangedListener(RegisterTextWatcher())
+        mRegisterPsw.addTextChangedListener(RegisterTextWatcher())
+        mRegisterSurePsw.addTextChangedListener(RegisterTextWatcher())
         //是否同意用户协议
-        img_read_register.setOnClickListener {
+        mRegisterAgree.setOnClickListener {
             mRead = if (!mRead) {
-                img_read_register.setImageResource(R.drawable.login_icon_yes_read_s)
+                mRegisterAgree.setImageResource(R.drawable.login_icon_yes_read_s)
                 true
             } else {
-                img_read_register.setImageResource(R.drawable.login_icon_not_read_n)
+                mRegisterAgree.setImageResource(R.drawable.login_icon_not_read_n)
                 false
             }
         }
         //获取验证码
-        tv_get_code_register.setOnClickListener {
-            val userName = edt_input_username_register.text.toString()
-            val phone = edt_input_phone_register.text.toString()
+        mRegisterGetCode.setOnClickListener {
             when {
-                TextUtils.isEmpty(userName) -> ToastUtil.showShort(getString(R.string.user_name_empty))
-                TextUtils.isEmpty(phone) -> ToastUtil.showShort(getString(R.string.phone_empty))
-                else -> hasRegistered(userName, phone, 1)
+                TextUtils.isEmpty(mUserName) -> ToastUtil.showShort(R.string.user_name_empty)
+                TextUtils.isEmpty(mPhone) -> ToastUtil.showShort(R.string.phone_empty)
+                else -> hasRegistered(mUserName, mPhone, 1)
             }
         }
         //注册
-        btn_register_register.setOnClickListener {
-            val userName = edt_input_username_register.text.toString()
-            val phone = edt_input_phone_register.text.toString()
-            val code = edt_input_code_register.text.toString()
-            val psw = edt_input_password_register.text.toString()
-            val confirmPsw = edt_input_sure_password_register.text.toString()
+        mRegisterSure.setOnClickListener {
+            val userName = mRegisterUsername.text.toString()
+            val phone = mRegisterPhone.text.toString()
+            val code = mRegisterCode.text.toString()
+            val psw = mRegisterPsw.text.toString()
+            val confirmPsw = mRegisterSurePsw.text.toString()
             when {
-                TextUtils.isEmpty(userName) -> ToastUtil.showShort(getString(R.string.user_name_empty))
-                TextUtils.isEmpty(phone) -> ToastUtil.showShort(getString(R.string.phone_empty))
-                TextUtils.isEmpty(code) -> ToastUtil.showShort(getString(R.string.input_code))
-                psw.length < 6 || psw.length > 12 -> ToastUtil.showShort(getString(R.string.psw_hint))
-                psw != confirmPsw -> ToastUtil.showShort(getString(R.string.psw_inconsistent))
-                !mRead -> ToastUtil.showShort(getString(R.string.please_read_accept))
-                else -> register(userName, phone, code, psw, confirmPsw)
+                TextUtils.isEmpty(userName) -> ToastUtil.showShort(R.string.user_name_empty)
+                TextUtils.isEmpty(phone) -> ToastUtil.showShort(R.string.phone_empty)
+                TextUtils.isEmpty(code) -> ToastUtil.showShort(R.string.input_code)
+                psw.length < 6 || psw.length > 12 -> ToastUtil.showShort(R.string.psw_hint)
+                psw != confirmPsw -> ToastUtil.showShort(R.string.psw_inconsistent)
+                !mRead -> ToastUtil.showShort(R.string.please_read_accept)
+                else -> if (contentType == 1) register() else bindPhone()
             }
         }
     }
 
-    //注册
-    private fun register(userName: String, phone: String, code: String, psw: String, confirmPsw: String) {
-        ApiUtils.getApi().register(userName, phone, code, psw, confirmPsw, 2)
+    //绑定手机
+    private fun bindPhone() {
+        ApiUtils.getApi().bindPhone(mPhone, mCode, openId, token, avatar,
+                threeType, mPsw, mSurePsw, mUserName, weChatUnionId)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -76,16 +113,44 @@ class LoginRegisterActivity : BaseActivity() {
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
                             it.upDate()
+                            registerOver()
                         }
-                        sharedSingleton.setString(IConstants.LOGIN_PHONE, phone)
-                        sharedSingleton.setString(IConstants.LOGIN_PSW, psw)
-                        finish()
                     } else {
                         ToastUtil.showShort(bean.msg)
                     }
                 }, {
                     ToastUtil.showNetError()
                 }, {}, { addSubscription(it) })
+    }
+
+    //注册
+    private fun register() {
+        ApiUtils.getApi().register(mUserName, mPhone, mCode, mPsw, mSurePsw, 2)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ bean ->
+                    if (bean.code == 12000) {
+                        bean.data?.let {
+                            MainApplication.instance.user = it
+                            MainApplication.instance.TOKEN = it.token
+                            it.upDate()
+                            registerOver()
+                        }
+                    } else {
+                        ToastUtil.showShort(bean.msg)
+                    }
+                }, {
+                    ToastUtil.showNetError()
+                }, {}, { addSubscription(it) })
+    }
+
+    private fun registerOver() {
+        if (from == 0) {
+            setResult(Activity.RESULT_OK)
+            finish()
+        } else {
+            startActivity(intentFor<MainActivity>().newTask().clearTask())
+        }
     }
 
     //验证手机号，用户名是否合格
@@ -136,18 +201,15 @@ class LoginRegisterActivity : BaseActivity() {
 
     //展示图片验证码
     private fun showImgCode() {
-        myDialog.showImageCodeDialog(edt_input_phone_register.text.toString(), 1,
+        myDialog.showImageCodeDialog(mRegisterPhone.text.toString(), contentType,
                 { addSubscription(it) }, { imgHandler.sendEmptyMessage(timing) })
     }
 
-    /**
-     * 发送短信验证码
-     * @param type 1极验验证  0图片验证码
-     **/
+    //发送短信验证码
     private fun sendSmsCode(result: String) {
-        val phone = edt_input_phone_register.text.toString()
+        val phone = mRegisterPhone.text.toString()
         val params = JSONObject(result)
-        ApiUtils.getApi().sendSms(phone, 1, geetest_challenge = params.optString("geetest_challenge"),
+        ApiUtils.getApi().sendSms(phone, contentType, geetest_challenge = params.optString("geetest_challenge"),
                 geetest_validate = params.optString("geetest_validate"), geetest_seccode = params.optString("geetest_seccode"))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -168,5 +230,23 @@ class LoginRegisterActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         GeetestUtil.destroy()
+    }
+
+    inner class RegisterTextWatcher : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {
+            mUserName = mRegisterUsername.text.toString().trim()
+            mPhone = mRegisterPhone.text.toString().trim()
+            mCode = mRegisterCode.text.toString().trim()
+            mPsw = mRegisterPsw.text.toString().trim()
+            mSurePsw = mRegisterSurePsw.text.toString().trim()
+            mRegisterSure.enabled = (!TextUtils.isEmpty(mUserName) && !TextUtils.isEmpty(mPhone)
+                    && !TextUtils.isEmpty(mCode) && !TextUtils.isEmpty(mPsw) && !TextUtils.isEmpty(mSurePsw))
+        }
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+        }
     }
 }

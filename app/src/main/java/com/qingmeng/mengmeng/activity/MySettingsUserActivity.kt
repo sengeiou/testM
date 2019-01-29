@@ -93,18 +93,18 @@ class MySettingsUserActivity : BaseActivity() {
         }
 
         //头像
-        llMySettingsUserHead.setOnClickListener {
+        llMySettingsUserHead.setOnClickListener { _ ->
             //菜单内容
             val menuList = arrayListOf(SelectBean(name = getString(R.string.photograph)), SelectBean(name = getString(R.string.albumSelect)))
             mBottomDialog = SelectDialog(this, menuList, onItemClick = {
                 //拍照
                 if (menuList[it].name == getString(R.string.photograph)) {
-                    PermissionUtils.camera(this, {
+                    PermissionUtils.camera(this) {
                         //打开相机方法
                         openCameraAndUploadServer()
-                    })
+                    }
                 } else {  //相册选择
-                    PermissionUtils.readAndWrite(this, {
+                    PermissionUtils.readAndWrite(context = this, readAndWriteCallback = {
                         //打开相册方法
                         openAlbumAndUploadServer()
                     })
@@ -114,7 +114,7 @@ class MySettingsUserActivity : BaseActivity() {
         }
 
         //性别
-        llMySettingsUserGender.setOnClickListener {
+        llMySettingsUserGender.setOnClickListener { _ ->
             //菜单内容
             val menuList = ArrayList<SelectBean>()
             menuList.add(SelectBean(name = getString(R.string.boy)))
@@ -320,7 +320,7 @@ class MySettingsUserActivity : BaseActivity() {
         //全局变量赋值
         mInterestList = interestList
         //打开弹框
-        mBottomDialog = SelectDialog(this, mInterestList, isDefaultLayout = false, onCalcelClick = { _, resultList ->
+        mBottomDialog = SelectDialog(this, mInterestList, isDefaultLayout = false, onCancelClick = { _, resultList ->
             var str = ""
             resultList.forEach {
                 if (it.checkState) {
@@ -360,8 +360,8 @@ class MySettingsUserActivity : BaseActivity() {
             mLocalPath != "" -> {
                 myDialog.showLoadingDialog()
                 //上传oss 返回http地址
-                ApiUtils.updateImg(this, mLocalPath, callback = { url ->
-                    mAvatar = if (url != "") url else mAvatar
+                ApiUtils.updateImg(this, mLocalPath, callback = { newUrl, _ ->
+                    mAvatar = if (newUrl != "") newUrl else mAvatar
                     //请求修改个人信息接口
                     updateUserHttp()
                 })

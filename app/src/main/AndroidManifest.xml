@@ -86,10 +86,8 @@
         <activity android:name=".activity.WebViewActivity"/>
         <!-- 登录注册 -->
         <activity android:name=".activity.LoginMainActivity"/>
-        <activity android:name=".activity.LoginpwActivity"/>
-        <activity android:name=".activity.LogincodeActivity"/>
+        <activity android:name=".activity.LoginPwdActivity"/>
         <activity android:name=".activity.LoginChangePswActivity"/>
-        <activity android:name=".activity.LoginBindingPhoneActivity"/>
         <activity
             android:name="com.qingmeng.mengmeng.wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"

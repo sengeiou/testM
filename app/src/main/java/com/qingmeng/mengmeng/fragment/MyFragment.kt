@@ -131,7 +131,7 @@ class MyFragment : BaseFragment() {
 
         //测试登录
         tvMyLoginTest.setOnClickListener {
-            startActivity<LoginpwActivity>()
+            startActivity<LoginPwdActivity>()
         }
     }
 

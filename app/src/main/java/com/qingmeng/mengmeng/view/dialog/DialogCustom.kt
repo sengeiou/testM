@@ -252,9 +252,9 @@ class DialogCustom(private var mContext: Context?) {
             val phone = etPhone.text.toString()
             val message = etMessage.text.toString()
             when {
-                TextUtils.isEmpty(name) -> ToastUtil.showShort(mContext!!.getString(R.string.join_data_name))
-                TextUtils.isEmpty(phone) -> ToastUtil.showShort(mContext!!.getString(R.string.join_data_phone))
-                TextUtils.isEmpty(message) -> ToastUtil.showShort(mContext!!.getString(R.string.join_data_msg))
+                TextUtils.isEmpty(name) -> ToastUtil.showShort(R.string.join_data_name)
+                TextUtils.isEmpty(phone) -> ToastUtil.showShort(R.string.join_data_phone)
+                TextUtils.isEmpty(message) -> ToastUtil.showShort(R.string.join_data_msg)
                 else -> callback(name, phone, message)
             }
             bottomSheetDialog.cancel()

@@ -1,76 +1,62 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
+              android:id="@+id/ll_red_shop_seach"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
+              android:background="@color/white"
               android:orientation="vertical"
-    android:id="@+id/ll_red_shop_seach"
-    android:background="@color/color_ffffff"
               tools:context=".activity.RedShopSeach">
 
     <include layout="@layout/layout_head_seach2"/>
 
-    <LinearLayout
-        android:layout_marginTop="7dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:drawableLeft="@drawable/red_shop_icon_hot_seach"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="7dp"
+        android:drawableStart="@drawable/red_shop_icon_hot_seach"
         android:drawablePadding="10dp"
+        android:text="@string/hot_seach"
         android:textColor="@color/color_666666"
-        android:textSize="@dimen/padding_dp_14"
-        android:text="@string/hot_seach"/>
-        <com.qingmeng.mengmeng.view.flowlayout.TagFlowLayout
-            android:id="@+id/tfl_hot_search"
-            android:layout_width="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="15dp"
-            android:layout_height="wrap_content">
+        android:textSize="@dimen/text_size_14"/>
 
-        </com.qingmeng.mengmeng.view.flowlayout.TagFlowLayout>
-    </LinearLayout>
+    <com.qingmeng.mengmeng.view.flowlayout.TagFlowLayout
+        android:id="@+id/tfl_hot_search"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"/>
 
-    <LinearLayout
-        android:layout_marginTop="40dp"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+        android:layout_marginTop="@dimen/padding_dp_40">
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dp"
+            android:layout_marginStart="10dp"
             android:drawableStart="@drawable/red_shop_icon_history_seach"
             android:drawablePadding="10dp"
+            android:text="@string/seach_history"
             android:textColor="@color/color_666666"
-            android:textSize="@dimen/padding_dp_14"
-            android:text="@string/seach_history"/>
+            android:textSize="@dimen/text_size_14"/>
 
-            <ImageView
-                android:id="@+id/search_cancel_search"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/red_shop_icon_cancel" />
+        <ImageView
+            android:id="@+id/search_cancel_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_marginEnd="10dp"
+            android:src="@drawable/red_shop_icon_cancel"/>
 
     </RelativeLayout>
-        <com.qingmeng.mengmeng.view.flowlayout.TagFlowLayout
-            android:id="@+id/tfl_search_history"
-            android:layout_width="wrap_content"
-            android:layout_marginTop="5dp"
-            android:layout_marginStart="15dp"
-            android:layout_height="wrap_content">
 
-        </com.qingmeng.mengmeng.view.flowlayout.TagFlowLayout>
-
-    </LinearLayout>
+    <com.qingmeng.mengmeng.view.flowlayout.TagFlowLayout
+        android:id="@+id/tfl_search_history"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="5dp"/>
 </LinearLayout>
