@@ -281,19 +281,6 @@
                 android:textColor="@color/white"
                 android:textSize="@dimen/text_size_18"
                 />
-
-            <TextView
-                android:id="@+id/tvMyLoginTest"
-                android:layout_width="150dp"
-                android:layout_height="@dimen/padding_dp_45"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/padding_dp_50"
-                android:background="@drawable/ripple_bg_blue_radius5"
-                android:gravity="center"
-                android:text="测试登录"
-                android:textColor="@color/white"
-                android:textSize="@dimen/text_size_18"
-                />
         </LinearLayout>
     </com.qingmeng.mengmeng.view.SwipeLayout>
 </LinearLayout>

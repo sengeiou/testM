@@ -19,7 +19,6 @@ android {
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
-        flavorDimensions "default"
         ndk {
             // 设置支持的SO库架构
             abiFilters 'armeabi-v7a', 'armeabi', 'x86', 'x86_64'
@@ -49,17 +48,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //bugly
             buildConfigField("String", "BUGLY_APPID", "\"0bf47d1cec\"")
-        }
-    }
-    productFlavors {
-        mm {
-            applicationId "com.qingmeng.mengmeng"
-            resValue "string", "app_name", "盟盟"
-        }
-        mm2 {
-            applicationId "com.qingmeng.mengmeng2"
-            applicationIdSuffix '.mm2'
-            resValue "string", "app_name", "盟盟2"
         }
     }
     repositories {

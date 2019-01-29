@@ -8,6 +8,7 @@ import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.*
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.MyInformation
 import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.imageLoader.CacheType
@@ -78,7 +79,10 @@ class MyFragment : BaseFragment() {
                     putExtra("isUpdatePass", spf.getSharedPreference("isUpdatePass", false) as Boolean)
                 }, REQUEST_MY)
             } else {
-                startActivity<LoginpwActivity>()
+                startActivityForResult(Intent(context, LoginPwdActivity::class.java).apply {
+                    putExtra(IConstants.LOGIN_TYPE, 0)
+                    putExtra(IConstants.FROM_TYPE, 0)
+                }, IConstants.LOGIN_BACK)
             }
         }
 
@@ -87,7 +91,10 @@ class MyFragment : BaseFragment() {
             if (mLoginSuccess) {
                 startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFollow.text), REQUEST_MY)
             } else {
-                startActivity<LoginpwActivity>()
+                startActivityForResult(Intent(context, LoginPwdActivity::class.java).apply {
+                    putExtra(IConstants.LOGIN_TYPE, 0)
+                    putExtra(IConstants.FROM_TYPE, 0)
+                }, IConstants.LOGIN_BACK)
             }
         }
 
@@ -96,7 +103,10 @@ class MyFragment : BaseFragment() {
             if (mLoginSuccess) {
                 startActivityForResult(Intent(context, MyMyLeavingMessageActivity::class.java), REQUEST_MY)
             } else {
-                startActivity<LoginpwActivity>()
+                startActivityForResult(Intent(context, LoginPwdActivity::class.java).apply {
+                    putExtra(IConstants.LOGIN_TYPE, 0)
+                    putExtra(IConstants.FROM_TYPE, 0)
+                }, IConstants.LOGIN_BACK)
             }
         }
 
@@ -105,7 +115,10 @@ class MyFragment : BaseFragment() {
             if (mLoginSuccess) {
                 startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFootprint.text), REQUEST_MY)
             } else {
-                startActivity<LoginpwActivity>()
+                startActivityForResult(Intent(context, LoginPwdActivity::class.java).apply {
+                    putExtra(IConstants.LOGIN_TYPE, 0)
+                    putExtra(IConstants.FROM_TYPE, 0)
+                }, IConstants.LOGIN_BACK)
             }
         }
 
@@ -126,12 +139,10 @@ class MyFragment : BaseFragment() {
 
         //登录
         tvMyLogin.setOnClickListener {
-            startActivity<LoginpwActivity>()
-        }
-
-        //测试登录
-        tvMyLoginTest.setOnClickListener {
-            startActivity<LoginPwdActivity>()
+            startActivityForResult(Intent(context, LoginPwdActivity::class.java).apply {
+                putExtra(IConstants.LOGIN_TYPE, 0)
+                putExtra(IConstants.FROM_TYPE, 0)
+            }, IConstants.LOGIN_BACK)
         }
     }
 
@@ -236,6 +247,8 @@ class MyFragment : BaseFragment() {
             if (isDelete || mPhoneChange) {
                 srlMy.isRefreshing = true
             }
+        } else if (requestCode == IConstants.LOGIN_BACK && resultCode == Activity.RESULT_OK) {
+            srlMy.isRefreshing = true
         }
     }
 }
