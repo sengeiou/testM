@@ -15,7 +15,7 @@ class SelectDialogBean(
 )
 
 data class SelectBean(
-        val id: Int = 0,
         var name: String,                     //菜单名
+        val id: Int = 0,
         var checkState: Boolean = false      //是否点击
 )

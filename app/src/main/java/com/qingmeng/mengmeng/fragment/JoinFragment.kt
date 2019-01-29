@@ -18,7 +18,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.activity.JoinFeedbackActivity
 import com.qingmeng.mengmeng.activity.ShopDetailActivity
 import com.qingmeng.mengmeng.adapter.JoinMenuAdapter
 import com.qingmeng.mengmeng.adapter.JoinRecommendAdapter
@@ -37,7 +36,6 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_join.*
 import kotlinx.android.synthetic.main.layout_banner.*
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
-import org.jetbrains.anko.support.v4.startActivity
 
 @SuppressLint("CheckResult")
 class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppBarLayout.OnOffsetChangedListener,
@@ -95,10 +93,6 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     }
 
     override fun initListener() {
-        //暴露接口测试
-        test_intface.setOnClickListener {
-            startActivity<JoinFeedbackActivity>()
-        }
         vpList.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
             }

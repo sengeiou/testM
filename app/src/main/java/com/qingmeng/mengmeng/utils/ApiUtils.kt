@@ -52,7 +52,7 @@ object ApiUtils {
      * @param url 图片本地地址，PictureSelector选择的图片使用compressPath图片压缩后的地址
      * @param callback 当返回值为空字符串时上传失败，返回值为链接时上传成功
      */
-    fun updateImg(activity: BaseActivity, url: String, callback: (String) -> Unit) {
+    fun updateImg(activity: BaseActivity, url: String, callback: (String, String) -> Unit) {
         getApi().getOssToken()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -60,16 +60,17 @@ object ApiUtils {
                     if (bean.code == 12000) {
                         bean.data?.let { updateFile(activity, url, it, callback) }
                     } else {
+                        callback("", url)
                         ToastUtil.showShort(bean.msg)
                     }
                 }, {
-//                    GeetestUtil.showFailedDialog()
+                    callback("", url)
                     ToastUtil.showNetError()
                 }, {}, { activity.addSubscription(it) })
     }
 
     // 需要权限的上传文件
-    private fun updateFile(context: Context, url: String, ossDataBean: OssDataBean, callback: (String) -> Unit) {
+    private fun updateFile(context: Context, url: String, ossDataBean: OssDataBean, callback: (String, String) -> Unit) {
         val ossData = ossDataBean.oss
 
         val credentialProvider = object : OSSFederationCredentialProvider() {
@@ -86,13 +87,13 @@ object ApiUtils {
                 object : OSSCompletedCallback<PutObjectRequest, PutObjectResult> {
                     override fun onSuccess(request: PutObjectRequest, result: PutObjectResult) {
                         val realUrl = "${ossDataBean.domain}/${request.objectKey}"
-                        callback(realUrl)
+                        callback(realUrl, url)
                     }
 
                     override fun onFailure(request: PutObjectRequest, clientExcepion: ClientException?,
                                            serviceException: ServiceException?) {
                         // 请求异常
-                        callback("")
+                        callback("", url)
                         clientExcepion?.printStackTrace()
                     }
                 })

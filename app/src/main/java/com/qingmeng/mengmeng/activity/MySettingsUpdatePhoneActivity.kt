@@ -131,7 +131,7 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
 
     //展示图片验证码
     private fun showImgCode() {
-        myDialog.showImageCodeDialog(edt_input_phone_register.text.toString(), 4,
+        myDialog.showImageCodeDialog(mRegisterPhone.text.toString(), 4,
                 { addSubscription(it) }, { imgHandler.sendEmptyMessage(timing) })
     }
 
