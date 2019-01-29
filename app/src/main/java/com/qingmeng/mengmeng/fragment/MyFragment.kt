@@ -78,7 +78,7 @@ class MyFragment : BaseFragment() {
                     putExtra("isUpdatePass", spf.getSharedPreference("isUpdatePass", false) as Boolean)
                 }, REQUEST_MY)
             } else {
-                startActivity<LoginMainActivity>()
+                startActivity<LoginpwActivity>()
             }
         }
 
@@ -87,7 +87,7 @@ class MyFragment : BaseFragment() {
             if (mLoginSuccess) {
                 startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFollow.text), REQUEST_MY)
             } else {
-                startActivity<LoginMainActivity>()
+                startActivity<LoginpwActivity>()
             }
         }
 
@@ -96,7 +96,7 @@ class MyFragment : BaseFragment() {
             if (mLoginSuccess) {
                 startActivityForResult(Intent(context, MyMyLeavingMessageActivity::class.java), REQUEST_MY)
             } else {
-                startActivity<LoginMainActivity>()
+                startActivity<LoginpwActivity>()
             }
         }
 
@@ -105,7 +105,7 @@ class MyFragment : BaseFragment() {
             if (mLoginSuccess) {
                 startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFootprint.text), REQUEST_MY)
             } else {
-                startActivity<LoginMainActivity>()
+                startActivity<LoginpwActivity>()
             }
         }
 
@@ -126,7 +126,7 @@ class MyFragment : BaseFragment() {
 
         //登录
         tvMyLogin.setOnClickListener {
-            startActivity<LoginMainActivity>()
+            startActivity<LoginpwActivity>()
         }
 
         //测试登录

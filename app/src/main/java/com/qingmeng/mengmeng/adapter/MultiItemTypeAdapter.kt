@@ -5,20 +5,23 @@ import android.support.v7.widget.RecyclerView
 import android.util.Log
 import android.view.View
 import android.view.ViewGroup
-import com.app.common.adapter.util.ItemViewDelegateManager
 import com.qingmeng.mengmeng.adapter.util.ItemViewDelegate
+import com.qingmeng.mengmeng.adapter.util.ItemViewDelegateManager
 import com.qingmeng.mengmeng.adapter.util.ViewHolder
 
 /**
  * https://github.com/hongyangAndroid/baseAdapter
  * Created by zhy on 16/4/9.
  */
-open class MultiItemTypeAdapter<T>(protected var mContext: Context, open var datas: List<T>?,
-                                   var holderConvert: (holder: ViewHolder, data: T, position: Int, payloads: List<Any>?) -> Unit,
-                                   var itemClick: ((view: View, holder: RecyclerView.ViewHolder, position: Int) -> Unit?)? = null,
-                                   var itemLongClick: ((view: View, holder: RecyclerView.ViewHolder, position: Int, parent: ViewGroup) -> Boolean?)? = null
+open class MultiItemTypeAdapter<T>(
+        protected var mContext: Context, open var datas: List<T>?,
+        var holderConvert: (holder: ViewHolder, data: T, position: Int, payloads: List<Any>?) -> Unit,
+        var holderConvertP: ((holder: ViewHolder, data: T, position: Int, payloads: List<Any>?, parent: ViewGroup) -> Unit)? = null,
+        var itemClick: ((view: View, holder: RecyclerView.ViewHolder, position: Int) -> Unit?)? = null,
+        var itemLongClick: ((view: View, holder: RecyclerView.ViewHolder, position: Int) -> Boolean?)? = null
 ) : RecyclerView.Adapter<ViewHolder>() {
     protected var mItemViewDelegateManager: ItemViewDelegateManager<T> = ItemViewDelegateManager<T>()
+    private var mParent: ViewGroup? = null
 
     override fun getItemViewType(position: Int): Int {
         return if (!useItemViewDelegateManager() || datas == null) {
@@ -35,6 +38,7 @@ open class MultiItemTypeAdapter<T>(protected var mContext: Context, open var dat
         val holder = ViewHolder.createViewHolder(mContext, parent, layoutId)
         onViewHolderCreated(parent, holder, holder.convertView)
         setListener(parent, holder, viewType)
+        mParent = parent
         return holder
     }
 
@@ -42,9 +46,10 @@ open class MultiItemTypeAdapter<T>(protected var mContext: Context, open var dat
 
     }
 
-    fun convert(holder: ViewHolder, item: T, position: Int, payloads: List<Any>?) {
+    fun convert(holder: ViewHolder, item: T, position: Int, payloads: List<Any>?, parent: ViewGroup) {
         mItemViewDelegateManager.convert(holder, item, holder.adapterPosition, payloads)
         holderConvert(holder, item, position, payloads)
+        holderConvertP?.invoke(holder, item, position, payloads, parent)
     }
 
     protected fun isEnabled(viewType: Int): Boolean {
@@ -63,13 +68,13 @@ open class MultiItemTypeAdapter<T>(protected var mContext: Context, open var dat
 
         viewHolder.convertView.setOnLongClickListener { v ->
             val position = viewHolder.adapterPosition
-            itemLongClick?.let { it(v, viewHolder, position, parent) } ?: false
+            itemLongClick?.let { it(v, viewHolder, position) } ?: false
         }
     }
 
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        convert(holder, datas!![position], position, null)
+        convert(holder, datas!![position], position, null, mParent!!)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int, payloads: List<Any>) {
@@ -77,7 +82,7 @@ open class MultiItemTypeAdapter<T>(protected var mContext: Context, open var dat
             onBindViewHolder(holder, position)
         } else {
             Log.d(TAG, "onBindViewHolder: #$position payloads is can use")
-            convert(holder, datas!![position], position, payloads)
+            convert(holder, datas!![position], position, payloads, mParent!!)
         }
     }
 

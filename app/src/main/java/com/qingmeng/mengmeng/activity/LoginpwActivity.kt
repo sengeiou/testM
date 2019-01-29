@@ -186,9 +186,9 @@ class LoginpwActivity : BaseActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
-                    //                    if(bean.data != null || bean.data.){
-//
-//                    }
+                    if (bean.data == null || bean.data?.token == "") {
+                        myDialog.dismissLoadingDialog()
+                    }
                     when (bean.code) {
                     //登录成功
                         12000 -> {
@@ -258,6 +258,7 @@ class LoginpwActivity : BaseActivity() {
                                 }
                             }
                             else -> {
+                                myDialog.dismissLoadingDialog()
                                 ToastUtil.showShort(msg)
                             }
                         }
@@ -269,9 +270,9 @@ class LoginpwActivity : BaseActivity() {
 
     //EventBus消费事件
     fun onEventMainThread(event: LoginEvent) {
+        myDialog.dismissLoadingDialog()
         when (event) {
             LoginEvent.LOCAL_LOGIN_SUCCESS, LoginEvent.LOGIN_OK -> {
-                myDialog.dismissLoadingDialog()
                 ToastUtil.showShort(getString(R.string.login_success))
                 this@LoginpwActivity.finish()
                 //	如果是在应用内操作时提示跳转到登录页面的，登录成功后回到原页面；

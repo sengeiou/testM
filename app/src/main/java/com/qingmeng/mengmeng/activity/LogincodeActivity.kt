@@ -243,10 +243,12 @@ class LogincodeActivity : BaseActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
+                    if (bean.data == null || bean.data?.token == "") {
+                        myDialog.dismissLoadingDialog()
+                    }
                     when (bean.code) {
                     //手机号没有注册
                         25088 -> {
-                            myDialog.dismissLoadingDialog()
                             ToastUtil.showShort(getString(R.string.phone_not_registered))
                         }
                     //登录成功
@@ -262,17 +264,14 @@ class LogincodeActivity : BaseActivity() {
                         }
                     //参数有误
                         13000 -> {
-                            myDialog.dismissLoadingDialog()
                             ToastUtil.showShort(bean.msg)
                         }
                     //验证码不正确
                         10000 -> {
-                            myDialog.dismissLoadingDialog()
                             ToastUtil.showShort(bean.msg)
                         }
                     //验证码不正确
                         15002 -> {
-                            myDialog.dismissLoadingDialog()
                             ToastUtil.showShort(bean.msg)
                         }
                     }
@@ -299,6 +298,7 @@ class LogincodeActivity : BaseActivity() {
                                 }
                             }
                             else -> {
+                                myDialog.dismissLoadingDialog()
                                 ToastUtil.showShort(msg)
                             }
                         }
@@ -310,9 +310,9 @@ class LogincodeActivity : BaseActivity() {
 
     //EventBus消费事件
     fun onEventMainThread(event: LoginEvent) {
+        myDialog.dismissLoadingDialog()
         when (event) {
             LoginEvent.LOCAL_LOGIN_SUCCESS, LoginEvent.LOGIN_OK -> {
-                myDialog.dismissLoadingDialog()
                 ToastUtil.showShort(getString(R.string.login_success))
                 this@LogincodeActivity.finish()
                 //	如果是在应用内操作时提示跳转到登录页面的，登录成功后回到原页面；
