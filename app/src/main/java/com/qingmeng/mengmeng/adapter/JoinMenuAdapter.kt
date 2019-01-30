@@ -8,6 +8,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.entity.StaticBean
 
@@ -29,7 +30,8 @@ class JoinMenuAdapter(val list: MutableList<StaticBean>, private val mContext: C
         } else {
             viewHolder = convertView.tag as ViewHolder
         }
-        Glide.with(mContext).load(list[position].icon).into(viewHolder.icon)
+        Glide.with(mContext).load(list[position].icon).apply(RequestOptions()
+                .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(viewHolder.icon)
         viewHolder.name.text = list[position].title
         return convertView
     }

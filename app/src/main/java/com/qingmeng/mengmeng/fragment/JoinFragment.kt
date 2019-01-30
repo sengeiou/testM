@@ -1,7 +1,6 @@
 package com.qingmeng.mengmeng.fragment
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.support.design.widget.AppBarLayout
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
@@ -18,24 +17,25 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.activity.ShopDetailActivity
+import com.qingmeng.mengmeng.activity.*
 import com.qingmeng.mengmeng.adapter.JoinMenuAdapter
 import com.qingmeng.mengmeng.adapter.JoinRecommendAdapter
 import com.qingmeng.mengmeng.adapter.UnderLineNavigatorAdapter
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.BRANDID
-import com.qingmeng.mengmeng.entity.Banner
-import com.qingmeng.mengmeng.entity.JoinRecommendBean
-import com.qingmeng.mengmeng.entity.StaticBean
-import com.qingmeng.mengmeng.entity.StaticDataBean
+import com.qingmeng.mengmeng.entity.*
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.BoxUtils
+import com.qingmeng.mengmeng.utils.OpenMallApp
 import com.qingmeng.mengmeng.utils.ToastUtil
+import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_join.*
 import kotlinx.android.synthetic.main.layout_banner.*
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
+import org.jetbrains.anko.support.v4.startActivity
 
 @SuppressLint("CheckResult")
 class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppBarLayout.OnOffsetChangedListener,
@@ -52,7 +52,6 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 
     private var isLoading = false
     private var isRefresh = false
-    private var offset = 1
 
     override fun getLayoutId(): Int = R.layout.fragment_join
 
@@ -93,6 +92,16 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     }
 
     override fun initListener() {
+        mJoinMenu.setOnItemClickListener { _, _, position, _ ->
+            menuList[position].apply {
+                if (fatherSkipId == 0) {
+                    EventBus.getDefault().post(MainTabBean(1))
+                } else {
+                    startActivity<RedShopSeachResult>(IConstants.firstLevel to fatherSkipId, IConstants.secondLevel to skipId)
+                }
+            }
+        }
+        mSearchLayout.setOnClickListener { startActivity<RedShopSeach>() }
         vpList.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {
             }
@@ -115,7 +124,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         })
         barLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
             //verticalOffset始终为0以下的负数
-            val percent = Math.abs(verticalOffset * 1.0f) / appBarLayout.totalScrollRange
+            val percent = Math.abs(verticalOffset * 1.0f) / mJoinBanner.height
             mSearchBg.alpha = percent
             if (percent == 0f) {
                 bottomSearch.visibility = View.VISIBLE
@@ -124,12 +133,6 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 bottomSearch.visibility = View.GONE
                 topSearch.visibility = View.VISIBLE
             }
-            if (offset > verticalOffset && percent > 0.8474676) {
-                mBaffle.visibility = View.VISIBLE
-            } else if (percent < 1) {
-                mBaffle.visibility = View.GONE
-            }
-            offset = verticalOffset
         })
     }
 
@@ -224,7 +227,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         recyclerView.layoutManager = LinearLayoutManager(context)
 
         val adapter = JoinRecommendAdapter(context!!) {
-            startActivity(Intent(context!!, ShopDetailActivity::class.java).putExtra(BRANDID, it.id))
+            startActivity<ShopDetailActivity>(BRANDID to it.id)
         }
         recyclerView.adapter = adapter
         viewSparseArray.put(tagId, recyclerView)
@@ -380,10 +383,17 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     //banner点击事件  skipType 跳转类型 1.不做任何跳转 2.普通链接 3.头报文章链接 4.品牌详情
     override fun onBannerItemClick(banner: BGABanner?, itemView: ImageView?, model: Banner?, position: Int) {
         model?.apply {
-            when(skipType){
-                2->{}
-                3->{}
-                4->{}
+            when (skipType) {
+                2 -> startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
+                3 -> startActivity<HeadDetailsActivity>("URL" to url)
+                4 -> startActivity<ShopDetailActivity>(BRANDID to interiorDetailsId)
+                5 -> {
+                    try {
+                        OpenMallApp.open(context!!, exteriorUrl)
+                    } catch (e: OpenMallApp.NotInstalledException){
+                        startActivity<WebViewActivity>(IConstants.detailUrl to url)
+                    }
+                }
             }
         }
     }
@@ -392,7 +402,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: Banner?, position: Int) {
         model?.let {
             Glide.with(this).load(it.imgUrl).apply(RequestOptions()
-                    .placeholder(R.drawable.image_holder).error(R.drawable.image_holder)
+                    .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)
                     .centerCrop()).into(itemView)
         }
     }

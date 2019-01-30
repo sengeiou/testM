@@ -121,7 +121,9 @@ class JoinFeedbackActivity : BaseActivity() {
                         if (failCount != 0) {
                             ToastUtil.showShort("图片上传完成，共成功${successCount}张，失败${failCount}张")
                         } else {
-                            setFeedback(token, brandId, type, content, callUrl)
+                            var url = ""
+                            callUrl.forEach { url += "$it," }
+                            setFeedback(token, brandId, type, content, url)
                         }
                     }
                 })
@@ -136,11 +138,18 @@ class JoinFeedbackActivity : BaseActivity() {
      * @param content  反馈内容
      * @param urlList 反馈图片（多张逗号隔开）
      */
-    private fun setFeedback(token: String, brandId: Int, type: Int, content: String, urlList: ArrayList<String>) {
-        ApiUtils.getApi().join_feedback(token, brandId, type, content, urlList)
+    private fun setFeedback(token: String, brandId: Int, type: Int, content: String, urlList: String) {
+        ApiUtils.getApi().feedback(token, brandId, type, content, urlList)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe({ ToastUtil.showShort(it.msg) }, { ToastUtil.showNetError() }, {}, { addSubscription(it) })
+                .subscribe({
+                    if (it.code == 12000) {
+                        ToastUtil.showShort(R.string.join_feedback_success)
+                        finish()
+                    } else {
+                        ToastUtil.showShort(it.msg)
+                    }
+                }, { ToastUtil.showNetError() }, {}, { addSubscription(it) })
     }
 
     private fun initWidget() {

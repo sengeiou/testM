@@ -29,6 +29,8 @@ object IConstants {
     val IMGS = "imgs"
     val detailUrl = "detailUrl"            //详情链接
     val title = "title"                     //标题
+    val firstLevel = "firstLevel"         //一级分类id
+    val secondLevel = "secondLevel"       //二级分类id
     val LOGIN_BACK = 10010
 
     //图片验证码

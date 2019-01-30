@@ -30,7 +30,7 @@
         android:layout_marginTop="@dimen/padding_dp_45"
         android:layout_weight="1"
         app:banner_pointContainerBackground="@color/transparent"
-        app:banner_placeholderDrawable="@drawable/login_icon_banner1"/>
+        app:banner_placeholderDrawable="@drawable/default_img_banner"/>
 
     <LinearLayout
         android:id="@+id/btn_login_pw_main"

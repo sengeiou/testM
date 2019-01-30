@@ -31,6 +31,7 @@ import com.qingmeng.mengmeng.entity.WxInfoBean
 import com.qingmeng.mengmeng.entity.WxTokenBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.BoxUtils
+import com.qingmeng.mengmeng.utils.OpenMallApp
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.tencent.connect.UserInfo
 import com.tencent.connect.common.Constants
@@ -43,10 +44,7 @@ import de.greenrobot.event.EventBus
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_log_main_login.*
-import org.jetbrains.anko.clearTask
-import org.jetbrains.anko.intentFor
-import org.jetbrains.anko.newTask
-import org.jetbrains.anko.startActivityForResult
+import org.jetbrains.anko.*
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -79,6 +77,9 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
             window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         }
         from = intent.getIntExtra(FROM_TYPE, 0)
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
     }
 
     override fun initData() {
@@ -208,10 +209,10 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
 
     private fun loginOver() {
         if (from == 0) {
+            startActivity(intentFor<MainActivity>().newTask().clearTask())
+        } else {
             setResult(Activity.RESULT_OK)
             finish()
-        } else {
-            startActivity(intentFor<MainActivity>().newTask().clearTask())
         }
     }
 
@@ -264,13 +265,33 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: Banner?, position: Int) {
         model?.let {
             Glide.with(this).load(it.imgUrl).apply(RequestOptions().centerCrop()
-                    .placeholder(R.drawable.login_icon_banner1).error(R.drawable.login_icon_banner1)).into(itemView)
+                    .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(itemView)
         }
     }
 
     //banner点击事件
     override fun onBannerItemClick(banner: BGABanner?, itemView: ImageView?, model: Banner, position: Int) {
+        if (!mImgList.isEmpty()) {
+            mImgList[position].apply {
+                when (skipType) {
+                    2 -> startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
+                    3 -> startActivity<HeadDetailsActivity>("URL" to url)
+                    4 -> startActivity<ShopDetailActivity>(IConstants.BRANDID to interiorDetailsId)
+                    5 -> {
+                        try {
+                            OpenMallApp.open(this@LoginMainActivity, exteriorUrl)
+                        } catch (e: OpenMallApp.NotInstalledException) {
+                            startActivity<WebViewActivity>(IConstants.detailUrl to url)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
+    override fun onDestroy() {
+        EventBus.getDefault().unregister(this)
+        super.onDestroy()
     }
 
     @Suppress("NAME_SHADOWING")

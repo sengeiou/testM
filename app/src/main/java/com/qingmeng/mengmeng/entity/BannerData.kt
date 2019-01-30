@@ -28,5 +28,6 @@ data class Banner(
         var title: String,
         var type: Long,
         var url: String,
+        var exteriorUrl: String,
         var version: String
 )
