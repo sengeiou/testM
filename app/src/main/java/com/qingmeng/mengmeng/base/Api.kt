@@ -72,7 +72,7 @@ interface Api {
     fun addAttention(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int): Observable<BaseBean<Any>>
 
     //申请加盟接口
-    @GET("api/add_comment")
+    @POST("api/add_comment")
     fun join(@Query("brandId") brandId: Int, @Query("name") name: String,
              @Query("phone") phone: String, @Query("brandId") message: String): Observable<BaseBean<Any>>
 
@@ -168,7 +168,9 @@ interface Api {
 
     //我的反馈
     @POST("/api/feedback/add_feedback")
-    fun join_feedback(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int, @Query("type") type: Int, @Query("content") content: String, @Query("urlList") urlList: ArrayList<String>): Observable<BaseBean<Any>>
+    fun feedback(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int,
+                 @Query("type") type: Int, @Query("content") content: String,
+                 @Query("urlList") urlList: String): Observable<BaseBean<Any>>
 
     //获取热门词汇
     @GET("api/join/hot_search")

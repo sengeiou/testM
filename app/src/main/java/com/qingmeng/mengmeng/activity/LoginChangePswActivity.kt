@@ -242,10 +242,10 @@ class LoginChangePswActivity : BaseActivity() {
 
     private fun changeOver() {
         if (from == 0) {
+            startActivity(intentFor<MainActivity>().newTask().clearTask())
+        } else {
             setResult(Activity.RESULT_OK)
             finish()
-        } else {
-            startActivity(intentFor<MainActivity>().newTask().clearTask())
         }
     }
 

@@ -179,7 +179,7 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, BGABanner.Delegate
     override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: String?, position: Int) {
         model?.let {
             Glide.with(this).load(it).apply(RequestOptions()
-                    .placeholder(R.drawable.image_holder).error(R.drawable.image_holder)
+                    .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)
                     .centerCrop()).into(itemView)
         }
     }

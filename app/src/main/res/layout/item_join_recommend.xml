@@ -8,6 +8,7 @@
         android:id="@+id/recommend_logo"
         android:layout_width="match_parent"
         android:layout_height="187.5dp"
+        android:src="@drawable/default_img_banner"
         android:scaleType="fitXY"/>
 
     <TextView

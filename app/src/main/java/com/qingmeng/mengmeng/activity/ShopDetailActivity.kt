@@ -35,6 +35,10 @@ import com.qingmeng.mengmeng.utils.setDrawableTop
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_shop_detail.*
+import org.jetbrains.anko.clearTask
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.newTask
+import org.jetbrains.anko.startActivity
 
 @Suppress("DEPRECATION")
 @SuppressLint("CheckResult", "StringFormatMatches", "SetTextI18n", "SetJavaScriptEnabled")
@@ -106,7 +110,7 @@ class ShopDetailActivity : BaseActivity() {
         mDetailType.text = bean.foodName
         mDetailMoney.text = bean.capitalName
         mDetailJoinCount.text = getString(R.string.join_count, bean.joinStoreNum)
-        mDetailDirectCount.text = getString(R.string.join_count, bean.directStoreNum)
+        mDetailDirectCount.text = getString(R.string.direct_count, bean.directStoreNum)
         if (!mJoinSupport.isEmpty()) {
             mJoinSupport.clear()
         }
@@ -152,9 +156,9 @@ class ShopDetailActivity : BaseActivity() {
             myDialog.showMorePop(it, {
 
             }, {
-
+                startActivity(intentFor<MainActivity>().newTask().clearTask())
             }, {
-                startActivity(Intent(this, JoinFeedbackActivity::class.java).putExtra(BRANDID, id))
+                startActivity<JoinFeedbackActivity>(BRANDID to  id)
             }, {
 
             })
@@ -164,6 +168,7 @@ class ShopDetailActivity : BaseActivity() {
         mDetailJoinMoney.setOnClickListener { _ -> brandInitialFee?.let { myDialog.showBrandDialog(it) } }
         mCustomerService.setOnClickListener { }
         mCollection.setOnClickListener { if (isAttention == 0) addAttention() else unAttention() }
+        mDetailJoin.setOnClickListener { myDialog.showJoinDataDialog(name) { name, phone, message -> join(name, phone, message) } }
         mGetJoinData.setOnClickListener { myDialog.showJoinDataDialog(name) { name, phone, message -> join(name, phone, message) } }
         mDetailScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             val totalScroll = mDetailVp.height
