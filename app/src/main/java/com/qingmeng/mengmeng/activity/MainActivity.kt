@@ -4,12 +4,18 @@ import AppManager
 import android.annotation.SuppressLint
 import android.os.Build
 import android.support.v4.content.ContextCompat
+import android.text.TextUtils
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TabWidget
 import android.widget.TextView
+import com.mogujie.tt.config.UrlConstant
+import com.mogujie.tt.db.sp.SystemConfigSp
+import com.mogujie.tt.imservice.service.IMService
+import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.base.MainTab
 import com.qingmeng.mengmeng.entity.MainTabBean
@@ -19,6 +25,21 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
     private var firstTime = 0L
+
+    //完信相关
+    private var mImService: IMService? = null
+    private val imServiceConnector = object : IMServiceConnector() {
+        override fun onServiceDisconnected() {}
+
+        override fun onIMServiceConnected() {
+            IMServiceConnector.logger.d("login#onIMServiceConnected")
+            mImService = this.imService
+            //自动登录完信
+            if (MainApplication.instance.wanxinUser.uId != 0 && MainApplication.instance.wanxinUser.token != "") {
+                mImService?.loginManager?.login("${MainApplication.instance.wanxinUser.uId}", MainApplication.instance.wanxinUser.token)
+            }
+        }
+    }
 
     override fun getLayoutId(): Int = R.layout.activity_main
 
@@ -43,6 +64,12 @@ class MainActivity : BaseActivity() {
         }
         initTabs()
         setShowBack(false)
+        //完信相关
+        SystemConfigSp.instance().init(applicationContext)
+        if (TextUtils.isEmpty(SystemConfigSp.instance().getStrConfig(SystemConfigSp.SysCfgDimension.LOGINSERVER))) {
+            SystemConfigSp.instance().setStrConfig(SystemConfigSp.SysCfgDimension.LOGINSERVER, UrlConstant.ACCESS_MSG_ADDRESS)
+        }
+        imServiceConnector.connect(this)
     }
 
     private fun initTabs() {
@@ -78,6 +105,7 @@ class MainActivity : BaseActivity() {
 
     override fun onDestroy() {
         EventBus.getDefault().unregister(this)
+        imServiceConnector.disconnect(this)
         super.onDestroy()
     }
 }

@@ -12,6 +12,7 @@ import android.provider.MediaStore
 import android.support.v4.app.Fragment
 import android.support.v4.view.PagerAdapter
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -176,6 +177,17 @@ class MyMessageChatActivity : BaseActivity() {
             hiddenViewAndInputKeyboard()
             false
         }
+
+        //RecyclerView滑动监听
+        rvMyMessageChat.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                //滑到顶部了
+                if (!recyclerView.canScrollVertically(-1)) {
+                    onPullDownToRefresh()
+                }
+            }
+        })
 
         //音频
         ivMyMessageChatAudio.setOnClickListener {
@@ -800,6 +812,7 @@ class MyMessageChatActivity : BaseActivity() {
         getImageList()
         ChatAdapter.msgObjectList = msgObjectList
         mAdapter.notifyDataSetChanged()
+        rvMyMessageChat.scrollToPosition(chatList.lastIndex)
     }
 
     /**

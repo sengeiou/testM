@@ -80,9 +80,9 @@ class LoginPwdActivity : BaseActivity() {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
         imServiceConnector.disconnect(this)
         EventBus.getDefault().unregister(this)
+        super.onDestroy()
     }
 
     //初始化Listener
@@ -137,7 +137,6 @@ class LoginPwdActivity : BaseActivity() {
                                 it.upDate()
                                 //取wxName和wxPwd登录完信
                                 wanxinLogin(it.userInfo.wxName, it.userInfo.wxPwd)
-                                loginOver()
                             }
                         } else {
                             myDialog.dismissLoadingDialog()
@@ -169,7 +168,6 @@ class LoginPwdActivity : BaseActivity() {
                             it.upDate()
                             //取wxName和wxPwd登录完信
                             wanxinLogin(it.userInfo.wxName, it.userInfo.wxPwd)
-                            loginOver()
                         }
                     //错误次数
                         15001 -> ToastUtil.showShort("${bean.msg},还有${bean.data}次机会")
@@ -230,6 +228,21 @@ class LoginPwdActivity : BaseActivity() {
                 }, {
                     myDialog.dismissLoadingDialog()
                 })
+    }
+
+    //EventBus消费事件
+    fun onEventMainThread(event: LoginEvent) {
+        when (event) {
+            LoginEvent.LOCAL_LOGIN_SUCCESS, LoginEvent.LOGIN_OK -> {
+                myDialog.dismissLoadingDialog()
+                ToastUtil.showShort(getString(R.string.login_success))
+                //这里判断跳哪...
+                loginOver()
+            }
+            LoginEvent.LOGIN_AUTH_FAILED, LoginEvent.LOGIN_INNER_FAILED -> {
+
+            }
+        }
     }
 
     //验证手机号是否注册
@@ -324,22 +337,6 @@ class LoginPwdActivity : BaseActivity() {
         if (requestCode == LOGIN_BACK && resultCode == Activity.RESULT_OK) {
             setResult(resultCode)
             finish()
-        }
-    }
-
-    //EventBus消费事件
-    fun onEventMainThread(event: LoginEvent) {
-        when (event) {
-            LoginEvent.LOCAL_LOGIN_SUCCESS, LoginEvent.LOGIN_OK -> {
-                myDialog.dismissLoadingDialog()
-                ToastUtil.showShort(getString(R.string.login_success))
-                this@LoginPwdActivity.finish()
-                //这里判断跳哪...
-
-            }
-            LoginEvent.LOGIN_AUTH_FAILED, LoginEvent.LOGIN_INNER_FAILED -> {
-
-            }
         }
     }
 
