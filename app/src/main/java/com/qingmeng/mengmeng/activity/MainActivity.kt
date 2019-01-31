@@ -12,7 +12,6 @@ import android.widget.TabWidget
 import android.widget.TextView
 import com.mogujie.tt.config.UrlConstant
 import com.mogujie.tt.db.sp.SystemConfigSp
-import com.mogujie.tt.imservice.service.IMService
 import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
@@ -27,16 +26,14 @@ class MainActivity : BaseActivity() {
     private var firstTime = 0L
 
     //完信相关
-    private var mImService: IMService? = null
     private val imServiceConnector = object : IMServiceConnector() {
         override fun onServiceDisconnected() {}
 
         override fun onIMServiceConnected() {
             IMServiceConnector.logger.d("login#onIMServiceConnected")
-            mImService = this.imService
             //自动登录完信
-            if (MainApplication.instance.wanxinUser.uId != 0 && MainApplication.instance.wanxinUser.token != "") {
-                mImService?.loginManager?.login("${MainApplication.instance.wanxinUser.uId}", MainApplication.instance.wanxinUser.token)
+            if (MainApplication.instance.user.wxUid != 0 && !TextUtils.isEmpty(MainApplication.instance.user.wxToken)) {
+                imService?.loginManager?.login("${MainApplication.instance.user.wxUid}", MainApplication.instance.user.wxToken)
             }
         }
     }
@@ -55,7 +52,7 @@ class MainActivity : BaseActivity() {
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         }
-        if (!EventBus.getDefault().isRegistered(this)){
+        if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)
         }
         tabhost.setup(this, supportFragmentManager, R.id.realtabcontent)
@@ -89,7 +86,7 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    fun onEvent(mainTabBean: MainTabBean){
+    fun onEvent(mainTabBean: MainTabBean) {
         tabhost.tabWidget.getChildTabViewAt(mainTabBean.tabIndex).performClick()
     }
 

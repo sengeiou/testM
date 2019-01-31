@@ -7,7 +7,6 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import com.mogujie.tt.config.UrlConstant
 import com.mogujie.tt.db.sp.SystemConfigSp
-import com.mogujie.tt.imservice.event.LoginEvent
 import com.mogujie.tt.imservice.service.IMService
 import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.qingmeng.mengmeng.BaseActivity
@@ -18,7 +17,6 @@ import com.qingmeng.mengmeng.constant.ImageCodeHandler
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.GeetestUtil
 import com.qingmeng.mengmeng.utils.ToastUtil
-import de.greenrobot.event.EventBus
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_login_change_password.*
@@ -70,7 +68,6 @@ class LoginChangePswActivity : BaseActivity() {
             SystemConfigSp.instance().setStrConfig(SystemConfigSp.SysCfgDimension.LOGINSERVER, UrlConstant.ACCESS_MSG_ADDRESS)
         }
         imServiceConnector.connect(this)
-        EventBus.getDefault().register(this)
     }
 
     //初始化Listener
@@ -180,64 +177,25 @@ class LoginChangePswActivity : BaseActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
-                    if (bean.code != 12000) myDialog.dismissLoadingDialog()
+                    myDialog.dismissLoadingDialog()
                     when (bean.code) {
-                    //登录成功
+                        //登录成功
                         12000 -> bean.data?.let {
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
                             it.upDate()
-                            //取wxName和wxPwd登录完信
-                            wanxinLogin(it.userInfo.wxName, it.userInfo.wxPwd)
+                            //还要登录完信..
+                            mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
+                            changeOver()
                         }
-                    //手机号没有注册
-                    //参数有误
+                        //手机号没有注册
+                        //参数有误
                         else -> ToastUtil.showShort(bean.msg)
                     }
                 }, {
                     myDialog.dismissLoadingDialog()
                     ToastUtil.showNetError()
                 }, {}, { addSubscription(it) })
-    }
-
-    //完信登录
-    private fun wanxinLogin(wxName: String, wxPwd: String) {
-        ApiUtils.getApi()
-                .wanxinlogin(wxName, wxPwd)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ bean ->
-                    bean.apply {
-                        if (code == 12000) {
-                            data?.let {
-                                MainApplication.instance.wanxinUser = it
-                                it.upDate()
-                                //还要登录完信..
-                                mImService?.loginManager?.login("${it.uId}", it.token)
-                            }
-                        } else {
-                            ToastUtil.showShort(msg)
-                            myDialog.dismissLoadingDialog()
-                        }
-                    }
-                }, {
-                    myDialog.dismissLoadingDialog()
-                })
-    }
-
-    //EventBus消费事件
-    fun onEventMainThread(event: LoginEvent) {
-        when (event) {
-            LoginEvent.LOCAL_LOGIN_SUCCESS, LoginEvent.LOGIN_OK -> {
-                myDialog.dismissLoadingDialog()
-                ToastUtil.showShort(getString(R.string.login_success))
-                //这里判断跳哪...
-                changeOver()
-            }
-            LoginEvent.LOGIN_AUTH_FAILED, LoginEvent.LOGIN_INNER_FAILED -> {
-
-            }
-        }
     }
 
     private fun changeOver() {
@@ -251,7 +209,6 @@ class LoginChangePswActivity : BaseActivity() {
 
     override fun onDestroy() {
         imServiceConnector.disconnect(this)
-        EventBus.getDefault().unregister(this)
         GeetestUtil.destroy()
         super.onDestroy()
     }

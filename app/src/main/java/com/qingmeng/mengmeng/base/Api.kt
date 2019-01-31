@@ -35,11 +35,13 @@ interface Api {
      **/
     @POST("app/user/third_party_phone_binding")
     @FormUrlEncoded
-    fun bindPhone(@Field("phone") phone: String, @Field("smsCode") smsCode: String, @Field("openId") openId: String,
-                  @Field("token") token: String, @Field("avatar") avatar: String, @Field("type") type: Int,
+    fun bindPhone(@Field("phone") phone: String, @Field("smsCode") smsCode: String,
+                  @Field("openId") openId: String, @Field("token") token: String,
+                  @Field("avatar") avatar: String, @Field("type") type: Int,
                   @Field("password") password: String, @Field("verifyPassword") verifyPassword: String,
                   @Field("userName") userName: String, @Field("weChatUnionId") weChatUnionId: String,
-                  @Field("isUserProtocol") isUserProtocol: Int = 1, @Field("userType") userType: Int = 2): Observable<BaseBean<UserBean>>
+                  @Field("thirdUserName") thirdUserName: String, @Field("isUserProtocol") isUserProtocol: Int = 1,
+                  @Field("userType") userType: Int = 2): Observable<BaseBean<UserBean>>
 
     //注册
     @POST("app/user/phone_register")
@@ -79,11 +81,6 @@ interface Api {
     //账号登录
     @POST("app/user/account_login")
     fun accountLogin(@Query("account") account: String, @Query("password") password: String): Observable<BaseBean<UserBean>>
-
-    //完信登录
-    @POST("http://www.wxjishu.com:9999/login")
-    @FormUrlEncoded
-    fun wanxinlogin(@Field("wxUserName") wxUserName: String, @Field("wxPassWord") wxPassWord: String, @Field("wxProjectId") wxProjectId: Int = 6): Observable<BaseBean<WanxinUserBean>>
 
     //短信登录
     @POST("app/user/sms_login")
