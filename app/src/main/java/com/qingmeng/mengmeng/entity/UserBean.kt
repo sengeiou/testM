@@ -4,7 +4,8 @@ import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.utils.SharedSingleton
 import java.io.Serializable
 
-data class UserBean(var userInfo: UserInfo = UserInfo(), var token: String = "") : Serializable {
+data class UserBean(var userInfo: UserInfo = UserInfo(), var token: String = "",
+                    var wxUid: Int = 0, var wxToken: String = "") : Serializable {
     fun upDate() {
         SharedSingleton.instance.setString(IConstants.USER, toString())
     }

@@ -9,7 +9,6 @@ import android.text.TextWatcher
 import android.view.View
 import com.mogujie.tt.config.UrlConstant
 import com.mogujie.tt.db.sp.SystemConfigSp
-import com.mogujie.tt.imservice.event.LoginEvent
 import com.mogujie.tt.imservice.service.IMService
 import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.qingmeng.mengmeng.BaseActivity
@@ -23,7 +22,6 @@ import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.GeetestUtil
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.view.dialog.DialogCommon
-import de.greenrobot.event.EventBus
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_log_password_login.*
@@ -76,12 +74,10 @@ class LoginPwdActivity : BaseActivity() {
             SystemConfigSp.instance().setStrConfig(SystemConfigSp.SysCfgDimension.LOGINSERVER, UrlConstant.ACCESS_MSG_ADDRESS)
         }
         imServiceConnector.connect(this)
-        EventBus.getDefault().register(this)
     }
 
     override fun onDestroy() {
         imServiceConnector.disconnect(this)
-        EventBus.getDefault().unregister(this)
         super.onDestroy()
     }
 
@@ -129,22 +125,23 @@ class LoginPwdActivity : BaseActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
-                    if (bean.code != 12000)
-                        if (bean.code == 12000) {
-                            bean.data?.let {
-                                MainApplication.instance.user = it
-                                MainApplication.instance.TOKEN = it.token
-                                it.upDate()
-                                //取wxName和wxPwd登录完信
-                                wanxinLogin(it.userInfo.wxName, it.userInfo.wxPwd)
-                            }
-                        } else {
-                            myDialog.dismissLoadingDialog()
-                            ToastUtil.showShort(bean.msg)
-                        }
-                }, {
                     myDialog.dismissLoadingDialog()
-                })
+                    if (bean.code == 12000) {
+                        bean.data?.let {
+                            MainApplication.instance.user = it
+                            MainApplication.instance.TOKEN = it.token
+                            it.upDate()
+                            //还要登录完信..
+                            mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
+                            loginOver()
+                        }
+                    } else {
+                        ToastUtil.showShort(bean.msg)
+                    }
+                }, {
+                    ToastUtil.showNetError()
+                    myDialog.dismissLoadingDialog()
+                }, {}, { addSubscription(it) })
     }
 
     /**
@@ -159,19 +156,20 @@ class LoginPwdActivity : BaseActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
-                    if (bean.code != 12000) myDialog.dismissLoadingDialog()
+                    myDialog.dismissLoadingDialog()
                     when (bean.code) {
-                    //登录成功
+                        //登录成功
                         12000 -> bean.data?.let {
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
                             it.upDate()
-                            //取wxName和wxPwd登录完信
-                            wanxinLogin(it.userInfo.wxName, it.userInfo.wxPwd)
+                            //还要登录完信..
+                            mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
+                            loginOver()
                         }
-                    //错误次数
+                        //错误次数
                         15001 -> ToastUtil.showShort("${bean.msg},还有${bean.data}次机会")
-                    //密码错误三次以上
+                        //密码错误三次以上
                         25094 -> {
                             //找回密码弹窗
                             mDialog = DialogCommon(this, bean.msg, leftText = getString(R.string.cancel),
@@ -180,7 +178,7 @@ class LoginPwdActivity : BaseActivity() {
                             })
                             mDialog.show()
                         }
-                    //手机号不存在
+                        //手机号不存在
                         25091 -> {
                             //提示“该手机号尚未注册，是否前去注册？” “注册”和“取消”两个按钮
                             mDialog = DialogCommon(this, bean.msg, leftText = getString(R.string.cancel),
@@ -193,7 +191,8 @@ class LoginPwdActivity : BaseActivity() {
                     }
                 }, {
                     myDialog.dismissLoadingDialog()
-                })
+                    ToastUtil.showNetError()
+                }, {}, { addSubscription(it) })
     }
 
     private fun loginOver() {
@@ -202,46 +201,6 @@ class LoginPwdActivity : BaseActivity() {
         } else {
             setResult(Activity.RESULT_OK)
             finish()
-        }
-    }
-
-    //完信登录
-    private fun wanxinLogin(wxName: String, wxPwd: String) {
-        ApiUtils.getApi()
-                .wanxinlogin(wxName, wxPwd)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ bean ->
-                    bean.apply {
-                        if (code == 12000) {
-                            data?.let {
-                                MainApplication.instance.wanxinUser = it
-                                it.upDate()
-                                //还要登录完信..
-                                mImService?.loginManager?.login("${it.uId}", it.token)
-                            }
-                        } else {
-                            ToastUtil.showShort(msg)
-                            myDialog.dismissLoadingDialog()
-                        }
-                    }
-                }, {
-                    myDialog.dismissLoadingDialog()
-                })
-    }
-
-    //EventBus消费事件
-    fun onEventMainThread(event: LoginEvent) {
-        when (event) {
-            LoginEvent.LOCAL_LOGIN_SUCCESS, LoginEvent.LOGIN_OK -> {
-                myDialog.dismissLoadingDialog()
-                ToastUtil.showShort(getString(R.string.login_success))
-                //这里判断跳哪...
-                loginOver()
-            }
-            LoginEvent.LOGIN_AUTH_FAILED, LoginEvent.LOGIN_INNER_FAILED -> {
-
-            }
         }
     }
 

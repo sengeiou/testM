@@ -12,6 +12,8 @@ import android.widget.ImageView
 import cn.bingoogolapple.bgabanner.BGABanner
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.mogujie.tt.imservice.service.IMService
+import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
@@ -20,6 +22,7 @@ import com.qingmeng.mengmeng.constant.IConstants.AVATAR
 import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
 import com.qingmeng.mengmeng.constant.IConstants.LOGIN_BACK
 import com.qingmeng.mengmeng.constant.IConstants.LOGIN_TYPE
+import com.qingmeng.mengmeng.constant.IConstants.THIRD_USERNAME
 import com.qingmeng.mengmeng.constant.IConstants.THREE_OPENID
 import com.qingmeng.mengmeng.constant.IConstants.THREE_TOKEN
 import com.qingmeng.mengmeng.constant.IConstants.THREE_TYPE
@@ -63,6 +66,17 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     private val uiListener = BaseUiListener()
     private val mImgList = ArrayList<Banner>()
 
+    //完信相关
+    private var mImService: IMService? = null
+    private val imServiceConnector = object : IMServiceConnector() {
+        override fun onServiceDisconnected() {}
+
+        override fun onIMServiceConnected() {
+            IMServiceConnector.logger.d("login#onIMServiceConnected")
+            mImService = this.imService
+        }
+    }
+
     override fun getLayoutId(): Int = R.layout.activity_log_main_login
 
     //初始化Object
@@ -80,6 +94,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
         if (!EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().register(this)
         }
+        imServiceConnector.connect(this)
     }
 
     override fun initData() {
@@ -193,11 +208,13 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
                             it.upDate()
+                            mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
                             loginOver()
                         }
                         response.code == 25093 -> infoBean.apply {
                             startActivityForResult<LoginRegisterActivity>(LOGIN_BACK, FROM_TYPE to from, TYPE to 5, THREE_TYPE to type,
-                                    THREE_OPENID to openid, THREE_TOKEN to token, WE_CHAT_UNIONID to unionid, AVATAR to headimgurl)
+                                    THREE_OPENID to openid, THREE_TOKEN to token, WE_CHAT_UNIONID to unionid,
+                                    THIRD_USERNAME to nickname, AVATAR to headimgurl)
                         }
                         else -> ToastUtil.showShort(response.msg)
                     }
@@ -258,7 +275,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
         if (data != null) {
             Tencent.onActivityResultData(requestCode, resultCode, data, uiListener)
         }
-        if (requestCode == LOGIN_BACK && resultCode == Activity.RESULT_OK){
+        if (requestCode == LOGIN_BACK && resultCode == Activity.RESULT_OK) {
             setResult(Activity.RESULT_OK)
             finish()
         }
@@ -293,6 +310,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     }
 
     override fun onDestroy() {
+        imServiceConnector.disconnect(this)
         EventBus.getDefault().unregister(this)
         super.onDestroy()
     }
@@ -317,7 +335,8 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
                                 val ret = jsonObject.getInt("ret")
                                 if (ret == 0) {
                                     val image = jsonObject.getString("figureurl_qq_2")
-                                    threeLogin(WxInfoBean(mTencent.openId, image), token, 1)
+                                    val nickname = jsonObject.getString("nickname")
+                                    threeLogin(WxInfoBean(mTencent.openId, image, nickname), token, 1)
                                 } else {
                                     myDialog.showLoadingDialog()
                                     ToastUtil.showLong("错误码：" + ret + "    错误信息：" + jsonObject.getString("msg"))

@@ -21,6 +21,7 @@ object IConstants {
     val THREE_OPENID = "openId"               //QQopenid 或 微信openid
     val THREE_TOKEN = "token"                 //QQtoken 或 微信token
     val WE_CHAT_UNIONID = "weChatUnionId"   //微信UnionId
+    val THIRD_USERNAME = "thirdUserName"   //微信UnionId
     val AVATAR = "avatar"                     //头像
     val THREE_TYPE = "threeType"             //登录类型：1:QQ 2微信
     val FIRSTLOGIN = "first_login"

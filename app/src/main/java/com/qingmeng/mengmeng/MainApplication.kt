@@ -14,7 +14,6 @@ import com.mogujie.tt.imservice.service.IMService
 import com.mogujie.tt.utils.ImageLoaderUtil
 import com.qingmeng.mengmeng.entity.MyObjectBox
 import com.qingmeng.mengmeng.entity.UserBean
-import com.qingmeng.mengmeng.entity.WanxinUserBean
 import com.qingmeng.mengmeng.utils.SharedSingleton
 import com.qingmeng.mengmeng.view.MyVideoView
 import com.tencent.bugly.crashreport.CrashReport
@@ -31,7 +30,6 @@ import java.io.IOException
 class MainApplication : MultiDexApplication() {
     var TOKEN: String = ""
     lateinit var user: UserBean
-    lateinit var wanxinUser: WanxinUserBean
     private lateinit var sharedSingleton: SharedSingleton
 
     init {
@@ -48,7 +46,6 @@ class MainApplication : MultiDexApplication() {
         instance = this
         sharedSingleton = SharedSingleton.instance
         user = UserBean.fromString()
-        wanxinUser = WanxinUserBean.fromString()
         TOKEN = user.token
         initBox()
         initBugly()

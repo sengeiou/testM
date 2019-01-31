@@ -7,7 +7,6 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import com.mogujie.tt.config.UrlConstant
 import com.mogujie.tt.db.sp.SystemConfigSp
-import com.mogujie.tt.imservice.event.LoginEvent
 import com.mogujie.tt.imservice.service.IMService
 import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.qingmeng.mengmeng.BaseActivity
@@ -15,6 +14,7 @@ import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.constant.IConstants.AVATAR
 import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
+import com.qingmeng.mengmeng.constant.IConstants.THIRD_USERNAME
 import com.qingmeng.mengmeng.constant.IConstants.THREE_OPENID
 import com.qingmeng.mengmeng.constant.IConstants.THREE_TOKEN
 import com.qingmeng.mengmeng.constant.IConstants.THREE_TYPE
@@ -24,7 +24,6 @@ import com.qingmeng.mengmeng.constant.ImageCodeHandler
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.GeetestUtil
 import com.qingmeng.mengmeng.utils.ToastUtil
-import de.greenrobot.event.EventBus
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_log_register.*
@@ -47,6 +46,7 @@ class LoginRegisterActivity : BaseActivity() {
     private var openId = ""
     private var token = ""
     private var weChatUnionId = ""
+    private var thirdUserName = ""
     private var avatar = ""
     private var threeType = 1
 
@@ -67,6 +67,7 @@ class LoginRegisterActivity : BaseActivity() {
         openId = intent.getStringExtra(THREE_OPENID) ?: ""
         token = intent.getStringExtra(THREE_TOKEN) ?: ""
         weChatUnionId = intent.getStringExtra(WE_CHAT_UNIONID) ?: ""
+        thirdUserName = intent.getStringExtra(THIRD_USERNAME) ?: ""
         avatar = intent.getStringExtra(AVATAR) ?: ""
         threeType = intent.getIntExtra(THREE_TYPE, 0)
         from = intent.getIntExtra(FROM_TYPE, 0)
@@ -79,7 +80,6 @@ class LoginRegisterActivity : BaseActivity() {
             SystemConfigSp.instance().setStrConfig(SystemConfigSp.SysCfgDimension.LOGINSERVER, UrlConstant.ACCESS_MSG_ADDRESS)
         }
         imServiceConnector.connect(this)
-        EventBus.getDefault().register(this)
     }
 
     override fun initListener() {
@@ -129,7 +129,7 @@ class LoginRegisterActivity : BaseActivity() {
     private fun bindPhone() {
         myDialog.showLoadingDialog()
         ApiUtils.getApi().bindPhone(mPhone, mCode, openId, token, avatar,
-                threeType, mPsw, mSurePsw, mUserName, weChatUnionId)
+                threeType, mPsw, mSurePsw, mUserName, weChatUnionId, thirdUserName)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -139,8 +139,8 @@ class LoginRegisterActivity : BaseActivity() {
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
                             it.upDate()
-                            //取wxName和wxPwd登录完信
-                            wanxinLogin(it.userInfo.wxName, it.userInfo.wxPwd)
+                            //还要登录完信..
+                            mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
                         }
                     } else {
                         ToastUtil.showShort(bean.msg)
@@ -158,14 +158,15 @@ class LoginRegisterActivity : BaseActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
-                    if (bean.code != 12000) myDialog.dismissLoadingDialog()
+                    myDialog.dismissLoadingDialog()
                     if (bean.code == 12000) {
                         bean.data?.let {
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
                             it.upDate()
-                            //取wxName和wxPwd登录完信
-                            wanxinLogin(it.userInfo.wxName, it.userInfo.wxPwd)
+                            //还要登录完信..
+                            mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
+                            registerOver()
                         }
                     } else {
                         ToastUtil.showShort(bean.msg)
@@ -174,46 +175,6 @@ class LoginRegisterActivity : BaseActivity() {
                     myDialog.dismissLoadingDialog()
                     ToastUtil.showNetError()
                 }, {}, { addSubscription(it) })
-    }
-
-    //完信登录
-    private fun wanxinLogin(wxName: String, wxPwd: String) {
-        ApiUtils.getApi()
-                .wanxinlogin(wxName, wxPwd)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ bean ->
-                    bean.apply {
-                        if (code == 12000) {
-                            data?.let {
-                                MainApplication.instance.wanxinUser = it
-                                it.upDate()
-                                //还要登录完信..
-                                mImService?.loginManager?.login("${it.uId}", it.token)
-                            }
-                        } else {
-                            ToastUtil.showShort(msg)
-                            myDialog.dismissLoadingDialog()
-                        }
-                    }
-                }, {
-                    myDialog.dismissLoadingDialog()
-                })
-    }
-
-    //EventBus消费事件
-    fun onEventMainThread(event: LoginEvent) {
-        when (event) {
-            LoginEvent.LOCAL_LOGIN_SUCCESS, LoginEvent.LOGIN_OK -> {
-                myDialog.dismissLoadingDialog()
-                ToastUtil.showShort(getString(R.string.login_success))
-                //这里判断跳哪...
-                registerOver()
-            }
-            LoginEvent.LOGIN_AUTH_FAILED, LoginEvent.LOGIN_INNER_FAILED -> {
-
-            }
-        }
     }
 
     private fun registerOver() {
@@ -301,7 +262,6 @@ class LoginRegisterActivity : BaseActivity() {
 
     override fun onDestroy() {
         imServiceConnector.disconnect(this)
-        EventBus.getDefault().unregister(this)
         GeetestUtil.destroy()
         super.onDestroy()
     }

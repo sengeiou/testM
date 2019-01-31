@@ -94,6 +94,7 @@ class JoinFeedbackActivity : BaseActivity() {
         btn_join_feedback.setOnClickListener { mBottomDialog.show() }
         //提交
         mMenu.setOnClickListener { _ ->
+            myDialog.showLoadingDialog()
             token = MainApplication.instance.TOKEN
             content = edt_join_feedback.text.toString()
             callUrl.clear()
@@ -119,6 +120,7 @@ class JoinFeedbackActivity : BaseActivity() {
                     }
                     if ((failCount + successCount) == selectList.size) {
                         if (failCount != 0) {
+                            myDialog.dismissLoadingDialog()
                             ToastUtil.showShort("图片上传完成，共成功${successCount}张，失败${failCount}张")
                         } else {
                             var url = ""
@@ -143,13 +145,17 @@ class JoinFeedbackActivity : BaseActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    myDialog.dismissLoadingDialog()
                     if (it.code == 12000) {
                         ToastUtil.showShort(R.string.join_feedback_success)
                         finish()
                     } else {
                         ToastUtil.showShort(it.msg)
                     }
-                }, { ToastUtil.showNetError() }, {}, { addSubscription(it) })
+                }, {
+                    myDialog.dismissLoadingDialog()
+                    ToastUtil.showNetError()
+                }, {}, { addSubscription(it) })
     }
 
     private fun initWidget() {
