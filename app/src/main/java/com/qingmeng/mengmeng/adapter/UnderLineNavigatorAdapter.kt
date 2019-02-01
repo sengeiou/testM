@@ -29,7 +29,7 @@ class UnderLineNavigatorAdapter(var tagList: ArrayList<StaticBean>) : CommonNavi
         // 缩放 + 颜色渐变
         val simplePagerTitleView = ScaleTransitionPagerTitleView(context)
         simplePagerTitleView.text = tagList[index].title
-        simplePagerTitleView.minScale = 0.83f
+        simplePagerTitleView.minScale = 1f
         simplePagerTitleView.textSize = 15f
         simplePagerTitleView.normalColor = context.resources.getColor(R.color.color_666666)
         simplePagerTitleView.selectedColor = context.resources.getColor(R.color.main_theme)

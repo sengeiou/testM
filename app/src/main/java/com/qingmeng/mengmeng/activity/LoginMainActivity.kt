@@ -104,7 +104,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
             mVersion = mImgList[0].version
         } else {
             banner_login_main.setData(R.drawable.login_icon_banner1, R.drawable.login_icon_banner2, R.drawable.login_icon_banner3)
-            (0..2).forEach { banner_login_main.getItemImageView(it).scaleType = ImageView.ScaleType.FIT_CENTER }
+            (0..2).forEach { banner_login_main.getItemImageView(it).scaleType = ImageView.ScaleType.CENTER }
         }
         setBGABannerLogin()
     }

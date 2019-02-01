@@ -76,7 +76,7 @@ interface Api {
     //申请加盟接口
     @POST("api/add_comment")
     fun join(@Query("brandId") brandId: Int, @Query("name") name: String,
-             @Query("phone") phone: String, @Query("brandId") message: String): Observable<BaseBean<Any>>
+             @Query("phone") phone: String, @Query("message") message: String): Observable<BaseBean<Any>>
 
     //账号登录
     @POST("app/user/account_login")

@@ -100,35 +100,39 @@ class JoinFeedbackActivity : BaseActivity() {
             callUrl.clear()
             var failCount = 0
             var successCount = 0
-            selectList.indices.forEach { i ->
-                val path = if (selectList[i].isCompressed) {
-                    selectList[i].compressPath
-                } else {
-                    selectList[i].path
-                }
-                ApiUtils.updateImg(this@JoinFeedbackActivity, path, callback = { newUrl, oldUrl ->
-                    if (TextUtils.isEmpty(newUrl)) {
-                        failCount++
-                        (selectList.size - 1).downTo(0).forEach {
-                            if (selectList[it].path == oldUrl || selectList[it].compressPath == oldUrl) {
-                                selectList.removeAt(it)
+            var url = ""
+            if (selectList.isEmpty()) {
+                setFeedback(token, brandId, type, content, url)
+            } else {
+                selectList.indices.forEach { i ->
+                    val path = if (selectList[i].isCompressed) {
+                        selectList[i].compressPath
+                    } else {
+                        selectList[i].path
+                    }
+                    ApiUtils.updateImg(this@JoinFeedbackActivity, path, callback = { newUrl, oldUrl ->
+                        if (TextUtils.isEmpty(newUrl)) {
+                            failCount++
+                            (selectList.size - 1).downTo(0).forEach {
+                                if (selectList[it].path == oldUrl || selectList[it].compressPath == oldUrl) {
+                                    selectList.removeAt(it)
+                                }
+                            }
+                        } else {
+                            successCount++
+                            callUrl.add(newUrl)
+                        }
+                        if ((failCount + successCount) == selectList.size) {
+                            if (failCount != 0) {
+                                myDialog.dismissLoadingDialog()
+                                ToastUtil.showShort("图片上传完成，共成功${successCount}张，失败${failCount}张")
+                            } else {
+                                callUrl.forEach { url += "$it," }
+                                setFeedback(token, brandId, type, content, url)
                             }
                         }
-                    } else {
-                        successCount++
-                        callUrl.add(newUrl)
-                    }
-                    if ((failCount + successCount) == selectList.size) {
-                        if (failCount != 0) {
-                            myDialog.dismissLoadingDialog()
-                            ToastUtil.showShort("图片上传完成，共成功${successCount}张，失败${failCount}张")
-                        } else {
-                            var url = ""
-                            callUrl.forEach { url += "$it," }
-                            setFeedback(token, brandId, type, content, url)
-                        }
-                    }
-                })
+                    })
+                }
             }
         }
     }
