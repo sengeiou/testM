@@ -12,6 +12,7 @@ object BoxUtils {
     private val staticBox = boxStore.boxFor(StaticBean::class.java)
     private val hotsearchBox = boxStore.boxFor(HotSearchesList::class.java)
     private val searchBox = boxStore.boxFor(SearchHistoryList::class.java)
+    private val cacheBox = boxStore.boxFor(CacheBean::class.java)
     private val myInformationBox = boxStore.boxFor(MyInformation::class.java)   //我的板块信息
     private val allCityBox = boxStore.boxFor(AllCityBean::class.java)           //所有城市
 
@@ -38,35 +39,42 @@ object BoxUtils {
     fun saveStatic(statics: MutableList<StaticBean>) {
         boxStore.runInTxAsync({ staticBox.put(statics) }, { _, _ -> })
     }
+
     //保存热门数据到数据库
     fun saveHotSearch(statics: MutableList<HotSearchesList>) {
         boxStore.runInTxAsync({ hotsearchBox.put(statics) }, { _, _ -> })
     }
+
     //根据版本号获取热门数据
-    fun getHotSearch(version :String):MutableList<HotSearchesList>{
-        return hotsearchBox.query().equal(HotSearchesList_.version,version).build().find()
+    fun getHotSearch(version: String): MutableList<HotSearchesList> {
+        return hotsearchBox.query().equal(HotSearchesList_.version, version).build().find()
     }
+
     //根据cacheId获取热门数据
-    fun getIdHotSearch(cacheId :Long):MutableList<HotSearchesList>{
-        return hotsearchBox.query().equal(HotSearchesList_.cacheId,cacheId).build().find()
+    fun getIdHotSearch(cacheId: Long): MutableList<HotSearchesList> {
+        return hotsearchBox.query().equal(HotSearchesList_.cacheId, cacheId).build().find()
     }
+
     //删除已过期热门数据
     fun removeHotSearch(search: MutableList<HotSearchesList>) {
         boxStore.runInTxAsync({ hotsearchBox.remove(search) }, { _, _ -> })
     }
+
     //保存搜索记录到数据库
     fun saveSearch(search: SearchHistoryList) {
         boxStore.runInTxAsync({ searchBox.put(search) }, { _, _ -> })
     }
 
     //根据name获取搜索记录
-    fun getnameSearch(name :String):MutableList<SearchHistoryList>{
-        return searchBox.query().equal(SearchHistoryList_.name,name).build().find()
+    fun getnameSearch(name: String): MutableList<SearchHistoryList> {
+        return searchBox.query().equal(SearchHistoryList_.name, name).build().find()
     }
+
     //根据Id获取搜索记录
-    fun getIdSearch(id :Long):MutableList<SearchHistoryList>{
-        return searchBox.query().equal(SearchHistoryList_.id,id).build().find()
+    fun getIdSearch(id: Long): MutableList<SearchHistoryList> {
+        return searchBox.query().equal(SearchHistoryList_.id, id).build().find()
     }
+
     //删除搜索记录
     fun removeSearchs(search: MutableList<SearchHistoryList>) {
         boxStore.runInTxAsync({ searchBox.remove(search) }, { _, _ -> })
@@ -122,5 +130,25 @@ object BoxUtils {
         val list = Gson().fromJson<List<AllCity>>(allCityBean?.cityString, object : TypeToken<List<AllCity>>() {}.type)
         allCityBean?.city = list
         return allCityBean
+    }
+
+    fun <T> saveCache(bean: T, key: String) {
+        boxStore.runInTxAsync({
+            val value = Gson().toJson(bean)
+            val cacheBean = CacheBean(key, value)
+            cacheBox.put(cacheBean)
+        }, { _, _ -> })
+    }
+
+    fun <T> getCache(key: String): T {
+        val cacheBean = cacheBox.query().equal(CacheBean_.key, key).build().findFirst()
+        return Gson().fromJson<T>(cacheBean!!.value, object : TypeToken<T>() {}.type)
+    }
+
+    fun removeCache(key: String) {
+        boxStore.runInTxAsync({
+            val cacheBean = cacheBox.query().equal(CacheBean_.key, key).build().findFirst()
+            cacheBean?.let { cacheBox.remove(it) }
+        }, { _, _ -> })
     }
 }

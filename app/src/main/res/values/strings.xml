@@ -46,7 +46,7 @@
     <string name="camera">拍照</string>
     <string name="photo">照片</string>
     <string name="video">视频</string>
-    <string name="seach">请输入你想要搜索的</string>
+    <string name="seach">搜索感兴趣的品牌</string>
     <!-- =======================================爱加盟===================================== -->
     <string name="join_feedback_description">请输入反馈描述，上传照片有助于我们判断，提升投诉通过率哦！</string>
     <string name="join_feedback_type">请选择反馈问题的类型</string>
