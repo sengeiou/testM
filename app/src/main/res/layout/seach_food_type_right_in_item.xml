@@ -3,19 +3,17 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_marginStart="@dimen/padding_dp_20"
-    android:background="@color/white"
     android:gravity="center"
     android:orientation="vertical">
 
     <ImageView
-        android:id="@+id/red_shop_right_inImageView"
+        android:id="@+id/Seach_food_type_right_inImageView"
         android:layout_width="@dimen/padding_dp_80"
         android:layout_height="@dimen/padding_dp_80"
-        android:layout_marginTop="@dimen/padding_dp_12"
-        android:background="@android:color/darker_gray" />
+        android:layout_marginTop="@dimen/padding_dp_12" />
 
     <TextView
-        android:id="@+id/red_shop_right_inContent"
+        android:id="@+id/Seach_food_type_right_inContent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/padding_dp_13"

@@ -1,6 +1,7 @@
 package com.qingmeng.mengmeng.fragment
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.ImageView
@@ -13,15 +14,16 @@ import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.HeadDetailsActivity
 import com.qingmeng.mengmeng.adapter.CommonAdapter
 import com.qingmeng.mengmeng.entity.Banner
+import com.qingmeng.mengmeng.entity.NewsPagerBean
 import com.qingmeng.mengmeng.entity.NewsPagerList
 import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_head_newspaper.*
 import kotlinx.android.synthetic.main.layout_red_news_head.*
 import kotlinx.android.synthetic.main.news_bgabanner_item.*
-import org.jetbrains.anko.support.v4.startActivity
 
 @SuppressLint("CheckResult")
 class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, BGABanner.Delegate<ImageView, Banner>, BGABanner.Adapter<ImageView, String> {
@@ -32,7 +34,9 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, BGABanner.Delegate
     private var mHasNextPage = true                          //是否请求下一页
     private var mPageNum: Int = 1                            //接口请求页数
     private var isRferesh = false                              //加载更多
-    private var mList = ArrayList<NewsPagerList>()       //接口请求数据
+    private var mNewsList = ArrayList<NewsPagerList>()       //接口请求数据
+    private lateinit var url: String
+    private var REQUEST_NEWS = 123
     override fun getLayoutId(): Int = R.layout.fragment_head_newspaper
 
     override fun initObject() {
@@ -46,8 +50,8 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, BGABanner.Delegate
         mRedNewsBack.visibility = View.GONE
 
         initAdapter()
-        httpLoad(1)
-        httpBannerLoad("1")
+
+        httpBannerLoad("")
     }
 
     override fun initListener() {
@@ -58,15 +62,16 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, BGABanner.Delegate
     private fun initAdapter() {
         mLauyoutManger = LinearLayoutManager(context)
         news_pager_RecyclerView.layoutManager = mLauyoutManger
-        mAdapter = CommonAdapter(context!!, R.layout.news_paper_item, mList, holderConvert = { holder, data, position, payloads ->
+        mAdapter = CommonAdapter(context!!, R.layout.news_paper_item, mNewsList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
                 GlideLoader.load(this@NewsPaperFragment, data.banner, getView(R.id.news_pager_icon))
                 setText(R.id.news_pager_tittle, data.title)
                 setText(R.id.news_pager_content, data.content)
                 setText(R.id.news_pager_date, data.formatTime)
+                url = data.articleUrl
             }
         }, onItemClick = { view, holder, position ->
-            startActivity<HeadDetailsActivity>()
+            startActivityForResult(Intent(context, HeadDetailsActivity::class.java).putExtra("URL", url), REQUEST_NEWS)
         })
         news_pager_RecyclerView.adapter = mAdapter
     }
@@ -77,13 +82,36 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, BGABanner.Delegate
     }
 
     private fun getCacheData() {
-        initView()
+        Observable.create<NewsPagerBean> {
+            val newsList = BoxUtils.getNewsPager()
+            if (!mNewsList.isEmpty()) {
+                BoxUtils.removeNewsPager(mNewsList)
+                mNewsList.clear()
+            }
+            mNewsList.addAll(newsList)
+            var mSeachCondition = NewsPagerBean(ArrayList())
+            if (!mNewsList.isEmpty()) {
+                mSeachCondition = NewsPagerBean.fromString(mNewsList[1].id)
+            }
+            it.onNext(mSeachCondition)
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (!mNewsList.isEmpty()) {
+                        mAdapter.notifyDataSetChanged()
+                    }
+                    getNewData()
+                }, {
+                    getNewData()
+                })
+
+
     }
 
-    private fun initView() {
-        //news_swipeLayout.setOnLoadMoreListener(this)
-
-    }
+//    private fun initView() {
+//        //news_swipeLayout.setOnLoadMoreListener(this)
+//
+//    }
 
     override fun onLoadMore() {
         isRferesh = false
@@ -109,7 +137,8 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, BGABanner.Delegate
                             //如果页数是1 ，清空内容重新加载
                             if (pageNum == 1) {
                                 //清空已选择集合
-                                mList.clear()
+                                BoxUtils.removeNewsPager(mNewsList)
+                                mNewsList.clear()
                                 mPageNum = 1
                             }
                             //请求后判断数据
@@ -117,15 +146,14 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, BGABanner.Delegate
                                 mHasNextPage = false
                                 if (pageNum == 1) {
                                     //拿数据库数据  未写
+                                    getCacheData()
                                 }
                             } else {
                                 mHasNextPage = true
-//                                if(pageNum==1){
-//
-//                                }
                                 data?.let {
-                                    mList.addAll(it.data)
+                                    mNewsList.addAll(it.data)
                                     //数据库存入缓存 未写
+                                    BoxUtils.saveNewsPager(mNewsList)
 
                                 }
                                 mPageNum++

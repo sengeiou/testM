@@ -1,22 +1,38 @@
 package com.qingmeng.mengmeng.entity
 
+import io.objectbox.annotation.Entity
+import io.objectbox.annotation.Id
+
 data class SeachFoodTypeBean(
         val foodType: List<FoodType>,
         val version: String
-)
+) {
+    fun setVersion() {
+        foodType.forEach { it.version = version
+
+        }
+
+    }
+}
+
 
 data class FoodType(
-        val foodTypeDto: List<FoodTypeDto>,
-        val fahterId: Int,
-        val icon: String,
-        val id: Int,
-        val logo: String,
-        val name: String
+
+        var foodTypeDto: List<FoodTypeDto>,
+        var fahterId: Int,
+        var icon: String,
+        var id: Int,
+        var logo: String,
+        var name: String,
+        var version: String
 )
+
+
 data class FoodTypeDto(
-        val fahterId: Int,
-        val icon: String,
-        val id: Int,
-        val logo: String,
-        val name: String
+        var fahterId: Int,
+        var icon: String,
+        var id: Int,
+        var logo: String,
+        var name: String,
+        var version: String
 )

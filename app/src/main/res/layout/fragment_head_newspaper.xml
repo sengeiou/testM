@@ -6,13 +6,10 @@
     android:orientation="vertical">
 
     <include layout="@layout/layout_red_news_head" />
-
     <include layout="@layout/news_bgabanner_item" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"
         android:orientation="vertical">
 
         <!--<com.qingmeng.mengmeng.view.SwipeLayout-->
@@ -24,7 +21,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/news_pager_RecyclerView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-        <!--</com.qingmeng.mengmeng.view.SwipeLayout>-->
+            android:layout_height="wrap_content" />
     </LinearLayout>
+    <!--</com.qingmeng.mengmeng.view.SwipeLayout>-->
 </LinearLayout>
