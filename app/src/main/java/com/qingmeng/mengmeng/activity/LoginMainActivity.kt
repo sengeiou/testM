@@ -36,6 +36,7 @@ import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.BoxUtils
 import com.qingmeng.mengmeng.utils.OpenMallApp
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.view.AlphaPageTransformer
 import com.tencent.connect.UserInfo
 import com.tencent.connect.common.Constants
 import com.tencent.mm.opensdk.modelmsg.SendAuth
@@ -105,6 +106,9 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
         } else {
             banner_login_main.setData(R.drawable.login_icon_banner1, R.drawable.login_icon_banner2, R.drawable.login_icon_banner3)
             (0..2).forEach { banner_login_main.getItemImageView(it).scaleType = ImageView.ScaleType.CENTER }
+            banner_login_main.setPageTransformer(AlphaPageTransformer())
+            banner_login_main.setAllowUserScrollable(false)
+            banner_login_main.viewPager.setPageChangeDuration(10000)
         }
         setBGABannerLogin()
     }
@@ -268,6 +272,9 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
         } else {
             banner_login_main.setAutoPlayAble(false)
         }
+        banner_login_main.setPageTransformer(AlphaPageTransformer())
+        banner_login_main.setAllowUserScrollable(false)
+        banner_login_main.viewPager.setPageChangeDuration(10000)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

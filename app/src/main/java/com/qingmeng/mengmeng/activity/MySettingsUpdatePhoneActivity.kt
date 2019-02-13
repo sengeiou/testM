@@ -35,7 +35,7 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
         GeetestUtil.init(this)
         timerHandler = TimerHandler(this, tvMySettingsUpdatePhoneGetMsg)
 
-        setHeadName(getString(R.string.my_settings_updatePhone))
+        setHeadName(R.string.my_settings_updatePhone)
 
         //对当前手机号进行处理
         val phone = formatPhone(intent.getStringExtra("phone"))

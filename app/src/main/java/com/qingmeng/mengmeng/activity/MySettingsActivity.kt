@@ -54,7 +54,7 @@ class MySettingsActivity : BaseActivity() {
         super.initObject()
 
         //设置标题
-        setHeadName(getString(R.string.setting))
+        setHeadName(R.string.setting)
         mPhone = intent.getStringExtra("phone")
         mIsUpdatePass = intent.getBooleanExtra("isUpdatePass", false)
         //设置头像

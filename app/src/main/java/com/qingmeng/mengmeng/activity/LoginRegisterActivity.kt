@@ -72,6 +72,11 @@ class LoginRegisterActivity : BaseActivity() {
         threeType = intent.getIntExtra(THREE_TYPE, 0)
         from = intent.getIntExtra(FROM_TYPE, 0)
         contentType = intent.getIntExtra(TYPE, 1)
+        if (contentType == 1) {
+            setHeadName(R.string.register)
+        } else{
+            setHeadName(R.string.bind_phone)
+        }
         imgHandler = ImageCodeHandler(this, mRegisterGetCode)
         GeetestUtil.init(this)
         //完信相关

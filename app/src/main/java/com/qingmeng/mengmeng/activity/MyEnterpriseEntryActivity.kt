@@ -27,7 +27,7 @@ class MyEnterpriseEntryActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
-        setHeadName(getString(R.string.my_enterpriseEntry))
+        setHeadName(R.string.my_enterpriseEntry)
 
         initWebView()
         httpLoad()

@@ -143,6 +143,7 @@
     <string name="user_agreement">《盟盟用户协议》</string>
     <string name="refresh">刷新</string>
     <string name="register">注册</string>
+    <string name="bind_phone">绑定手机</string>
     <string name="cancel_login">登录取消</string>
     <string name="login_error">登录错误</string>
     <string name="please_click">请再次点击</string>
