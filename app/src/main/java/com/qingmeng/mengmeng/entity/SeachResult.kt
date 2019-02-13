@@ -11,5 +11,8 @@ data class SearchDto(
         val joinStoreNum: Int,
         val logo: String,
         val name: String,
-        val status: Int
+        val status: Int,
+        val affiliateSupport: List<String>
 )
+
+

@@ -12,7 +12,13 @@ object IConstants {
     val USER = "userBean"
     val WANXIN_USER = "wanxinUserBean"
     val JOIN_RECOMMEND = "joinRecommend"       //首页推荐缓存
-    val LOGIN_TIME = "loginTime"                //登录次数
+    val RED_SHOP = "redShop"                   //红铺缓存
+    val NEWS_PAGER = "newsPager"               //头报缓存
+    val SEACH_RESULT = "seachResult"           //搜索结果缓存
+    val SEACH_RESULT_FOOD = "seachResultFood"  //搜索结果餐饮类型缓存
+    val SEACH_RESULT_AREA = "seachResultArea"  //搜索结果加盟区域缓存
+    val HOME_PAGE = "homePageBean"
+    val LOGIN_TIME = "loginTime"
     val LOGIN_PHONE = "loginPhone"
     val LOGIN_PSW = "loginPsw"
     val LOGIN_TYPE = "loginType"               //登录类型：0：账号密码登录  1：短信验证登录
@@ -27,6 +33,7 @@ object IConstants {
     val FIRSTLOGIN = "first_login"
     val BRANDID = "brandId"                  //商品id
     val POSITION = "position"
+    val articleUrl = "articleUrl"
     val IMGS = "imgs"
     val detailUrl = "detailUrl"            //详情链接
     val title = "title"                     //标题
