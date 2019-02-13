@@ -25,12 +25,13 @@ import com.qingmeng.mengmeng.utils.dp2px
 
  *  Date: 2019/1/4
  */
-class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectBean>, val isDefaultLayout: Boolean = true,
-                               val onItemClick: (position: Int) -> Unit = { },
-                               val onCalcelClick: (view: View, menuList: ArrayList<SelectBean>) -> Unit = { view, list -> },
+@Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS", "DEPRECATION")
+class SelectDialog constructor(context: Context, private val menuList: ArrayList<SelectBean>,
+                               val isDefaultLayout: Boolean = true, val onItemClick: (position: Int) -> Unit = { },
+                               val onCancelClick: (view: View, menuList: ArrayList<SelectBean>) -> Unit = { _, _ -> },
                                theme: Int = R.style.dialog_common) : Dialog(context, theme) {
     private lateinit var mDialogView: View                          //dialog
-    private lateinit var mTvCalcel: TextView                        //取消按钮
+    private lateinit var mTvCancel: TextView                        //取消按钮
     private lateinit var mLayoutManager: LinearLayoutManager        //布局管理器
     private lateinit var mmGridLayoutManager: GridLayoutManager     //布局管理器
     private lateinit var mRvSelect: RecyclerView                    //菜单列表
@@ -45,10 +46,9 @@ class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectB
     }
 
     private fun initView() {
-        mTvCalcel = mDialogView.findViewById(R.id.tvCancel)
+        mTvCancel = mDialogView.findViewById(R.id.tvCancel)
         mRvSelect = mDialogView.findViewById(R.id.rvSelect)
 
-        val window = window
         val wlp = window.attributes
         //设置位置和动画
         wlp.gravity = Gravity.BOTTOM
@@ -58,7 +58,7 @@ class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectB
         if (isDefaultLayout) {
             mRvSelect.background = null
         } else {
-            mTvCalcel.text = "确定"
+            mTvCancel.text = "确定"
             mRvSelect.setPadding(context.dp2px(13), context.dp2px(10), context.dp2px(13), context.dp2px(10))
             mRvSelect.setBackgroundResource(R.drawable.ripple_bg_drawable_white_radius15)
         }
@@ -76,15 +76,19 @@ class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectB
                     //如果不止一个
                     if (menuList.size > 1) {
                         //按位置设置背景
-                        if (position == 0) {
-                            getView<View>(R.id.viewSelectDialogRvLine).visibility = View.GONE
-                            getView<TextView>(R.id.tvSelectDialogRvMenuL).setBackgroundResource(R.drawable.ripple_bg_white_top_radius15)
-                        } else if (position == menuList.lastIndex) {
-                            getView<View>(R.id.viewSelectDialogRvLine).visibility = View.VISIBLE
-                            getView<TextView>(R.id.tvSelectDialogRvMenuL).setBackgroundResource(R.drawable.ripple_bg_white_bottom_radius15)
-                        } else {
-                            getView<View>(R.id.viewSelectDialogRvLine).visibility = View.VISIBLE
-                            getView<TextView>(R.id.tvSelectDialogRvMenuL).setBackgroundResource(R.drawable.ripple_bg_white)
+                        when (position) {
+                            0 -> {
+                                getView<View>(R.id.viewSelectDialogRvLine).visibility = View.GONE
+                                getView<TextView>(R.id.tvSelectDialogRvMenuL).setBackgroundResource(R.drawable.ripple_bg_white_top_radius15)
+                            }
+                            menuList.lastIndex -> {
+                                getView<View>(R.id.viewSelectDialogRvLine).visibility = View.VISIBLE
+                                getView<TextView>(R.id.tvSelectDialogRvMenuL).setBackgroundResource(R.drawable.ripple_bg_white_bottom_radius15)
+                            }
+                            else -> {
+                                getView<View>(R.id.viewSelectDialogRvLine).visibility = View.VISIBLE
+                                getView<TextView>(R.id.tvSelectDialogRvMenuL).setBackgroundResource(R.drawable.ripple_bg_white)
+                            }
                         }
 //                        //设置点击状态
 //                        getView<TextView>(R.id.tvSelectDialogRvMenuCLickL).apply {
@@ -148,8 +152,8 @@ class SelectDialog constructor(context: Context, val menuList: ArrayList<SelectB
 
     private fun initListener() {
         //取消按钮
-        mTvCalcel.setOnClickListener {
-            onCalcelClick(it, menuList)
+        mTvCancel.setOnClickListener {
+            onCancelClick(it, menuList)
             dismiss()
         }
     }

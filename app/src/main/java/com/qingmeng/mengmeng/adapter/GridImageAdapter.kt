@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -20,7 +19,7 @@ import com.luck.picture.lib.tools.DateUtils
 import com.luck.picture.lib.tools.StringUtils
 import com.qingmeng.mengmeng.R
 import java.io.File
-import java.util.ArrayList
+import java.util.*
 
 /**
  * author：luck
@@ -35,23 +34,11 @@ import java.util.ArrayList
  * mail: 153705849@qq.com
  * describe:
  */
-class GridImageAdapter(private val context: Context,
-
-                       private val mOnAddPicClickListener: onAddPicClickListener)
-    : RecyclerView.Adapter<GridImageAdapter.ViewHolder>() {
-    private val mInflater: LayoutInflater
+class GridImageAdapter(private val context: Context, private val onAddClick: () -> Unit,
+                       private val onItemClick: (Int) -> Unit) : RecyclerView.Adapter<GridImageAdapter.ViewHolder>() {
+    private val mInflater: LayoutInflater = LayoutInflater.from(context)
     private var list: MutableList<LocalMedia> = ArrayList()
     private var selectMax = 9
-
-    protected var mItemClickListener: OnItemClickListener? = null
-
-    interface onAddPicClickListener {
-        fun onAddPicClick()
-    }
-
-    init {
-        mInflater = LayoutInflater.from(context)
-    }
 
     fun setSelectMax(selectMax: Int) {
         this.selectMax = selectMax
@@ -59,19 +46,6 @@ class GridImageAdapter(private val context: Context,
 
     fun setList(list: MutableList<LocalMedia>) {
         this.list = list
-    }
-
-    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-
-        internal var mImg: ImageView
-        internal var ll_del: LinearLayout
-        internal var tv_duration: TextView
-
-        init {
-            mImg = view.findViewById<ImageView>(R.id.img_join_feedback_fiv)
-            ll_del = view.findViewById<LinearLayout>(R.id.ll_del)
-            tv_duration = view.findViewById<TextView>(R.id.tv_join_feedback_duration)
-        }
     }
 
     override fun getItemCount(): Int {
@@ -108,90 +82,83 @@ class GridImageAdapter(private val context: Context,
      * 设置值
      */
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
-        //少于8张，显示继续添加的图标
-        if (getItemViewType(position) == TYPE_CAMERA) {
-            viewHolder.mImg.setImageResource(R.drawable.join_add_image)
-            viewHolder.mImg.setOnClickListener { mOnAddPicClickListener.onAddPicClick() }
-            viewHolder.ll_del.visibility = View.INVISIBLE
-        } else {
-            viewHolder.ll_del.visibility = View.VISIBLE
-            viewHolder.ll_del.setOnClickListener {
-                val index = viewHolder.adapterPosition
-                // 这里有时会返回-1造成数据下标越界,具体可参考getAdapterPosition()源码，
-                // 通过源码分析应该是bindViewHolder()暂未绘制完成导致，知道原因的也可联系我~感谢
-                if (index != RecyclerView.NO_POSITION) {
-                    list.removeAt(index)
-                    notifyItemRemoved(index)
-                    notifyItemRangeChanged(index, list.size)
-                    //      DebugUtil.i("delete position:", index.toString() + "--->remove after:" + list.size)
-                }
-            }
-            val media = list[position]
-            val mimeType = media.mimeType
-            var path = ""
-            if (media.isCut && !media.isCompressed) {
-                // 裁剪过
-                path = media.cutPath
-            } else if (media.isCompressed || media.isCut && media.isCompressed) {
-                // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
-                path = media.compressPath
-            } else {
-                // 原图
-                path = media.path
-            }
-            // 图片
-            if (media.isCompressed) {
-                Log.i("compress image result:", (File(media.compressPath).length() / 1024).toString() + "k")
-                Log.i("压缩地址::", media.compressPath)
-            }
+        viewHolder.bindViewHolder(position)
+    }
 
-            Log.i("原图地址::", media.path)
-            val pictureType = PictureMimeType.isPictureType(media.pictureType)
-            if (media.isCut) {
-                Log.i("裁剪地址::", media.cutPath)
-            }
-            val duration = media.duration
-            viewHolder.tv_duration.visibility = if (pictureType == PictureConfig.TYPE_VIDEO)
-                View.VISIBLE
-            else
-                View.GONE
-            if (mimeType == PictureMimeType.ofAudio()) {
-                viewHolder.tv_duration.visibility = View.VISIBLE
-                val drawable = ContextCompat.getDrawable(context, R.drawable.picture_audio)
-                StringUtils.modifyTextViewDrawable(viewHolder.tv_duration, drawable, 0)
+    inner class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        private var mImg: ImageView = view.findViewById(R.id.img_join_feedback_fiv)
+        private var llDel: ImageView = view.findViewById(R.id.ll_del)
+        private var tvDuration: TextView = view.findViewById(R.id.tv_join_feedback_duration)
+
+        fun bindViewHolder(position:Int){
+            //少于8张，显示继续添加的图标
+            if (getItemViewType(position) == TYPE_CAMERA) {
+                mImg.setImageResource(R.drawable.join_add_image)
+                mImg.setOnClickListener { onAddClick() }
+                llDel.visibility = View.INVISIBLE
             } else {
-                val drawable = ContextCompat.getDrawable(context, R.drawable.video_icon)
-                StringUtils.modifyTextViewDrawable(viewHolder.tv_duration, drawable, 0)
-            }
-            viewHolder.tv_duration.text = DateUtils.timeParse(duration)
-            if (mimeType == PictureMimeType.ofAudio()) {
-                viewHolder.mImg.setImageResource(R.drawable.audio_placeholder)
-            } else {
-                val options = RequestOptions()
-                        .centerCrop()
-                        .placeholder(R.color.color_5ab1e1)
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                Glide.with(viewHolder.itemView.context)
-                        .load(path)
-                        .apply(options)
-                        .into(viewHolder.mImg)
-            }
-            //itemView 的点击事件
-            if (mItemClickListener != null) {
-                viewHolder.itemView.setOnClickListener { v ->
-                    val adapterPosition = viewHolder.adapterPosition
-                    mItemClickListener!!.onItemClick(adapterPosition, v)
+                llDel.visibility = View.VISIBLE
+                llDel.setOnClickListener {
+                    // 这里有时会返回-1造成数据下标越界,具体可参考getAdapterPosition()源码，
+                    // 通过源码分析应该是bindViewHolder()暂未绘制完成导致，知道原因的也可联系我~感谢
+                    if (position != RecyclerView.NO_POSITION) {
+                        list.removeAt(position)
+                        notifyItemRemoved(position)
+                        notifyItemRangeChanged(position, list.size)
+                        //      DebugUtil.i("delete position:", index.toString() + "--->remove after:" + list.size)
+                    }
                 }
+                val media = list[position]
+                val mimeType = media.mimeType
+                var path = ""
+                path = if (media.isCut && !media.isCompressed) {
+                    // 裁剪过
+                    media.cutPath
+                } else if (media.isCompressed || media.isCut && media.isCompressed) {
+                    // 压缩过,或者裁剪同时压缩过,以最终压缩过图片为准
+                    media.compressPath
+                } else {
+                    // 原图
+                    media.path
+                }
+                // 图片
+                if (media.isCompressed) {
+                    Log.i("compress image result:", (File(media.compressPath).length() / 1024).toString() + "k")
+                    Log.i("压缩地址::", media.compressPath)
+                }
+
+                Log.i("原图地址::", media.path)
+                val pictureType = PictureMimeType.isPictureType(media.pictureType)
+                if (media.isCut) {
+                    Log.i("裁剪地址::", media.cutPath)
+                }
+                val duration = media.duration
+                tvDuration.visibility = if (pictureType == PictureConfig.TYPE_VIDEO) View.VISIBLE else View.GONE
+                if (mimeType == PictureMimeType.ofAudio()) {
+                    tvDuration.visibility = View.VISIBLE
+                    val drawable = ContextCompat.getDrawable(context, R.drawable.picture_audio)
+                    StringUtils.modifyTextViewDrawable(tvDuration, drawable, 0)
+                } else {
+                    val drawable = ContextCompat.getDrawable(context, R.drawable.video_icon)
+                    StringUtils.modifyTextViewDrawable(tvDuration, drawable, 0)
+                }
+                tvDuration.text = DateUtils.timeParse(duration)
+                if (mimeType == PictureMimeType.ofAudio()) {
+                    mImg.setImageResource(R.drawable.audio_placeholder)
+                } else {
+                    val options = RequestOptions()
+                            .centerCrop()
+                            .placeholder(R.color.color_5ab1e1)
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    Glide.with(itemView.context)
+                            .load(path)
+                            .apply(options)
+                            .into(mImg)
+                }
+                //itemView 的点击事件
+                itemView.setOnClickListener { onItemClick(position) }
             }
         }
-    }
-
-    interface OnItemClickListener {
-        fun onItemClick(position: Int, v: View)
-    }
-
-    fun setOnItemClickListener(listener: OnItemClickListener) {
-        this.mItemClickListener = listener
     }
 
     companion object {

@@ -4,19 +4,39 @@ import AppManager
 import android.annotation.SuppressLint
 import android.os.Build
 import android.support.v4.content.ContextCompat
+import android.text.TextUtils
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.TabWidget
 import android.widget.TextView
+import com.mogujie.tt.config.UrlConstant
+import com.mogujie.tt.db.sp.SystemConfigSp
+import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.base.MainTab
+import com.qingmeng.mengmeng.entity.MainTabBean
 import com.qingmeng.mengmeng.utils.ToastUtil
+import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity() {
     private var firstTime = 0L
+
+    //完信相关
+    private val imServiceConnector = object : IMServiceConnector() {
+        override fun onServiceDisconnected() {}
+
+        override fun onIMServiceConnected() {
+            IMServiceConnector.logger.d("login#onIMServiceConnected")
+            //自动登录完信
+            if (MainApplication.instance.user.wxUid != 0 && !TextUtils.isEmpty(MainApplication.instance.user.wxToken)) {
+                imService?.loginManager?.login("${MainApplication.instance.user.wxUid}", MainApplication.instance.user.wxToken)
+            }
+        }
+    }
 
     override fun getLayoutId(): Int = R.layout.activity_main
 
@@ -32,13 +52,21 @@ class MainActivity : BaseActivity() {
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         }
-
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
         tabhost.setup(this, supportFragmentManager, R.id.realtabcontent)
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.GINGERBREAD_MR1) {
             tabhost.tabWidget.showDividers = TabWidget.SHOW_DIVIDER_NONE
         }
         initTabs()
         setShowBack(false)
+        //完信相关
+        SystemConfigSp.instance().init(applicationContext)
+        if (TextUtils.isEmpty(SystemConfigSp.instance().getStrConfig(SystemConfigSp.SysCfgDimension.LOGINSERVER))) {
+            SystemConfigSp.instance().setStrConfig(SystemConfigSp.SysCfgDimension.LOGINSERVER, UrlConstant.ACCESS_MSG_ADDRESS)
+        }
+        imServiceConnector.connect(this)
     }
 
     private fun initTabs() {
@@ -58,6 +86,10 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    fun onEvent(mainTabBean: MainTabBean) {
+        tabhost.tabWidget.getChildTabViewAt(mainTabBean.tabIndex).performClick()
+    }
+
     override fun onBackPressed() {
         val secondTime = System.currentTimeMillis()
         if (secondTime - firstTime > 2000) {//如果两次按键时间间隔大于2秒，则不退出
@@ -66,5 +98,11 @@ class MainActivity : BaseActivity() {
         } else {//两次按键小于2秒时，退出应用
             AppManager.instance.appExit(this)
         }
+    }
+
+    override fun onDestroy() {
+        EventBus.getDefault().unregister(this)
+        imServiceConnector.disconnect(this)
+        super.onDestroy()
     }
 }

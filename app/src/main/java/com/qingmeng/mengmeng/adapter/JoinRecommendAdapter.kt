@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.entity.JoinRecommendBean
 
@@ -53,7 +54,8 @@ class JoinRecommendAdapter(val context: Context, val onItemClick: (JoinRecommend
             recommendMoney.text = "￥${joinBean.capitalName}"
             itemView.setOnClickListener { onItemClick(joinBean) }
             if (!TextUtils.isEmpty(joinBean.logo)) {
-                Glide.with(context).load(joinBean.logo).into(recommendLogo)
+                Glide.with(context).load(joinBean.logo).apply(RequestOptions()
+                        .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(recommendLogo)
             }
         }
     }

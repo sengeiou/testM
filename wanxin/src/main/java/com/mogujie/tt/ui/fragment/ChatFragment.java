@@ -55,10 +55,10 @@ import de.greenrobot.event.EventBus;
 public class
 
 ChatFragment extends MainFragment
-implements
-OnItemSelectedListener,
-OnItemClickListener,
-OnItemLongClickListener {
+    implements
+    OnItemSelectedListener,
+    OnItemClickListener,
+    OnItemLongClickListener {
 
     private ChatAdapter contactAdapter;
     private ListView contactListView;
@@ -150,7 +150,7 @@ OnItemLongClickListener {
         // this is critical, disable loading when finger sliding, otherwise
         // you'll find sliding is not very smooth
         contactListView.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(),
-        true, true));
+            true, true));
     }
 
     @Override
@@ -191,9 +191,7 @@ OnItemLongClickListener {
 
     // 这个地方跳转一定要快
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position,
-                            long id) {
-
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         RecentInfo recentInfo = contactAdapter.getItem(position);
         if (recentInfo == null) {
             logger.e("recent#null recentInfo -> position:%d", position);
@@ -370,7 +368,7 @@ OnItemLongClickListener {
      */
     public void searchDataReady() {
         if (imService.getContactManager().isUserDataReady() &&
-        imService.getGroupManager().isGroupReady()) {
+            imService.getGroupManager().isGroupReady()) {
             showSearchFrameLayout();
         }
     }
@@ -494,8 +492,8 @@ OnItemLongClickListener {
 
         int topMessageRes = isTop ? R.string.cancel_top_message : R.string.top_message;
         String[] items = new String[] {ctx.getString(R.string.check_profile),
-        ctx.getString(R.string.delete_session),
-        ctx.getString(topMessageRes)};
+            ctx.getString(R.string.delete_session),
+            ctx.getString(topMessageRes)};
 
         builder.setItems(items, new DialogInterface.OnClickListener() {
             @Override

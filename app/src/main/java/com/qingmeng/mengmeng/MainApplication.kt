@@ -14,12 +14,9 @@ import com.mogujie.tt.imservice.service.IMService
 import com.mogujie.tt.utils.ImageLoaderUtil
 import com.qingmeng.mengmeng.entity.MyObjectBox
 import com.qingmeng.mengmeng.entity.UserBean
-import com.qingmeng.mengmeng.entity.WanxinUserBean
 import com.qingmeng.mengmeng.utils.SharedSingleton
 import com.qingmeng.mengmeng.view.MyVideoView
 import com.tencent.bugly.crashreport.CrashReport
-import com.tencent.mm.opensdk.openapi.IWXAPI
-import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import io.objectbox.BoxStore
 import io.objectbox.android.AndroidObjectBrowser
 import java.io.BufferedReader
@@ -33,8 +30,6 @@ import java.io.IOException
 class MainApplication : MultiDexApplication() {
     var TOKEN: String = ""
     lateinit var user: UserBean
-    lateinit var wanxinUser: WanxinUserBean
-    lateinit var mWxApi: IWXAPI
     private lateinit var sharedSingleton: SharedSingleton
 
     init {
@@ -46,22 +41,14 @@ class MainApplication : MultiDexApplication() {
         MultiDex.install(this)
     }
 
-    //注册到微信
-    private fun registToWX() {
-        mWxApi = WXAPIFactory.createWXAPI(this, "APP_ID", false);//此处的APP_ID替换为你在微信开放平台上申请到的APP_ID
-        mWxApi.registerApp("APP_ID")
-    }
-
     override fun onCreate() {
         super.onCreate()
         instance = this
         sharedSingleton = SharedSingleton.instance
         user = UserBean.fromString()
-        wanxinUser = WanxinUserBean.fromString()
         TOKEN = user.token
         initBox()
         initBugly()
-        registToWX()
 
         startIMService()
         ImageLoaderUtil.initImageLoaderConfig(applicationContext)
@@ -88,7 +75,7 @@ class MainApplication : MultiDexApplication() {
             boxStore.let {
                 //可以理解为初始化连接浏览器(可以在浏览器中查看数据，下面再说)
                 val started = AndroidObjectBrowser(boxStore).start(this)
-                Log.i("ObjectBrowser", "Started: " + started)
+                Log.i("ObjectBrowser", "Started: $started")
             }
         }
     }

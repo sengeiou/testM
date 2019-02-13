@@ -29,6 +29,20 @@ interface Api {
                 @Field("geetest_challenge") geetest_challenge: String = "", @Field("geetest_validate") geetest_validate: String = "",
                 @Field("geetest_seccode") geetest_seccode: String = ""): Observable<BaseBean<Any>>
 
+    /**
+     * 获取短信验证码接口
+     * @param type 1.注册2.登陆3.找回密码4.修改手机号5.绑定手机号
+     **/
+    @POST("app/user/third_party_phone_binding")
+    @FormUrlEncoded
+    fun bindPhone(@Field("phone") phone: String, @Field("smsCode") smsCode: String,
+                  @Field("openId") openId: String, @Field("token") token: String,
+                  @Field("avatar") avatar: String, @Field("type") type: Int,
+                  @Field("password") password: String, @Field("verifyPassword") verifyPassword: String,
+                  @Field("userName") userName: String, @Field("weChatUnionId") weChatUnionId: String,
+                  @Field("thirdUserName") thirdUserName: String, @Field("isUserProtocol") isUserProtocol: Int = 1,
+                  @Field("userType") userType: Int = 2): Observable<BaseBean<UserBean>>
+
     //注册
     @POST("app/user/phone_register")
     @FormUrlEncoded
@@ -60,18 +74,13 @@ interface Api {
     fun addAttention(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int): Observable<BaseBean<Any>>
 
     //申请加盟接口
-    @GET("api/add_comment")
+    @POST("api/add_comment")
     fun join(@Query("brandId") brandId: Int, @Query("name") name: String,
-                     @Query("phone") phone: String, @Query("brandId") message: String): Observable<BaseBean<Any>>
+             @Query("phone") phone: String, @Query("message") message: String): Observable<BaseBean<Any>>
 
     //账号登录
     @POST("app/user/account_login")
-    fun accountlogin(@Query("account") account: String, @Query("password") password: String): Observable<BaseBean<UserBean>>
-
-    //完信登录
-    @POST("http://www.wxjishu.com:9999/login")
-    @FormUrlEncoded
-    fun wanxinlogin(@Field("wxUserName") wxUserName: String, @Field("wxPassWord") wxPassWord: String, @Field("wxProjectId") wxProjectId: Int = 6): Observable<BaseBean<WanxinUserBean>>
+    fun accountLogin(@Query("account") account: String, @Query("password") password: String): Observable<BaseBean<UserBean>>
 
     //短信登录
     @POST("app/user/sms_login")
@@ -156,11 +165,9 @@ interface Api {
 
     //我的反馈
     @POST("/api/feedback/add_feedback")
-    fun join_feedback(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int, @Query("type") type: Int, @Query("content") content: String, @Query("urlList") urlList: ArrayList<String>): Observable<BaseBean<Any>>
-
-    //第三方登录
-    @POST("/app/user/third_party_login")
-    fun thirdlogin(@Query("openId") openId: String, @Query("type") type: Int): Observable<BaseBean<UserBean>>
+    fun feedback(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int,
+                 @Query("type") type: Int, @Query("content") content: String,
+                 @Query("urlList") urlList: String): Observable<BaseBean<Any>>
 
     //获取热门词汇
     @GET("api/join/hot_search")
@@ -178,6 +185,7 @@ interface Api {
                            @Field("integratedSortId") integratedSortId: Int?,//综合排序（12345）
                            @Field("pageNum") pageNum: Int)//页数1页10条
             : Observable<BaseBean<SeachResult>>
+
     @POST("/api/join/get_search_brands")
     @FormUrlEncoded
     fun join_search_brands(@Field("keyWord") keyWord: String,//搜索关键字
@@ -253,4 +261,16 @@ interface Api {
     //筛选栏餐饮类型
     @GET("api/get_food_filter")
     fun getSeachFoodType(@Header("VERSION") version: String): Observable<BaseBean<SeachFoodTypeBean>>
+
+    //微信登录
+    @POST("https://api.weixin.qq.com/sns/oauth2/access_token")
+    fun getWeChatToken(@Query("appid") appid: String, @Query("secret") secret: String,
+                       @Query("code") code: String, @Query("grant_type") grant_type: String = "authorization_code"): Observable<WxTokenBean>
+
+    @POST("https://api.weixin.qq.com/sns/userinfo")
+    fun getWeChatInfo(@Query("access_token") access_token: String, @Query("openid") openid: String): Observable<WxInfoBean>
+
+    //第三方登录   type 1.QQ 2.微信
+    @POST("app/user/third_party_login")
+    fun loginThree(@Query("openId") openId: String, @Query("type") type: Int): Observable<BaseBean<UserBean>>
 }

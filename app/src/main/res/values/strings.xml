@@ -17,6 +17,7 @@
     <string name="delete">删除</string>
     <string name="submit">提交</string>
     <string name="submit_success">提交成功</string>
+    <string name="pls_login">请先登录</string>
     <string name="cancel">取消</string>
     <string name="sure">确定</string>
     <string name="tips">提示</string>
@@ -41,17 +42,11 @@
     <string name="albumSelect">从相册选择</string>
     <string name="boy">男</string>
     <string name="girl">女</string>
-    <string name="money_3">3万以下</string>
-    <string name="money_3_5">3-5万</string>
-    <string name="money_5_10">5-10万</string>
-    <string name="money_10_20">10-20万</string>
-    <string name="money_20_50">20-50万</string>
-    <string name="money_50">50万以上</string>
     <string name="send">发送</string>
     <string name="camera">拍照</string>
     <string name="photo">照片</string>
     <string name="video">视频</string>
-    <string name="seach">请输入你想要搜索的</string>
+    <string name="seach">搜索感兴趣的品牌</string>
     <!-- =======================================爱加盟===================================== -->
     <string name="join_feedback_description">请输入反馈描述，上传照片有助于我们判断，提升投诉通过率哦！</string>
     <string name="join_feedback_type">请选择反馈问题的类型</string>
@@ -60,6 +55,7 @@
     <string name="share">分享</string>
     <string name="no_net">嗨呀~没有网络链接o(┬﹏┬)o</string>
     <string name="join_feedback">我要反馈</string>
+    <string name="join_feedback_success">反馈成功</string>
     <string name="want_to_join">我要加盟</string>
     <string name="investment_amount">投资金额</string>
     <string name="recommend_advisory">立即咨询</string>
@@ -82,6 +78,7 @@
     <string name="brand_detail">品牌详情</string>
     <string name="brand_ownership">品牌所属</string>
     <string name="franchise_mode">加盟模式</string>
+    <string name="guess_you_like">猜你喜欢</string>
     <string name="attracting_investment_area">招商区域</string>
     <string name="regional_authorization">区域授权</string>
     <string name="suitable_for_crowd">适合人群</string>
@@ -119,7 +116,7 @@
     <string name="please_input_user_name_or_phone_num">请输入手机号码/用户名</string>
     <string name="please_input_phone_num">请输入手机号码</string>
     <string name="please_read_accept">请同意用户协议</string>
-    <string name="please_input_password">请输入6-12位数字或英文密码</string>
+    <string name="please_input_password">请输入6–12位数字或英文密码</string>
     <string name="use_sms_verify_login">使用短信验证登录</string>
     <string name="use_name_login">使用账号密码登录</string>
     <string name="forget_password">忘记密码?</string>
@@ -134,7 +131,7 @@
     <string name="confirm_new_password">请确认新密码</string>
     <string name="user_name_empty">用户名不能为空</string>
     <string name="psw_hint">请输入6–12位密码</string>
-    <string name="psw_inconsistent">两次密码不一致1</string>
+    <string name="psw_inconsistent">两次密码不一致！</string>
     <string name="phone_empty">手机号不能为空</string>
     <string name="password_empty">密码不能为空</string>
     <string name="login_success">登录成功</string>
@@ -146,6 +143,9 @@
     <string name="user_agreement">《盟盟用户协议》</string>
     <string name="refresh">刷新</string>
     <string name="register">注册</string>
+    <string name="cancel_login">登录取消</string>
+    <string name="login_error">登录错误</string>
+    <string name="please_click">请再次点击</string>
     <string name="phone_not_register">该手机尚未注册</string>
     <string name="get_message_code">请输入4位验证码</string>
 
@@ -190,7 +190,7 @@
     <string name="my_settings_user_wechat_tips">微信格式不对，请输入6至20位字母或数字</string>
     <string name="my_settings_user_qq_tips">qq格式不对，请输入6至11位数字</string>
     <string name="my_settings_user_email_tips">邮箱格式输入不正确</string>
-    <string name="my_settings_setOrUpdate_tips">必须是6-12位数字、英文字母（区分大小写），也可以是两者的组合。</string>
+    <string name="my_settings_setOrUpdate_tips">必须是6–12位数字、英文字母（区分大小写），也可以是两者的组合。</string>
     <string name="my_settings_updatePhone_msgTips">请输入新手机号中的验证码</string>
     <string name="my_settings_aboutUs_companyName">上海轻盟信息科技有限公司</string>
     <string name="my_settings_aboutUs_version">版本号：</string>

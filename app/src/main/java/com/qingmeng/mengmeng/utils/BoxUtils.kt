@@ -12,6 +12,7 @@ object BoxUtils {
     private val staticBox = boxStore.boxFor(StaticBean::class.java)
     private val hotsearchBox = boxStore.boxFor(HotSearchesList::class.java)
     private val searchBox = boxStore.boxFor(SearchHistoryList::class.java)
+    private val cacheBox = boxStore.boxFor(CacheBean::class.java)
     private val myInformationBox = boxStore.boxFor(MyInformation::class.java)   //我的板块信息
     private val allCityBox = boxStore.boxFor(AllCityBean::class.java)           //所有城市
     private val redShopBox = boxStore.boxFor(RedShopLeftBean::class.java)       //红铺数据
@@ -134,6 +135,26 @@ object BoxUtils {
         val list = Gson().fromJson<List<AllCity>>(allCityBean?.cityString, object : TypeToken<List<AllCity>>() {}.type)
         allCityBean?.city = list
         return allCityBean
+    }
+
+    fun <T> saveCache(bean: T, key: String) {
+        boxStore.runInTxAsync({
+            val value = Gson().toJson(bean)
+            val cacheBean = CacheBean(key, value)
+            cacheBox.put(cacheBean)
+        }, { _, _ -> })
+    }
+
+    fun <T> getCache(key: String): T {
+        val cacheBean = cacheBox.query().equal(CacheBean_.key, key).build().findFirst()
+        return Gson().fromJson<T>(cacheBean!!.value, object : TypeToken<T>() {}.type)
+    }
+
+    fun removeCache(key: String) {
+        boxStore.runInTxAsync({
+            val cacheBean = cacheBox.query().equal(CacheBean_.key, key).build().findFirst()
+            cacheBean?.let { cacheBox.remove(it) }
+        }, { _, _ -> })
     }
 
     //保存所有红铺数据

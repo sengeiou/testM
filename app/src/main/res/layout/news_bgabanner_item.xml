@@ -12,7 +12,7 @@
         app:banner_indicatorGravity="bottom|center_horizontal"
         app:banner_isNumberIndicator="false"
         app:banner_pageChangeDuration="800"
-        app:banner_placeholderDrawable="@drawable/image_holder"
+        app:banner_placeholderDrawable="@drawable/default_img_banner"
         app:banner_pointAutoPlayAble="true"
         app:banner_pointAutoPlayInterval="3000"
         app:banner_pointContainerBackground="@color/transparent"
