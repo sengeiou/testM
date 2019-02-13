@@ -12,14 +12,13 @@ object BoxUtils {
     private val staticBox = boxStore.boxFor(StaticBean::class.java)
     private val hotsearchBox = boxStore.boxFor(HotSearchesList::class.java)
     private val searchBox = boxStore.boxFor(SearchHistoryList::class.java)
-    private val cacheBox = boxStore.boxFor(CacheBean::class.java)
+    private val mCacheBox = boxStore.boxFor(CacheBean::class.java)
     private val myInformationBox = boxStore.boxFor(MyInformation::class.java)   //我的板块信息
     private val allCityBox = boxStore.boxFor(AllCityBean::class.java)           //所有城市
     private val redShopBox = boxStore.boxFor(RedShopLeftBean::class.java)       //红铺数据
     private val newsPagerBox = boxStore.boxFor(NewsPagerList::class.java)       //头报数据
     private val joinTypeBox = boxStore.boxFor(ConditionBean::class.java)        //加盟模式
-//    private val seachCityBox = boxStore.boxFor(FatherDto::class.java)          //筛选列表加盟区域类型
-  //  private val seachFoodTypeBox = boxStore.boxFor(FoodType::class.java)       //筛选列表餐饮类型左
+    private val joinMoneyBox = boxStore.boxFor(ConditionMoneyBean::class.java)        //投资金额
 
     //保存banner到数据库
     fun saveBanners(banners: MutableList<Banner>) {
@@ -141,19 +140,21 @@ object BoxUtils {
         boxStore.runInTxAsync({
             val value = Gson().toJson(bean)
             val cacheBean = CacheBean(key, value)
-            cacheBox.put(cacheBean)
+            mCacheBox.put(cacheBean)
         }, { _, _ -> })
     }
 
-    fun <T> getCache(key: String): T {
+    inline fun <reified T> getCache(key: String): T {
+        val boxStore = MainApplication.boxStore
+        val cacheBox = boxStore.boxFor(CacheBean::class.java)
         val cacheBean = cacheBox.query().equal(CacheBean_.key, key).build().findFirst()
-        return Gson().fromJson<T>(cacheBean!!.value, object : TypeToken<T>() {}.type)
+        return Gson().fromJson(cacheBean!!.value, T::class.java)
     }
 
     fun removeCache(key: String) {
         boxStore.runInTxAsync({
-            val cacheBean = cacheBox.query().equal(CacheBean_.key, key).build().findFirst()
-            cacheBean?.let { cacheBox.remove(it) }
+            val cacheBean = mCacheBox.query().equal(CacheBean_.key, key).build().findFirst()
+            cacheBean?.let { mCacheBox.remove(it) }
         }, { _, _ -> })
     }
 
@@ -173,41 +174,6 @@ object BoxUtils {
                 .equal(RedShopLeftBean_.type, type).build().find()
     }
 
-    //    private val redShopBox = boxStore.boxFor(RedShopLeftListBean::class.java)   //红铺数据
-//
-//    //保存所有红铺数据
-//    fun saveAllRedShop(isRight: Boolean = false, redShopLeftListBean: RedShopLeftListBean) {
-//        //左边数据
-//        val listToJson = Gson().toJson(redShopLeftListBean.type.typeList)
-//        redShopLeftListBean.dataStr = listToJson
-//        //右
-//        if (isRight) {
-//            val listToJsonHost = Gson().toJson(redShopLeftListBean.popularBrands.hotBrands)
-//            redShopLeftListBean.dataStrHost = listToJsonHost
-//        }
-//        boxStore.runInTxAsync({ redShopBox.put(redShopLeftListBean) }, { _, _ -> })
-//    }
-//
-//    //删除所有红铺数据
-//    fun removeAllRedShop(redShopLeftListBean: RedShopLeftListBean) {
-//        boxStore.runInTxAsync({ redShopBox.remove(redShopLeftListBean) }, { _, _ -> })
-//    }
-//
-//    //   获取所有红铺数据     type:0 1级列表   1 2 3  根据1级列表id 找2 级列表
-//    fun getAllRedShop(isRight: Boolean = false): RedShopLeftListBean {
-//        val redShopLeftListBean = redShopBox.query().build().find()
-//        //取得时候再解析成数组\
-//        if (!isRight) {   //左边
-//            val list = Gson().fromJson<List<RedShopLeftBean>>(redShopLeftListBean[0].dataStr, object : TypeToken<List<RedShopLeftBean>>() {}.type)
-//            redShopLeftListBean[0].type.typeList = list as ArrayList<RedShopLeftBean>
-//            return redShopLeftListBean[0]
-//        } else {  //右边
-//            val list = Gson().fromJson<List<RedShopLeftBean>>(redShopLeftListBean[1].dataStr, object : TypeToken<List<RedShopLeftBean>>() {}.type)
-//            redShopLeftListBean[1].type.typeList = list as ArrayList<RedShopLeftBean>
-//            return redShopLeftListBean[1]
-//        }
-//    }
-    //保存所有头报列表数据
     fun saveNewsPager(newsPagerList: MutableList<NewsPagerList>) {
         boxStore.runInTxAsync({ newsPagerBox.put(newsPagerList) }, { _, _ -> })
     }
@@ -237,6 +203,20 @@ object BoxUtils {
         return joinTypeBox.query().build().find()
     }
 
+    //保存所有投资金额
+    fun saveMoneyType(joinTypeList: MutableList<ConditionMoneyBean>) {
+        boxStore.runInTxAsync({ joinMoneyBox.put(joinTypeList) }, { _, _ -> })
+    }
+
+    //删除所有投资金额
+    fun removeMoneyType(joinTypeList: MutableList<ConditionMoneyBean>) {
+        boxStore.runInTxAsync({ joinMoneyBox.remove(joinTypeList) }, { _, _ -> })
+    }
+
+    //   获取所有投资金额数据
+    fun getMoneyType(): MutableList<ConditionMoneyBean> {
+        return joinMoneyBox.query().build().find()
+    }
     //保存所有搜索页面城市列表数据
 //    fun saveSeachCity(seachCityList: MutableList<FatherDto>) {
 //        boxStore.runInTxAsync({ seachCityBox.put(seachCityList) }, { _, _ -> })

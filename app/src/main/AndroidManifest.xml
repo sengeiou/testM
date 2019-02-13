@@ -86,10 +86,9 @@
         <activity android:name=".activity.WebViewActivity" />
         <!-- 登录注册 -->
         <activity android:name=".activity.LoginMainActivity" />
-        <activity android:name=".activity.LoginpwActivity" />
-        <activity android:name=".activity.LogincodeActivity" />
+        <activity android:name=".activity.LoginPwdActivity" />
         <activity android:name=".activity.LoginChangePswActivity" />
-        <activity android:name=".activity.LoginBindingPhoneActivity" />
+
         <activity
             android:name="com.qingmeng.mengmeng.wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -118,12 +117,13 @@
         <activity
             android:name=".activity.LoginRegisterActivity"
             android:windowSoftInputMode="stateHidden" />
-
+        <!--头报详情页-->
         <activity
             android:name=".activity.HeadDetailsActivity"
             android:label="@string/title_activity_head_details"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".activity.RedShopSeach" />
+        <!--搜索结果页-->
         <activity android:name=".activity.RedShopSeachResult" />
 
 

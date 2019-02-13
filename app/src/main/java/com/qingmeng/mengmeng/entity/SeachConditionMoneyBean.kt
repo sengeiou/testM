@@ -3,12 +3,13 @@ package com.qingmeng.mengmeng.entity
 import io.objectbox.annotation.Entity
 import io.objectbox.annotation.Id
 
-data class SeachConditionTypeBean(
-        //加盟模式
-        var joinModes: List<ConditionTypeBean>)
+data class SeachConditionMoneyBean(
+        //投资金额
+        var capitalList: List<ConditionMoneyBean>
+)
 
 @Entity
-data class ConditionTypeBean(
+data class ConditionMoneyBean(
         @Id
         var cacheId: Long = 0,
         val id: Int,

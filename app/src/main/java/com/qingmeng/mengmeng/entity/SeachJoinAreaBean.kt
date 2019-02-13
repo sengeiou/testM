@@ -1,7 +1,7 @@
 package com.qingmeng.mengmeng.entity
 
-data class SeachJoinAreaBean(
-        val fatherDtos: List<FatherDto>,
+class SeachJoinAreaBean(
+        var fatherDtos: List<FatherDto>,
         val version: String
 ) {
     fun setVersion() {
@@ -12,19 +12,20 @@ data class SeachJoinAreaBean(
 }
 
 data class FatherDto(
-        val cityFilter: List<CityFilter>,
-        val fatherId: Int,
-        val id: Int,
-        val isMunicipality: Int,
-        val level: Int,
-        val name: String,
-        var version: String
+        var cityFilter: List<CityFilter>,
+        var fatherId: Int,
+        var id: Int,
+        var isMunicipality: Int,
+        var level: Int,
+        var name: String,
+        var version: String,
+        var checkState: Boolean = false
 )
 
 data class CityFilter(
-        val fatherId: Int,
-        val id: Int,
-        val isMunicipality: Int,
-        val level: Int,
-        val name: String
+        var fatherId: Int,
+        var id: Int,
+        var isMunicipality: Int,
+        var level: Int,
+        var name: String
 )

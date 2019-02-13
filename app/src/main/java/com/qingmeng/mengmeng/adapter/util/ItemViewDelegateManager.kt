@@ -6,7 +6,7 @@ import android.support.v4.util.SparseArrayCompat
 /**
  * Created by zhy on 16/6/22.
  */
-class ItemViewDelegateManager<T> {
+open class ItemViewDelegateManager<T> {
     internal var delegates: SparseArrayCompat<ItemViewDelegate<T>> = SparseArrayCompat()
 
     val itemViewDelegateCount: Int

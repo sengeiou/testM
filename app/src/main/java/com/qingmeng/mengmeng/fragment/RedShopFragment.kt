@@ -5,6 +5,8 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import android.widget.RelativeLayout
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.RedShopSeachResult
@@ -101,16 +103,17 @@ class RedShopFragment : BaseFragment() {
                         mRightAdapterType.notifyDataSetChanged()
                     }
                     mRightAdapterHost.notifyDataSetChanged()
-                    httpLoad()
-                    httpLoad2(1)
+                    httpLoad(0, getVersion(0))
+                    httpLoad2(1, getVersion(1))
                 }, {
 
-                    httpLoad()
-                    httpLoad2(1)
+                    httpLoad(0, getVersion(0))
+                    httpLoad2(1, getVersion(1))
                 }, {}, { addSubscription(it) })
 
     }
 
+    //点击缓存
     private fun getClickCache(fahterId: Long) {
         Observable.create<RedShopBean> {
             val RightInListType = BoxUtils.getAllRedShop(fahterId, 2)
@@ -140,9 +143,9 @@ class RedShopFragment : BaseFragment() {
                         mRightAdapterType.notifyDataSetChanged()
                     }
                     mRightAdapterHost.notifyDataSetChanged()
-                    httpLoad2(fahterId)
+                    httpLoad2(fahterId, getVersion(1))
                 }, {
-                    httpLoad2(fahterId)
+                    httpLoad2(fahterId, getVersion(1))
                 }, {}, { addSubscription(it) })
 
     }
@@ -206,7 +209,9 @@ class RedShopFragment : BaseFragment() {
                     red_shop_right_text_type.visibility = View.GONE
                 }
                 setText(R.id.red_shop_right_inContent, data.name)
-                GlideLoader.load(this@RedShopFragment, data.logo, getView(R.id.red_shop_right_inImageView))
+                //GlideLoader.load(this@RedShopFragment, data.logo, getView(R.id.red_shop_right_inImageView))
+                Glide.with(this@RedShopFragment).load(data.logo).apply(RequestOptions()
+                        .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(getView(R.id.red_shop_right_inImageView))
             }
         }, onItemClick = { view, holder, position ->
             startActivity<RedShopSeachResult>()
@@ -234,9 +239,9 @@ class RedShopFragment : BaseFragment() {
     }
 
     @SuppressLint("CheckResult")
-    private fun httpLoad(type: Long = 0, version: String? = null) {
+    private fun httpLoad(type: Long, version: String) {
         ApiUtils.getApi()
-                .getRedShopRight(type)
+                .getRedShopRight(type, version)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -266,9 +271,9 @@ class RedShopFragment : BaseFragment() {
 //        httpLoad2()
 //    }
 
-    private fun httpLoad2(type: Long, version: String? = null) {
+    private fun httpLoad2(type: Long, version: String) {
         ApiUtils.getApi()
-                .getRedShopRight(type)
+                .getRedShopRight(type, version)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -300,83 +305,15 @@ class RedShopFragment : BaseFragment() {
                 }, {}, { addSubscription(it) })
     }
 
-
-//    private fun httpLoad(type: Int = 0, version: String = "") {
-//        ApiUtils.getApi().let {
-//            if (version != "") {
-//                it.getRedShopRight(type)
-//            } else {
-//                it.getRedShopRight(type, version)
-//            }
-//        }
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribeOn(Schedulers.io())
-//                .subscribe({
-//                    it.apply {
-//                        if (code == 12000) {
-//                            if (type == 0) {
-//                                data?.let {
-//                                    BoxUtils.removeAllRedShop(mRedShopLeftListBean)
-//                                    mRedShopLeftListBean = it
-//                                    BoxUtils.saveAllRedShop(redShopLeftListBean = mRedShopLeftListBean)
-//                                    getNewData(it.type.typeList)
-//                                }
-//                                httpLoad(1)
-//                            } else {
-//                                data?.let {
-//                                    BoxUtils.removeAllRedShop(mRedShopRightListBean)
-//                                    mRedShopRightListBean = it
-//                                    BoxUtils.saveAllRedShop(true, redShopLeftListBean = mRedShopRightListBean)
-//                                    getNewData(it.type.typeList, it.popularBrands.hotBrands)
-//                                }
-//                            }
-//                        } else if (code == 20000) {
-//
-//                        } else {
-//                            ToastUtil.showShort(it.msg)
-//                        }
-//                    }
-//                }, {
-//                    ToastUtil.showNetError()
-//                }, {}, { addSubscription(it) })
-//    }
-//
-//    private fun getCacheData() {
-//        Observable.create<RedShopLeftListBean> {
-//            mRedShopLeftListBean = BoxUtils.getAllRedShop()
-//            mRedShopRightListBean = BoxUtils.getAllRedShop(true)
-////            var mRedShop = RedShopBean(ArrayList())
-//            it.onNext(if (mRedShopLeftListBean.dataStr == "") {
-//                mRedShopRightListBean
-//            } else {
-//                mRedShopLeftListBean
-//            })
-//        }.subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe({
-//                    getNewData(mRedShopLeftListBean.type.typeList)
-//                    getNewData(mRedShopLeftListBean.type.typeList, mRedShopLeftListBean.popularBrands.hotBrands)
-//                    httpLoad(version = mRedShopLeftListBean.version)
-//                }, {
-//                    httpLoad()
-//                }, {}, { addSubscription(it) })
-//
-//    }
-//
-//    private fun getNewData(leftList: List<RedShopLeftBean>) {
-//        mLeftList.clear()
-//        mLeftList.addAll(leftList)//1级分类
-//    }
-//
-//    private fun getNewData(rightInListType: List<RedShopLeftBean>, rightInListHost: List<RedShopLeftBean>) {
-//        mRightInListType.clear()
-//        mRightInListHost.clear()
-//        mRightInListType.addAll(rightInListType)//分类
-//        mRightInListHost.addAll(rightInListHost)//热门品牌
-//        mLeftAdapter.notifyDataSetChanged()
-//        mRightAdapterType.notifyDataSetChanged()
-//        mRightAdapterHost.notifyDataSetChanged()
-//    }
-
+    /**
+     * @param type 0:左边数据 1:右边数据
+     **/
+    private fun getVersion(type: Int): String {
+        return when {
+            type == 0 && !mLeftList.isEmpty() -> mLeftList[0].version
+            type == 1 && !mRightInListType.isEmpty() -> mRightInListType[0].version
+            else -> ""
+        }
+    }
 
 }

@@ -10,13 +10,18 @@ import android.support.v7.widget.LinearLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.PopupWindow
+import android.widget.TextView
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.*
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.BoxUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -45,6 +50,7 @@ class PopSeachSelect : PopupWindow {
     private var mFoodTypeList = ArrayList<FoodType>()                      //餐饮左数据
     private var mFoodList = ArrayList<FoodTypeDto>()                          //餐饮右数据
     private var logoUrl = "http://ossmeng.oss-cn-hangzhou.aliyuncs.com/mengmeng%2Ficon%2Frepast_type%2Fsnack%2F%E9%BA%BB%E8%BE%A3%E7%83%AB.png"
+
     //1 为餐饮类型  2为加盟区域 3 为综合排序
     constructor(mActivity: Activity, type: Int) : super(mActivity) {
         this.mActivity = mActivity
@@ -67,95 +73,6 @@ class PopSeachSelect : PopupWindow {
         initListener()
         initLeftAdapter(type)
         initRightAdapter(type)
-
-
-    }
-
-    private fun getRankingCache() {
-        Observable.create<SeachResultBean> {
-            val rankData = BoxUtils.getStaticByType(4)
-            if (!mRankingList.isEmpty()) {
-                BoxUtils.removeStatic(mRankingList)
-                mRankingList.clear()
-            }
-            mRankingList.addAll(rankData)
-            var mSeachResult = SeachResultBean(ArrayList())
-            if (!mRankingList.isEmpty()) {
-                mSeachResult = SeachResultBean.fromString(mRankingList[1].id)
-            }
-            it.onNext(mSeachResult)
-        }.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    if (!mRankingList.isEmpty()) {
-                        mRankingAdapter.notifyDataSetChanged()
-                    }
-                    // getNewData()
-                    httpRangking(getVersion(2), 4)
-                }, {
-                    //   getNewData()
-                    httpRangking(getVersion(2), 4)
-                })
-    }
-
-    //餐饮类型缓存
-    private fun getFoodTypeCache() {
-        Observable.create<SeachResultBean> {
-        //    val foodTypeData = BoxUtils.getSeachFoodType(0)
-            if (!mFoodTypeList.isEmpty()) {
-           //    BoxUtils.removeSeachFoodType(mFoodTypeList)
-                mFoodTypeList.clear()
-            }
-      //      mFoodTypeList.addAll(foodTypeData)
-            var mSeachResult = SeachResultBean(ArrayList())
-            if (!mFoodTypeList.isEmpty()) {
-                mSeachResult = SeachResultBean.fromString(mFoodTypeList[0].id)
-            }
-            it.onNext(mSeachResult)
-        }.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    if (!mFoodTypeList.isEmpty()) {
-                        mFoodTypeAdapter.notifyDataSetChanged()
-                    }
-                    // getNewData()
-                    httpFoodType(getVersion(0))
-                }, {
-                    //   getNewData()
-                    httpFoodType(getVersion(0))
-                })
-    }
-
-    //加盟区域
-    private fun getJoinAreaCache() {
-        Observable.create<SeachResultBean> {
-         //   val joinAreaData = BoxUtils.getSeachCity(1)
-            if (!mProvinceList.isEmpty()) {
-         //       BoxUtils.removeSeachCity(mProvinceList)
-                mProvinceList.clear()
-            }
-        //    mProvinceList.addAll(joinAreaData)
-            var mSeachResult = SeachResultBean(ArrayList())
-            if (!mProvinceList.isEmpty()) {
-                mSeachResult = SeachResultBean.fromString(mProvinceList[0].id)
-            }
-            it.onNext(mSeachResult)
-        }.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    if (!mProvinceList.isEmpty()) {
-                        mProvinceAdapter.notifyDataSetChanged()
-                    }
-                    // getNewData()
-                    httpSeachJoinArea(getVersion(1))
-                }, {
-                    //   getNewData()
-                    httpSeachJoinArea(getVersion(1))
-                })
-    }
-
-    private fun setData() {
-
     }
 
     private fun initListener() {
@@ -169,15 +86,25 @@ class PopSeachSelect : PopupWindow {
             mMenuView.left_recyclerView_pop.layoutManager = mLauyoutManger
             mFoodTypeAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mFoodTypeList, holderConvert = { holder, data, position, payloads ->
                 holder.apply {
+                    if (data.checkState) {
+                        getView<ImageView>(R.id.search_result_pop_left_arrows).visibility = View.VISIBLE
+                    } else {
+                        getView<ImageView>(R.id.search_result_pop_left_arrows).visibility = View.GONE
+                    }
                     setText(R.id.search_result_pop_left_item, data.name)
                 }
             }, onItemClick = { view, holder, position ->
+                mFoodTypeList.forEach {
+                    it.checkState = false
+                }
+                mFoodTypeList[position].checkState = true
+                mFoodTypeAdapter.notifyDataSetChanged()
                 if (position == 0) {
                     mSelectCallBack.onSelectCallBack(0)
                     dismiss()
                 }
                 mFoodList.clear()
-                mFoodList.add(FoodTypeDto( mFoodTypeList[position].id, "", mFoodTypeList[position].id, logoUrl, mFoodTypeList[position].name, ""))
+                mFoodList.add(FoodTypeDto(mFoodTypeList[position].id, "", mFoodTypeList[position].id, logoUrl, mFoodTypeList[position].name))
                 mFoodList.addAll(mFoodTypeList[position].foodTypeDto)
                 mFoodAdapter.notifyDataSetChanged()
             })
@@ -187,15 +114,25 @@ class PopSeachSelect : PopupWindow {
             mMenuView.left_recyclerView_pop.layoutManager = mLauyoutManger
             mProvinceAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mProvinceList, holderConvert = { holder, data, position, payloads ->
                 holder.apply {
+                    if (data.checkState) {
+                        getView<ImageView>(R.id.search_result_pop_left_arrows).visibility = View.VISIBLE
+                    } else {
+                        getView<ImageView>(R.id.search_result_pop_left_arrows).visibility = View.GONE
+                    }
                     setText(R.id.search_result_pop_left_item, data.name)
                 }
             }, onItemClick = { view, holder, position ->
+                mProvinceList.forEach {
+                    it.checkState = false
+                }
+                mProvinceList[position].checkState = true
+                mProvinceAdapter.notifyDataSetChanged()
                 if (position == 0) {
                     mSelectCallBack.onSelectCallBack(0)
                     dismiss()
                 }
                 mCityList.clear()
-                mCityList.add(CityFilter( mProvinceList[position].id, mProvinceList[position].id, 0, 2, mProvinceList[position].name))
+                mCityList.add(CityFilter(mProvinceList[position].id, mProvinceList[position].id, 0, 2, mProvinceList[position].name))
                 mCityList.addAll(mProvinceList[position].cityFilter)
                 mCityAdapter.notifyDataSetChanged()
             })
@@ -205,10 +142,21 @@ class PopSeachSelect : PopupWindow {
             mMenuView.left_recyclerView_pop.layoutManager = mLauyoutManger
             mRankingAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mRankingList, holderConvert = { holder, data, position, payloads ->
                 holder.apply {
-                    setText(R.id.search_result_pop_left_item, data.title)
+                    getView<LinearLayout>(R.id.seach_ranking_linear).apply {
+                        if (data.checkState) {
+                            getView<TextView>(R.id.search_result_pop_left_item).setTextColor(resources.getColor(R.color.color_5ab1e1))
+                        } else {
+                            getView<TextView>(R.id.search_result_pop_left_item).setTextColor(resources.getColor(R.color.black))
+                        }
+                        setText(R.id.search_result_pop_left_item, data.title)
+                    }
                 }
-
             }, onItemClick = { view, holder, position ->
+                mRankingList.forEach {
+                    it.checkState = false
+                }
+                mRankingList[position].checkState = true
+                mRankingAdapter.notifyDataSetChanged()
                 if (position == 0) {
                     mSelectCallBack.onSelectCallBack(1)
                     dismiss()
@@ -236,7 +184,7 @@ class PopSeachSelect : PopupWindow {
             mMenuView.right_recyclerView_pop.layoutManager = mGridManager
             mFoodAdapter = CommonAdapter(mActivity, R.layout.seach_food_type_right_in_item, mFoodList, holderConvert = { holder, data, position, payloads ->
                 holder.apply {
-                    //   GlideLoader.load(this@PopSeachSelect!!, data.logo, getView(R.id.Seach_food_type_right_inImageView))
+                    GlideLoader.load(mActivity, data.logo, getView(R.id.Seach_food_type_right_inImageView))
                     setText(R.id.Seach_food_type_right_inContent, data.name)
                 }
             }, onItemClick = { view, holder, position ->
@@ -272,26 +220,54 @@ class PopSeachSelect : PopupWindow {
                             //如果数据不为空   再清缓存
                             if (!it.fatherDtos.isEmpty()) {
                                 if (!mProvinceList.isEmpty()) {
-                                    //清除缓存 未写
-//                                    BoxUtils.removeSeachCity(mProvinceList)
+                                    //清除缓存
+                                    BoxUtils.removeCache(IConstants.SEACH_RESULT_AREA)
                                     mProvinceList.clear()
                                 }
-                                mProvinceList.add(FatherDto( ArrayList<CityFilter>(), 0, 0, 0, 0, "全国", ""))
+                                mProvinceList.add(FatherDto(ArrayList<CityFilter>(), 0, 0, 0, 0, "全国", ""))
                                 mProvinceList.addAll(it.fatherDtos)
-                    //            BoxUtils.saveSeachCity(mProvinceList)
-                                //加入缓存 未写
-                                mCityList.add(CityFilter( it.fatherDtos[0].id, it.fatherDtos[0].id, 0, 2, it.fatherDtos[0].name))
+                                mCityList.add(CityFilter(it.fatherDtos[0].id, it.fatherDtos[0].id, 0, 2, it.fatherDtos[0].name))
                                 mCityList.addAll(it.fatherDtos[0].cityFilter)
+                                BoxUtils.saveCache(it, IConstants.SEACH_RESULT_AREA)
                                 mProvinceAdapter.notifyDataSetChanged()
                                 mCityAdapter.notifyDataSetChanged()
                             }
                         }
-                    } else if (bean.code != 12000) {
-                        ToastUtil.showShort(bean.msg)
                     }
                 }, {
                     ToastUtil.showNetError()
-                })
+                }, {}, {})
+    }
+
+    //加盟区域缓存
+    private fun getJoinAreaCache() {
+        Observable.create<SeachJoinAreaBean> {
+            val joinAreaData = BoxUtils.getCache<SeachJoinAreaBean>(IConstants.SEACH_RESULT_AREA)
+            if (!mProvinceList.isEmpty()) {
+                mProvinceList.clear()
+            }
+            if (!mCityList.isEmpty()) {
+                mCityList.clear()
+            }
+            mProvinceList.addAll(joinAreaData.fatherDtos)
+            mCityList.addAll(joinAreaData.fatherDtos[0].cityFilter)
+
+            it.onNext(joinAreaData)
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (!mProvinceList.isEmpty()) {
+                        mProvinceAdapter.notifyDataSetChanged()
+                    }
+                    if (!mCityList.isEmpty()) {
+                        mCityAdapter.notifyDataSetChanged()
+                    }
+
+                    httpSeachJoinArea(getVersion(1))
+                }, {
+                    //   getNewData()
+                    httpSeachJoinArea(getVersion(1))
+                }, {}, {})
     }
 
     // 获取筛选栏餐饮类型接口
@@ -307,21 +283,18 @@ class PopSeachSelect : PopupWindow {
                             if (!it.foodType.isEmpty()) {
                                 if (!mFoodTypeList.isEmpty()) {
                                     //缓存清空
-                      //              BoxUtils.removeSeachFoodType(mFoodTypeList)
+                                    BoxUtils.removeCache(IConstants.SEACH_RESULT_FOOD)
                                     mFoodTypeList.clear()
                                 }
-                                it.setVersion()
-                                mFoodTypeList.add(FoodType( ArrayList<FoodTypeDto>(), 0, "", 0, logoUrl, "全部", "1"))
+                                mFoodTypeList.add(FoodType(ArrayList(), 0, "", 0, logoUrl, "全部", "1"))
                                 mFoodTypeList.addAll(it.foodType)
-                 //               BoxUtils.saveSeachFoodType(mFoodTypeList)
                                 if (!mFoodList.isEmpty()) {
-//                                    BoxUtils.removeSeachFoodType(mFoodList)
                                     mFoodList.clear()
                                 }
                                 //加入缓存
-                                mFoodList.add(FoodTypeDto( it.foodType[0].id, "", 0, logoUrl, "全部", ""))
+                                mFoodList.add(FoodTypeDto(it.foodType[0].id, "", 0, logoUrl, "全部"))
                                 mFoodList.addAll(it.foodType[0].foodTypeDto)
-                       //         BoxUtils.saveSeachFoodType(mFoodTypeList)
+                                BoxUtils.saveCache(it, IConstants.SEACH_RESULT_FOOD)
                                 mFoodTypeAdapter.notifyDataSetChanged()
                                 mFoodAdapter.notifyDataSetChanged()
                             }
@@ -330,11 +303,42 @@ class PopSeachSelect : PopupWindow {
                     } else if (bean.code != 12000) {
                         ToastUtil.showShort(bean.msg)
                     }
-                })
+                }, {
+                    ToastUtil.showNetError()
+                }, {}, {})
+    }
+
+    //餐饮类型缓存
+    private fun getFoodTypeCache() {
+        Observable.create<SeachFoodTypeBean> {
+            val foodTypeData = BoxUtils.getCache<SeachFoodTypeBean>(IConstants.SEACH_RESULT_FOOD)
+            if (!mFoodTypeList.isEmpty()) {
+                mFoodTypeList.clear()
+            }
+            if (!mFoodList.isEmpty()) {
+                mFoodList.clear()
+            }
+            mFoodTypeList.addAll(foodTypeData.foodType)
+            mFoodList.addAll(foodTypeData.foodType[0].foodTypeDto)
+            it.onNext(foodTypeData)
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (!mFoodTypeList.isEmpty()) {
+                        mFoodTypeAdapter.notifyDataSetChanged()
+                    }
+                    if (!mFoodList.isEmpty()) {
+                        mFoodAdapter.notifyDataSetChanged()
+                    }
+
+                    httpFoodType(getVersion(0))
+                }, {
+                    httpFoodType(getVersion(0))
+                }, {}, {})
     }
 
     /**
-     * 获取静态数据
+     * 获取静态数据  筛选栏综合排序
      * @param type 类型：1.首页banner8个icon 2.首页列表模块 3.列表筛选标题 4.综合排序 5.反馈类型
      */
     private fun httpRangking(version: String, type: Int) {
@@ -361,7 +365,37 @@ class PopSeachSelect : PopupWindow {
                     } else if (bean.code != 12000) {
                         ToastUtil.showShort(bean.msg)
                     }
-                })
+                }, {
+                    ToastUtil.showNetError()
+                }, {}, {})
+    }
+
+    //综合排序缓存
+    private fun getRankingCache() {
+        Observable.create<SeachResultBean> {
+            val rankData = BoxUtils.getStaticByType(4)
+            if (!mRankingList.isEmpty()) {
+                BoxUtils.removeStatic(mRankingList)
+                mRankingList.clear()
+            }
+            mRankingList.addAll(rankData)
+            var mSeachResult = SeachResultBean(ArrayList())
+            if (!mRankingList.isEmpty()) {
+                mSeachResult = SeachResultBean.fromString(mRankingList[1].id)
+            }
+            it.onNext(mSeachResult)
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (!mRankingList.isEmpty()) {
+                        mRankingAdapter.notifyDataSetChanged()
+                    }
+                    // getNewData()
+                    httpRangking(getVersion(2), 4)
+                }, {
+                    //   getNewData()
+                    httpRangking(getVersion(2), 4)
+                }, {}, {})
     }
 
     override fun showAsDropDown(anchor: View, xoff: Int, yoff: Int, gravity: Int) {

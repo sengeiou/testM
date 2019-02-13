@@ -74,10 +74,10 @@
                 android:layout_marginBottom="@dimen/padding_dp_15"
                 android:layout_marginStart="@dimen/padding_dp_70"
                 android:layout_marginTop="@dimen/padding_dp_35"
-                android:background="@drawable/color_5ab1e1_radius_14_5"
+                android:background="@drawable/seach_result_botton"
                 android:text="@string/seach_button_exit"
-                android:textColor="@color/color_5ab1e1"
-                android:textSize="@dimen/padding_dp_15" />
+                android:textColor="@drawable/seach_result_botton_text"
+                android:textSize="@dimen/text_size_15" />
         </LinearLayout>
 
         <LinearLayout
@@ -94,11 +94,11 @@
                 android:layout_marginBottom="@dimen/padding_dp_15"
                 android:layout_marginEnd="@dimen/padding_dp_70"
                 android:layout_marginTop="@dimen/padding_dp_35"
-                android:background="@drawable/color_5ab1e1_radius_14_5"
+                android:background="@drawable/seach_result_botton"
                 android:gravity="center"
                 android:text="@string/seach_button_sure"
-                android:textColor="@color/color_5ab1e1"
-                android:textSize="@dimen/padding_dp_15" />
+                android:textColor="@drawable/seach_result_botton_text"
+                android:textSize="@dimen/text_size_15" />
         </LinearLayout>
     </LinearLayout>
 

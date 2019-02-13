@@ -13,11 +13,15 @@ import android.support.v7.widget.GridLayoutManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.PopupWindow
+import android.widget.RelativeLayout
+import android.widget.TextView
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
 import com.qingmeng.mengmeng.entity.ConditionBean
-import com.qingmeng.mengmeng.entity.SeachConBean
+import com.qingmeng.mengmeng.entity.ConditionMoneyBean
+import com.qingmeng.mengmeng.entity.SeachResultBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.BoxUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -29,12 +33,12 @@ import kotlinx.android.synthetic.main.activity_condition_pop_window.view.*
 @SuppressLint("CheckResult")
 class PopSeachCondition : PopupWindow {
 
-    private var mTextMoneyList = ArrayList<ConditionBean>()
+    private var mTextMoneyList = ArrayList<ConditionMoneyBean>()
     private var mTextJoinTypeList = ArrayList<ConditionBean>()
     private var mActivity: Activity
     private var mMenuView: View
     private lateinit var mGridManager: GridLayoutManager
-    private lateinit var mMoneyAdapter: CommonAdapter<ConditionBean>
+    private lateinit var mMoneyAdapter: CommonAdapter<ConditionMoneyBean>
     private lateinit var mJoinModelAdapter: CommonAdapter<ConditionBean>
     private lateinit var mSelectCallBack: SelectCallBack                 //回调
 
@@ -44,8 +48,6 @@ class PopSeachCondition : PopupWindow {
         initListener()
         initAdapter()
         getCacheData()
-//        httpMoney()
-//        httpJoinModel()
         this.contentView = mMenuView
         this.width = ViewGroup.LayoutParams.MATCH_PARENT
         this.height = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -59,11 +61,11 @@ class PopSeachCondition : PopupWindow {
     }
 
     private fun getCacheData() {
-        Observable.create<SeachConBean> {
-            val mMoneyList = BoxUtils.getJoinType()
+        Observable.create<SeachResultBean> {
+            val mMoneyList = BoxUtils.getMoneyType()
             val mJoinTypeList = BoxUtils.getJoinType()
             if (!mTextMoneyList.isEmpty()) {
-                BoxUtils.removeJoinType(mTextMoneyList)
+                BoxUtils.removeMoneyType(mTextMoneyList)
                 mTextMoneyList.clear()
             }
             if (!mTextJoinTypeList.isEmpty()) {
@@ -72,12 +74,12 @@ class PopSeachCondition : PopupWindow {
             }
             mTextMoneyList.addAll(mMoneyList)
             mTextJoinTypeList.addAll(mJoinTypeList)
-            var mSeachCondition = SeachConBean(ArrayList())
+            var mSeachCondition = SeachResultBean(ArrayList())
             if (!mTextMoneyList.isEmpty()) {
-                mSeachCondition = SeachConBean.fromString(mTextMoneyList[1].id)
+                mSeachCondition = SeachResultBean.fromString(mTextMoneyList[0].id)
             }
             if (!mTextJoinTypeList.isEmpty()) {
-                mSeachCondition = SeachConBean.fromString(mTextJoinTypeList[1].id)
+                mSeachCondition = SeachResultBean.fromString(mTextJoinTypeList[0].id)
             }
             it.onNext(mSeachCondition)
         }.subscribeOn(Schedulers.io())
@@ -94,36 +96,58 @@ class PopSeachCondition : PopupWindow {
                 }, {
                     httpMoney()
                     httpJoinModel()
-                })
+                }, {}, {})
 
 
     }
 
+    @SuppressLint("ResourceAsColor")
     private fun initListener() {
+        //点击动画未写
         mMenuView.search_condition_pop_button_CZ.setOnClickListener {
+            //            mMenuView.search_condition_pop_button_CZ.setBackgroundResource(R.color.color_5ab1e1)
+//            mMenuView.search_condition_pop_button_CZ.setTextColor(R.color.page_background_f5)
+
             dismiss()
         }
         mMenuView.search_condition_pop_button_QD.setOnClickListener {
-
+            //            mMenuView.search_condition_pop_button_QD.setBackgroundResource(R.color.color_5ab1e1)
+//            mMenuView.search_condition_pop_button_QD.setTextColor(R.color.page_background_f5)
+            dismiss()
         }
     }
 
+    @SuppressLint("ResourceAsColor")
     private fun initAdapter() {
         //投资金额
         mGridManager = GridLayoutManager(mActivity, 3)
         mMenuView.search_result_condition_recycler_money.layoutManager = mGridManager
         mMenuView.search_result_condition_recycler_money.isNestedScrollingEnabled = false
-        mMoneyAdapter = CommonAdapter(mActivity, R.layout.red_shop_result_condition_in_item, mTextMoneyList, holderConvert = { holder, data, position, payloads ->
+        mMoneyAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextMoneyList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
                 if (mTextMoneyList.isNotEmpty()) {
                     mMenuView.search_result_condition_Money.visibility = View.VISIBLE
+                    getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
+                        if (data.checkState) {
+                            setBackgroundColor(resources.getColor(R.color.colorBlueBright))
+                            getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.color_5ab1e1))
+                            getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.VISIBLE
+                        } else {
+                            setBackgroundResource(R.color.dialog_item_bg)
+                            getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.black))
+                            getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.GONE
+                        }
+                    }
                 } else {
                     mMenuView.search_result_condition_Money.visibility = View.GONE
                 }
-                setText(R.id.search_result_condition_in_button, data.name)
+                setText(R.id.tvSelectDialogRvMenuG, data.name)
             }
         }, onItemClick = { view, holder, position ->
-
+            mTextMoneyList[position].let {
+                it.checkState = !it.checkState
+            }
+            mMoneyAdapter.notifyDataSetChanged()
         })
         mMenuView.search_result_condition_recycler_money.adapter = mMoneyAdapter
 
@@ -131,17 +155,31 @@ class PopSeachCondition : PopupWindow {
         mGridManager = GridLayoutManager(mActivity, 3)
         mMenuView.search_result_condition_recycler_joinType.layoutManager = mGridManager
         mMenuView.search_result_condition_recycler_joinType.isNestedScrollingEnabled = false
-        mJoinModelAdapter = CommonAdapter(mActivity, R.layout.red_shop_result_condition_in_item, mTextJoinTypeList, holderConvert = { holder, data, position, payloads ->
+        mJoinModelAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextJoinTypeList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
                 if (mTextJoinTypeList.isNotEmpty()) {
                     mMenuView.search_result_condition_joinType.visibility = View.VISIBLE
+                    getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
+                        if (data.checkState) {
+                            setBackgroundColor(resources.getColor(R.color.colorBlueBright))
+                            getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.color_5ab1e1))
+                            getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.VISIBLE
+                        } else {
+                            setBackgroundResource(R.color.dialog_item_bg)
+                            getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.black))
+                            getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.GONE
+                        }
+                    }
                 } else {
                     mMenuView.search_result_condition_joinType.visibility = View.GONE
                 }
-                setText(R.id.search_result_condition_in_button, data.name)
+                setText(R.id.tvSelectDialogRvMenuG, data.name)
             }
         }, onItemClick = { view, holder, position ->
-
+            mTextJoinTypeList[position].let {
+                it.checkState = !it.checkState
+            }
+            mJoinModelAdapter.notifyDataSetChanged()
         })
         mMenuView.search_result_condition_recycler_joinType.adapter = mJoinModelAdapter
 
@@ -161,12 +199,12 @@ class PopSeachCondition : PopupWindow {
                             if (!it.capitalList.isEmpty()) {
                                 if (!mTextMoneyList.isEmpty()) {
                                     //清除缓存
-                                    BoxUtils.removeJoinType(mTextMoneyList)
+                                    BoxUtils.removeMoneyType(mTextMoneyList)
                                     mTextMoneyList.clear()
                                 }
                                 //it.setVersion()
                                 mTextMoneyList.addAll(it.capitalList)
-                                BoxUtils.saveJoinType(mTextMoneyList)
+                                BoxUtils.saveMoneyType(mTextMoneyList)
                                 //加入缓存
                                 mMoneyAdapter.notifyDataSetChanged()
                             }
@@ -176,7 +214,7 @@ class PopSeachCondition : PopupWindow {
                     }
                 }, {
                     ToastUtil.showNetError()
-                })
+                }, {}, {})
     }
 
     //加盟模式接口
@@ -207,7 +245,7 @@ class PopSeachCondition : PopupWindow {
                     }
                 }, {
                     ToastUtil.showNetError()
-                })
+                }, {}, {})
     }
 
 

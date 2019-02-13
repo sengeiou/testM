@@ -15,6 +15,7 @@ import com.aspsine.swipetoloadlayout.OnLoadMoreListener
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.SearchDto
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -48,7 +49,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener {
     private var mIsInstantiationFour = false
     private var mSeachResultList = ArrayList<SearchDto>()
     //必填
-    private var keyWord: String = "汉堡"            //搜索关键字
+    private var keyWord: String = ""           //搜索关键字
     private var mPageNum: Int = 1              //页数1页10条
     //选填
     private var fatherId: Int = 0               //餐饮类型父ID
@@ -60,7 +61,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener {
 
 
     private var mCanHttpLoad = true                //是否可以请求接口
-    private var mHasNextPage = true                //是否有下一月
+    private var mHasNextPage = true                //是否有下一页
     override fun getLayoutId(): Int = R.layout.activity_red_shop_seach_result
 
     override fun initObject() {
@@ -82,7 +83,6 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener {
         search_result_recylerview.layoutManager = mLauyoutManger
         mAdapter = CommonAdapter(this, R.layout.red_shop_search_result_item, mSeachResultList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
-
                 GlideLoader.load(this@RedShopSeachResult, data.logo, getView(R.id.search_result_bigLogo))
                 setText(R.id.search_result_name, "          " + data.name)
                 setText(R.id.search_result_capitalName, "¥ " + data.capitalName)
@@ -100,7 +100,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener {
                 setTagFlowLayout(getView(R.id.seach_result_tagFliwLayout), data.affiliateSupport as ArrayList<String>)
                 //   getView<TagFlowLayout>(R.id.seach_result_tagFliwLayout).
                 getView<LinearLayout>(R.id.search_linearlayout).setOnClickListener {
-                    ToastUtil.showShort("我是搜索之后的详情页")
+                    startActivity<ShopDetailActivity>(IConstants.BRANDID to it.id)
                 }
             }
 
@@ -243,6 +243,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener {
             popupMenu1.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
                 override fun onSelectCallBack(selectId: Int) {
                     ToastUtil.showShort("$selectId")
+                    typeId = selectId
                 }
             })
             mIsInstantiationOne = true
@@ -268,6 +269,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener {
             popupMenu3.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
                 override fun onSelectCallBack(selectId: Int) {
                     ToastUtil.showShort("$selectId")
+                    integratedSortId = selectId
                 }
             })
             mIsInstantiationThree = true
@@ -302,66 +304,106 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener {
             1 -> {
                 //避免点击之后另外三个窗口还存在情况
                 if (mIsInstantiationTwo) {
+                    search_add_area.setTextColor(resources.getColor(R.color.black))
+                    search_add_area_bottom.visibility = View.GONE
                     popupMenu2.dismiss()
                 }
                 if (mIsInstantiationThree) {
                     popupMenu3.dismiss()
+                    search_ranking_bottom.visibility = View.GONE
+                    search_ranking.setTextColor(resources.getColor(R.color.black))
                 }
                 if (mIsInstantiationFour) {
                     popupMenu4.dismiss()
+                    search_screning_conditon.setTextColor(resources.getColor(R.color.black))
+                    search_screning_conditon_bottom.visibility = View.GONE
                 }
                 //实现连续点击
                 if (!popupMenu1.isShowing) {
+                    search_food_type.setTextColor(resources.getColor(R.color.color_5ab1e1))
+                    search_food_type_bottom.visibility = View.VISIBLE
                     popupMenu1.showAsDropDown(search_result_view)
                 } else {
+                    search_food_type_bottom.visibility = View.GONE
+                    search_food_type.setTextColor(resources.getColor(R.color.black))
                     popupMenu1.dismiss()
                 }
             }
             2 -> {
                 if (mIsInstantiationOne) {
                     popupMenu1.dismiss()
+                    search_food_type_bottom.visibility = View.GONE
+                    search_food_type.setTextColor(resources.getColor(R.color.black))
                 }
                 if (mIsInstantiationThree) {
                     popupMenu3.dismiss()
+                    search_ranking_bottom.visibility = View.GONE
+                    search_ranking.setTextColor(resources.getColor(R.color.black))
                 }
                 if (mIsInstantiationFour) {
                     popupMenu4.dismiss()
+                    search_screning_conditon.setTextColor(resources.getColor(R.color.black))
+                    search_screning_conditon_bottom.visibility = View.GONE
                 }
                 if (!popupMenu2.isShowing) {
+                    search_add_area_bottom.visibility = View.VISIBLE
+                    search_add_area.setTextColor(resources.getColor(R.color.color_5ab1e1))
                     popupMenu2.showAsDropDown(search_result_view)
                 } else {
+                    search_add_area_bottom.visibility = View.GONE
+                    search_add_area.setTextColor(resources.getColor(R.color.black))
                     popupMenu2.dismiss()
                 }
             }
             3 -> {
                 if (mIsInstantiationOne) {
                     popupMenu1.dismiss()
+                    search_food_type_bottom.visibility = View.GONE
+                    search_food_type.setTextColor(resources.getColor(R.color.black))
                 }
                 if (mIsInstantiationTwo) {
                     popupMenu2.dismiss()
+                    search_add_area_bottom.visibility = View.GONE
+                    search_add_area.setTextColor(resources.getColor(R.color.black))
                 }
                 if (mIsInstantiationFour) {
                     popupMenu4.dismiss()
+                    search_screning_conditon.setTextColor(resources.getColor(R.color.black))
+                    search_screning_conditon_bottom.visibility = View.GONE
                 }
                 if (!popupMenu3.isShowing) {
+                    search_ranking_bottom.visibility = View.VISIBLE
+                    search_ranking.setTextColor(resources.getColor(R.color.color_5ab1e1))
                     popupMenu3.showAsDropDown(search_result_view)
                 } else {
+                    search_ranking_bottom.visibility = View.GONE
+                    search_ranking.setTextColor(resources.getColor(R.color.black))
                     popupMenu3.dismiss()
                 }
             }
             4 -> {
                 if (mIsInstantiationOne) {
                     popupMenu1.dismiss()
+                    search_food_type_bottom.visibility = View.GONE
+                    search_food_type.setTextColor(resources.getColor(R.color.black))
                 }
                 if (mIsInstantiationTwo) {
                     popupMenu2.dismiss()
+                    search_add_area_bottom.visibility = View.GONE
+                    search_add_area.setTextColor(resources.getColor(R.color.black))
                 }
                 if (mIsInstantiationThree) {
                     popupMenu3.dismiss()
+                    search_ranking_bottom.visibility = View.GONE
+                    search_ranking.setTextColor(resources.getColor(R.color.black))
                 }
                 if (!popupMenu4.isShowing) {
+                    search_screning_conditon_bottom.visibility = View.VISIBLE
+                    search_screning_conditon.setTextColor(resources.getColor(R.color.color_5ab1e1))
                     popupMenu4.showAsDropDown(search_result_view)
                 } else {
+                    search_screning_conditon_bottom.visibility = View.GONE
+                    search_screning_conditon.setTextColor(resources.getColor(R.color.black))
                     popupMenu4.dismiss()
                 }
             }

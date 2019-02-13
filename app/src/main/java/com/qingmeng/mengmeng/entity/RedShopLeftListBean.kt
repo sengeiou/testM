@@ -39,7 +39,7 @@ data class RedShopLeftBean(
         var type: Long,
         var fahterId: Long,
         var logo: String,
-        var checkState: Boolean,
+        var checkState: Boolean=false,
         var version: String
 )
 

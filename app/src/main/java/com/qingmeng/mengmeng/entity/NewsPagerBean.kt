@@ -21,5 +21,21 @@ class NewsPagerBean(var data: ArrayList<NewsPagerList>) {
         }
     }
 
-    // class JoinBean(var id: Int, var name: String, var logo: String, var capitalName: String)
+    class NewsBean(var newsId: Int,
+                   var banner: String,
+                   var tittle: String,
+                   var createTime: String,
+                   var content: String,
+                   var formatTime: String,
+                   var articleUrl: String
+            //banner 数据
+//                   var bannerid: Int,
+//                   var icon: String,
+//                   var describe: String,
+//                   var imgUrl: String,
+//                   var type: Int,
+//                   var skipId: Int,
+//                   var skipType: Int,
+//                   var fatherSkipId: Int
+    )
 }
