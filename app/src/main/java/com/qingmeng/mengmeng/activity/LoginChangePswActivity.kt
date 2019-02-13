@@ -58,7 +58,7 @@ class LoginChangePswActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
         //设置标题
-        setHeadName(getString(R.string.retrieve_password))
+        setHeadName(R.string.retrieve_password)
         from = intent.getIntExtra(FROM_TYPE, from)
         imgHandler = ImageCodeHandler(this, mForgerGetCode)
         GeetestUtil.init(this)

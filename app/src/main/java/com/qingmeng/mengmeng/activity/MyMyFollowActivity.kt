@@ -50,13 +50,9 @@ class MyMyFollowActivity : BaseActivity() {
         super.initObject()
 
         //设置标题
-        if (intent.getStringExtra("title") == getString(R.string.my_myFollow)) {
-            setHeadName(getString(R.string.my_myFollow))
-            mIsMyFollow = true
-        } else {
-            setHeadName(getString(R.string.my_myFootprint))
-            mIsMyFollow = false
-        }
+        val title = intent.getStringExtra("title")
+        setHeadName(title)
+        mIsMyFollow = title == getString(R.string.my_myFollow)
 
         //适配器初始化
         initAdapter()

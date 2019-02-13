@@ -45,7 +45,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
-        setHeadName(getString(R.string.my_myLeavingMessage))
+        setHeadName(R.string.my_myLeavingMessage)
 
         initAdapter()
 

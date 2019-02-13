@@ -220,7 +220,7 @@ class DialogCustom(private var mContext: Context?) {
     }
 
     /**
-     * @param callback 姓名 性别1女2男 手机号 留言
+     * @param callback 姓名 手机号 留言
      */
     fun showJoinDataDialog(shopName: String, callback: (String, String, String) -> Unit) {
         bottomSheetDialog = MyBottomDialog(mContext!!)

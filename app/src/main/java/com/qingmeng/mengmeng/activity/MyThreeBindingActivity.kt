@@ -31,7 +31,7 @@ class MyThreeBindingActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
-        setHeadName(getString(R.string.my_threeBinding))
+        setHeadName(R.string.my_threeBinding)
 
         srlMyThreeBinding.isRefreshing = true
     }

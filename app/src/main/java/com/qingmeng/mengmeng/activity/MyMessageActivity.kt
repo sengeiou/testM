@@ -70,7 +70,7 @@ class MyMessageActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
-        setHeadName(getString(R.string.message))
+        setHeadName(R.string.message)
 
         initAdapter()
 

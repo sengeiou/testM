@@ -61,7 +61,7 @@ class LoginPwdActivity : BaseActivity() {
     //初始化Object
     override fun initObject() {
         //设置标题
-        setHeadName(getString(R.string.login))
+        setHeadName(R.string.login)
         //标题栏注册
         mMenu.text = getString(R.string.register)
         loginType = intent.getIntExtra(LOGIN_TYPE, 0)

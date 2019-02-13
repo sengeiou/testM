@@ -61,7 +61,7 @@ class MySettingsUserActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
-        setHeadName(getString(R.string.my_settings_user_title))
+        setHeadName(R.string.my_settings_user_title)
         slMySettingsUser.visibility = View.GONE
 
         httpLoad()

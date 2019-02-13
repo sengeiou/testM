@@ -1,6 +1,8 @@
 package com.mogujie.tt.imservice.service;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
@@ -8,7 +10,9 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Binder;
 import android.os.Build;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Message;
 
 import com.leimo.wanxin.BuildConfig;
 import com.leimo.wanxin.R;
@@ -48,6 +52,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class IMService extends Service {
     private Logger logger = Logger.getLogger(IMService.class);
+    private MyHandler handler;
     public static final String CHANNEL_ID_STRING = "IMService";
     public static final int IMServiceNotificaId = 2;
     /**
@@ -91,6 +96,7 @@ public class IMService extends Service {
         EventBus.getDefault().register(this, SysConstant.SERVICE_EVENTBUS_PRIORITY);
         mMediaPlayer = MediaPlayer.create(getApplicationContext(), R.raw.no_notice);
         mMediaPlayer.setLooping(true);
+        handler = new MyHandler();
         // make the service foreground, so stop "360 yi jian qingli"(a clean
         // tool) to stop our app
         // todo eric study wechat's mechanism, use a better solution
@@ -183,22 +189,31 @@ public class IMService extends Service {
 
         ImageLoaderUtil.initImageLoaderConfig(ctx);
         startPlayMusic();
-        lunxun();
+//        lunxun();
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            //            NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
-            //            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID_STRING, "聊天", NotificationManager.IMPORTANCE_HIGH);
-            //            notificationManager.createNotificationChannel(mChannel);
-            //            Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ID_STRING).build();
-            startForeground(IMServiceNotificaId, new Notification());
-
-            Intent innerIntent = new Intent(this, HelpService.class);
-            startForegroundService(innerIntent);
+            NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID_STRING, "聊天", NotificationManager.IMPORTANCE_HIGH);
+            notificationManager.createNotificationChannel(mChannel);
+            Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ID_STRING).build();
+            startForeground(IMServiceNotificaId, notification);
+            handler.sendEmptyMessageDelayed(IMServiceNotificaId, 5000);
+//            Intent innerIntent = new Intent(this, HelpService.class);
+//            startForegroundService(innerIntent);
         }
 
         return START_STICKY;
     }
 
+    @SuppressLint("HandlerLeak")
+    private class MyHandler extends Handler {
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            stopForeground(true);
+            stopSelf(msg.what);
+        }
+    }
 
     /**
      * 用户输入登陆流程
