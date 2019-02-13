@@ -65,6 +65,11 @@ interface Api {
     @GET("api/banner/get_banner")
     fun getBanners(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
 
+    //添加定位信息
+    @POST("api/location/add")
+    fun addLocation(@Header("ACCESS-TOKEN") token: String, @Query("latitude") latitude: String,
+                    @Query("longitude") longitude: String, @Query("uuid") uuid: String): Observable<BaseBean<Any>>
+
     //品牌详情接口
     @GET("api/brand_detail")
     fun getBrandDetail(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int): Observable<BaseBean<BrandBean>>
