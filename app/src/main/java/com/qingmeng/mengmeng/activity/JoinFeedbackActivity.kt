@@ -53,7 +53,7 @@ class JoinFeedbackActivity : BaseActivity() {
     override fun initData() {
         brandId = intent.getIntExtra(BRANDID, 0)
         //设置标题
-        setHeadName(getString(R.string.join_feedback))
+        setHeadName(R.string.join_feedback)
         //标题栏提交
         mMenu.text = getString(R.string.submit)
         initWidget()

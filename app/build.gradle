@@ -9,6 +9,17 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.objectbox'
 
 android {
+    signingConfigs {
+        mengmeng {
+            keyAlias 'mengmeng'
+            keyPassword 'qmmm123'
+
+            storeFile file('D:\\keystore\\mengmeng.jks')
+            storePassword 'qmmm123'
+
+            v2SigningEnabled false
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.qingmeng.mengmeng"
@@ -31,6 +42,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.mengmeng
             //请求地址
             buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
             //SD目录名
@@ -41,6 +53,7 @@ android {
         }
         debug {
             minifyEnabled false
+            signingConfig signingConfigs.mengmeng
             //请求地址
             buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
             //SD目录名
