@@ -1,1 +1,1 @@
-include ':app'
+include ':app', ':mgimlibs', ':webputil', ':wanxin', ':imgcompress', ':huaweilib', ':common'

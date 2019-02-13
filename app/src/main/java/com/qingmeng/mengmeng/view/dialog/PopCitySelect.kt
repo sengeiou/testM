@@ -12,10 +12,12 @@ import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.RelativeLayout
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.activity.MySettingsUserActivity
 import com.qingmeng.mengmeng.adapter.CommonAdapter
 import com.qingmeng.mengmeng.entity.AllCity
+import com.qingmeng.mengmeng.entity.AllCityBean
 import com.qingmeng.mengmeng.utils.ApiUtils
+import com.qingmeng.mengmeng.utils.BoxUtils
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_settings_user_citypop.view.*
@@ -33,6 +35,7 @@ class PopCitySelect : PopupWindow {
     private var mActivity: Activity
     private lateinit var mLayoutManager: LinearLayoutManager
     private lateinit var mAdapter: CommonAdapter<AllCity>
+    private var mAllCityBean = AllCityBean()                         //接口数据
     private var mList = ArrayList<AllCity>()                         //目前列表用到的数据
     private var mOneCityList = ArrayList<AllCity>()                  //一级城市（省）
     private var mTwoCityList = ArrayList<AllCity>()                  //二级城市（市）
@@ -41,7 +44,7 @@ class PopCitySelect : PopupWindow {
     private var mPointPosition = Point()                             //手指按下坐标
     private var record = arrayOf(0, 0)                               //存放手指按下坐标和时间戳
     private var defaultTop = 0                                       //弹框原始距离顶部位置
-    private lateinit var mCitySelectCallBack: CitySelectCallBack                          //回调
+    private lateinit var mCitySelectCallBack: CitySelectCallBack     //回调
 
     //构造方法
     constructor(activity: Activity) : super(activity) {
@@ -50,13 +53,17 @@ class PopCitySelect : PopupWindow {
 
         initListener()
         initAdapter()
-        //如果页面的临时数据不为空 就不用请求数组
-        if (MySettingsUserActivity.mAllCityList.isNotEmpty()) {
-            //执行数据分类方法
-            setData(MySettingsUserActivity.mAllCityList)
-        } else {
-            httpLoad()
-        }
+
+        //获取缓存数据
+        getCacheData()
+
+//        //如果页面的临时数据不为空 就不用请求数组
+//        if (MySettingsUserActivity.mAllCityList.isNotEmpty()) {
+//            //执行数据分类方法
+//            setData(MySettingsUserActivity.mAllCityList)
+//        } else {
+//            httpLoad()
+//        }
 
         //取消按钮
         mMenuView.ivMySettingsUserPopClose.setOnClickListener {
@@ -144,7 +151,6 @@ class PopCitySelect : PopupWindow {
         this.animationStyle = R.style.bottomDialog_animStyle
         //设置SelectPicPopupWindow弹出窗体的背景
         this.setBackgroundDrawable(ColorDrawable(-0x00000000))
-
 
         //mMenuView添加OnTouchListener监听判断获取触屏位置如果在选择框外面则销毁弹出框
         mMenuView.setOnTouchListener { _, event ->
@@ -235,19 +241,28 @@ class PopCitySelect : PopupWindow {
     }
 
     //城市列表请求
-    private fun httpLoad() {
-        ApiUtils.getApi()
-                .getCityStatic()
+    private fun httpLoad(version: String? = null) {
+        ApiUtils.getApi().let {
+            if (version == null || version == "") {
+                it.getCityStatic()
+            } else {
+                it.getCityStatic(version)
+            }
+        }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     it.apply {
                         if (code == 12000) {
-                            data?.city.let {
-                                //执行数据分类方法
-                                setData(it as ArrayList<AllCity>)
-                                MySettingsUserActivity.mAllCityList = it
-                            }
+                            //数据库先删除bean
+                            BoxUtils.removeAllCity(mAllCityBean)
+                            mAllCityBean = data!!
+                            //数据库保存bean
+                            BoxUtils.saveAllCity(mAllCityBean)
+                            //执行数据分类方法
+                            setData(mAllCityBean)
+                        } else if (code == 20000) {
+
                         }
                     }
                 }, {
@@ -255,10 +270,31 @@ class PopCitySelect : PopupWindow {
                 })
     }
 
+    //获取缓存数据
+    private fun getCacheData() {
+        Observable.create<AllCityBean> {
+            mAllCityBean = BoxUtils.getAllCity()!!
+//            mAllCityBean.version = mAllCityBean.city[0].version
+            it.onNext(mAllCityBean)
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    //页面赋值
+                    setData(it)
+                    //请求下接口
+                    httpLoad(it.version)
+                }, {
+                    httpLoad()
+                })
+    }
+
     //数据分类
-    private fun setData(city: ArrayList<AllCity>) {
+    private fun setData(bean: AllCityBean) {
+        mOneCityList.clear()
+        mTwoCityList.clear()
+        mThreeCityList.clear()
         //遍历请求到的数组 然后一个个分类存放
-        city.forEach {
+        bean.city.forEach {
             // || it.level == 0
             if (it.level == 1) {
                 mOneCityList.add(it)

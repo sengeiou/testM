@@ -4,10 +4,8 @@
           package="com.qingmeng.mengmeng">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <!-- 拍照权限 -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <!-- 读写sd卡的权限 -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS"/>
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
@@ -15,6 +13,7 @@
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE"/>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS"/>
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS"/>
 
     <uses-permission-sdk-23 android:name="android.permission.aad"/>
 
@@ -32,11 +31,10 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning"
-        tools:replace="icon, label, theme">
+        tools:replace="android:icon,android:label,android:theme,android:name">
         <!-- 7.0 -->
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -47,15 +45,30 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths"/>
         </provider>
-        <activity android:name=".activity.MainActivity">
+
+        <activity
+            android:name=".activity.SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme.NoActionBar.Translucent">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".activity.MainActivity"
+            android:exported="true"
+            android:launchMode="singleTask"/>
         <!-- 爱加盟 -->
-        <activity android:name=".activity.ShopDetailActivity"/>
+        <activity
+            android:name=".activity.ShopDetailActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".activity.VideoDetailActivity"
+            android:configChanges="orientation|screenSize|keyboardHidden"
+            android:screenOrientation="portrait"/>
         <activity android:name=".activity.JoinFeedbackActivity"/>
         <!-- 我的 -->
         <activity android:name=".activity.MySettingsActivity"/>
@@ -69,12 +82,11 @@
         <activity android:name=".activity.MyThreeBindingActivity"/>
         <activity android:name=".activity.MyMessageActivity"/>
         <activity android:name=".activity.MyMessageChatActivity"/>
+        <activity android:name=".activity.WebViewActivity"/>
         <!-- 登录注册 -->
         <activity android:name=".activity.LoginMainActivity"/>
-        <activity android:name=".activity.LoginpwActivity"/>
-        <activity android:name=".activity.LogincodeActivity"/>
+        <activity android:name=".activity.LoginPwdActivity"/>
         <activity android:name=".activity.LoginChangePswActivity"/>
-        <activity android:name=".activity.LoginBindingPhoneActivity"/>
         <activity
             android:name="com.qingmeng.mengmeng.wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
@@ -91,6 +103,7 @@
 
                 <category android:name="android.intent.category.DEFAULT"/>
                 <category android:name="android.intent.category.BROWSABLE"/>
+
                 <data android:scheme="tencent123456"/>
             </intent-filter>
         </activity>

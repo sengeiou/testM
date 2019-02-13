@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/mjoinLinear"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/common_bg"
               android:focusable="true"
               android:focusableInTouchMode="true"
-              android:id="@+id/mjoinLinear"
               android:orientation="vertical">
 
     <include layout="@layout/layout_head"/>
@@ -13,14 +13,14 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/color_ffffff"
+        android:background="@color/white"
         android:orientation="vertical">
 
         <Button
             android:id="@+id/btn_join_feedback"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:background="@color/color_ffffff"
+            android:background="@color/white"
             android:drawableRight="@drawable/join_brand_details"
             android:gravity="center_vertical"
             android:hint="@string/join_feedback_type"
@@ -42,11 +42,10 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recy_join_feedback"
             android:layout_width="match_parent"
-            android:layout_marginBottom="5dp"
-            android:overScrollMode="never"
+            android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:layout_height="70dp"/>
+            android:layout_marginBottom="5dp"/>
     </LinearLayout>
 
 </LinearLayout>

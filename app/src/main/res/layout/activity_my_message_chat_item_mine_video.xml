@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_gravity="top"
+    android:layout_marginBottom="@dimen/padding_dp_10"
+    android:layout_marginEnd="@dimen/padding_dp_10"
+    android:orientation="horizontal"
+    >
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        />
+
+    <ProgressBar
+        android:id="@+id/pbMyMessageChatRvMineVideoProgress"
+        android:layout_width="@dimen/padding_dp_15"
+        android:layout_height="@dimen/padding_dp_15"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/padding_dp_5"
+        android:visibility="gone"
+        />
+
+    <ImageView
+        android:id="@+id/ivMyMessageChatRvMineVideoFail"
+        android:layout_width="@dimen/padding_dp_15"
+        android:layout_height="@dimen/padding_dp_15"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/padding_dp_5"
+        android:background="@color/red"
+        android:visibility="gone"
+        />
+
+    <RelativeLayout
+        android:id="@+id/rlMyMessageChatRvMineVideo"
+        android:layout_width="150dp"
+        android:layout_height="200dp"
+        android:layout_marginEnd="@dimen/padding_dp_10"
+        android:background="@color/colorPrimary"
+        >
+
+        <ImageView
+            android:id="@+id/ivMyMessageChatRvMineVideoCover"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            />
+
+        <ImageView
+            android:id="@+id/ivMyMessageChatRvMineVideoStart"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_centerInParent="true"
+            android:src="@mipmap/my_settings_aboutus_icon"
+            />
+
+        <TextView
+            android:id="@+id/tvMyMessageChatRvMineVideoTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginBottom="@dimen/padding_dp_10"
+            android:layout_marginEnd="@dimen/padding_dp_10"
+            android:text=""
+            />
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/ivMyMessageChatRvMineVideoHead"
+        android:layout_width="@dimen/padding_dp_40"
+        android:layout_height="@dimen/padding_dp_40"
+        android:src="@mipmap/ic_launcher"
+        />
+</LinearLayout>

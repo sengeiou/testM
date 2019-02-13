@@ -1,12 +1,17 @@
 package com.qingmeng.mengmeng.activity
 
+import android.app.Activity
+import android.content.Intent
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.utils.TimerHandler
-import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.*
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_log_register.*
 import kotlinx.android.synthetic.main.activity_my_settings_updatephone.*
 import kotlinx.android.synthetic.main.layout_head.*
-import java.util.regex.Pattern
+import org.json.JSONObject
 
 /**
  *  Description :设置 - 换绑手机
@@ -26,9 +31,15 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
+        //极验初始化
+        GeetestUtil.init(this)
         timerHandler = TimerHandler(this, tvMySettingsUpdatePhoneGetMsg)
 
-        setHeadName(getString(R.string.my_settings_updatePhone))
+        setHeadName(R.string.my_settings_updatePhone)
+
+        //对当前手机号进行处理
+        val phone = formatPhone(intent.getStringExtra("phone"))
+        etMySettingsUpdatePhoneOld.setText(phone)
     }
 
     override fun initListener() {
@@ -36,19 +47,16 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
 
         //返回
         mBack.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
 
         //获取验证码
         tvMySettingsUpdatePhoneGetMsg.setOnClickListener {
             val phone = etMySettingsUpdatePhoneNew.text.toString().trim()
             if (phone.isNotBlank()) {
-                if (checkTel(phone)) {
+                if (InputCheckUtils.checkPhone(phone)) {
                     //先验证手机号是否注册
-//                    checkPhone(phone)
-
-                    //倒计时
-                    timerHandler.sendEmptyMessage(timing)
+                    httpCheckPhone(phone)
                 } else {
                     ToastUtil.showShort(getString(R.string.phoneFormat_tips))
                 }
@@ -59,18 +67,17 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
 
         //提交
         tvMySettingsUpdatePhoneSubmit.setOnClickListener {
-            val phoneOld = etMySettingsUpdatePhoneOld.text.toString().trim()
             val phone = etMySettingsUpdatePhoneNew.text.toString().trim()
             val msg = etMySettingsUpdatePhoneMsg.text.toString().trim()
-            if (phoneOld.isNotBlank() && phone.isNotBlank() && msg.isNotBlank()) {
-                if (checkTel(phoneOld) && checkTel(phone)) {
+            if (phone.isNotBlank() && msg.isNotBlank()) {
+                if (InputCheckUtils.checkPhone(phone)) {
                     //换绑手机
-                    updatePhone(phone, msg)
+                    httpUpdatePhone(phone, msg)
                 } else {
                     ToastUtil.showShort(getString(R.string.phoneFormat_tips))
                 }
             } else {
-                if (phoneOld.isBlank() || phone.isBlank()) {
+                if (phone.isBlank()) {
                     ToastUtil.showShort(getString(R.string.phoneTips))
                 } else if (msg.isBlank()) {
                     ToastUtil.showShort(getString(R.string.msgTips))
@@ -79,18 +86,121 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
         }
     }
 
-    //换绑手机接口
-    private fun updatePhone(phone: String, msg: String) {
+    //验证手机号是否注册
+    private fun httpCheckPhone(phone: String) {
+        ApiUtils.getApi().hasRegistered(phone, 1)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    it.apply {
+                        if (code == 12000) {
+                            GeetestUtil.customVerity({ checkCodeType() }, { sendSmsCode(phone, it) })
+                        } else {
+                            ToastUtil.showShort(msg)
+                        }
+                    }
+                }, {
+                    ToastUtil.showNetError()
+                }, {}, { addSubscription(it) })
+    }
 
-        ToastUtil.showShort(getString(R.string.updatePhone_success_tips))
+    //校验极验是否可用
+    private fun checkCodeType() {
+        ApiUtils.getApi().checkCodeType()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ bean ->
+                    when {
+                        bean.code == 12000 -> {
+                            bean.data!!.new_captcha = true
+                            GeetestUtil.showGeetest(bean.data!!.toJson())
+                        }
+                        bean.code == 25080 -> {
+                            GeetestUtil.dismissGeetestDialog()
+                            showImgCode()
+                        }
+                        else -> {
+                            GeetestUtil.dismissGeetestDialog()
+                            ToastUtil.showShort(bean.msg)
+                        }
+                    }
+                }, {
+                    ToastUtil.showNetError()
+                }, {}, { addSubscription(it) })
+    }
+
+    //展示图片验证码
+    private fun showImgCode() {
+        myDialog.showImageCodeDialog(mRegisterPhone.text.toString(), 4,
+                { addSubscription(it) }, { imgHandler.sendEmptyMessage(timing) })
     }
 
     /**
-     * 正则验证手机号
-     */
-    private fun checkTel(tel: String): Boolean {
-        val pattern = Pattern.compile("^[1][3,4,5,7,8][0-9]{9}$")
-        val matcher = pattern.matcher(tel)
-        return matcher.matches()
+     * 发送短信验证码
+     * @param type 1极验验证  0图片验证码
+     **/
+    private fun sendSmsCode(phone: String, result: String) {
+        val params = JSONObject(result)
+        ApiUtils.getApi().sendSms(phone, 4, geetest_challenge = params.optString("geetest_challenge"),
+                geetest_validate = params.optString("geetest_validate"), geetest_seccode = params.optString("geetest_seccode"))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    if (it.code == 12000) {
+                        //倒计时
+                        timerHandler.sendEmptyMessage(timing)
+                        GeetestUtil.showSuccessDialog()
+                    } else {
+                        GeetestUtil.showFailedDialog()
+                        ToastUtil.showShort(it.msg)
+                    }
+                }, {
+                    GeetestUtil.showFailedDialog()
+                    ToastUtil.showNetError()
+                }, {}, { addSubscription(it) })
+    }
+
+    //换绑手机接口
+    private fun httpUpdatePhone(phone: String, msg: String) {
+        myDialog.showLoadingDialog()
+        ApiUtils.getApi()
+                .updatePhone(phone, msg, MainApplication.instance.TOKEN)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    myDialog.dismissLoadingDialog()
+                    it.apply {
+                        if (code == 12000) {
+                            ToastUtil.showShort(getString(R.string.updatePhone_success_tips))
+                            //把手机号返回回去
+                            setResult(Activity.RESULT_OK, Intent().apply {
+                                putExtra("phone", phone)
+                            })
+                            onBackPressed()
+                        } else {
+                            ToastUtil.showShort(msg)
+                        }
+                    }
+                }, {
+                    myDialog.dismissLoadingDialog()
+                })
+    }
+
+    //修改手机号格式 188******88格式
+    private fun formatPhone(phone: String): String {
+        var result = ""
+        for (i in 0 until phone.length) {
+            if (i in 3..8) {
+                result = result + "*"
+            } else if (i <= 11) {
+                result = result + phone[i]
+            }
+        }
+        return result
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        GeetestUtil.destroy()
     }
 }

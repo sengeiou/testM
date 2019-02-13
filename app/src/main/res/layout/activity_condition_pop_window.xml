@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <android.support.v4.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/padding_dp_300"
+        android:background="@color/white"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/search_result_condition_Money"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingStart="@dimen/padding_dp_25"
+                android:paddingTop="@dimen/padding_dp_15"
+                android:text="@string/seach_money"
+                android:textColor="@color/color_999999"
+                android:textSize="@dimen/text_size_14"
+                android:visibility="gone" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/search_result_condition_recycler_money"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white" />
+
+            <TextView
+                android:id="@+id/search_result_condition_joinType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:paddingStart="@dimen/padding_dp_25"
+                android:paddingTop="@dimen/padding_dp_15"
+                android:text="@string/seach_join_type"
+                android:textColor="@color/color_999999"
+                android:textSize="@dimen/text_size_14"
+                android:visibility="gone" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/search_result_condition_recycler_joinType"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white" />
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/search_condition_pop_button_CZ"
+            android:layout_width="@dimen/padding_dp_90"
+            android:layout_height="@dimen/padding_dp_40"
+            android:layout_marginBottom="@dimen/padding_dp_15"
+            android:layout_marginLeft="@dimen/padding_dp_70"
+            android:layout_marginTop="@dimen/padding_dp_35"
+            android:text="@string/seach_button_exit"
+            android:textSize="@dimen/padding_dp_15" />
+
+        <Button
+            android:id="@+id/search_condition_pop_button_QD"
+            android:layout_width="@dimen/padding_dp_90"
+            android:layout_height="@dimen/padding_dp_40"
+            android:layout_marginBottom="@dimen/padding_dp_15"
+            android:layout_marginRight="@dimen/padding_dp_70"
+            android:layout_marginTop="@dimen/padding_dp_35"
+            android:text="@string/seach_button_sure"
+            android:textSize="@dimen/padding_dp_15" />
+    </LinearLayout>
+
+    <View
+        android:id="@+id/bottom_condition_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/whiteColorPress" />
+</LinearLayout>

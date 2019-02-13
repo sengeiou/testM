@@ -4,6 +4,7 @@ import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import com.qingmeng.mengmeng.adapter.util.ItemViewDelegate
 import com.qingmeng.mengmeng.adapter.util.ViewHolder
 
@@ -13,16 +14,18 @@ import com.qingmeng.mengmeng.adapter.util.ViewHolder
  */
 class CommonAdapter<T>(protected var context: Context, protected var mLayoutId: Int, data: List<T>?,
                        holderConvert: (holder: ViewHolder, data: T, position: Int, payloads: List<Any>?) -> Unit,
+                       holderConvertP: ((holder: ViewHolder, data: T, position: Int, payloads: List<Any>?, parent: ViewGroup) -> Unit)? = null,
                        onItemClick: ((view: View, holder: RecyclerView.ViewHolder, position: Int) -> Unit)? = null,
                        onItemLongClick: ((view: View, holder: RecyclerView.ViewHolder, position: Int) -> Boolean?)? = null
 
-) : MultiItemTypeAdapter<T>(context, data, onItemClick, onItemLongClick) {
+) : MultiItemTypeAdapter<T>(context, data, holderConvert, holderConvertP, onItemClick, onItemLongClick) {
     protected var mInflater: LayoutInflater
 
     init {
         mInflater = LayoutInflater.from(context)
 
         addItemViewDelegate(object : ItemViewDelegate<T> {
+
             override fun getItemViewLayoutId(): Int {
                 return mLayoutId
             }
@@ -32,7 +35,7 @@ class CommonAdapter<T>(protected var context: Context, protected var mLayoutId: 
             }
 
             override fun convert(holder: ViewHolder, item: T, position: Int, payloads: List<Any>?) {
-                holderConvert(holder, item, position, payloads)
+
             }
         })
     }

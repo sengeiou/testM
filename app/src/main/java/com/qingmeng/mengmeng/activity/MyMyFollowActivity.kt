@@ -9,9 +9,9 @@ import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
-import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.entity.MyFollow
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -50,41 +50,33 @@ class MyMyFollowActivity : BaseActivity() {
         super.initObject()
 
         //设置标题
-        if (intent.getStringExtra("title") == getString(R.string.my_myFollow)) {
-            setHeadName(getString(R.string.my_myFollow))
-            mIsMyFollow = true
-        } else {
-            setHeadName(getString(R.string.my_myFootprint))
-            mIsMyFollow = false
-        }
+        val title = intent.getStringExtra("title")
+        setHeadName(title)
+        mIsMyFollow = title == getString(R.string.my_myFollow)
 
         //适配器初始化
         initAdapter()
 
-        slMyMyFollow.isRefreshing = true
-        //接口请求
-        httpLoad(1)
+        //自动刷新请求
+        srlMyMyFollow.isRefreshing = true
     }
 
     override fun initListener() {
         super.initListener()
 
         //下拉刷新
-        slMyMyFollow.setOnRefreshListener {
+        srlMyMyFollow.setOnRefreshListener {
             httpLoad(1)
         }
 
         //上滑加载
-        slMyMyFollow.setOnLoadMoreListener {
+        srlMyMyFollow.setOnLoadMoreListener {
             httpLoad(mPageNum)
         }
 
         //返回
         mBack.setOnClickListener {
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra("isDelete", mIsDelete)
-            })
-            this.finish()
+            onBackPressed()
         }
 
         rvMyMyFollow.setOnTouchListener { v, event ->
@@ -101,25 +93,25 @@ class MyMyFollowActivity : BaseActivity() {
                 super.onScrollStateChanged(recyclerView, newState)
                 //滑到顶部了
                 if (!recyclerView.canScrollVertically(-1)) {
-                    if (!slMyMyFollow.isLoadingMore) {
-                        slMyMyFollow.isRefreshEnabled = true
+                    if (!srlMyMyFollow.isLoadingMore) {
+                        srlMyMyFollow.isRefreshEnabled = true
                     }
                 } else if (!recyclerView.canScrollVertically(1)) {  //滑到底部了
                     //如果下拉刷新没有刷新的话
-                    if (!slMyMyFollow.isRefreshing) {
+                    if (!srlMyMyFollow.isRefreshing) {
                         if (mList.isNotEmpty()) {
                             //是否有下一页
                             if (mHasNextPage) {
                                 //是否可以请求接口
                                 if (mCanHttpLoad) {
-                                    slMyMyFollow.isLoadMoreEnabled = true
+                                    srlMyMyFollow.isLoadMoreEnabled = true
                                 }
                             }
                         }
                     }
                 } else {
-                    slMyMyFollow.isRefreshEnabled = false
-                    slMyMyFollow.isLoadMoreEnabled = false
+                    srlMyMyFollow.isRefreshEnabled = false
+                    srlMyMyFollow.isLoadMoreEnabled = false
                 }
             }
         })
@@ -160,9 +152,9 @@ class MyMyFollowActivity : BaseActivity() {
         mCanHttpLoad = false
         ApiUtils.getApi().let {
             if (mIsMyFollow) {
-                it.myFollow(pageNum, TEST_ACCESS_TOKEN)
+                it.myFollow(pageNum, MainApplication.instance.TOKEN)
             } else {
-                it.myFootprint(pageNum, TEST_ACCESS_TOKEN)
+                it.myFootprint(pageNum, MainApplication.instance.TOKEN)
             }
         }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -185,17 +177,15 @@ class MyMyFollowActivity : BaseActivity() {
                                 if (pageNum == 1) {
                                     //空白页提示
                                     llMyMyFollowTips.visibility = View.VISIBLE
+                                    srlMyMyFollow.isRefreshEnabled = true
                                 }
                             } else {
                                 mHasNextPage = true
                                 if (pageNum == 1) {
                                     llMyMyFollowTips.visibility = View.GONE
                                 }
-                                //防止内容为空
-                                data?.let {
-                                    //把内容添加到mList里去
-                                    mList.addAll(it.data)
-                                }
+                                //把内容添加到mList里去
+                                mList.addAll(data?.data!!)
                                 mPageNum++
                             }
                             mAdapter.notifyDataSetChanged()
@@ -205,17 +195,18 @@ class MyMyFollowActivity : BaseActivity() {
                     setRefreshAsFalse()
                     mCanHttpLoad = true
                     llMyMyFollowTips.visibility = View.VISIBLE
+                    srlMyMyFollow.isRefreshEnabled = true
                 })
     }
 
     //取消关注接口 先把下一页的数据查出来传给删除方法
     private fun httpDelLoadOne(pageNum: Int, myFollowDel: MyFollow) {
-        mCanHttpLoad = false
+        myDialog.showLoadingDialog()
         ApiUtils.getApi().let {
             if (mIsMyFollow) {
-                it.myFollow(pageNum, TEST_ACCESS_TOKEN)
+                it.myFollow(pageNum, MainApplication.instance.TOKEN)
             } else {
-                it.myFootprint(pageNum, TEST_ACCESS_TOKEN)
+                it.myFootprint(pageNum, MainApplication.instance.TOKEN)
             }
         }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -226,10 +217,11 @@ class MyMyFollowActivity : BaseActivity() {
                             httpDelLoadTwo(data?.data!!, myFollowDel)
                         } else {
                             ToastUtil.showShort(getString(R.string.my_myFollow_cancel_fail))
+                            myDialog.dismissLoadingDialog()
                         }
                     }
                 }, {
-
+                    myDialog.dismissLoadingDialog()
                 })
     }
 
@@ -237,14 +229,15 @@ class MyMyFollowActivity : BaseActivity() {
     private fun httpDelLoadTwo(myFollowList: List<MyFollow>, myFollowDel: MyFollow) {
         ApiUtils.getApi().let {
             if (mIsMyFollow) {
-                it.deleteMyFollow(myFollowDel.id, TEST_ACCESS_TOKEN)
+                it.deleteMyFollow(myFollowDel.id, MainApplication.instance.TOKEN)
             } else {
-                it.deleteMyFootprint(myFollowDel.brandId, TEST_ACCESS_TOKEN)
+                it.deleteMyFootprint(myFollowDel.brandId, MainApplication.instance.TOKEN)
             }
         }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    myDialog.dismissLoadingDialog()
                     it.apply {
                         if (code == 12000) {
                             mIsDelete = true
@@ -258,22 +251,22 @@ class MyMyFollowActivity : BaseActivity() {
                         }
                     }
                 }, {
-
+                    myDialog.dismissLoadingDialog()
                 })
     }
 
     //用到的地方偏多 统一一下
     private fun setRefreshAsFalse() {
-        slMyMyFollow.isRefreshing = false
-        slMyMyFollow.isLoadingMore = false
-        slMyMyFollow.isRefreshEnabled = false
-        slMyMyFollow.isLoadMoreEnabled = false
+        srlMyMyFollow.isRefreshing = false
+        srlMyMyFollow.isLoadingMore = false
+        srlMyMyFollow.isRefreshEnabled = false
+        srlMyMyFollow.isLoadMoreEnabled = false
     }
 
     override fun onBackPressed() {
-        super.onBackPressed()
         setResult(Activity.RESULT_OK, Intent().apply {
             putExtra("isDelete", mIsDelete)
         })
+        super.onBackPressed()
     }
 }

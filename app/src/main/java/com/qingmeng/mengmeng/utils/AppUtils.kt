@@ -1,6 +1,8 @@
 package com.qingmeng.mengmeng.utils
 
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.View
@@ -8,6 +10,8 @@ import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import java.io.FileInputStream
+import java.io.FileNotFoundException
 
 /**
  *  Description :view工具
@@ -18,13 +22,17 @@ import android.widget.RelativeLayout
 
  *  Date: 2019/1/11
  */
-//获取状态栏高度
+/**
+ * 获取状态栏高度
+ */
 fun getBarHeight(context: Context): Int {
     val resourceId = context.resources.getIdentifier("status_bar_height", "dimen", "android")
     return context.resources.getDimensionPixelSize(resourceId)
 }
 
-//设置view的margin
+/**
+ * 设置view的margin
+ */
 fun View.setMarginExt(left: Int? = null, top: Int? = null, right: Int? = null, bottom: Int? = null) {
     val layout = when (layoutParams) {
         is RelativeLayout.LayoutParams -> layoutParams as RelativeLayout.LayoutParams
@@ -46,7 +54,22 @@ fun View.setMarginExt(left: Int? = null, top: Int? = null, right: Int? = null, b
     }
 }
 
-//数值转dp
+/**
+ * 数值转dp
+ */
 fun Context.dp2px(dpVal: Int): Int = dp2px(dpVal.toFloat()).toInt()
 
 fun Context.dp2px(dpVal: Float): Float = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dpVal, this.resources.displayMetrics)
+
+/**
+ * 加载本地图片 转bitmap
+ */
+fun getLoacalBitmap(url: String): Bitmap? {
+    try {
+        val fis = FileInputStream(url)
+        return BitmapFactory.decodeStream(fis)  ///把流转化为Bitmap图片
+    } catch (e: FileNotFoundException) {
+        e.printStackTrace()
+        return null
+    }
+}

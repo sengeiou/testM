@@ -63,7 +63,6 @@ dependencies {
     //数据库
     implementation 'org.greenrobot:greendao:3.2.2'
     implementation 'org.greenrobot:greendao-generator:3.2.2'
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
 }
 
@@ -82,7 +81,4 @@ task exportJar(type: Copy) {
 exportJar.dependsOn(deleteOldJar, build)
 //放在最后 不然会出错More than one file was found with OS independent path 'lib/x86_64/libobjectbox-jni.so'
 apply plugin: 'io.objectbox'
-repositories {
-    mavenCentral()
-}
 

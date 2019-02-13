@@ -3,34 +3,31 @@ package com.qingmeng.mengmeng.fragment
 import android.app.Activity
 import android.content.Intent
 import android.view.View
+import com.dragger2.activitytest0718.util.SharedPreferencesHelper
 import com.qingmeng.mengmeng.BaseFragment
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.*
-import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.MyInformation
-import com.qingmeng.mengmeng.utils.ApiUtils
-import com.qingmeng.mengmeng.utils.dp2px
-import com.qingmeng.mengmeng.utils.getBarHeight
+import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.imageLoader.CacheType
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
-import com.qingmeng.mengmeng.utils.setMarginExt
+import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_my.*
 import org.jetbrains.anko.support.v4.startActivity
-import org.jetbrains.anko.support.v4.startActivityForResult
 
 /**
  * 我的板块
  */
 
 class MyFragment : BaseFragment() {
-    private lateinit var mMyInformation: MyInformation   //个人信息bean
-    private val REQUEST_MY = 23015                       //下一页返回数据的requestCode
-
-    companion object {
-        var mSettingsOrUpdate: Int = 0                   //是设置密码或修改密码   1设置 2修改
-    }
+    private lateinit var spf: SharedPreferencesHelper
+    private var mLoginSuccess = false                    //登录状态
+    private var mMyInformation = MyInformation()         //个人信息bean
+    private val REQUEST_MY = 746                         //下一页返回数据的requestCode
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_my
@@ -44,15 +41,12 @@ class MyFragment : BaseFragment() {
         val statusBarHeight = getBarHeight(context!!)
         //给布局的高度重新设置一下 加上状态栏高度
         rlMyTop.layoutParams.height = rlMyTop.layoutParams.height + getBarHeight(context!!)
-        ivMySettings.setMarginExt(top = statusBarHeight + context!!.dp2px(15))
+        ivMySettings.setMarginExt(top = statusBarHeight + context!!.dp2px(10))
 
-        slMy.isRefreshing = true
-        if (mSettingsOrUpdate != 0) {
-            httpLoad()
-        } else {
-            //先请求用户校验是设置密码还是修改密码接口
-            settingsOrUpdatePass()
-        }
+        spf = SharedPreferencesHelper(context!!, "myFragment")
+
+        //设置缓存数据
+        getCacheData()
     }
 
     //点击事件
@@ -60,9 +54,9 @@ class MyFragment : BaseFragment() {
         super.initListener()
 
         //下拉刷新
-        slMy.setOnRefreshListener {
-            //如果该字段不为空 那么就直接请求信息查询
-            if (mSettingsOrUpdate != 0) {
+        srlMy.setOnRefreshListener {
+            //如果该字段是修改密码 那么就直接请求信息查询
+            if (spf.getSharedPreference("isUpdatePass", false) as Boolean) {
                 httpLoad()
             } else {
                 settingsOrUpdatePass()
@@ -76,23 +70,44 @@ class MyFragment : BaseFragment() {
 
         //设置
         ivMySettings.setOnClickListener {
-            //跳转aty
-            startActivity<MySettingsActivity>("avatar" to mMyInformation?.avatar, "userName" to mMyInformation?.userName)
+            if (mLoginSuccess) {
+                //跳转aty
+                startActivityForResult(Intent(context, MySettingsActivity::class.java).apply {
+                    putExtra("avatar", mMyInformation.avatar)
+                    putExtra("userName", mMyInformation.userName)
+                    putExtra("phone", mMyInformation.phone)
+                    putExtra("isUpdatePass", spf.getSharedPreference("isUpdatePass", false) as Boolean)
+                }, REQUEST_MY)
+            } else {
+                startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
+            }
         }
 
         //我的关注
         llMyMyFollow.setOnClickListener {
-            startActivityForResult<MyMyFollowActivity>(REQUEST_MY, "title" to tvMyMyFollow.text as String)
+            if (mLoginSuccess) {
+                startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFollow.text), REQUEST_MY)
+            } else {
+                startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
+            }
         }
 
         //我的留言
         llMyMyLeavingMessage.setOnClickListener {
-            startActivity<MyMyLeavingMessageActivity>()
+            if (mLoginSuccess) {
+                startActivityForResult(Intent(context, MyMyLeavingMessageActivity::class.java), REQUEST_MY)
+            } else {
+                startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
+            }
         }
 
         //我的足迹
         llMyMyFootprint.setOnClickListener {
-            startActivityForResult<MyMyFollowActivity>(REQUEST_MY, "title" to tvMyMyFootprint.text as String)
+            if (mLoginSuccess) {
+                startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFootprint.text), REQUEST_MY)
+            } else {
+                startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
+            }
         }
 
         //企业入驻
@@ -112,55 +127,90 @@ class MyFragment : BaseFragment() {
 
         //登录
         tvMyLogin.setOnClickListener {
-            startActivity<LoginMainActivity>()
+            startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
         }
     }
 
     //查询用户接口
     private fun httpLoad() {
         ApiUtils.getApi()
-                .myInformation(TEST_ACCESS_TOKEN)
+                .myInformation(MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    slMy.isRefreshing = false
+                    srlMy.isRefreshing = false
                     it.apply {
                         if (code == 12000) {
                             llMyNoLogin.visibility = View.VISIBLE
                             tvMyLogin.visibility = View.GONE
+                            //数据库删除
+                            BoxUtils.removeMyInformation(mMyInformation)
                             //信息赋值
                             mMyInformation = data as MyInformation
+                            //数据库保存
+                            BoxUtils.saveMyInformation(mMyInformation)
                             //页面赋值
-                            setData(data as MyInformation)
+                            setData(mMyInformation)
+                            mLoginSuccess = true
+                            ToastUtil.showShort("${MainApplication.instance.user.wxUid} ${MainApplication.instance.user.wxToken}")
                         } else {
                             llMyNoLogin.visibility = View.GONE
                             tvMyLogin.visibility = View.VISIBLE
+                            //设置默认名称头像等。
+                            tvMyUserName.text = getString(R.string.my_username)
+                            ivMyHeadPortrait.setImageResource(R.drawable.view_dialog_sound_volume_short_tip_bg)
+                            tvMyMyFollowNum.text = getString(R.string.my_defaultNum)
+                            tvMyMyLeavingMessageNum.text = getString(R.string.my_defaultNum)
+                            tvMyMyFootprintNum.text = getString(R.string.my_defaultNum)
+                            mLoginSuccess = false
+                            //数据库删除
+                            BoxUtils.removeMyInformation(mMyInformation)
                         }
                     }
                 }, {
-                    slMy.isRefreshing = false
+                    srlMy.isRefreshing = false
+                    mLoginSuccess = mMyInformation.userName != ""
                 })
     }
 
     //校验是设置密码还是修改密码
     private fun settingsOrUpdatePass() {
         ApiUtils.getApi()
-                .mySettingsOrUpdatePass(TEST_ACCESS_TOKEN)
+                .mySettingsOrUpdatePass(MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     it.apply {
                         if (code == 12000) {    //修改密码
-                            mSettingsOrUpdate = 2
+                            spf.put("isUpdatePass", true)
                         } else if (code == 30001) { //设置密码
-                            mSettingsOrUpdate = 1
+                            spf.put("isUpdatePass", false)
                         }
                     }
                     //请求下一个接口
                     httpLoad()
                 }, {
-                    slMy.isRefreshing = false
+                    srlMy.isRefreshing = false
                 })
+    }
+
+    //获取缓存数据
+    private fun getCacheData() {
+        Observable.create<MyInformation> {
+            mMyInformation = BoxUtils.getMyInformation()!!
+            it.onNext(mMyInformation)
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    llMyNoLogin.visibility = View.VISIBLE
+                    tvMyLogin.visibility = View.GONE
+                    //页面赋值
+                    setData(it)
+                    //自动下拉刷新请求接口
+                    srlMy.isRefreshing = true
+                }, {
+                    srlMy.isRefreshing = true
+                }, {}, { addSubscription(it) })
     }
 
     //页面内容赋值
@@ -173,19 +223,17 @@ class MyFragment : BaseFragment() {
         tvMyMyFootprintNum.text = "${myInformation.myFootprint}"
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, intent: Intent) {
-        super.onActivityResult(requestCode, resultCode, intent)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_MY && resultCode == Activity.RESULT_OK) {
-            val isDelete = intent.getBooleanExtra("isDelete", false)
-            //如果下一页删掉过数据 就刷新下本页
-            if (isDelete) {
-                slMy.isRefreshing = true
-                if (mSettingsOrUpdate != 0) {
-                    httpLoad()
-                } else {
-                    settingsOrUpdatePass()
-                }
+            val isDelete = data?.getBooleanExtra("isDelete", false) ?: false
+            val mPhoneChange = data?.getBooleanExtra("mPhoneChange", false) ?: false
+            //如果下一页删掉过数据 或改变过手机号 设置过密码 就刷新本页
+            if (isDelete || mPhoneChange) {
+                srlMy.isRefreshing = true
             }
+        } else if (requestCode == IConstants.LOGIN_BACK && resultCode == Activity.RESULT_OK) {
+            srlMy.isRefreshing = true
         }
     }
 }

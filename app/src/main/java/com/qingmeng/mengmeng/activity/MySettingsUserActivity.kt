@@ -1,23 +1,16 @@
 package com.qingmeng.mengmeng.activity
 
-import android.Manifest
+import android.app.Activity
 import android.content.Intent
-import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.support.v4.app.ActivityCompat
-import android.support.v4.content.ContextCompat
 import android.view.Gravity
+import android.view.View
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.constant.IConstants.RESULT_CODE_OPEN_ALBUM
-import com.qingmeng.mengmeng.constant.IConstants.RESULT_CODE_TAKE_CAMERA
-import com.qingmeng.mengmeng.constant.IConstants.TEST_ACCESS_TOKEN
 import com.qingmeng.mengmeng.entity.AllCity
 import com.qingmeng.mengmeng.entity.MySettingsUserBean
 import com.qingmeng.mengmeng.entity.SelectBean
-import com.qingmeng.mengmeng.utils.ApiUtils
-import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.imageLoader.CacheType
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.utils.photo.PhotoConfig
@@ -28,9 +21,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_settings_user.*
 import kotlinx.android.synthetic.main.layout_head.*
-import java.io.FileInputStream
-import java.io.FileNotFoundException
-import java.util.regex.Pattern
 
 
 /**
@@ -48,24 +38,21 @@ class MySettingsUserActivity : BaseActivity() {
     private var mMySettingsUserBean = MySettingsUserBean()     //个人信息bean
     private var mMoneyList = ArrayList<SelectBean>()           //创业资本数据
     private var mInterestList = ArrayList<SelectBean>()        //感兴趣行业数据
+    private var mLocalPath = ""                                //本地选好的图片路径
     private var mCanHttpLoad = true                            //是否可以再次请求
     //一些必填的内容
-    private var mName: String? = null                //真实姓名
-    private var mPhone: String? = null               //手机号
-    private var mDistrictId: Int? = null             //县id
-    private var mCapitalId: Int? = null              //创业资本
-    private var mIndustryOfInterest: String? = null  //感兴趣行业
+    private var mName: String = ""                   //真实姓名
+    private var mPhone: String = ""                  //手机号
+    private var mDistrictId: Int = 0                 //县id
+    private var mCapitalId: Int = 0                  //创业资本
+    private var mIndustryOfInterest = ""             //感兴趣行业
     //一些选填的内容
-    private var mAvatar: String? = null              //头像地址
-    private var mSex: Int? = null                    //年龄
-    private var mTelephone: String? = null           //固定电话
-    private var mWx: String? = null                  //微信
-    private var mQQ: String? = null                  //qq
-    private var mEmail: String? = null               //邮箱
-
-    companion object {
-        var mAllCityList = ArrayList<AllCity>()      //所有城市
-    }
+    private var mAvatar: String = ""                 //头像地址
+    private var mSex: Int = 0                        //年龄
+    private var mTelephone: String = ""              //固定电话
+    private var mWx: String = ""                     //微信
+    private var mQQ: String = ""                     //qq
+    private var mEmail: String = ""                  //邮箱
 
     override fun getLayoutId(): Int {
         return R.layout.activity_my_settings_user
@@ -74,8 +61,8 @@ class MySettingsUserActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
-        setHeadName(getString(R.string.my_settings_user_title))
-        mMenu.text = getString(R.string.save)
+        setHeadName(R.string.my_settings_user_title)
+        slMySettingsUser.visibility = View.GONE
 
         httpLoad()
     }
@@ -85,7 +72,7 @@ class MySettingsUserActivity : BaseActivity() {
 
         //返回
         mBack.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
 
         //保存
@@ -100,47 +87,42 @@ class MySettingsUserActivity : BaseActivity() {
             contentVerification()
         }
 
+        //空白处点击刷新
+        llMySettingsUserTips.setOnClickListener {
+            httpLoad()
+        }
+
         //头像
-        llMySettingsUserHead.setOnClickListener {
+        llMySettingsUserHead.setOnClickListener { _ ->
             //菜单内容
-            val menuList = ArrayList<SelectBean>()
-            menuList.add(SelectBean(name = getString(R.string.photograph)))
-            menuList.add(SelectBean(name = getString(R.string.albumSelect)))
+            val menuList = arrayListOf(SelectBean(name = getString(R.string.photograph)), SelectBean(name = getString(R.string.albumSelect)))
             mBottomDialog = SelectDialog(this, menuList, onItemClick = {
                 //拍照
                 if (menuList[it].name == getString(R.string.photograph)) {
-                    //判断是否有权限
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA) == PackageManager.PERMISSION_GRANTED) {
+                    PermissionUtils.camera(this) {
                         //打开相机方法
                         openCameraAndUploadServer()
-                    } else {
-                        //申请权限
-                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.CAMERA), RESULT_CODE_TAKE_CAMERA)
                     }
                 } else {  //相册选择
-                    //判断是否有权限
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                    PermissionUtils.readAndWrite(context = this, readAndWriteCallback = {
                         //打开相册方法
                         openAlbumAndUploadServer()
-                    } else {
-                        //申请权限
-                        ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), RESULT_CODE_OPEN_ALBUM)
-                    }
+                    })
                 }
             })
             mBottomDialog.show()
         }
 
         //性别
-        llMySettingsUserGender.setOnClickListener {
+        llMySettingsUserGender.setOnClickListener { _ ->
             //菜单内容
             val menuList = ArrayList<SelectBean>()
             menuList.add(SelectBean(name = getString(R.string.boy)))
             menuList.add(SelectBean(name = getString(R.string.girl)))
             when (mMySettingsUserBean.sex) {
                 1 -> {
-                    menuList[0].checkState = true
-                    menuList[1].checkState = false
+                    menuList[1].checkState = true
+                    menuList[0].checkState = false
                 }
                 2 -> {
                     menuList[0].checkState = false
@@ -151,9 +133,18 @@ class MySettingsUserActivity : BaseActivity() {
                 //设置内容
                 tvMySettingsUserGender.text = menuList[it].name
                 tvMySettingsUserGender.setTextColor(resources.getColor(R.color.color_333333))
-                //年龄赋值
-                mSex = it + 1
-                mMySettingsUserBean.sex = it + 1
+                //1女2男
+                when (it) {
+                    0 -> {
+                        //年龄赋值
+                        mSex = 2
+                        mMySettingsUserBean.sex = 2
+                    }
+                    1 -> {
+                        mSex = 1
+                        mMySettingsUserBean.sex = 1
+                    }
+                }
             })
             mBottomDialog.show()
         }
@@ -183,7 +174,6 @@ class MySettingsUserActivity : BaseActivity() {
                 }
             }
         }
-
         //感兴趣行业
         llMySettingsUserInterestIndustry.setOnClickListener {
             //数据不为空就直接调打开弹框方法
@@ -199,61 +189,65 @@ class MySettingsUserActivity : BaseActivity() {
 
     //个人信息接口请求
     private fun httpLoad() {
+        myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .mySettingsUser(TEST_ACCESS_TOKEN)
+                .mySettingsUser(MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    myDialog.dismissLoadingDialog()
                     it.apply {
                         if (code == 12000) {
+                            llMySettingsUserTips.visibility = View.GONE
+                            slMySettingsUser.visibility = View.VISIBLE
+                            mMenu.text = getString(R.string.save)
                             mMySettingsUserBean = data as MySettingsUserBean
                             setData(data as MySettingsUserBean)
                         } else {
-
+                            llMySettingsUserTips.visibility = View.VISIBLE
                         }
                     }
                 }, {
-
+                    myDialog.dismissLoadingDialog()
+                    llMySettingsUserTips.visibility = View.VISIBLE
                 })
     }
 
     //修改个人信息接口
     private fun updateUserHttp() {
-//        mAvatar?.let { if (it != mMySettingsUserBean.avatar) it else null },
-//        mName?.let { if (it != mMySettingsUserBean.name) it else null },
-//        mSex?.let { if (it != mMySettingsUserBean.sex) it else null },
-//        mPhone?.let { if (it != mMySettingsUserBean.phone) it else null },
-//        mTelephone?.let { if (it != mMySettingsUserBean.telephone) it else null },
-//        mWx?.let { if (it != mMySettingsUserBean.wx) it else null },
-//        mQQ?.let { if (it != mMySettingsUserBean.qq) it else null },
-//        mEmail?.let { if (it != mMySettingsUserBean.email) it else null },
-//        mDistrictId?.let { if (it != mMySettingsUserBean.cityIds) it else null },
-//        mCapitalId?.let { if (it != mMySettingsUserBean.capitalId) it else null },
+        myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .updateMySettingsUser(mAvatar, mName, mSex, mPhone, mTelephone, mWx, mQQ, mEmail, mDistrictId, mCapitalId, mIndustryOfInterest, token = TEST_ACCESS_TOKEN)
+                .updateMySettingsUser(mAvatar, mName, mSex, mPhone, mTelephone, mWx, mQQ, mEmail, mDistrictId, mCapitalId, mIndustryOfInterest, 1, token = MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    myDialog.dismissLoadingDialog()
                     it.apply {
                         if (code == 12000) {
                             ToastUtil.showShort("修改成功")
-                            this@MySettingsUserActivity.finish()
+                            //把本地图片地址返回给上一页
+                            setResult(Activity.RESULT_OK, Intent().apply {
+                                putExtra("mLocalPath", mLocalPath)
+                            })
+                            onBackPressed()
                         }
                     }
                 }, {
-
+                    myDialog.dismissLoadingDialog()
                 })
     }
 
     //静态数据 创业资本接口请求
     private fun getMoneyStaticHttp() {
         mCanHttpLoad = false
+        myDialog.showLoadingDialog()
         ApiUtils.getApi()
                 .getMoneyStatic()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     mCanHttpLoad = true
+                    myDialog.dismissLoadingDialog()
                     it.apply {
                         if (code == 12000) {
                             mMoneyList = data?.capitalList as ArrayList<SelectBean>
@@ -263,18 +257,21 @@ class MySettingsUserActivity : BaseActivity() {
                     }
                 }, {
                     mCanHttpLoad = true
+                    myDialog.dismissLoadingDialog()
                 })
     }
 
     //静态数据 感兴趣行业接口请求
     private fun getInterestStaticHttp() {
         mCanHttpLoad = false
+        myDialog.showLoadingDialog()
         ApiUtils.getApi()
                 .getInterestStatic()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     mCanHttpLoad = true
+                    myDialog.dismissLoadingDialog()
                     it.apply {
                         if (code == 12000) {
                             mInterestList = data?.industry as ArrayList<SelectBean>
@@ -284,6 +281,7 @@ class MySettingsUserActivity : BaseActivity() {
                     }
                 }, {
                     mCanHttpLoad = true
+                    myDialog.dismissLoadingDialog()
                 })
     }
 
@@ -311,7 +309,7 @@ class MySettingsUserActivity : BaseActivity() {
     private fun openInterestDialog(interestList: ArrayList<SelectBean>) {
         //先填充内容 加入已选择的行业
         val list: List<String> = mMySettingsUserBean.industryOfInterest.split(",")
-        list?.forEach {
+        list.forEach {
             interestList.forEachIndexed { _, selectBean ->
                 //如果相等就把interestList里的选中状态改变下
                 if (it == "${selectBean.id}") {
@@ -322,9 +320,9 @@ class MySettingsUserActivity : BaseActivity() {
         //全局变量赋值
         mInterestList = interestList
         //打开弹框
-        mBottomDialog = SelectDialog(this, mInterestList, isDefaultLayout = false, onCalcelClick = { _, list ->
+        mBottomDialog = SelectDialog(this, mInterestList, isDefaultLayout = false, onCancelClick = { _, resultList ->
             var str = ""
-            list.forEach {
+            resultList.forEach {
                 if (it.checkState) {
                     str = str + it.id + ","
                 }
@@ -334,11 +332,12 @@ class MySettingsUserActivity : BaseActivity() {
                 tvMySettingsUserInterestIndustry.text = getString(R.string.my_settings_user_select_yes)
                 tvMySettingsUserInterestIndustry.setTextColor(resources.getColor(R.color.color_333333))
             } else {
+                mMySettingsUserBean.industryOfInterest = ""
                 tvMySettingsUserInterestIndustry.text = getString(R.string.my_settings_user_select_no)
                 tvMySettingsUserInterestIndustry.setTextColor(resources.getColor(R.color.color_999999))
             }
             //选择好后重新赋值
-            mInterestList = list
+            mInterestList = resultList
             //改变感兴趣行业
             mIndustryOfInterest = str
         })
@@ -347,61 +346,27 @@ class MySettingsUserActivity : BaseActivity() {
 
     //接口请求前内容验证
     private fun contentVerification() {
-        if (!mName.isNullOrBlank()) {   //真实姓名
-            if (!mPhone.isNullOrBlank() && checkTel(mPhone!!)) {    // 手机号
-                if (mDistrictId != null && mDistrictId != 0) {  //城市id
-                    if (mCapitalId != null && mCapitalId != 0) {    //创业资本
-                        if (!mIndustryOfInterest.isNullOrBlank()) { //感兴趣行业
-                            //一路过关斩将 终于过来了！(缓一缓还有第二轮！)
-                            //如果这些选填的内容不为空的话 那么就判断它们格式正不正确 然后请求接口
-                            if (!mTelephone.isNullOrBlank()) {
-                                ToastUtil.showShort(getString(R.string.my_settings_user_telephone_tips))
-                                return
-                            }
-                            if (!mWx.isNullOrBlank()) {
-                                ToastUtil.showShort(getString(R.string.my_settings_user_wechat_tips))
-                                return
-                            }
-                            if (!mQQ.isNullOrBlank()) {
-                                ToastUtil.showShort(getString(R.string.my_settings_user_qq_tips))
-                                return
-                            }
-                            if (!mEmail.isNullOrBlank()) {
-                                ToastUtil.showShort(getString(R.string.my_settings_user_email_tips))
-                                return
-                            }
-                            //这。。。比过五关斩六将还牛批啊
-                            //请求修改个人信息接口
-                            updateUserHttp()
-                        } else {
-                            ToastUtil.showShort(getString(R.string.my_settings_user_interestIndustry_tips))
-                        }
-                    } else {
-                        ToastUtil.showShort(getString(R.string.my_settings_user_money_tips))
-                    }
-                } else {
-                    ToastUtil.showShort(getString(R.string.popCitySelect_twoTips))
-                }
-            } else {
-                if (mPhone.isNullOrBlank()) {   //空
-                    ToastUtil.showShort(getString(R.string.phoneTips))
-                } else {    //格式错误
-                    ToastUtil.showShort(getString(R.string.phoneFormat_tips))
-                }
+        when {
+            mName.isBlank() -> ToastUtil.showShort(getString(R.string.my_settings_user_name_tips))   //真实姓名
+            mPhone.isBlank() -> ToastUtil.showShort(getString(R.string.phoneTips))  //手机号
+            !InputCheckUtils.checkPhone(mPhone) -> ToastUtil.showShort(getString(R.string.phoneFormat_tips))   //手机号格式错误
+            mDistrictId == 0 -> ToastUtil.showShort(getString(R.string.popCitySelect_twoTips))   //城市id
+            mCapitalId == 0 -> ToastUtil.showShort(getString(R.string.my_settings_user_money_tips))   //创业资本
+            mIndustryOfInterest.isBlank() -> ToastUtil.showShort(getString(R.string.my_settings_user_interestIndustry_tips)) //感兴趣行业
+            !mTelephone.isBlank() && !InputCheckUtils.checkTel(mTelephone) -> ToastUtil.showShort(getString(R.string.my_settings_user_telephone_tips))
+            !mWx.isBlank() && !InputCheckUtils.checkWechat(mWx) -> ToastUtil.showShort(getString(R.string.my_settings_user_wechat_tips))
+            !mQQ.isBlank() && !InputCheckUtils.checkQQ(mQQ) -> ToastUtil.showShort(getString(R.string.my_settings_user_qq_tips))
+            !mEmail.isBlank() && !InputCheckUtils.checkEmail(mEmail) -> ToastUtil.showShort(getString(R.string.my_settings_user_email_tips))
+            mLocalPath != "" -> {
+                myDialog.showLoadingDialog()
+                //上传oss 返回http地址
+                ApiUtils.updateImg(this, mLocalPath, callback = { newUrl, _ ->
+                    mAvatar = if (newUrl != "") newUrl else mAvatar
+                    //请求修改个人信息接口
+                    updateUserHttp()
+                })
             }
-        } else {
-            ToastUtil.showShort(getString(R.string.my_settings_user_name_tips))
-        }
-    }
-
-    //正则验证手机号
-    private fun checkTel(tel: String): Boolean {
-        if (tel.isNullOrBlank()) {
-            return false
-        } else {
-            val pattern = Pattern.compile("^[1][3,4,5,7,8][0-9]{9}$")
-            val matcher = pattern.matcher(tel)
-            return matcher.matches()
+            else -> updateUserHttp()
         }
     }
 
@@ -412,10 +377,10 @@ class MySettingsUserActivity : BaseActivity() {
         tvMySettingsUserUserName.text = mySettingsUserBean.userName
         etMySettingsName.setText(mySettingsUserBean.name)
         if (mySettingsUserBean.sex == 1) {
-            tvMySettingsUserGender.text = getString(R.string.boy)
+            tvMySettingsUserGender.text = getString(R.string.girl)
             tvMySettingsUserGender.setTextColor(resources.getColor(R.color.color_333333))
         } else if (mySettingsUserBean.sex == 2) {
-            tvMySettingsUserGender.text = getString(R.string.girl)
+            tvMySettingsUserGender.text = getString(R.string.boy)
             tvMySettingsUserGender.setTextColor(resources.getColor(R.color.color_333333))
         } else {
             tvMySettingsUserGender.text = getString(R.string.my_settings_user_select_no)
@@ -426,8 +391,8 @@ class MySettingsUserActivity : BaseActivity() {
         etMySettingsUserWechat.setText(mySettingsUserBean.wx)
         etMySettingsUserQQ.setText(mySettingsUserBean.qq)
         etMySettingsUserEmail.setText(mySettingsUserBean.email)
-        if (!mySettingsUserBean.address.isNullOrBlank()) {
-            tvMySettingsUserCity.text = mySettingsUserBean.address
+        if (!mySettingsUserBean.cityName.isNullOrBlank()) {
+            tvMySettingsUserCity.text = mySettingsUserBean.cityName
             tvMySettingsUserCity.setTextColor(resources.getColor(R.color.color_333333))
         } else {
             tvMySettingsUserCity.text = getString(R.string.my_settings_user_select_no)
@@ -464,34 +429,17 @@ class MySettingsUserActivity : BaseActivity() {
     //权限申请结果
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        val cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED
-        when (requestCode) {
-            RESULT_CODE_TAKE_CAMERA -> {
-                if (cameraAccepted) {
-                    //授权成功
-                    openCameraAndUploadServer()
-                } else {
-                    //用户拒绝
-                    ToastUtil.showShort(getString(R.string.permission_takeCamera))
-                }
-            }
-            RESULT_CODE_OPEN_ALBUM -> {
-                if (cameraAccepted) {
-                    openAlbumAndUploadServer()
-                } else {
-                    ToastUtil.showShort(getString(R.string.permission_openAlbum))
-                }
-            }
-        }
+        PermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     //打开相机拍照上传服务器
     private fun openCameraAndUploadServer() {
         SimplePhotoUtil.instance.setConfig(PhotoConfig(this, true, onPathCallback = { path ->
-            //用ImageButton显示出来
+            //用ImageView显示出来
             val bitmap = getLoacalBitmap(path)
             ivMySettingsUserHead.setImageBitmap(bitmap)
+            //先把选好的本地路径保存下 当用户点击保存时再上传oss
+            mLocalPath = path
         }).apply {
             isCuted = true  //是否剪裁
             cutHeight = 300 //剪裁宽高
@@ -504,32 +452,12 @@ class MySettingsUserActivity : BaseActivity() {
         SimplePhotoUtil.instance.setConfig(PhotoConfig(this, false, onPathCallback = { path ->
             val bitmap = getLoacalBitmap(path)
             ivMySettingsUserHead.setImageBitmap(bitmap)
+            mLocalPath = path
         }).apply {
             isCuted = true
             cutHeight = 300
             cutWidth = 300
         })
-    }
-
-    /**
-     * 加载本地图片
-     * @param url
-     * @return
-     */
-    private fun getLoacalBitmap(url: String): Bitmap? {
-        try {
-            val fis = FileInputStream(url)
-            return BitmapFactory.decodeStream(fis)  ///把流转化为Bitmap图片
-        } catch (e: FileNotFoundException) {
-            e.printStackTrace()
-            return null
-        }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-
-        mAllCityList.clear()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

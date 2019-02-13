@@ -15,6 +15,11 @@
         <item name="android:screenOrientation">portrait</item>
     </style>
 
+    <!--透明activity-->
+    <style name="AppTheme.NoActionBar.Translucent">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
     <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
@@ -97,5 +102,33 @@
     <style name="SoundVolumeStyle" parent="@android:style/Theme.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:backgroundDimEnabled">false</item>
+    </style>
+
+    <style name="text_s13_c66">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_size_13</item>
+        <item name="android:textColor">@color/color_666666</item>
+    </style>
+
+    <style name="text_s13_c99">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_size_13</item>
+        <item name="android:textColor">@color/color_999999</item>
+    </style>
+
+    <style name="text_s15_c33">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_size_15</item>
+        <item name="android:textColor">@color/color_333333</item>
+    </style>
+
+    <style name="text_s15_c99">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/text_size_15</item>
+        <item name="android:textColor">@color/color_999999</item>
     </style>
 </resources>

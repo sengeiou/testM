@@ -36,7 +36,7 @@ class HeadDetailsActivity : BaseActivity() {
     override fun initListener() {
         super.initListener()
         mBack.setOnClickListener {
-            this.finish()
+            onBackPressed()
         }
         mMenu.setOnClickListener {
             mBottomDialog = ShareDialog(this)

@@ -1,8 +1,6 @@
-package com.app.common.adapter.util
+package com.qingmeng.mengmeng.adapter.util
 
 import android.support.v4.util.SparseArrayCompat
-import com.qingmeng.mengmeng.adapter.util.ItemViewDelegate
-import com.qingmeng.mengmeng.adapter.util.ViewHolder
 
 
 /**
