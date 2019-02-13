@@ -9,8 +9,10 @@
 
     <include layout="@layout/layout_head" />
 
-    <TextView
+    <WebView
+        android:id="@+id/NewsWebView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="我是头报详情页" />
+        android:layout_height="match_parent">
+
+    </WebView>
 </LinearLayout>

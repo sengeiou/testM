@@ -17,6 +17,7 @@
     <dimen name="padding_dp_13">13dp</dimen>
     <dimen name="padding_dp_13_5">13.5dp</dimen>
     <dimen name="padding_dp_14">14dp</dimen>
+    <dimen name="padding_dp_14_5">14.5dp</dimen>
     <dimen name="padding_dp_15">15dp</dimen>
     <dimen name="padding_dp_15_5">15.5dp</dimen>
     <dimen name="padding_dp_16">16dp</dimen>

@@ -17,26 +17,27 @@
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="@dimen/padding_dp_80"
+            android:id="@+id/search_result_bigLogo"
+            android:layout_width="@dimen/padding_dp_100"
             android:layout_height="@dimen/padding_dp_100"
-            android:layout_marginLeft="@dimen/padding_dp_10"
+            android:layout_marginStart="@dimen/padding_dp_10"
             android:src="@color/colorPrimary" />
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/padding_dp_100"
             android:orientation="vertical">
 
             <RelativeLayout
                 android:id="@+id/rlSearchResultName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/padding_dp_10">
+                android:layout_marginStart="@dimen/padding_dp_10">
 
                 <ImageView
-                    android:layout_marginTop="@dimen/padding_dp_2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_dp_2"
                     android:src="@drawable/search_result_approve" />
 
                 <TextView
@@ -52,7 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/rlSearchResultName"
-                android:layout_marginLeft="@dimen/padding_dp_10"
+                android:layout_marginStart="@dimen/padding_dp_10"
                 android:layout_marginTop="@dimen/padding_dp_15"
                 android:orientation="horizontal">
 
@@ -67,15 +68,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:text="¥12万"
                         android:textColor="@color/red"
                         android:textSize="@dimen/text_size_15" />
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="@dimen/padding_dp_80"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:orientation="horizontal">
 
                     <TextView
@@ -92,71 +91,47 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:textColor="@color/color_666666"
-                        android:textSize="@dimen/text_size_12" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:text="@string/seach_visit_count"
-                        android:textColor="@color/color_666666"
-                        android:textSize="@dimen/text_size_12" />
-
-                    <TextView
-                        android:id="@+id/search_result_directStoreNum"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginRight="@dimen/padding_dp_10"
-                        android:gravity="center_vertical"
                         android:maxLines="1"
+                        android:text="9999"
                         android:textColor="@color/color_666666"
                         android:textSize="@dimen/text_size_12" />
                 </LinearLayout>
+
+                <!--<LinearLayout-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:orientation="horizontal">-->
+
+                <!--<TextView-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:gravity="center"-->
+                <!--android:text="@string/seach_visit_count"-->
+                <!--android:textColor="@color/color_666666"-->
+                <!--android:textSize="@dimen/text_size_12" />-->
+
+                <!--<TextView-->
+                <!--android:id="@+id/search_result_directStoreNum"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_marginEnd="@dimen/padding_dp_10"-->
+                <!--android:gravity="center_vertical"-->
+                <!--android:maxLines="1"-->
+                <!--android:textColor="@color/color_666666"-->
+                <!--android:textSize="@dimen/text_size_12" />-->
+                <!--</LinearLayout>-->
             </LinearLayout>
 
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <com.qingmeng.mengmeng.view.flowlayout.TagFlowLayout
+                android:id="@+id/seach_result_tagFliwLayout"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/padding_dp_19"
                 android:layout_alignParentBottom="true"
-                android:layout_marginLeft="@dimen/padding_dp_10"
-                android:orientation="horizontal">
+                android:layout_marginStart="@dimen/padding_dp_10">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="加盟支持"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/text_size_11" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="加盟支持"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/text_size_11" />
-
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:text="加盟支持"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="@dimen/text_size_11" />
-            </LinearLayout>
+            </com.qingmeng.mengmeng.view.flowlayout.TagFlowLayout>
 
         </RelativeLayout>
 

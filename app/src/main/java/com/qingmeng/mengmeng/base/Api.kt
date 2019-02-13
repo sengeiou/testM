@@ -243,17 +243,13 @@ interface Api {
     @GET("/api/newspaper/article_list")
     fun getNewsHeadList(@Query("pageNum") pageNum: Int): Observable<BaseBean<NewsPagerListBean>>
 
-    //搜索食物分类列表
-    @GET("api/get_food")
-    fun getRedShopLeft(@Query("id") id: Int): Observable<BaseBean<RedShopLeftListBean>>
-
     //红铺列表
     @GET("api/shop/popular_brands")
-    fun getRedShopRight(@Query("type") type: Int, @Header("VERSION") version: String = ""): Observable<BaseBean<RedShopLeftListBean>>
+    fun getRedShopRight(@Query("type") type: Long, @Header("VERSION") version: String): Observable<BaseBean<RedShopLeftListBean>>
 
     //筛选栏投资金额
     @GET("api/get_capital")
-    fun getSeachConditionMoney(): Observable<BaseBean<SeachConditionBean>>
+    fun getSeachConditionMoney(): Observable<BaseBean<SeachConditionMoneyBean>>
 
     //筛选栏加盟模式
     @GET("api/get_mode")
