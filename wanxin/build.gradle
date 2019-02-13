@@ -1,0 +1,255 @@
+//apply plugin: 'com.android.application'
+apply plugin: 'com.android.library'
+apply plugin: 'org.greenrobot.greendao'
+//kotlin
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-kapt'
+//apply plugin: 'com.google.protobuf'
+repositories {
+    mavenCentral()
+}
+
+//推送
+//包名
+def packageName = "com.leimo.wanxin"
+//小米
+def xiaomiAppId = "2882303761517926618"
+def xiaomiAppKey = "5261792694618"
+def xiaomiSecret = "Kg6r1ELnZpdxEoEnAu2QMw=="
+//华为推送
+def hmsVersion = "2.6.3"//华为推送库版本号
+def huaweiAppId = "100572719"
+def huaweiAppSecret = "7c5bceec92997c0e09fdb462ca01bfdb"
+//魅族推送
+def meizuAppId = "1003557"
+def meizuAppKey = "f65aceedcbbf4ff9859b69f6922f9120"
+//vivo推送
+def vivoAppId = "10799"
+def vivoAppKey = "b8754b9e-e1bf-4ced-b796-6d73084a1c94"
+def vivoAppSecret = "839bb047-c800-4393-b98a-aeda65c1b5ec"
+
+println("packageName = ${packageName}" +
+        " hmsVersion = ${hmsVersion}" +
+        " huaweiAppId = ${huaweiAppId}" +
+        " meizuAppId = ${meizuAppId}" +
+        " meizuAppKey = ${meizuAppKey}" +
+        " vivoAppId = ${vivoAppId}" +
+        " vivoAppKey = ${vivoAppKey}" +
+        " vivoAppSecret = ${vivoAppSecret}")
+
+android {
+    compileSdkVersion 26
+
+    defaultConfig {
+//        applicationId "com.leimo.wanxin"
+        minSdkVersion 19
+        targetSdkVersion 26
+        versionCode 5
+        versionName "1.0.0"
+        multiDexEnabled true
+        flavorDimensions "default"
+        ndk {
+            // 设置支持的SO库架构
+            abiFilters 'armeabi', 'armeabi-v7a'
+            //, 'arm64-v8a','mips','mips64'
+        }
+        resValue "string", "appName", "完信"
+        manifestPlaceholders = [PACKAGE_NAME: packageName,
+                                HMSVERSION: hmsVersion, HUAWEI_APP_ID: huaweiAppId,
+                                XIAOMI_APP_ID: xiaomiAppId, XIAOMI_APP_KEY: xiaomiAppKey,
+                                MEIZU_APP_ID: meizuAppId, MEIZU_APP_KEY: meizuAppKey,
+                                VIVO_APP_ID: vivoAppId, VIVO_APP_KEY: vivoAppKey,
+        ]
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+//    productFlavors {
+//        wx {
+//            resValue "string", "appName", "完信"
+//        }
+//        wx1 {
+//            applicationIdSuffix '.wx1'
+//            resValue "string", "appName", "完信1"
+//        }
+//        wx2 {
+//            applicationIdSuffix '.wx2'
+//            resValue "string", "appName", "完信2"
+//        }
+//    }
+    sourceSets.main.jni.srcDirs = [] //disable automatic ndk-build call
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    sourceSets { main.java.srcDirs += 'src/main/kotlin' }
+
+    aaptOptions { cruncherEnabled = false }
+
+    lintOptions {
+        //在打包Release版本的时候不进行检测
+        checkReleaseBuilds false
+        // 有报错也不会停止打包
+        abortOnError false
+        disable 'MissingTranslation'
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+
+    packagingOptions {
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+    }
+    useLibrary 'org.apache.http.legacy'
+    greendao {
+        schemaVersion 33
+//  设置DaoMaster 、DaoSession、Dao目录
+        targetGenDir 'src/main/java'
+//  设置DaoMaster 、DaoSession、Dao包名
+        daoPackage 'com.mogujie.tt.db.dao'
+    }
+
+    //指定文件目录
+//    sourceSets {
+//        main {
+//            proto {
+//                //main目录新建proto目录
+//                srcDir 'src/main/proto'
+//                include '**/*.proto'
+//            }
+//            java {
+//                srcDir 'src/main/java'
+//            }
+//        }
+//    }
+}
+//protobuf {
+//    protoc {
+//        artifact = 'com.google.protobuf:protoc:2.5.0'
+//    }
+//
+//    generateProtoTasks {
+//        all().each { task ->
+//            task.builtins {
+//                remove java
+//            }
+//            task.builtins {
+//                java {}
+//                // Add cpp output without any option.
+//                // DO NOT omit the braces if you want this builtin to be added.
+//                cpp {}
+//            }
+//        }
+//    }
+//    //protoc生成目录
+//    generatedFilesBaseDir = "$projectDir/build/protoc"
+//}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    implementation 'com.android.support:appcompat-v7:26.0.2'
+
+    //kotlin
+    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+
+    //kotlin工具
+//    implementation 'org.jetbrains.anko:anko-commons:0.10.0'
+
+    //数据解析
+    implementation 'com.google.protobuf:protobuf-java:2.6.1'
+    implementation 'com.google.protobuf:protoc:2.6.1'
+
+    //
+    implementation 'de.greenrobot:eventbus:2.4.0'
+    implementation 'commons-io:commons-io:2.4'
+    implementation 'top.oply.opuslib:opuslib:1.0.2'
+    implementation 'com.android.support:multidex:1.0.0'
+
+    //调试
+    implementation 'com.facebook.stetho:stetho:1.3.1'
+    implementation 'com.facebook.stetho:stetho-okhttp3:1.3.1'
+
+    //数据库
+    implementation 'org.greenrobot:greendao:3.2.2'
+    implementation 'org.greenrobot:greendao-generator:3.2.2'
+
+    //json解析
+    implementation 'com.google.code.gson:gson:2.8.2'
+
+    //图片加载
+    implementation 'com.github.bumptech.glide:glide:4.0.0'
+
+    //Rxjava
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+
+    //网络请求
+    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.3.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.7.0'
+
+    //    //推送
+
+    //    //PushSDK必须依赖基础组件库，所以需要加入对应依赖
+
+    //    implementation 'com.umeng.umsdk:common:1.5.4'
+
+    //    //PushSDK必须依赖utdid库，所以需要加入对应依赖
+
+    //    implementation 'com.umeng.umsdk:utdid:1.1.5.3'
+
+    //    //PushSDK
+
+    //    implementation 'com.umeng.umsdk:push:5.0.2'
+
+    //
+
+    //    //小米Push通道
+
+    //    implementation 'com.umeng.umsdk:xiaomi-push:3.6.9'
+
+    //    implementation 'com.umeng.umsdk:xiaomi-umengaccs:1.0.9'
+
+    //
+
+    //    //华为Push通道
+
+    //    implementation 'com.umeng.umsdk:huawei-basetb:2.6.0.301'
+
+    //    implementation 'com.umeng.umsdk:huawei-pushtb:2.6.0.301'
+
+    //    implementation 'com.umeng.umsdk:huawei-umengaccs:1.1.3'
+
+    //
+
+    //    //魅族Push通道
+
+    //    implementation 'com.umeng.umsdk:meizu-push:3.8.1'
+
+    //    implementation 'com.umeng.umsdk:meizu-umengaccs:1.0.6'
+
+    //module
+    implementation project(':mgimlibs')
+    implementation project(':imgcompress')
+    implementation project(':webputil')
+    implementation project(':common')
+    implementation project(path: ':huaweilib')
+    implementation files('libs/MiPush_SDK_Client_3_6_12.jar')
+
+    //
+    implementation 'com.meizu.flyme.internet:push-internal:3.5.0@aar'
+
+    //    compile 'com.meizu.flyme.internet:push-ups:1.1.+'
+    implementation files('libs/pushsdk_v2.3.1.jar')
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
