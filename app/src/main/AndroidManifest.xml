@@ -46,6 +46,14 @@
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <meta-data
+            android:name="com.baidu.lbsapi.API_KEY"
+            android:value="c4PzRwuyUUnfU3vUfmbpBRuILEtUD4vt"/>
+        <service
+            android:name="com.baidu.location.f"
+            android:enabled="true"
+            android:process=":remote"/>
+
         <activity
             android:name=".activity.SplashActivity"
             android:screenOrientation="portrait"

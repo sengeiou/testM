@@ -63,6 +63,11 @@ android {
             buildConfigField("String", "BUGLY_APPID", "\"0bf47d1cec\"")
         }
     }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+        }
+    }
     repositories {
         flatDir {
             dirs 'libs'
@@ -129,4 +134,6 @@ dependencies {
     implementation 'de.greenrobot:eventbus:2.4.0'
     implementation 'cn.jzvd:jiaozivideoplayer:6.4.1'
     implementation project(':wanxin')
+    implementation project(':common')
+    implementation files('libs/BaiduLBS_Android.jar')
 }
