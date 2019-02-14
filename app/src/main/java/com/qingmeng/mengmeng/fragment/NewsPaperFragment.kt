@@ -193,8 +193,5 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, BGABanner.Delegate
         } else {
             news_pager_bgaBanner.setAutoPlayAble(false)
         }
-
     }
-
-
 }
