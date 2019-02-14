@@ -158,7 +158,7 @@ interface Api {
 
     //忘记密码
     @POST("app/user/forget_password")
-    fun forgetpassword(@Query("phone") phone: String, @Query("msmCode") msmCode: String, @Query("password") password: String, @Header("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
+    fun forgetpassword(@Query("phone") phone: String, @Query("smsCode") msmCode: String, @Query("password") password: String, @Query("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
 
     //获取oss令牌
     @GET("http://oss.ilashou.com/oss/authorization_app?name=mm")
