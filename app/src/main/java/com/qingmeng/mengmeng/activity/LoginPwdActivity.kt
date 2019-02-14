@@ -68,6 +68,7 @@ class LoginPwdActivity : BaseActivity() {
         from = intent.getIntExtra(FROM_TYPE, 0)
         setLoginType(loginType)
         imgHandler = ImageCodeHandler(this, mLoginGetCode)
+        GeetestUtil.init(this)
         //完信相关
         SystemConfigSp.instance().init(applicationContext)
         if (TextUtils.isEmpty(SystemConfigSp.instance().getStrConfig(SystemConfigSp.SysCfgDimension.LOGINSERVER))) {
@@ -78,6 +79,7 @@ class LoginPwdActivity : BaseActivity() {
 
     override fun onDestroy() {
         imServiceConnector.disconnect(this)
+        GeetestUtil.destroy()
         super.onDestroy()
     }
 

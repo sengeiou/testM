@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.WindowManager
+import com.qingmeng.mengmeng.activity.LoginMainActivity
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.WxBean
 import com.tencent.mm.opensdk.constants.ConstantsAPI
@@ -57,6 +58,7 @@ class WXEntryActivity : AppCompatActivity(), IWXAPIEventHandler {
                     if (ConstantsAPI.COMMAND_SENDMESSAGE_TO_WX != type) {
                         val code = (resp as SendAuth.Resp).code
                         EventBus.getDefault().post(WxBean(code))
+                      LoginMainActivity().loginCode(code)
                     }
                 }
                 BaseResp.ErrCode.ERR_USER_CANCEL -> {
