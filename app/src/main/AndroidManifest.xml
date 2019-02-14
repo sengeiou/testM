@@ -82,7 +82,10 @@
         <activity android:name=".activity.MyEnterpriseEntryActivity"/>
         <activity android:name=".activity.MyThreeBindingActivity"/>
         <activity android:name=".activity.MyMessageActivity"/>
-        <activity android:name=".activity.MyMessageChatActivity"/>
+        <activity
+            android:name=".activity.MyMessageChatActivity"
+            android:hardwareAccelerated="true"
+            />
         <activity android:name=".activity.WebViewActivity"/>
         <!-- 登录注册 -->
         <activity android:name=".activity.LoginMainActivity"/>

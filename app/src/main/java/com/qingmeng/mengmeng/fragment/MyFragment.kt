@@ -55,12 +55,7 @@ class MyFragment : BaseFragment() {
 
         //下拉刷新
         srlMy.setOnRefreshListener {
-            //如果该字段是修改密码 那么就直接请求信息查询
-            if (spf.getSharedPreference("isUpdatePass", false) as Boolean) {
-                httpLoad()
-            } else {
-                settingsOrUpdatePass()
-            }
+            httpSelect()
         }
 
         //头像
@@ -173,6 +168,15 @@ class MyFragment : BaseFragment() {
                 })
     }
 
+    private fun httpSelect() {
+        //如果该字段是修改密码 那么就直接请求信息查询
+        if (spf.getSharedPreference("isUpdatePass", false) as Boolean) {
+            httpLoad()
+        } else {
+            settingsOrUpdatePass()
+        }
+    }
+
     //校验是设置密码还是修改密码
     private fun settingsOrUpdatePass() {
         ApiUtils.getApi()
@@ -207,9 +211,11 @@ class MyFragment : BaseFragment() {
                     //页面赋值
                     setData(it)
                     //自动下拉刷新请求接口
-                    srlMy.isRefreshing = true
+//                    srlMy.isRefreshing = true
+                    httpSelect()
                 }, {
-                    srlMy.isRefreshing = true
+//                    srlMy.isRefreshing = true
+                    httpSelect()
                 }, {}, { addSubscription(it) })
     }
 
@@ -225,15 +231,14 @@ class MyFragment : BaseFragment() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == REQUEST_MY && resultCode == Activity.RESULT_OK) {
+        if ((requestCode == REQUEST_MY || requestCode == IConstants.LOGIN_BACK) && resultCode == Activity.RESULT_OK) {
             val isDelete = data?.getBooleanExtra("isDelete", false) ?: false
             val mPhoneChange = data?.getBooleanExtra("mPhoneChange", false) ?: false
             //如果下一页删掉过数据 或改变过手机号 设置过密码 就刷新本页
-            if (isDelete || mPhoneChange) {
-                srlMy.isRefreshing = true
+            if (isDelete || mPhoneChange || requestCode == IConstants.LOGIN_BACK) {
+//                srlMy.isRefreshing = true
+                httpSelect()
             }
-        } else if (requestCode == IConstants.LOGIN_BACK && resultCode == Activity.RESULT_OK) {
-            srlMy.isRefreshing = true
         }
     }
 }

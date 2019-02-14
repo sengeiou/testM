@@ -812,7 +812,7 @@ class MyMessageChatActivity : BaseActivity() {
         getImageList()
         ChatAdapter.msgObjectList = msgObjectList
         mAdapter.notifyDataSetChanged()
-        rvMyMessageChat.scrollToPosition(chatList.lastIndex)
+        mLayoutManager.scrollToPositionWithOffset(chatList.lastIndex + 1, 0)
     }
 
     /**
@@ -1287,7 +1287,7 @@ class MyMessageChatActivity : BaseActivity() {
 
     /**
      * 显示气泡
-     */
+    */
     private fun showPopWindow(position: Int, parent: ViewGroup, view: View) {
         val message = (msgObjectList[position] as MessageEntity)
         // 创建一个pop对象，然后 分支判断状态，然后显示需要的内容
