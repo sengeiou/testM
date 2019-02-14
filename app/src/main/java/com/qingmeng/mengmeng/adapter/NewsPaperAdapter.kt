@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.adapter
 
+import android.content.Context
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -7,15 +8,21 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import cn.bingoogolapple.bgabanner.BGABanner
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.entity.Banner
+import com.qingmeng.mengmeng.entity.NewsPagerList
 
 /**
  * Created by fyf on 2019/1/2
  * 头报适配器
  */
-
-class NewsPaperAdapter(var imgs: ArrayList<Banner>, var mList: ArrayList<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+open class NewsPaperAdapter(val context: Context, var mImgsList: ArrayList<Banner>,
+                       val onItemClickListener: (newsPagerList: NewsPagerList) -> Unit,
+                       private val onBannerClick: (Banner) -> Unit) :
+        RecyclerView.Adapter<RecyclerView.ViewHolder>(), BGABanner.Delegate<ImageView, Banner>, BGABanner.Adapter<ImageView, Banner> {
+    val mList = ArrayList<NewsPagerList>()
     private val ITEM_BANNER = 0
     private val ITEM_NEWS = 1
     override fun getItemViewType(position: Int): Int = when (position) {
@@ -23,11 +30,11 @@ class NewsPaperAdapter(var imgs: ArrayList<Banner>, var mList: ArrayList<String>
         else -> ITEM_NEWS
     }
 
-    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, item_type: Int) {
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         holder.let {
-            when (item_type) {
+            when (getItemViewType(position = position)) {
                 ITEM_BANNER -> (it as NewspaperBannerViewHolder).bindViewHolder()
-                ITEM_NEWS -> (it as NewspaperNewsViewHolder).bindViewHolder()
+                ITEM_NEWS -> (it as NewspaperNewsViewHolder).bindViewHolder(mList[position - 1])
             }
         }
     }
@@ -41,30 +48,71 @@ class NewsPaperAdapter(var imgs: ArrayList<Banner>, var mList: ArrayList<String>
             }
             else -> {
                 view = LayoutInflater.from(parent.context).inflate(R.layout.news_paper_item, parent, false)
-                NewspaperBannerViewHolder(view)
+                NewspaperNewsViewHolder(view)
             }
         }
 
     }
 
-    override fun getItemCount(): Int = mList.size
+    override fun getItemCount(): Int = mList.size + 1
+    fun isEmpty(): Boolean = mList.isEmpty()
+    /** 更新数据，替换原有数据  */
+    fun updateItems(items: ArrayList<NewsPagerList>) {
+        if (!mList.isEmpty()) {
+            mList.clear()
+        }
+        mList.addAll(items)
+        notifyDataSetChanged()
+    }
+
+    /** 在列表尾添加一串数据  */
+    fun addItems(items: List<NewsPagerList>) {
+        mList.addAll(items)
+        notifyDataSetChanged()
+    }
 
     inner class NewspaperBannerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val bgaBanner = itemView.findViewById<BGABanner>(R.id.news_pager_bgaBanner)
         fun bindViewHolder() {
-
-
+            bgaBanner.setAdapter(this@NewsPaperAdapter) //必须设置此适配器，否则方法不会调用接口来填充图片
+            bgaBanner.setDelegate(this@NewsPaperAdapter) //设置点击事件，重写点击回调方法
+            bgaBanner.setData(mImgsList, null)
+            if (mImgsList.size > 1) {
+                bgaBanner.setAutoPlayAble(true)
+            } else {
+                bgaBanner.setAutoPlayAble(false)
+            }
         }
     }
 
     inner class NewspaperNewsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val icon = itemView.findViewById<ImageView>(R.id.news_pager_icon)
-        private val tittle = itemView.findViewById<TextView>(R.id.news_pager_tittle)
-        private val content = itemView.findViewById<TextView>(R.id.news_pager_content)
-        private val date = itemView.findViewById<TextView>(R.id.news_pager_date)
+        private val mImgView = itemView.findViewById<ImageView>(R.id.news_pager_icon)
+        private val mTittle = itemView.findViewById<TextView>(R.id.news_pager_tittle)
+        private val mContext = itemView.findViewById<TextView>(R.id.news_pager_content)
+        private val mDate = itemView.findViewById<TextView>(R.id.news_pager_date)
+        private lateinit var url: String
+        fun bindViewHolder(newsPagerList: NewsPagerList) {
+            mTittle.text = newsPagerList.title
+            mContext.text = newsPagerList.content
+            mDate.text = newsPagerList.createTime
+            url = newsPagerList.articleUrl
+            Glide.with(context).load(newsPagerList.banner).apply(RequestOptions()
+                    .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(mImgView)
+            itemView.setOnClickListener { onItemClickListener(newsPagerList) }
+        }
+    }
 
-        fun bindViewHolder() {
+    //Banner 点击事件    跳转链接
+    override fun onBannerItemClick(banner: BGABanner?, itemView: ImageView?, model: Banner?, position: Int) {
+        model?.let { onBannerClick(it) }
+    }
 
+    //Banner 加载图片
+    override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: Banner?, position: Int) {
+        model?.let {
+            Glide.with(context).load(it.imgUrl).apply(RequestOptions()
+                    .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)
+                    .centerCrop()).into(itemView)
         }
     }
 }

@@ -20,7 +20,9 @@ object PermissionUtils {
     private val RESULT_CODE_TAKE_CAMERA = 7461    //拍照
     private val RESULT_CODE_OPEN_ALBUM = 7462     //读写
     private val RESULT_CODE_SOUND_RECORD = 7463   //录音
+    private val RESULT_CODE_LOCATION = 7464   //录音
 
+    private var locationCallback: (() -> Unit)? = null        //相机回调
     private var cameraCallback: (() -> Unit)? = null        //相机回调
     private var readAndWriteCallback: (() -> Unit)? = null  //读写回调
     private var audioCallback: (() -> Unit)? = null         //录音回调
@@ -31,6 +33,14 @@ object PermissionUtils {
     fun camera(context: Context, cameraCallback: () -> Unit) {
         this.cameraCallback = cameraCallback
         permission(context, Manifest.permission.CAMERA, RESULT_CODE_TAKE_CAMERA, cameraCallback)
+    }
+
+    /**
+     * 位置权限申请
+     */
+    fun location(context: Context, locationCallback: () -> Unit) {
+        this.locationCallback = locationCallback
+        permission(context, Manifest.permission.ACCESS_FINE_LOCATION, RESULT_CODE_LOCATION, locationCallback)
     }
 
     /**
@@ -75,6 +85,11 @@ object PermissionUtils {
                     audioCallback?.let { it() }
                 } else {
                     ToastUtil.showShort("请开启应用录音权限")
+                }
+            }
+            RESULT_CODE_LOCATION ->{
+                if (cameraAccepted) {
+                    locationCallback?.let { it() }
                 }
             }
         }

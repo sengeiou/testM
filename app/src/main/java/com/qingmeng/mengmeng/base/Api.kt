@@ -65,6 +65,11 @@ interface Api {
     @GET("api/banner/get_banner")
     fun getBanners(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
 
+    //添加定位信息
+    @POST("api/location/add")
+    fun addLocation(@Header("ACCESS-TOKEN") token: String, @Query("latitude") latitude: String,
+                    @Query("longitude") longitude: String, @Query("uuid") uuid: String): Observable<BaseBean<Any>>
+
     //品牌详情接口
     @GET("api/brand_detail")
     fun getBrandDetail(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int): Observable<BaseBean<BrandBean>>
@@ -238,17 +243,13 @@ interface Api {
     @GET("/api/newspaper/article_list")
     fun getNewsHeadList(@Query("pageNum") pageNum: Int): Observable<BaseBean<NewsPagerListBean>>
 
-    //搜索食物分类列表
-    @GET("api/get_food")
-    fun getRedShopLeft(@Query("id") id: Int): Observable<BaseBean<RedShopLeftListBean>>
-
     //红铺列表
     @GET("api/shop/popular_brands")
-    fun getRedShopRight(@Query("type") type: Int, @Header("VERSION") version: String = ""): Observable<BaseBean<RedShopLeftListBean>>
+    fun getRedShopRight(@Query("type") type: Long, @Header("VERSION") version: String): Observable<BaseBean<RedShopLeftListBean>>
 
     //筛选栏投资金额
     @GET("api/get_capital")
-    fun getSeachConditionMoney(): Observable<BaseBean<SeachConditionBean>>
+    fun getSeachConditionMoney(): Observable<BaseBean<SeachConditionMoneyBean>>
 
     //筛选栏加盟模式
     @GET("api/get_mode")

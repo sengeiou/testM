@@ -67,6 +67,7 @@ class LoginPwdActivity : BaseActivity() {
         loginType = intent.getIntExtra(LOGIN_TYPE, 0)
         from = intent.getIntExtra(FROM_TYPE, 0)
         setLoginType(loginType)
+        GeetestUtil.init(this)
         imgHandler = ImageCodeHandler(this, mLoginGetCode)
         GeetestUtil.init(this)
         //完信相关

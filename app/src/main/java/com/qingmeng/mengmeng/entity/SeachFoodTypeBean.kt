@@ -6,17 +6,21 @@ data class SeachFoodTypeBean(
 )
 
 data class FoodType(
-        val foodTypeDto: List<FoodTypeDto>,
-        val fahterId: Int,
-        val icon: String,
-        val id: Int,
-        val logo: String,
-        val name: String
+        var foodTypeDto: List<FoodTypeDto>,
+        var fahterId: Int,
+        var icon: String,
+        var id: Int,
+        var logo: String,
+        var name: String,
+        var version: String,
+        var checkState: Boolean = false
 )
+
 data class FoodTypeDto(
-        val fahterId: Int,
-        val icon: String,
-        val id: Int,
-        val logo: String,
-        val name: String
+        var fahterId: Int,
+        var icon: String,
+        var id: Int,
+        var logo: String,
+        var name: String
+
 )

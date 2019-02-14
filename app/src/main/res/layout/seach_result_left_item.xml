@@ -1,17 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:id="@+id/seach_ranking_linear"
+    >
 
     <TextView
         android:id="@+id/search_result_pop_left_item"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/padding_dp_20"
         android:layout_marginTop="@dimen/padding_dp_15"
+        android:layout_marginStart="@dimen/padding_dp_25"
         android:gravity="center"
         android:text="content"
         android:textColor="@color/color_666666"
-        android:textSize="@dimen/text_size_14"/>
+        android:textSize="@dimen/text_size_14" />
+
+    <ImageView
+        android:id="@+id/search_result_pop_left_arrows"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/padding_dp_10"
+        android:layout_marginTop="@dimen/padding_dp_15"
+        android:gravity="center"
+        android:src="@drawable/seach_select"
+        android:visibility="gone" />
 </LinearLayout>
