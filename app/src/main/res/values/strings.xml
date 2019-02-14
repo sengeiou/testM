@@ -35,6 +35,7 @@
     <string name="newPhone">新手机</string>
     <string name="msg">验证码</string>
     <string name="getMsg">获取验证码</string>
+    <string name="getMsg_again">重新获取</string>
     <string name="phoneTips">请输入手机号</string>
     <string name="msgTips">请输入验证码</string>
     <string name="pleaseInput">请输入</string>
@@ -56,18 +57,19 @@
     <string name="no_net">嗨呀~没有网络链接o(┬﹏┬)o</string>
     <string name="join_feedback">我要反馈</string>
     <string name="join_feedback_success">反馈成功</string>
-    <string name="want_to_join">我要加盟</string>
+    <string name="want_to_join">我要咨询</string>
     <string name="investment_amount">投资金额</string>
     <string name="recommend_advisory">立即咨询</string>
     <string name="hot_seach">热门搜索</string>
     <string name="seach_history">历史搜索</string>
     <string name="customer_service">客服</string>
-    <string name="collection">收藏</string>
-    <string name="get_join_data">获取加盟信息</string>
-    <string name="join_support">加盟支持</string>
+    <string name="attention">关注</string>
+    <string name="already_attention">已关注</string>
+    <string name="get_join_data">获取资料</string>
+    <string name="join_support">加入支持</string>
     <string name="brand_information">品牌信息</string>
-    <string name="join_money">加盟费用</string>
-    <string name="join_money_total">加盟金</string>
+    <string name="join_money">加入费用</string>
+    <string name="join_money_total">加入金</string>
     <string name="join_money_ensure">保证金</string>
     <string name="join_money_equipment">设备费用</string>
     <string name="join_money_other">其他费用</string>
@@ -77,13 +79,13 @@
     <string name="join_data_msg">请输入留言</string>
     <string name="brand_detail">品牌详情</string>
     <string name="brand_ownership">品牌所属</string>
-    <string name="franchise_mode">加盟模式</string>
+    <string name="franchise_mode">加入模式</string>
     <string name="guess_you_like">猜你喜欢</string>
     <string name="attracting_investment_area">招商区域</string>
     <string name="regional_authorization">区域授权</string>
     <string name="suitable_for_crowd">适合人群</string>
     <string name="join_data_message" formatted="false">我想了解%s项目的加盟详情和方案</string>
-    <string name="join_count" formatted="false">加盟店数量：%s</string>
+    <string name="join_count" formatted="false">加入店数量：%s</string>
     <string name="direct_count" formatted="false">直营店数量：%s</string>
 
     <string name="join_feedback_type1">品牌信息有误</string>
@@ -98,11 +100,11 @@
     <string name="seach_button_sure">确定</string>
     <string name="seach_button_exit">重置</string>
     <string name="seach_money">投资金额</string>
-    <string name="seach_join_type">加盟模式</string>
+    <string name="seach_join_type">加入模式</string>
     <string name="seach_shop_count">门店数：</string>
     <string name="seach_visit_count">浏览量：</string>
     <string name="seach_food_type">餐饮类型</string>
-    <string name="seach_add_area">加盟区域</string>
+    <string name="seach_add_area">加入区域</string>
     <string name="seach_ranking">综合排序</string>
     <string name="seach_screning_conditon">筛选条件</string>
     <string name="seach_nothing">嗨呀~没有找到相关内容 o(╥﹏╥)o</string>

@@ -14,8 +14,7 @@ class AlphaPageTransformer : BGAPageTransformer() {
         view.translationX = -view.width * position
         when {
             1 + position == 1f -> view.alpha = 1f
-//            1 + position > 0.5 -> view.alpha = 1 + position - 0.5f
-            1 + position > 0.5 -> view.alpha = (1 + position) * 0.5f
+            1 + position > 0.5 -> view.alpha = 1 + position - 0.5f
             else -> view.alpha = 0f
         }
     }

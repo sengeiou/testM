@@ -3,7 +3,7 @@
               xmlns:app="http://schemas.android.com/apk/res-auto"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/common_bg"
+              android:background="@color/white"
               android:gravity="center_horizontal"
               android:orientation="vertical">
 
@@ -20,25 +20,27 @@
         android:id="@+id/iv_login_mm_logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="-30dp"
+        android:layout_marginTop="-25dp"
         app:srcCompat="@drawable/login_logo"/>
 
     <cn.bingoogolapple.bgabanner.BGABanner
         android:id="@+id/banner_login_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        app:banner_pageChangeDuration="2000"
         android:layout_marginTop="@dimen/padding_dp_45"
         android:layout_weight="1"
-        app:banner_pointDrawable="@color/transparent"
+        app:banner_pageChangeDuration="2000"
+        app:banner_placeholderDrawable="@drawable/default_img_banner"
         app:banner_pointContainerBackground="@color/transparent"
-        app:banner_placeholderDrawable="@drawable/default_img_banner"/>
+        app:banner_pointDrawable="@color/transparent"/>
 
     <LinearLayout
         android:id="@+id/btn_login_pw_main"
-        android:layout_width="345dp"
+        android:layout_width="match_parent"
         android:layout_height="45dp"
+        android:layout_marginStart="@dimen/padding_dp_20"
         android:layout_marginTop="@dimen/padding_dp_67"
+        android:layout_marginEnd="@dimen/padding_dp_20"
         android:background="@drawable/shape_login_button_pw"
         android:gravity="center_vertical">
 
@@ -57,9 +59,11 @@
 
     <LinearLayout
         android:id="@+id/btn_login_sms_main"
-        android:layout_width="345dp"
+        android:layout_width="match_parent"
         android:layout_height="45dp"
+        android:layout_marginStart="@dimen/padding_dp_20"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="@dimen/padding_dp_20"
         android:background="@drawable/shape_login_button_sms"
         android:gravity="center_vertical">
 
@@ -89,18 +93,18 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:paddingTop="@dimen/padding_dp_10"
-        android:paddingBottom="@dimen/padding_dp_5"
-        android:gravity="center">
+        android:paddingBottom="@dimen/padding_dp_5">
 
         <TextView
             android:id="@+id/tv_login_other_login_wechat_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/padding_dp_15"
             android:drawableStart="@drawable/login_icon_wx"
             android:drawablePadding="5dp"
             android:padding="@dimen/padding_dp_15"
-            android:layout_marginEnd="@dimen/padding_dp_15"
             android:text="@string/wechat"
             android:textColor="@color/color_666666"
             android:textSize="@dimen/text_size_14"/>
@@ -114,9 +118,9 @@
             android:id="@+id/tv_login_other_login_qq_main"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padding_dp_15"
             android:drawableStart="@drawable/login_icon_qq"
             android:drawablePadding="5dp"
-            android:layout_marginStart="@dimen/padding_dp_15"
             android:padding="@dimen/padding_dp_15"
             android:text="@string/qq"
             android:textColor="@color/color_666666"
