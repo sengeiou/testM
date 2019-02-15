@@ -12,6 +12,8 @@ import android.widget.ImageView
 import cn.bingoogolapple.bgabanner.BGABanner
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.mogujie.tt.imservice.service.IMService
+import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
@@ -20,6 +22,7 @@ import com.qingmeng.mengmeng.constant.IConstants.AVATAR
 import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
 import com.qingmeng.mengmeng.constant.IConstants.LOGIN_BACK
 import com.qingmeng.mengmeng.constant.IConstants.LOGIN_TYPE
+import com.qingmeng.mengmeng.constant.IConstants.THIRD_USERNAME
 import com.qingmeng.mengmeng.constant.IConstants.THREE_OPENID
 import com.qingmeng.mengmeng.constant.IConstants.THREE_TOKEN
 import com.qingmeng.mengmeng.constant.IConstants.THREE_TYPE
@@ -31,7 +34,9 @@ import com.qingmeng.mengmeng.entity.WxInfoBean
 import com.qingmeng.mengmeng.entity.WxTokenBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.BoxUtils
+import com.qingmeng.mengmeng.utils.OpenMallApp
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.view.AlphaPageTransformer
 import com.tencent.connect.UserInfo
 import com.tencent.connect.common.Constants
 import com.tencent.mm.opensdk.modelmsg.SendAuth
@@ -43,10 +48,7 @@ import de.greenrobot.event.EventBus
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_log_main_login.*
-import org.jetbrains.anko.clearTask
-import org.jetbrains.anko.intentFor
-import org.jetbrains.anko.newTask
-import org.jetbrains.anko.startActivityForResult
+import org.jetbrains.anko.*
 import org.json.JSONException
 import org.json.JSONObject
 
@@ -65,6 +67,17 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     private val uiListener = BaseUiListener()
     private val mImgList = ArrayList<Banner>()
 
+    //完信相关
+    private var mImService: IMService? = null
+    private val imServiceConnector = object : IMServiceConnector() {
+        override fun onServiceDisconnected() {}
+
+        override fun onIMServiceConnected() {
+            IMServiceConnector.logger.d("login#onIMServiceConnected")
+            mImService = this.imService
+        }
+    }
+
     override fun getLayoutId(): Int = R.layout.activity_log_main_login
 
     //初始化Object
@@ -79,6 +92,10 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
             window.setFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION, WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION)
         }
         from = intent.getIntExtra(FROM_TYPE, 0)
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
+        imServiceConnector.connect(this)
     }
 
     override fun initData() {
@@ -88,7 +105,10 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
             mVersion = mImgList[0].version
         } else {
             banner_login_main.setData(R.drawable.login_icon_banner1, R.drawable.login_icon_banner2, R.drawable.login_icon_banner3)
-            (0..2).forEach { banner_login_main.getItemImageView(it).scaleType = ImageView.ScaleType.FIT_CENTER }
+            (0..2).forEach { banner_login_main.getItemImageView(it).scaleType = ImageView.ScaleType.CENTER }
+            banner_login_main.setPageTransformer(AlphaPageTransformer())
+            banner_login_main.setAllowUserScrollable(false)
+            banner_login_main.viewPager.setPageChangeDuration(10000)
         }
         setBGABannerLogin()
     }
@@ -192,11 +212,13 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
                             it.upDate()
+                            mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
                             loginOver()
                         }
                         response.code == 25093 -> infoBean.apply {
                             startActivityForResult<LoginRegisterActivity>(LOGIN_BACK, FROM_TYPE to from, TYPE to 5, THREE_TYPE to type,
-                                    THREE_OPENID to openid, THREE_TOKEN to token, WE_CHAT_UNIONID to unionid, AVATAR to headimgurl)
+                                    THREE_OPENID to openid, THREE_TOKEN to token, WE_CHAT_UNIONID to unionid,
+                                    THIRD_USERNAME to nickname, AVATAR to headimgurl)
                         }
                         else -> ToastUtil.showShort(response.msg)
                     }
@@ -208,10 +230,10 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
 
     private fun loginOver() {
         if (from == 0) {
+            startActivity(intentFor<MainActivity>().newTask().clearTask())
+        } else {
             setResult(Activity.RESULT_OK)
             finish()
-        } else {
-            startActivity(intentFor<MainActivity>().newTask().clearTask())
         }
     }
 
@@ -250,6 +272,9 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
         } else {
             banner_login_main.setAutoPlayAble(false)
         }
+        banner_login_main.setPageTransformer(AlphaPageTransformer())
+        banner_login_main.setAllowUserScrollable(false)
+        banner_login_main.viewPager.setPageChangeDuration(10000)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -257,7 +282,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
         if (data != null) {
             Tencent.onActivityResultData(requestCode, resultCode, data, uiListener)
         }
-        if (requestCode == LOGIN_BACK && resultCode == Activity.RESULT_OK){
+        if (requestCode == LOGIN_BACK && resultCode == Activity.RESULT_OK) {
             setResult(Activity.RESULT_OK)
             finish()
         }
@@ -267,13 +292,34 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: Banner?, position: Int) {
         model?.let {
             Glide.with(this).load(it.imgUrl).apply(RequestOptions().centerCrop()
-                    .placeholder(R.drawable.login_icon_banner1).error(R.drawable.login_icon_banner1)).into(itemView)
+                    .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(itemView)
         }
     }
 
     //banner点击事件
     override fun onBannerItemClick(banner: BGABanner?, itemView: ImageView?, model: Banner, position: Int) {
+        if (!mImgList.isEmpty()) {
+            mImgList[position].apply {
+                when (skipType) {
+                    2 -> startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
+                    3 -> startActivity<HeadDetailsActivity>("URL" to url)
+                    4 -> startActivity<ShopDetailActivity>(IConstants.BRANDID to interiorDetailsId)
+                    5 -> {
+                        try {
+                            OpenMallApp.open(this@LoginMainActivity, exteriorUrl)
+                        } catch (e: OpenMallApp.NotInstalledException) {
+                            startActivity<WebViewActivity>(IConstants.detailUrl to url)
+                        }
+                    }
+                }
+            }
+        }
+    }
 
+    override fun onDestroy() {
+        imServiceConnector.disconnect(this)
+        EventBus.getDefault().unregister(this)
+        super.onDestroy()
     }
 
     @Suppress("NAME_SHADOWING")
@@ -296,7 +342,8 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
                                 val ret = jsonObject.getInt("ret")
                                 if (ret == 0) {
                                     val image = jsonObject.getString("figureurl_qq_2")
-                                    threeLogin(WxInfoBean(mTencent.openId, image), token, 1)
+                                    val nickname = jsonObject.getString("nickname")
+                                    threeLogin(WxInfoBean(mTencent.openId, image, nickname), token, 1)
                                 } else {
                                     myDialog.showLoadingDialog()
                                     ToastUtil.showLong("错误码：" + ret + "    错误信息：" + jsonObject.getString("msg"))

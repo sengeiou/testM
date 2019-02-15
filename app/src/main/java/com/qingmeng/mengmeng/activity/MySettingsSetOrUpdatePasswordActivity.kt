@@ -38,10 +38,10 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
 
         //修改密码
         if (intent.getBooleanExtra("isUpdatePass", false)) {
-            setHeadName(getString(R.string.my_settings_updatePassword))
+            setHeadName(R.string.my_settings_updatePassword)
             mIsSetPass = false
         } else {    //设置密码
-            setHeadName(getString(R.string.my_settings_setPassword))
+            setHeadName(R.string.my_settings_setPassword)
             mIsSetPass = true
             etMySettingsSetOrUpdateOld.setHint(R.string.username)
             //设置输入类型 默认

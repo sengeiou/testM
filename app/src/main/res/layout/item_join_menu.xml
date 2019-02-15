@@ -8,7 +8,8 @@
     <ImageView
         android:id="@+id/join_menu_icon"
         android:layout_width="@dimen/padding_dp_48"
-        android:layout_height="@dimen/padding_dp_48"/>
+        android:layout_height="@dimen/padding_dp_48"
+        android:src="@drawable/default_img_icon"/>
 
     <TextView
         android:id="@+id/join_menu_name"

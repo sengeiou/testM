@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 28
@@ -41,4 +42,8 @@ dependencies {
     api 'com.huawei.android.hms:hwid:'+HMSSDKVer
     api 'com.huawei.android.hms:push:'+HMSSDKVer
     api 'com.huawei.android.hms:opendevice:'+HMSSDKVer
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+}
+repositories {
+    mavenCentral()
 }

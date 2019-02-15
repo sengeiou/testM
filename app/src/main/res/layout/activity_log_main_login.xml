@@ -27,10 +27,12 @@
         android:id="@+id/banner_login_main"
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        app:banner_pageChangeDuration="2000"
         android:layout_marginTop="@dimen/padding_dp_45"
         android:layout_weight="1"
+        app:banner_pointDrawable="@color/transparent"
         app:banner_pointContainerBackground="@color/transparent"
-        app:banner_placeholderDrawable="@drawable/login_icon_banner1"/>
+        app:banner_placeholderDrawable="@drawable/default_img_banner"/>
 
     <LinearLayout
         android:id="@+id/btn_login_pw_main"

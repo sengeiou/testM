@@ -24,7 +24,7 @@ class MySettingsAboutUsActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
-        setHeadName(getString(R.string.my_settings_aboutUs))
+        setHeadName(R.string.my_settings_aboutUs)
 
         //设置版本号
         tvMySettingsAboutUsVersion.text = tvMySettingsAboutUsVersion.text.toString() + getLocalVersion(this)

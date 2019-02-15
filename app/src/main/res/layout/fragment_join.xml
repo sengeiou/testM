@@ -51,28 +51,22 @@
 
                 <com.qingmeng.mengmeng.view.MyGridView
                     android:id="@+id/mJoinMenu"
-                    android:numColumns="4"
-                    android:paddingTop="@dimen/padding_dp_20"
-                    android:paddingBottom="@dimen/padding_dp_20"
-                    android:paddingStart="@dimen/padding_dp_25"
-                    android:paddingEnd="0dp"
-                    android:verticalSpacing="@dimen/padding_dp_30"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:numColumns="4"
+                    android:paddingStart="@dimen/padding_dp_25"
+                    android:paddingTop="@dimen/padding_dp_20"
+                    android:paddingEnd="0dp"
+                    android:paddingBottom="@dimen/padding_dp_20"
+                    android:verticalSpacing="@dimen/padding_dp_30"
                     app:layout_scrollFlags="scroll"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/padding_dp_10"
-                    android:background="@color/color_dddddd"
-                    app:layout_scrollFlags="scroll"/>
+                    android:background="@color/common_bg"/>
 
-                <View
-                    android:id="@+id/mBaffle"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/padding_dp_65"
-                    android:background="@color/color_dddddd"
-                    android:visibility="gone"/>
+                <include layout="@layout/layout_guess_you_like"/>
 
                 <net.lucode.hackware.magicindicator.MagicIndicator
                     android:id="@+id/channelIndicator"

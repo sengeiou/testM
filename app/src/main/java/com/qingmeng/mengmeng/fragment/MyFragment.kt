@@ -147,7 +147,7 @@ class MyFragment : BaseFragment() {
                             //页面赋值
                             setData(mMyInformation)
                             mLoginSuccess = true
-                            ToastUtil.showShort("${MainApplication.instance.wanxinUser.uId} ${MainApplication.instance.wanxinUser.token}")
+                            ToastUtil.showShort("${MainApplication.instance.user.wxUid} ${MainApplication.instance.user.wxToken}")
                         } else {
                             llMyNoLogin.visibility = View.GONE
                             tvMyLogin.visibility = View.VISIBLE

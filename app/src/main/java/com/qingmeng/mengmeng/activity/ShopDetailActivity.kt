@@ -1,6 +1,7 @@
 package com.qingmeng.mengmeng.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
@@ -23,6 +24,7 @@ import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.ShopDetailVpAdapter
 import com.qingmeng.mengmeng.constant.IConstants.BRANDID
+import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
 import com.qingmeng.mengmeng.constant.IConstants.IMGS
 import com.qingmeng.mengmeng.constant.IConstants.POSITION
 import com.qingmeng.mengmeng.entity.BrandBean
@@ -35,6 +37,11 @@ import com.qingmeng.mengmeng.utils.setDrawableTop
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_shop_detail.*
+import org.jetbrains.anko.clearTask
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.internals.AnkoInternals
+import org.jetbrains.anko.newTask
+import org.jetbrains.anko.startActivity
 
 @Suppress("DEPRECATION")
 @SuppressLint("CheckResult", "StringFormatMatches", "SetTextI18n", "SetJavaScriptEnabled")
@@ -106,7 +113,7 @@ class ShopDetailActivity : BaseActivity() {
         mDetailType.text = bean.foodName
         mDetailMoney.text = bean.capitalName
         mDetailJoinCount.text = getString(R.string.join_count, bean.joinStoreNum)
-        mDetailDirectCount.text = getString(R.string.join_count, bean.directStoreNum)
+        mDetailDirectCount.text = getString(R.string.direct_count, bean.directStoreNum)
         if (!mJoinSupport.isEmpty()) {
             mJoinSupport.clear()
         }
@@ -150,20 +157,32 @@ class ShopDetailActivity : BaseActivity() {
         mDetailBack.setOnClickListener { onBackPressed() }
         mDetailMore.setOnClickListener {
             myDialog.showMorePop(it, {
-
+                //todo 跳消息列表
+                toNext<MyMessageActivity>()
             }, {
-
+                startActivity(intentFor<MainActivity>().newTask().clearTask())
             }, {
-                startActivity(Intent(this, JoinFeedbackActivity::class.java).putExtra(BRANDID, id))
+                toNext<JoinFeedbackActivity>(BRANDID to id)
             }, {
-
+                //todo 分享
             })
         }
         mDetailJoinSupport.setOnClickListener { myDialog.showBrandDialog(mJoinSupport) }
         mDetailBrandInformation.setOnClickListener { _ -> brandInformation?.let { myDialog.showBrandDialog(it) } }
         mDetailJoinMoney.setOnClickListener { _ -> brandInitialFee?.let { myDialog.showBrandDialog(it) } }
         mCustomerService.setOnClickListener { }
-        mCollection.setOnClickListener { if (isAttention == 0) addAttention() else unAttention() }
+        mCollection.setOnClickListener {
+            if (TextUtils.isEmpty(MainApplication.instance.TOKEN)) {
+                startActivity<LoginMainActivity>(FROM_TYPE to 1)
+                ToastUtil.showShort(getString(R.string.pls_login))
+                return@setOnClickListener
+            }
+            if (isAttention == 0) addAttention() else unAttention()
+        }
+        mDetailJoin.setOnClickListener {
+            //todo 跳消息列表
+            toNext<MyMessageActivity>()
+        }
         mGetJoinData.setOnClickListener { myDialog.showJoinDataDialog(name) { name, phone, message -> join(name, phone, message) } }
         mDetailScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             val totalScroll = mDetailVp.height
@@ -177,10 +196,10 @@ class ShopDetailActivity : BaseActivity() {
             } else {
                 mDetailBackMask.alpha = 0f
                 mDetailMoreMask.alpha = 0f
-                if (Math.abs(maskAlpha)<=1) {
+                if (Math.abs(maskAlpha) <= 1) {
                     mDetailBack.alpha = Math.abs(maskAlpha)
                     mDetailMore.alpha = Math.abs(maskAlpha)
-                } else{
+                } else {
                     mDetailBack.alpha = 1f
                     mDetailMore.alpha = 1f
                 }
@@ -264,6 +283,15 @@ class ShopDetailActivity : BaseActivity() {
                     myDialog.dismissLoadingDialog()
                     ToastUtil.showNetError()
                 }, {}, { addSubscription(it) })
+    }
+
+    private inline fun <reified T : Activity> toNext(vararg params: Pair<String, Any>) {
+        if (TextUtils.isEmpty(MainApplication.instance.TOKEN)) {
+            startActivity<LoginMainActivity>(FROM_TYPE to 1)
+            ToastUtil.showShort(getString(R.string.pls_login))
+            return
+        }
+        AnkoInternals.internalStartActivity(this, T::class.java, params)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

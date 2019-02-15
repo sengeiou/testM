@@ -53,7 +53,7 @@ class JoinFeedbackActivity : BaseActivity() {
     override fun initData() {
         brandId = intent.getIntExtra(BRANDID, 0)
         //设置标题
-        setHeadName(getString(R.string.join_feedback))
+        setHeadName(R.string.join_feedback)
         //标题栏提交
         mMenu.text = getString(R.string.submit)
         initWidget()
@@ -94,37 +94,45 @@ class JoinFeedbackActivity : BaseActivity() {
         btn_join_feedback.setOnClickListener { mBottomDialog.show() }
         //提交
         mMenu.setOnClickListener { _ ->
+            myDialog.showLoadingDialog()
             token = MainApplication.instance.TOKEN
             content = edt_join_feedback.text.toString()
             callUrl.clear()
             var failCount = 0
             var successCount = 0
-            selectList.indices.forEach { i ->
-                val path = if (selectList[i].isCompressed) {
-                    selectList[i].compressPath
-                } else {
-                    selectList[i].path
-                }
-                ApiUtils.updateImg(this@JoinFeedbackActivity, path, callback = { newUrl, oldUrl ->
-                    if (TextUtils.isEmpty(newUrl)) {
-                        failCount++
-                        (selectList.size - 1).downTo(0).forEach {
-                            if (selectList[it].path == oldUrl || selectList[it].compressPath == oldUrl) {
-                                selectList.removeAt(it)
+            var url = ""
+            if (selectList.isEmpty()) {
+                setFeedback(token, brandId, type, content, url)
+            } else {
+                selectList.indices.forEach { i ->
+                    val path = if (selectList[i].isCompressed) {
+                        selectList[i].compressPath
+                    } else {
+                        selectList[i].path
+                    }
+                    ApiUtils.updateImg(this@JoinFeedbackActivity, path, callback = { newUrl, oldUrl ->
+                        if (TextUtils.isEmpty(newUrl)) {
+                            failCount++
+                            (selectList.size - 1).downTo(0).forEach {
+                                if (selectList[it].path == oldUrl || selectList[it].compressPath == oldUrl) {
+                                    selectList.removeAt(it)
+                                }
+                            }
+                        } else {
+                            successCount++
+                            callUrl.add(newUrl)
+                        }
+                        if ((failCount + successCount) == selectList.size) {
+                            if (failCount != 0) {
+                                myDialog.dismissLoadingDialog()
+                                ToastUtil.showShort("图片上传完成，共成功${successCount}张，失败${failCount}张")
+                            } else {
+                                callUrl.forEach { url += "$it," }
+                                setFeedback(token, brandId, type, content, url)
                             }
                         }
-                    } else {
-                        successCount++
-                        callUrl.add(newUrl)
-                    }
-                    if ((failCount + successCount) == selectList.size) {
-                        if (failCount != 0) {
-                            ToastUtil.showShort("图片上传完成，共成功${successCount}张，失败${failCount}张")
-                        } else {
-                            setFeedback(token, brandId, type, content, callUrl)
-                        }
-                    }
-                })
+                    })
+                }
             }
         }
     }
@@ -136,11 +144,22 @@ class JoinFeedbackActivity : BaseActivity() {
      * @param content  反馈内容
      * @param urlList 反馈图片（多张逗号隔开）
      */
-    private fun setFeedback(token: String, brandId: Int, type: Int, content: String, urlList: ArrayList<String>) {
-        ApiUtils.getApi().join_feedback(token, brandId, type, content, urlList)
+    private fun setFeedback(token: String, brandId: Int, type: Int, content: String, urlList: String) {
+        ApiUtils.getApi().feedback(token, brandId, type, content, urlList)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
-                .subscribe({ ToastUtil.showShort(it.msg) }, { ToastUtil.showNetError() }, {}, { addSubscription(it) })
+                .subscribe({
+                    myDialog.dismissLoadingDialog()
+                    if (it.code == 12000) {
+                        ToastUtil.showShort(R.string.join_feedback_success)
+                        finish()
+                    } else {
+                        ToastUtil.showShort(it.msg)
+                    }
+                }, {
+                    myDialog.dismissLoadingDialog()
+                    ToastUtil.showNetError()
+                }, {}, { addSubscription(it) })
     }
 
     private fun initWidget() {

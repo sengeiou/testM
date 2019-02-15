@@ -9,6 +9,17 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'io.objectbox'
 
 android {
+    signingConfigs {
+        mengmeng {
+            keyAlias 'mengmeng'
+            keyPassword 'qmmm123'
+
+            storeFile file('D:\\keystore\\mengmeng.jks')
+            storePassword 'qmmm123'
+
+            v2SigningEnabled false
+        }
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.qingmeng.mengmeng"
@@ -31,6 +42,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            signingConfig signingConfigs.mengmeng
             //请求地址
             buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
             //SD目录名
@@ -41,6 +53,7 @@ android {
         }
         debug {
             minifyEnabled false
+            signingConfig signingConfigs.mengmeng
             //请求地址
             buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
             //SD目录名
@@ -48,6 +61,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //bugly
             buildConfigField("String", "BUGLY_APPID", "\"0bf47d1cec\"")
+        }
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
         }
     }
     repositories {
@@ -116,4 +134,6 @@ dependencies {
     implementation 'de.greenrobot:eventbus:2.4.0'
     implementation 'cn.jzvd:jiaozivideoplayer:6.4.1'
     implementation project(':wanxin')
+    implementation project(':common')
+    implementation files('libs/BaiduLBS_Android.jar')
 }

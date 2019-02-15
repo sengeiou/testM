@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="@dimen/padding_dp_54"
+              android:background="@color/white"
+              android:gravity="center"
+              android:orientation="horizontal">
+
+    <View
+        android:layout_width="@dimen/padding_dp_15"
+        android:layout_height="@dimen/padding_dp_2"
+        android:background="@drawable/color_5ab1e1_radius_1"/>
+
+    <View
+        android:layout_width="@dimen/padding_dp_2"
+        android:layout_height="@dimen/padding_dp_2"
+        android:layout_marginStart="@dimen/padding_dp_3"
+        android:layout_marginEnd="@dimen/padding_dp_5"
+        android:background="@drawable/color_5ab1e1_radius_1"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/guess_you_like"
+        android:textColor="@color/color_333333"
+        android:textSize="@dimen/text_size_16"/>
+
+    <View
+        android:layout_width="@dimen/padding_dp_2"
+        android:layout_height="@dimen/padding_dp_2"
+        android:layout_marginStart="@dimen/padding_dp_5"
+        android:layout_marginEnd="@dimen/padding_dp_3"
+        android:background="@drawable/color_5ab1e1_radius_1"/>
+
+    <View
+        android:layout_width="@dimen/padding_dp_15"
+        android:layout_height="@dimen/padding_dp_2"
+        android:background="@drawable/color_5ab1e1_radius_1"/>
+</LinearLayout>

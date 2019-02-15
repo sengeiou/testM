@@ -17,6 +17,7 @@
     <string name="delete">删除</string>
     <string name="submit">提交</string>
     <string name="submit_success">提交成功</string>
+    <string name="pls_login">请先登录</string>
     <string name="cancel">取消</string>
     <string name="sure">确定</string>
     <string name="tips">提示</string>
@@ -45,7 +46,7 @@
     <string name="camera">拍照</string>
     <string name="photo">照片</string>
     <string name="video">视频</string>
-    <string name="seach">请输入你想要搜索的</string>
+    <string name="seach">搜索感兴趣的品牌</string>
     <!-- =======================================爱加盟===================================== -->
     <string name="join_feedback_description">请输入反馈描述，上传照片有助于我们判断，提升投诉通过率哦！</string>
     <string name="join_feedback_type">请选择反馈问题的类型</string>
@@ -54,6 +55,7 @@
     <string name="share">分享</string>
     <string name="no_net">嗨呀~没有网络链接o(┬﹏┬)o</string>
     <string name="join_feedback">我要反馈</string>
+    <string name="join_feedback_success">反馈成功</string>
     <string name="want_to_join">我要加盟</string>
     <string name="investment_amount">投资金额</string>
     <string name="recommend_advisory">立即咨询</string>
@@ -76,6 +78,7 @@
     <string name="brand_detail">品牌详情</string>
     <string name="brand_ownership">品牌所属</string>
     <string name="franchise_mode">加盟模式</string>
+    <string name="guess_you_like">猜你喜欢</string>
     <string name="attracting_investment_area">招商区域</string>
     <string name="regional_authorization">区域授权</string>
     <string name="suitable_for_crowd">适合人群</string>
@@ -140,6 +143,7 @@
     <string name="user_agreement">《盟盟用户协议》</string>
     <string name="refresh">刷新</string>
     <string name="register">注册</string>
+    <string name="bind_phone">绑定手机</string>
     <string name="cancel_login">登录取消</string>
     <string name="login_error">登录错误</string>
     <string name="please_click">请再次点击</string>

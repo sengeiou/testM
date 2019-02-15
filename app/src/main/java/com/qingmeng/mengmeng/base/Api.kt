@@ -35,11 +35,13 @@ interface Api {
      **/
     @POST("app/user/third_party_phone_binding")
     @FormUrlEncoded
-    fun bindPhone(@Field("phone") phone: String, @Field("smsCode") smsCode: String, @Field("openId") openId: String,
-                  @Field("token") token: String, @Field("avatar") avatar: String, @Field("type") type: Int,
+    fun bindPhone(@Field("phone") phone: String, @Field("smsCode") smsCode: String,
+                  @Field("openId") openId: String, @Field("token") token: String,
+                  @Field("avatar") avatar: String, @Field("type") type: Int,
                   @Field("password") password: String, @Field("verifyPassword") verifyPassword: String,
                   @Field("userName") userName: String, @Field("weChatUnionId") weChatUnionId: String,
-                  @Field("isUserProtocol") isUserProtocol: Int = 1, @Field("userType") userType: Int = 2): Observable<BaseBean<UserBean>>
+                  @Field("thirdUserName") thirdUserName: String, @Field("isUserProtocol") isUserProtocol: Int = 1,
+                  @Field("userType") userType: Int = 2): Observable<BaseBean<UserBean>>
 
     //注册
     @POST("app/user/phone_register")
@@ -63,6 +65,11 @@ interface Api {
     @GET("api/banner/get_banner")
     fun getBanners(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
 
+    //添加定位信息
+    @POST("api/location/add")
+    fun addLocation(@Header("ACCESS-TOKEN") token: String, @Query("latitude") latitude: String,
+                    @Query("longitude") longitude: String, @Query("uuid") uuid: String): Observable<BaseBean<Any>>
+
     //品牌详情接口
     @GET("api/brand_detail")
     fun getBrandDetail(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int): Observable<BaseBean<BrandBean>>
@@ -72,18 +79,13 @@ interface Api {
     fun addAttention(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int): Observable<BaseBean<Any>>
 
     //申请加盟接口
-    @GET("api/add_comment")
+    @POST("api/add_comment")
     fun join(@Query("brandId") brandId: Int, @Query("name") name: String,
-             @Query("phone") phone: String, @Query("brandId") message: String): Observable<BaseBean<Any>>
+             @Query("phone") phone: String, @Query("message") message: String): Observable<BaseBean<Any>>
 
     //账号登录
     @POST("app/user/account_login")
     fun accountLogin(@Query("account") account: String, @Query("password") password: String): Observable<BaseBean<UserBean>>
-
-    //完信登录
-    @POST("http://www.wxjishu.com:9999/login")
-    @FormUrlEncoded
-    fun wanxinlogin(@Field("wxUserName") wxUserName: String, @Field("wxPassWord") wxPassWord: String, @Field("wxProjectId") wxProjectId: Int = 6): Observable<BaseBean<WanxinUserBean>>
 
     //短信登录
     @POST("app/user/sms_login")
@@ -168,7 +170,9 @@ interface Api {
 
     //我的反馈
     @POST("/api/feedback/add_feedback")
-    fun join_feedback(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int, @Query("type") type: Int, @Query("content") content: String, @Query("urlList") urlList: ArrayList<String>): Observable<BaseBean<Any>>
+    fun feedback(@Header("ACCESS-TOKEN") token: String, @Query("brandId") brandId: Int,
+                 @Query("type") type: Int, @Query("content") content: String,
+                 @Query("urlList") urlList: String): Observable<BaseBean<Any>>
 
     //获取热门词汇
     @GET("api/join/hot_search")
@@ -239,17 +243,13 @@ interface Api {
     @GET("/api/newspaper/article_list")
     fun getNewsHeadList(@Query("pageNum") pageNum: Int): Observable<BaseBean<NewsPagerListBean>>
 
-    //搜索食物分类列表
-    @GET("api/get_food")
-    fun getRedShopLeft(@Query("id") id: Int): Observable<BaseBean<RedShopLeftListBean>>
-
     //红铺列表
     @GET("api/shop/popular_brands")
-    fun getRedShopRight(@Query("type") type: Int, @Header("VERSION") version: String = ""): Observable<BaseBean<RedShopLeftListBean>>
+    fun getRedShopRight(@Query("type") type: Long, @Header("VERSION") version: String): Observable<BaseBean<RedShopLeftListBean>>
 
     //筛选栏投资金额
     @GET("api/get_capital")
-    fun getSeachConditionMoney(): Observable<BaseBean<SeachConditionBean>>
+    fun getSeachConditionMoney(): Observable<BaseBean<SeachConditionMoneyBean>>
 
     //筛选栏加盟模式
     @GET("api/get_mode")
