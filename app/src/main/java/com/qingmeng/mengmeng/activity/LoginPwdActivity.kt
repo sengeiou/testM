@@ -69,6 +69,7 @@ class LoginPwdActivity : BaseActivity() {
         setLoginType(loginType)
         GeetestUtil.init(this)
         imgHandler = ImageCodeHandler(this, mLoginGetCode)
+        GeetestUtil.init(this)
         //完信相关
         SystemConfigSp.instance().init(applicationContext)
         if (TextUtils.isEmpty(SystemConfigSp.instance().getStrConfig(SystemConfigSp.SysCfgDimension.LOGINSERVER))) {

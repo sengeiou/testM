@@ -141,8 +141,9 @@
     <string name="login_fail_recover_password">温馨提示”密码错误次数过多，是否找回密码！</string>
     <string name="scuuess_code">请输入正确格式的验证码</string>
     <string name="picture_neirong">请输入图片中的内容</string>
-    <string name="read_accept">我已经认证阅读并接受</string>
+    <string name="read_accept">我已经认真阅读并接受</string>
     <string name="user_agreement">《盟盟用户协议》</string>
+    <string name="user_agreement1">用户协议</string>
     <string name="refresh">刷新</string>
     <string name="register">注册</string>
     <string name="bind_phone">绑定手机</string>
