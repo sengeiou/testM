@@ -27,10 +27,9 @@ import com.qingmeng.mengmeng.utils.ToastUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_log_register.*
-import org.jetbrains.anko.clearTask
-import org.jetbrains.anko.enabled
-import org.jetbrains.anko.intentFor
-import org.jetbrains.anko.newTask
+import kotlinx.android.synthetic.main.fragment_my.*
+import org.jetbrains.anko.*
+import org.jetbrains.anko.support.v4.startActivity
 import org.json.JSONObject
 
 @SuppressLint("CheckResult")
@@ -93,6 +92,10 @@ class LoginRegisterActivity : BaseActivity() {
         mRegisterCode.addTextChangedListener(RegisterTextWatcher())
         mRegisterPsw.addTextChangedListener(RegisterTextWatcher())
         mRegisterSurePsw.addTextChangedListener(RegisterTextWatcher())
+        //用户协议
+        mUserProtocol.setOnClickListener {
+            startActivity<LoginUserAgreementActivity>()
+        }
         //是否同意用户协议
         mRegisterAgree.setOnClickListener {
             mRead = if (!mRead) {
