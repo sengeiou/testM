@@ -7,7 +7,6 @@ package com.qingmeng.mengmeng.activity
  * describe: 搜索
  */
 import android.content.Context
-import android.content.Intent
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -115,7 +114,7 @@ class RedShopSeach : BaseActivity() {
                         BoxUtils.removeSearchs(mHistoryrepeat)
                         BoxUtils.saveSearch(mHistorySearch[0])
                     }
-                    startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to  search.name)
+                    startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to search.name)
                 }
                 return false
             }
@@ -212,7 +211,7 @@ class RedShopSeach : BaseActivity() {
             override fun onSelected(position: Int, view: View?) {
                 super.onSelected(position, view)
                 mbackHotSearch = mList[position].name
-                startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to mbackHotSearch )
+                startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to mbackHotSearch)
             }
         }
     }

@@ -301,7 +301,7 @@ class PopSeachSelect : PopupWindow {
                         }
 
                     } else if (bean.code != 12000) {
-                        ToastUtil.showShort(bean.msg)
+//                        ToastUtil.showShort(bean.msg)
                     }
                 }, {
                     ToastUtil.showNetError()
@@ -363,7 +363,7 @@ class PopSeachSelect : PopupWindow {
                             }
                         }
                     } else if (bean.code != 12000) {
-                        ToastUtil.showShort(bean.msg)
+//                        ToastUtil.showShort(bean.msg)
                     }
                 }, {
                     ToastUtil.showNetError()

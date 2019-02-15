@@ -8,6 +8,7 @@ import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
 import android.support.v7.widget.RecyclerView
+import android.text.SpannableString
 import android.text.util.Linkify
 import android.util.SparseArray
 import android.view.LayoutInflater
@@ -50,6 +51,10 @@ class ViewHolder(private val mContext: Context, val convertView: View) : Recycle
      * @return
      */
     fun setText(viewId: Int, text: String?) {
+        getView<TextView>(viewId).text = text ?: ""
+    }
+     //加了一个
+    fun setSpannableStringText(viewId: Int, text: SpannableString?) {
         getView<TextView>(viewId).text = text ?: ""
     }
 

@@ -8,7 +8,7 @@
         android:id="@+id/search_result_pop_right_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/padding_dp_20"
+        android:layout_marginBottom="@dimen/padding_dp_15"
         android:layout_marginLeft="@dimen/padding_dp_25"
         android:layout_marginTop="@dimen/padding_dp_15"
         android:gravity="left"

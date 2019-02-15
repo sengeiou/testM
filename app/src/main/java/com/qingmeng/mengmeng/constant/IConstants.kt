@@ -32,6 +32,7 @@ object IConstants {
     val THREE_TYPE = "threeType"             //登录类型：1:QQ 2微信
     val FIRSTLOGIN = "first_login"
     val BRANDID = "brandId"                  //商品id
+    val REDSHOPID = "red_shop_ID"            //红铺id
     val POSITION = "position"
     val articleUrl = "articleUrl"
     val IMGS = "imgs"

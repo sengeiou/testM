@@ -189,7 +189,7 @@ interface Api {
 
     @POST("/api/join/get_search_brands")
     @FormUrlEncoded
-    fun join_search_brands(@Field("keyWord") keyWord: String,//搜索关键字
+    fun join_search_brands(@Field("keyWord") keyWord: String?,//搜索关键字
                            @Field("typeId") typeId: Int?,//餐饮类型ID
                            @Field("cityIds") cityIds: String?,//爱加盟区域ID
                            @Field("capitalIds") capitalIds: String?,//投资金额ID
