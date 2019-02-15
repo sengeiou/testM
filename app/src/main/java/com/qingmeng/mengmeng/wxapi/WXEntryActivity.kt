@@ -58,7 +58,6 @@ class WXEntryActivity : AppCompatActivity(), IWXAPIEventHandler {
                     if (ConstantsAPI.COMMAND_SENDMESSAGE_TO_WX != type) {
                         val code = (resp as SendAuth.Resp).code
                         EventBus.getDefault().post(WxBean(code))
-                      LoginMainActivity().loginCode(code)
                     }
                 }
                 BaseResp.ErrCode.ERR_USER_CANCEL -> {
