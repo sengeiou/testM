@@ -28,11 +28,7 @@ interface Api {
     fun sendSms(@Field("phone") phone: String, @Field("type") type: Int, @Field("code") code: String = "",
                 @Field("geetest_challenge") geetest_challenge: String = "", @Field("geetest_validate") geetest_validate: String = "",
                 @Field("geetest_seccode") geetest_seccode: String = ""): Observable<BaseBean<Any>>
-
-    /**
-     * 获取短信验证码接口
-     * @param type 1.注册2.登陆3.找回密码4.修改手机号5.绑定手机号
-     **/
+    //第三方绑定
     @POST("app/user/third_party_phone_binding")
     @FormUrlEncoded
     fun bindPhone(@Field("phone") phone: String, @Field("smsCode") smsCode: String,
@@ -88,7 +84,7 @@ interface Api {
     fun accountLogin(@Query("account") account: String, @Query("password") password: String): Observable<BaseBean<UserBean>>
 
     //短信登录
-    @POST("app/user/sms_login")
+    @POST("app/user/msm_login")
     fun smslogin(@Query("phone") phone: String, @Query("smsCode") smsCode: String): Observable<BaseBean<UserBean>>
 
     /**
@@ -162,7 +158,7 @@ interface Api {
 
     //忘记密码
     @POST("app/user/forget_password")
-    fun forgetpassword(@Query("phone") phone: String, @Query("msmCode") msmCode: String, @Query("password") password: String, @Header("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
+    fun forgetpassword(@Query("phone") phone: String, @Query("smsCode") msmCode: String, @Query("password") password: String, @Query("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
 
     //获取oss令牌
     @GET("http://oss.ilashou.com/oss/authorization_app?name=mm")
@@ -193,7 +189,7 @@ interface Api {
 
     @POST("/api/join/get_search_brands")
     @FormUrlEncoded
-    fun join_search_brands(@Field("keyWord") keyWord: String,//搜索关键字
+    fun join_search_brands(@Field("keyWord") keyWord: String?,//搜索关键字
                            @Field("typeId") typeId: Int?,//餐饮类型ID
                            @Field("cityIds") cityIds: String?,//爱加盟区域ID
                            @Field("capitalIds") capitalIds: String?,//投资金额ID

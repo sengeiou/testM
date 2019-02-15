@@ -33,10 +33,22 @@ class ShareDialog(context: Context) : Dialog(context, R.style.dialog_share) {
     }
 
     private fun initListener() {
-        shareWx.setOnClickListener { ToastUtil.showShort("分享到微信") }
-        shareMoments.setOnClickListener { ToastUtil.showShort("分享到朋友圈") }
-        shareQQ.setOnClickListener { ToastUtil.showShort("分享到QQ") }
-        shareSina.setOnClickListener { ToastUtil.showShort("分享到新浪微博") }
+        shareWx.setOnClickListener {
+            ToastUtil.showShort("分享到微信")
+            dismiss()
+        }
+        shareMoments.setOnClickListener {
+            ToastUtil.showShort("分享到朋友圈")
+            dismiss()
+        }
+        shareQQ.setOnClickListener {
+            ToastUtil.showShort("分享到QQ")
+            dismiss()
+        }
+        shareSina.setOnClickListener {
+            ToastUtil.showShort("分享到新浪微博")
+            dismiss()
+        }
         shareCancel.setOnClickListener { dismiss() }
     }
 

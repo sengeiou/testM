@@ -4,17 +4,19 @@ import android.annotation.SuppressLint
 import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.LinearLayoutManager
 import android.view.View
+import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import android.widget.TextView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.RedShopSeachResult
 import com.qingmeng.mengmeng.adapter.CommonAdapter
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.RedShopBean
 import com.qingmeng.mengmeng.entity.RedShopLeftBean
 import com.qingmeng.mengmeng.utils.*
-import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -37,6 +39,7 @@ class RedShopFragment : BaseFragment() {
 //    private var mRedShopRightListBean = RedShopLeftListBean()
     override fun getLayoutId(): Int = R.layout.fragment_red_shop
 
+    private var defItem = -1
     override fun initObject() {
         super.initObject()
         mRedNewsTitle.setText(R.string.tab_name_red_shop)
@@ -54,11 +57,6 @@ class RedShopFragment : BaseFragment() {
     override fun initData() {
         super.initData()
         getCacheData()
-
-    }
-
-    override fun initListener() {
-        super.initListener()
 
     }
 
@@ -85,6 +83,7 @@ class RedShopFragment : BaseFragment() {
             var mRedShop = RedShopBean(ArrayList())
             if (!mLeftList.isEmpty()) {
                 mRedShop = RedShopBean.fromString(mLeftList[0].id)
+                mLeftList[0].checkState = true
             }
             if (!mRightInListType.isEmpty()) {
                 mRedShop = RedShopBean.fromString(mRightInListType[0].id)
@@ -120,12 +119,12 @@ class RedShopFragment : BaseFragment() {
             val RightInListHost = BoxUtils.getAllRedShop(fahterId, 1)
             if (!mRightInListType.isEmpty()) {
                 BoxUtils.removeAllRedShop(mRightInListType)
+                mRightInListType.clear()
             }
-            mRightInListType.clear()
             if (!mRightInListHost.isEmpty()) {
                 BoxUtils.removeAllRedShop(mRightInListHost)
+                mRightInListHost.clear()
             }
-            mRightInListHost.clear()
             mRightInListType.addAll(RightInListType)
             mRightInListHost.addAll(RightInListHost)
             var mRedShop = RedShopBean(ArrayList())
@@ -156,13 +155,12 @@ class RedShopFragment : BaseFragment() {
         red_shop_left_recyclerview.layoutManager = mLauyoutManger
         mLeftAdapter = CommonAdapter(context!!, R.layout.red_shop_left_item, mLeftList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
-                if (position == 0) {
-                    data.checkState = true
-                }
                 if (data.checkState) {
                     getView<RelativeLayout>(R.id.red_shop_left_lineralayout).backgroundColor = resources.getColor(R.color.white)
+                    getView<TextView>(R.id.red_shop_left_textview).setTextColor(resources.getColor(R.color.color_5ab1e1))
                 } else {
                     getView<RelativeLayout>(R.id.red_shop_left_lineralayout).backgroundColor = resources.getColor(R.color.page_background_f5)
+                    getView<TextView>(R.id.red_shop_left_textview).setTextColor(resources.getColor(R.color.color_666666))
                 }
                 setText(R.id.red_shop_left_textview, data.name)
             }
@@ -173,26 +171,10 @@ class RedShopFragment : BaseFragment() {
             }
             mLeftList[position].checkState = true
             getClickCache(mLeftList[position].id.toLong())
-//            if (isNetWorkConnented(red_shop_left_recyclerview.context)) {
-//                httpLoad2(mLeftList[position].id)
-//            } else {
-//                getRightCache(mLeftList[position].id.toLong())
-//            }
             mLeftAdapter.notifyDataSetChanged()
         })
         red_shop_left_recyclerview.adapter = mLeftAdapter
     }
-//获取网络连接状态
-//    private fun isNetWorkConnented(context: Context?): Boolean {
-//        if (context != null) {
-//            var aa: ConnectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-//            var bb: NetworkInfo? = aa.activeNetworkInfo
-//            if (bb != null) {
-//                return bb.isAvailable
-//            }
-//        }
-//        return false
-//    }
 
     //右边适配
     private fun initRightAdapter() {
@@ -212,9 +194,12 @@ class RedShopFragment : BaseFragment() {
                 //GlideLoader.load(this@RedShopFragment, data.logo, getView(R.id.red_shop_right_inImageView))
                 Glide.with(this@RedShopFragment).load(data.logo).apply(RequestOptions()
                         .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(getView(R.id.red_shop_right_inImageView))
+                getView<LinearLayout>(R.id.red_shop_all).setOnClickListener {
+                    startActivity<RedShopSeachResult>(IConstants.REDSHOPID to data.id)
+                }
             }
         }, onItemClick = { view, holder, position ->
-            startActivity<RedShopSeachResult>()
+
         })
         red_shop_right_recyclerview_type.adapter = mRightAdapterType
 
@@ -230,10 +215,14 @@ class RedShopFragment : BaseFragment() {
                     red_shop_right_text_host.visibility = View.GONE
                 }
                 setText(R.id.red_shop_right_inContent, data.name)
-                GlideLoader.load(this@RedShopFragment, data.logo, getView(R.id.red_shop_right_inImageView))
+                //  GlideLoader.load(this@RedShopFragment, data.logo, getView(R.id.red_shop_right_inImageView))
+                Glide.with(this@RedShopFragment).load(data.logo).apply(RequestOptions()
+                        .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(getView(R.id.red_shop_right_inImageView))
+                getView<LinearLayout>(R.id.red_shop_all).setOnClickListener {
+                    startActivity<RedShopSeachResult>(IConstants.REDSHOPID to data.id)
+                }
             }
         }, onItemClick = { view, holder, position ->
-            startActivity<RedShopSeachResult>()
         })
         red_shop_right_recyclerview_host.adapter = mRightAdapterHost
     }
@@ -255,10 +244,11 @@ class RedShopFragment : BaseFragment() {
                                 it.setVersion()
                                 BoxUtils.saveAllRedShop(mLeftList)
                                 mLeftList.addAll(it.type.typeList)//1级分类
+                                if (!mLeftList.isEmpty()) {
+                                    mLeftList[0].checkState = true
+                                }
                                 mLeftAdapter.notifyDataSetChanged()
                             }
-                        } else {
-                            ToastUtil.showShort(it.msg)
                         }
                     }
                 }, {
@@ -297,7 +287,7 @@ class RedShopFragment : BaseFragment() {
                                 mRightAdapterHost.notifyDataSetChanged()
                             }
                         } else {
-                            ToastUtil.showShort(it.msg)
+//                            ToastUtil.showShort(it.msg)
                         }
                     }
                 }, {
@@ -316,4 +306,16 @@ class RedShopFragment : BaseFragment() {
         }
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+            mLeftList.indices.forEach {
+                mLeftList[it].checkState = it == 0
+            }
+            if (!mLeftList.isEmpty()) {
+                getClickCache(mLeftList[0].id.toLong())
+            }
+            mLeftAdapter.notifyDataSetChanged()
+        }
+    }
 }

@@ -41,6 +41,8 @@ class PopSeachCondition : PopupWindow {
     private lateinit var mMoneyAdapter: CommonAdapter<ConditionMoneyBean>
     private lateinit var mJoinModelAdapter: CommonAdapter<ConditionBean>
     private lateinit var mSelectCallBack: SelectCallBack                 //回调
+    private var checkedMoneyData = StringBuffer()
+    private var checkedTypeData = StringBuffer()
 
     constructor(mActivity: Activity) : super(mActivity) {
         this.mActivity = mActivity
@@ -103,16 +105,35 @@ class PopSeachCondition : PopupWindow {
 
     @SuppressLint("ResourceAsColor")
     private fun initListener() {
-        //点击动画未写
         mMenuView.search_condition_pop_button_CZ.setOnClickListener {
-            //            mMenuView.search_condition_pop_button_CZ.setBackgroundResource(R.color.color_5ab1e1)
-//            mMenuView.search_condition_pop_button_CZ.setTextColor(R.color.page_background_f5)
+            //所有选中状态取消
+            mTextMoneyList.forEach {
+                it.checkState = false
+                mMoneyAdapter.notifyDataSetChanged()
+            }
+            mTextJoinTypeList.forEach {
+                it.checkState = false
+                mJoinModelAdapter.notifyDataSetChanged()
+            }
 
-            dismiss()
         }
+        //确定  回调接口数据
         mMenuView.search_condition_pop_button_QD.setOnClickListener {
-            //            mMenuView.search_condition_pop_button_QD.setBackgroundResource(R.color.color_5ab1e1)
-//            mMenuView.search_condition_pop_button_QD.setTextColor(R.color.page_background_f5)
+            checkedMoneyData.delete(0, checkedMoneyData.length)
+            checkedTypeData.delete(0, checkedTypeData.length)
+            mTextMoneyList.forEach {
+                if (it.checkState) {
+                    checkedMoneyData.append("${it.id},")
+                }
+                mMoneyAdapter.notifyDataSetChanged()
+            }
+            mTextJoinTypeList.forEach {
+                if (it.checkState) {
+                    checkedTypeData.append("${it.id},")
+                }
+                mJoinModelAdapter.notifyDataSetChanged()
+            }
+            mSelectCallBack.onSelectCallBack(checkedMoneyData, checkedTypeData)
             dismiss()
         }
     }
@@ -269,7 +290,7 @@ class PopSeachCondition : PopupWindow {
     }
 
     interface SelectCallBack {
-        fun onSelectCallBack(select: IntArray)
+        fun onSelectCallBack(selectMoney: StringBuffer, selectType: StringBuffer)
     }
 
     override fun dismiss() {

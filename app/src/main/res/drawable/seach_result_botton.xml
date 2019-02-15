@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:drawable="@drawable/color_5ab1e1_radius_14_5" android:state_pressed="false"></item>
-    <item android:drawable="@drawable/color_5ab1e1_radius_14_5_all" android:state_pressed="true"></item>
+    <item android:drawable="@drawable/color_5ab1e1_radius_14_5" android:state_pressed="false"/>
+    <item android:drawable="@drawable/color_5ab1e1_radius_14_5_all" android:state_pressed="true"/>
 </selector>
