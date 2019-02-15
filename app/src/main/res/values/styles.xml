@@ -20,9 +20,9 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
-    <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
+    <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-    <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+    <style name="AppTheme.NoActionBar.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <!-- 常规对话框样式 -->
     <style name="commondialogstyle" parent="@android:style/Theme.Dialog">
@@ -130,5 +130,10 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/text_size_15</item>
         <item name="android:textColor">@color/color_999999</item>
+    </style>
+
+    <style name="text_back_text">
+        <item name="android:background">@drawable/seach_result_botton</item>
+        <item name="android:textColor">@drawable/seach_result_botton_text</item>
     </style>
 </resources>
