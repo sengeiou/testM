@@ -1,22 +1,29 @@
 package com.qingmeng.mengmeng.adapter
 
 import AppManager
+import android.annotation.SuppressLint
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import com.mogujie.tt.config.DBConstant
+import com.mogujie.tt.config.MessageConstant
+import com.mogujie.tt.config.MessageExtConst
+import com.mogujie.tt.db.DBInterface
 import com.mogujie.tt.db.entity.MessageEntity
 import com.mogujie.tt.db.entity.UserEntity
-import com.mogujie.tt.imservice.entity.AudioMessage
-import com.mogujie.tt.imservice.entity.ImageMessage
-import com.mogujie.tt.imservice.entity.TextMessage
-import com.mogujie.tt.imservice.entity.VideoMessage
+import com.mogujie.tt.imservice.entity.*
 import com.mogujie.tt.imservice.service.IMService
+import com.mogujie.tt.ui.helper.AudioPlayerHandler
+import com.mogujie.tt.ui.helper.Emoparser
+import com.mogujie.tt.ui.widget.SpeekerToast
+import com.mogujie.tt.ui.widget.message.MessageOperatePopup
 import com.mogujie.tt.ui.widget.message.RenderType
 import com.mogujie.tt.utils.CommonUtil
 import com.mogujie.tt.utils.DateUtil
@@ -34,9 +41,12 @@ import java.util.*
 
  *  Date: 2019/2/14
  */
-class ChatAdapter1(private val context: Context, private var msgObjectList: ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mImService: IMService? = null
     private var loginUser: UserEntity? = null
+    private var currentPop: MessageOperatePopup? = null    //弹出气泡
+    private val mDefaultTimeDifference = 120               //默认时间差值
+    private var mPopCallBack: PopCallBack? = null
 
     override fun getItemViewType(position: Int): Int {
         return getItemViewType(msgObjectList[position])
@@ -55,31 +65,31 @@ class ChatAdapter1(private val context: Context, private var msgObjectList: Arra
              * 别人消息
              */
                 RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF_IMAGE -> {    //文本(表情)
-                    (it as OtherTextViewHolder).bindViewHolder(msgObjectList[position])
+                    (it as OtherTextViewHolder).bindViewHolder(position)
                 }
                 RenderType.MESSAGE_TYPE_OTHER_IMAGE, RenderType.MESSAGE_TYPE_OTHER_GIF -> { //图片(gif)
-                    (it as OtherImageViewHolder).bindViewHolder(msgObjectList[position])
+                    (it as OtherImageViewHolder).bindViewHolder(position)
                 }
                 RenderType.MESSAGE_TYPE_OTHER_AUDIO -> {    //语音
-                    (it as OtherAudioViewHolder).bindViewHolder(msgObjectList[position])
+                    (it as OtherAudioViewHolder).bindViewHolder(position)
                 }
                 RenderType.MESSAGE_TYPE_OTHER_VIDEO -> {    //视频
-                    (it as OtherVideoViewHolder).bindViewHolder(msgObjectList[position])
+                    (it as OtherVideoViewHolder).bindViewHolder(position)
                 }
             /**
              * 自己消息
              */
                 RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF_IMAGE -> {  //文本(表情)
-                    (it as MineTextViewHolder).bindViewHolder(msgObjectList[position])
+                    (it as MineTextViewHolder).bindViewHolder(position)
                 }
                 RenderType.MESSAGE_TYPE_MINE_IMAGE, RenderType.MESSAGE_TYPE_MINE_GIF -> {   //图片(gif)
-                    (it as MineImageViewHolder).bindViewHolder(msgObjectList[position])
+                    (it as MineImageViewHolder).bindViewHolder(position)
                 }
                 RenderType.MESSAGE_TYPE_MINE_AUDIO -> { //语音
-                    (it as MineAudioViewHolder).bindViewHolder(msgObjectList[position])
+                    (it as MineAudioViewHolder).bindViewHolder(position)
                 }
                 RenderType.MESSAGE_TYPE_MINE_VIDEO -> { //视频
-                    (it as MineVideoViewHolder).bindViewHolder(msgObjectList[position])
+                    (it as MineVideoViewHolder).bindViewHolder(position)
                 }
             }
         }
@@ -105,38 +115,38 @@ class ChatAdapter1(private val context: Context, private var msgObjectList: Arra
          */
             RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF_IMAGE -> {    //文本(表情)
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_text, viewGroup, false)
-                OtherTextViewHolder(view)
+                OtherTextViewHolder(view, viewGroup)
             }
             RenderType.MESSAGE_TYPE_OTHER_IMAGE, RenderType.MESSAGE_TYPE_OTHER_GIF -> { //图片(gif)
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_image, viewGroup, false)
-                OtherImageViewHolder(view)
+                OtherImageViewHolder(view, viewGroup)
             }
             RenderType.MESSAGE_TYPE_OTHER_AUDIO -> {    //语音
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_audio, viewGroup, false)
-                OtherAudioViewHolder(view)
+                OtherAudioViewHolder(view, viewGroup)
             }
             RenderType.MESSAGE_TYPE_OTHER_VIDEO -> {    //视频
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_video, viewGroup, false)
-                OtherVideoViewHolder(view)
+                OtherVideoViewHolder(view, viewGroup)
             }
         /**
          * 自己消息
          */
             RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF_IMAGE -> {  //文本(表情)
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_text, viewGroup, false)
-                MineTextViewHolder(view)
+                MineTextViewHolder(view, viewGroup)
             }
             RenderType.MESSAGE_TYPE_MINE_IMAGE, RenderType.MESSAGE_TYPE_MINE_GIF -> {   //图片(gif)
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_image, viewGroup, false)
-                MineImageViewHolder(view)
+                MineImageViewHolder(view, viewGroup)
             }
             RenderType.MESSAGE_TYPE_MINE_AUDIO -> { //语音
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_audio, viewGroup, false)
-                MineAudioViewHolder(view)
+                MineAudioViewHolder(view, viewGroup)
             }
             RenderType.MESSAGE_TYPE_MINE_VIDEO -> { //视频
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_video, viewGroup, false)
-                MineVideoViewHolder(view)
+                MineVideoViewHolder(view, viewGroup)
             }
         }
     }
@@ -152,7 +162,7 @@ class ChatAdapter1(private val context: Context, private var msgObjectList: Arra
         private val llMyMessageChatRvAllTime = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvAllTime)
         private val tvMyMessageChatRvTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvTime)
         fun bindViewHolder(item: Any) {
-            if (ChatAdapter.msgObjectList[0] == item) {
+            if (msgObjectList[0] == item) {
                 llMyMessageChatRvAllTime.setMarginExt(top = 30)
             } else {
                 llMyMessageChatRvAllTime.setMarginExt(top = 0)
@@ -165,10 +175,10 @@ class ChatAdapter1(private val context: Context, private var msgObjectList: Arra
                     tvMyMessageChatRvTime.text = DateUtil.getTimeDiffDesc(msgTimeDate)
                 }
                 RenderType.MESSAGE_TYPE_MINE_REVOKE -> {    //自己撤回
-                    tvMyMessageChatRvTime.text = "对方撤回了一条消息"
+                    tvMyMessageChatRvTime.text = "您撤回了一条消息"
                 }
                 RenderType.MESSAGE_TYPE_OTHER_REVOKE -> {    //别人撤回
-                    tvMyMessageChatRvTime.text = "您撤回了一条消息"
+                    tvMyMessageChatRvTime.text = "对方撤回了一条消息"
                 }
             }
         }
@@ -180,7 +190,7 @@ class ChatAdapter1(private val context: Context, private var msgObjectList: Arra
     inner class BrandViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val llMyMessageChatRvAllBrand = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvAllBrand)
         fun bindViewHolder(item: Any) {
-            if (ChatAdapter.msgObjectList[0] == item) {
+            if (msgObjectList[0] == item) {
                 llMyMessageChatRvAllBrand.setMarginExt(top = 30)
             } else {
                 llMyMessageChatRvAllBrand.setMarginExt(top = 0)
@@ -195,60 +205,90 @@ class ChatAdapter1(private val context: Context, private var msgObjectList: Arra
     /**
      * 文本(表情)
      */
-    inner class OtherTextViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class OtherTextViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
+        private val parent = viewGroup
         private val ivMyMessageChatRvOtherTextHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherTextHead)
         private val tvMyMessageChatRvOtherTextText = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvOtherTextText)
-        fun bindViewHolder(item: Any) {
-            val textMessage = item as TextMessage
-            val userEntity = ChatAdapter.getUserEntity(textMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherTextHead, placeholder = R.mipmap.my_settings_aboutus_icon, roundRadius = 15)
-            tvMyMessageChatRvOtherTextText.text = textMessage.info
+        fun bindViewHolder(position: Int) {
+            val textMessage = msgObjectList[position] as TextMessage
+            val userEntity = getUserEntity(textMessage)
+            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherTextHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            tvMyMessageChatRvOtherTextText.let {
+                it.text = textMessage.info
+                it.setOnLongClickListener {
+                    showPopWindow(position, parent, it)
+                    true
+                }
+            }
         }
     }
 
     /**
      * 图片(gif)
      */
-    inner class OtherImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class OtherImageViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
+        private val parent = viewGroup
         private val ivMyMessageChatRvOtherImageHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherImageHead)
         private val ivMyMessageChatRvOtherImageImage = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherImageImage)
-        fun bindViewHolder(item: Any) {
-            val imageMessage = item as ImageMessage
-            val userEntity = ChatAdapter.getUserEntity(imageMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherImageHead, placeholder = R.mipmap.my_settings_aboutus_icon, roundRadius = 15)
-            GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, ivMyMessageChatRvOtherImageImage, roundRadius = 15)
+        fun bindViewHolder(position: Int) {
+            val imageMessage = msgObjectList[position] as ImageMessage
+            val userEntity = getUserEntity(imageMessage)
+            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherImageHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            ivMyMessageChatRvOtherImageImage.let {
+                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15)
+                it.setOnLongClickListener {
+                    showPopWindow(position, parent, it)
+                    true
+                }
+            }
         }
     }
 
     /**
      * 语音
      */
-    inner class OtherAudioViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class OtherAudioViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
+        private val parent = viewGroup
         private val ivMyMessageChatRvOtherAudioHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherAudioHead)
         private val tvMyMessageChatRvOtherAudioTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvOtherAudioTime)
-        fun bindViewHolder(item: Any) {
-            val audioMessage = item as AudioMessage
-            val userEntity = ChatAdapter.getUserEntity(audioMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherAudioHead, placeholder = R.mipmap.my_settings_aboutus_icon, roundRadius = 15)
+        private val llMyMessageChatRvOtherAudio = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvOtherAudio)
+        fun bindViewHolder(position: Int) {
+            val audioMessage = msgObjectList[position] as AudioMessage
+            val userEntity = getUserEntity(audioMessage)
+            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherAudioHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             tvMyMessageChatRvOtherAudioTime.text = "${audioMessage.audiolength}\""
+            llMyMessageChatRvOtherAudio.let {
+                it.setOnLongClickListener {
+                    showPopWindow(position, parent, it)
+                    true
+                }
+            }
         }
     }
 
     /**
      * 视频
      */
-    inner class OtherVideoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class OtherVideoViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
+        private val parent = viewGroup
         private val ivMyMessageChatRvOtherVideoHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherVideoHead)
         private val ivMyMessageChatRvOtherVideoCover = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherVideoCover)
+        private val rlMyMessageChatRvOtherVideo = itemView.findViewById<RelativeLayout>(R.id.rlMyMessageChatRvOtherVideo)
         private val tvMyMessageChatRvOtherVideoTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvOtherVideoTime)
-        fun bindViewHolder(item: Any) {
-            val videoMessage = item as VideoMessage
-            val userEntity = ChatAdapter.getUserEntity(videoMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherVideoHead, placeholder = R.mipmap.my_settings_aboutus_icon, roundRadius = 15)
+        fun bindViewHolder(position: Int) {
+            val videoMessage = msgObjectList[position] as VideoMessage
+            val userEntity = getUserEntity(videoMessage)
+            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherVideoHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             //封面
             GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvOtherVideoCover, roundRadius = 15)
-//            //时间
-//            tvMyMessageChatRvOtherVideoTime.text = ""
+            //时间
+            tvMyMessageChatRvOtherVideoTime.text = "${videoMessage.videolength}s"
+            rlMyMessageChatRvOtherVideo.let {
+                it.setOnLongClickListener {
+                    showPopWindow(position, parent, it)
+                    true
+                }
+            }
         }
     }
 
@@ -259,69 +299,325 @@ class ChatAdapter1(private val context: Context, private var msgObjectList: Arra
     /**
      * 文本(表情)
      */
-    inner class MineTextViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class MineTextViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
+        private val parent = viewGroup
         private val ivMyMessageChatRvMineTextHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineTextHead)
         private val tvMyMessageChatRvMineTextText = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvMineTextText)
-        fun bindViewHolder(item: Any) {
-            val textMessage = item as TextMessage
-            val userEntity = ChatAdapter.getUserEntity(textMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineTextHead, placeholder = R.mipmap.my_settings_aboutus_icon, roundRadius = 15)
-            tvMyMessageChatRvMineTextText.text = textMessage.info
+        fun bindViewHolder(position: Int) {
+            val textMessage = msgObjectList[position] as TextMessage
+            val userEntity = getUserEntity(textMessage)
+            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineTextHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            tvMyMessageChatRvMineTextText.let {
+                it.text = textMessage.info
+                it.setOnLongClickListener {
+                    showPopWindow(position, parent, it)
+                    true
+                }
+            }
         }
     }
 
     /**
      * 图片(gif)
      */
-    inner class MineImageViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class MineImageViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
+        private val parent = viewGroup
         private val ivMyMessageChatRvMineImageHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineImageHead)
         private val ivMyMessageChatRvMineImageImage = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineImageImage)
-        fun bindViewHolder(item: Any) {
-            val imageMessage = item as ImageMessage
-            val userEntity = ChatAdapter.getUserEntity(imageMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineImageHead, placeholder = R.mipmap.my_settings_aboutus_icon, roundRadius = 15)
-            GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, ivMyMessageChatRvMineImageImage, roundRadius = 15)
+        fun bindViewHolder(position: Int) {
+            val imageMessage = msgObjectList[position] as ImageMessage
+            val userEntity = getUserEntity(imageMessage)
+            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineImageHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            ivMyMessageChatRvMineImageImage.let {
+                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15)
+                it.setOnLongClickListener {
+                    showPopWindow(position, parent, it)
+                    true
+                }
+            }
+            when(imageMessage.loadStatus){
+
+            }
         }
     }
 
     /**
      * 语音
      */
-    inner class MineAudioViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class MineAudioViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
+        private val parent = viewGroup
         private val ivMyMessageChatRvMineAudioHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineAudioHead)
         private val tvMyMessageChatRvMineAudioTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvMineAudioTime)
-        fun bindViewHolder(item: Any) {
-            val audioMessage = item as AudioMessage
-            val userEntity = ChatAdapter.getUserEntity(audioMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineAudioHead, placeholder = R.mipmap.my_settings_aboutus_icon, roundRadius = 15)
+        private val llMyMessageChatRvMineAudio = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvMineAudio)
+        fun bindViewHolder(position: Int) {
+            val audioMessage = msgObjectList[position] as AudioMessage
+            val userEntity = getUserEntity(audioMessage)
+            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineAudioHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             tvMyMessageChatRvMineAudioTime.text = "${audioMessage.audiolength}\""
+            llMyMessageChatRvMineAudio.let {
+                it.setOnLongClickListener {
+                    showPopWindow(position, parent, it)
+                    true
+                }
+            }
         }
     }
 
     /**
      * 视频
      */
-    inner class MineVideoViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class MineVideoViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
+        private val parent = viewGroup
         private val ivMyMessageChatRvMineVideoHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineVideoHead)
         private val ivMyMessageChatRvMineVideoCover = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineVideoCover)
+        private val rlMyMessageChatRvMineVideo = itemView.findViewById<RelativeLayout>(R.id.rlMyMessageChatRvMineVideo)
         private val tvMyMessageChatRvMineVideoTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvMineVideoTime)
-        fun bindViewHolder(item: Any) {
-            val videoMessage = item as VideoMessage
-            val userEntity = ChatAdapter.getUserEntity(videoMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineVideoHead, placeholder = R.mipmap.my_settings_aboutus_icon, roundRadius = 15)
+        fun bindViewHolder(position: Int) {
+            val videoMessage = msgObjectList[position] as VideoMessage
+            val userEntity = getUserEntity(videoMessage)
+            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineVideoHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             //封面
             GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvMineVideoCover, roundRadius = 15)
-//            //时间
-//            tvMyMessageChatRvMineVideoTime.text = ""
+            //时间
+            tvMyMessageChatRvMineVideoTime.text = "${videoMessage.videolength}s"
+            rlMyMessageChatRvMineVideo.let {
+                it.setOnLongClickListener {
+                    showPopWindow(position, parent, it)
+                    true
+                }
+            }
         }
     }
 
     /**
-     * 设置数据
+     * 设置service
      */
-    fun setData(imService: IMService, userEntity: UserEntity) {
-        this.mImService = imService
-        this.loginUser = userEntity
+    fun setImService(mImService: IMService?, loginUser: UserEntity?) {
+        this.mImService = mImService
+        this.loginUser = loginUser
+    }
+
+    /**
+     * 添加历史消息
+     */
+    fun addItem(msg: MessageEntity, mLayoutManager: LinearLayoutManager? = null) {
+        val nextTime = msg.created
+        if (msgObjectList.size > 0) {
+            val objectMessage = msgObjectList[msgObjectList.lastIndex]
+            if (objectMessage is MessageEntity) {
+                val preTime = objectMessage.created
+                val needTime = DateUtil.needDisplayTime(preTime, nextTime)
+                if (needTime) {
+                    msgObjectList.add(nextTime)
+                }
+            }
+        } else {
+            val message = msg.created
+            msgObjectList.add(message)
+        }
+        /**消息的判断 */
+        if (msg.displayType == DBConstant.SHOW_MIX_TEXT) {
+            val mixMessage = msg as MixMessage
+            msgObjectList.addAll(mixMessage.getMsgList())
+        } else {
+            msgObjectList.add(msg)
+        }
+        if (msg is ImageMessage) {
+            ImageMessage.addToImageMessageList(msg)
+        }
+        notifyDataSetChanged()
+        mLayoutManager?.scrollToPosition(msgObjectList.lastIndex)
+    }
+
+    /**
+     * 删除一条消息
+     */
+    fun removeMsg(messageEntity: MessageEntity) {
+        //根据消息Id删除数据库内容
+        DBInterface.instance().deleteMessageByMsgId(messageEntity.msgId)
+        msgObjectList.remove(messageEntity)
+        notifyDataSetChanged()
+    }
+
+    /**
+     * 撤回一条消息
+     */
+    fun revokeMsg(entity: MessageEntity) {
+        entity.displayType = DBConstant.SHOW_REVOKE_TYPE
+        //根据消息修改数据库内容
+        DBInterface.instance().insertOrUpdateMessage(entity)
+        notifyDataSetChanged()
+    }
+
+    /**
+     * 修改新收到的消息
+     */
+    fun updateRevokeMsg(entity: MessageEntity) {
+        val txtMsg = entity as TextMessage
+        for (objectList in msgObjectList) {
+            if (objectList is MessageEntity) {
+                val messageEntity = objectList
+                if (messageEntity.msgId == txtMsg.getAttributeInt(MessageExtConst.MSGID)) {
+                    objectList.displayType = DBConstant.SHOW_REVOKE_TYPE
+                    //根据消息修改数据库内容
+                    DBInterface.instance().insertOrUpdateMessage(messageEntity)
+                    notifyDataSetChanged()
+                }
+            }
+        }
+    }
+
+    /**
+     * 是否是gif图
+     */
+    private fun isMsgGif(msg: MessageEntity): Boolean {
+        val content = msg.info
+        // @YM 临时处理  牙牙表情与消息混合出现的消息丢失
+        return if (TextUtils.isEmpty(content) || !(content.startsWith("[") && content.endsWith("]"))) {
+            false
+        } else Emoparser.getInstance(context)!!.isMessageGif(msg.info)
+    }
+
+    /**
+     * 获取第一个Message类
+     */
+    fun getTopMsgEntity(): MessageEntity? {
+        if (msgObjectList.size <= 0) {
+            return null
+        }
+        for (result in msgObjectList) {
+            if (result is MessageEntity) {
+                return result
+            }
+        }
+        return null
+    }
+
+    /**
+     * 时间比较
+     */
+    class MessageTimeComparator : Comparator<MessageEntity> {
+        override fun compare(lhs: MessageEntity, rhs: MessageEntity): Int {
+            return if (lhs.created == rhs.created) {
+                lhs.msgId - rhs.msgId
+            } else lhs.created - rhs.created
+        }
+    }
+
+
+    /**
+     * 取用户信息
+     */
+    private fun getUserEntity(textMessage: MessageEntity): UserEntity {
+        val userEntity: UserEntity?
+        if (textMessage.fromId == loginUser?.peerId) {//自己
+            userEntity = loginUser
+        } else {
+            userEntity = mImService?.contactManager?.findContact(textMessage.fromId)
+        }
+        return userEntity!!
+    }
+
+    /**
+     * 下拉载入历史消息,从最上面开始添加
+     */
+    fun loadHistoryList(historyList: List<MessageEntity>?, mLayoutManager: LinearLayoutManager, isPullDownToRefresh: Boolean = false) {
+        if (null == historyList || historyList.isEmpty()) {
+            return
+        }
+        Collections.sort(historyList, MessageTimeComparator())
+        val chatList = ArrayList<Any>()
+        var preTime = 0
+        var nextTime = 0
+        val idset = HashSet<Int>()
+        for (msg in historyList) {
+            idset.add(msg.fromId)
+            if (msg.displayType == DBConstant.MSG_TYPE_SINGLE_TEXT) {
+                if (isMsgGif(msg)) {
+                    msg.isGIfEmo = true
+                }
+            }
+            nextTime = msg.created
+            val needTimeBubble = DateUtil.needDisplayTime(preTime, nextTime)
+            if (needTimeBubble) {
+                val `in` = nextTime
+                chatList.add(`in`)
+            }
+            preTime = nextTime
+            if (msg.displayType == DBConstant.SHOW_MIX_TEXT) {
+                val mixMessage = msg as MixMessage
+                chatList.addAll(mixMessage.getMsgList())
+            } else {
+                chatList.add(msg)
+            }
+        }
+        // 如果是历史消息，从头开始加
+        msgObjectList.addAll(0, chatList)
+        getImageList()
+        notifyDataSetChanged()
+        if (isPullDownToRefresh) {
+            mLayoutManager.scrollToPositionWithOffset(chatList.lastIndex + 1, 0)
+        }else{
+            mLayoutManager.scrollToPosition(msgObjectList.lastIndex)
+        }
+    }
+
+    /**
+     * 获取图片消息列表
+     */
+    private fun getImageList() {
+        for (i in msgObjectList.indices.reversed()) {
+            val item = msgObjectList[i]
+            if (item is ImageMessage) {
+                ImageMessage.addToImageMessageList(item)
+            }
+        }
+    }
+
+    /**
+     * 临时处理，一定要干掉
+     */
+    fun hidePopup() {
+        if (currentPop != null) {
+            currentPop?.hidePopup()
+        }
+    }
+
+    /**
+     * msgId 是消息ID
+     * localId是本地的ID
+     * position 是list 的位置
+     *
+     * 只更新item的状态
+     * 刷新单条记录
+     */
+    fun updateItemState(position: Int, messageEntity: MessageEntity) {
+        //更新DB
+        //更新单条记录
+        mImService?.dbInterface?.insertOrUpdateMessage(messageEntity)
+        notifyDataSetChanged()
+    }
+
+    /**
+     * 对于混合消息的特殊处理
+     */
+    fun updateItemState(messageEntity: MessageEntity) {
+        val dbId = messageEntity.id!!
+        val msgId = messageEntity.msgId
+        val len = msgObjectList.size
+        for (index in len - 1 downTo 1) {
+            val objectMessage = msgObjectList[index]
+            if (objectMessage is MessageEntity) {
+                if (objectMessage is ImageMessage) {
+                    ImageMessage.addToImageMessageList(objectMessage)
+                }
+                if (objectMessage.id == dbId && objectMessage.msgId == msgId) {
+                    msgObjectList[index] = messageEntity
+                    break
+                }
+            }
+        }
+        notifyDataSetChanged()
     }
 
     /**
@@ -396,5 +692,114 @@ class ChatAdapter1(private val context: Context, private var msgObjectList: Arra
             }
         }
         return type.ordinal
+    }
+
+    /**
+     * pop点击事件的定义
+     */
+    private fun getPopMenu(parent: ViewGroup, listener: MessageOperatePopup.OnItemClickListener): MessageOperatePopup {
+        val popupView = MessageOperatePopup.instance(context, parent)
+        currentPop = popupView
+        popupView.setOnItemClickListener(listener)
+        return popupView
+    }
+
+    private inner class OperateItemClickListener(private val mMsgInfo: MessageEntity, private val mPosition: Int) : MessageOperatePopup.OnItemClickListener {
+        private val mType: Int = mMsgInfo.displayType
+        //复制
+        @SuppressLint("NewApi")
+        override fun onCopyClick() {
+            try {
+                val manager = context.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
+                    val data = ClipData.newPlainText("data", mMsgInfo.info)
+                    manager.primaryClip = data
+                } else {
+                    manager.text = mMsgInfo.info
+                }
+            } catch (e: Exception) {
+
+            }
+        }
+
+        //重新发送
+        override fun onResendClick() {
+            try {
+                if (mType == DBConstant.SHOW_AUDIO_TYPE || mType == DBConstant.SHOW_ORIGIN_TEXT_TYPE) {
+                    if (mMsgInfo.displayType == DBConstant.SHOW_AUDIO_TYPE) {
+                        if (mMsgInfo.sendContent.size < 4) {
+                            return
+                        }
+                    }
+                } else if (mType == DBConstant.SHOW_IMAGE_TYPE) {
+                    // 之前的状态是什么 上传没有成功继续上传
+                    // 上传成功，发送消息
+                    val imageMessage = mMsgInfo as ImageMessage
+                    if (TextUtils.isEmpty(imageMessage.path)) {
+                        Toast.makeText(context, context.getString(com.leimo.wanxin.R.string.image_path_unavaluable), Toast.LENGTH_LONG).show()
+                        return
+                    }
+                }
+                mMsgInfo.status = MessageConstant.MSG_SENDING
+                msgObjectList.removeAt(mPosition)
+                addItem(mMsgInfo)
+                if (mImService != null) {
+                    mImService?.messageManager?.resendMessage(mMsgInfo)
+                }
+
+            } catch (e: Exception) {
+
+            }
+        }
+
+        //扬声器
+        override fun onSpeakerClick() {
+            val audioPlayerHandler = AudioPlayerHandler.getInstance()
+            if (audioPlayerHandler.getAudioMode(context) == android.media.AudioManager.MODE_NORMAL) {
+                audioPlayerHandler.setAudioMode(android.media.AudioManager.MODE_IN_CALL, context)
+                SpeekerToast.show(context, context.getText(com.leimo.wanxin.R.string.audio_in_call), Toast.LENGTH_SHORT)
+            } else {
+                audioPlayerHandler.setAudioMode(android.media.AudioManager.MODE_NORMAL, context)
+                SpeekerToast.show(context, context.getText(com.leimo.wanxin.R.string.audio_in_speeker), Toast.LENGTH_SHORT)
+            }
+        }
+
+        //撤回
+        override fun onRevokeClick(position: Int) {
+            if (mPopCallBack != null) {
+                mPopCallBack!!.onRevokeClick(position)
+            }
+        }
+
+        //删除
+        override fun onDeleteClick(position: Int) {
+            if (mPopCallBack != null) {
+                mPopCallBack!!.onDeleteClick(position)
+            }
+        }
+    }
+
+    /**
+     * 显示气泡
+     */
+    private fun showPopWindow(position: Int, parent: ViewGroup, view: View) {
+        val message = (msgObjectList[position] as MessageEntity)
+        // 创建一个pop对象，然后 分支判断状态，然后显示需要的内容
+        val isMine = message.fromId == loginUser?.peerId
+        val popup = getPopMenu(parent, OperateItemClickListener(message, position))
+        val bResend = message.status == MessageConstant.MSG_FAILURE
+        //消息是否在2分钟之内创建的
+        val bRevoke = (System.currentTimeMillis() / 1000) - message.created < mDefaultTimeDifference
+        popup.show(view, message.displayType, bResend, isMine, bRevoke, position)
+    }
+
+    fun setPopCallBack(popCallBack: PopCallBack) {
+        mPopCallBack = popCallBack
+    }
+
+    interface PopCallBack {
+        fun onRevokeClick(position: Int)
+
+        fun onDeleteClick(position: Int)
     }
 }

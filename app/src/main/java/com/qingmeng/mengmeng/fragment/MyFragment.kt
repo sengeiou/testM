@@ -147,13 +147,13 @@ class MyFragment : BaseFragment() {
                             //页面赋值
                             setData(mMyInformation)
                             mLoginSuccess = true
-                            ToastUtil.showShort("${MainApplication.instance.user.wxUid} ${MainApplication.instance.user.wxToken}")
+//                            ToastUtil.showShort("${MainApplication.instance.user.wxUid} ${MainApplication.instance.user.wxToken}")
                         } else {
                             llMyNoLogin.visibility = View.GONE
                             tvMyLogin.visibility = View.VISIBLE
                             //设置默认名称头像等。
                             tvMyUserName.text = getString(R.string.my_username)
-                            ivMyHeadPortrait.setImageResource(R.drawable.view_dialog_sound_volume_short_tip_bg)
+                            ivMyHeadPortrait.setImageResource(R.drawable.default_img_icon)
                             tvMyMyFollowNum.text = getString(R.string.my_defaultNum)
                             tvMyMyLeavingMessageNum.text = getString(R.string.my_defaultNum)
                             tvMyMyFootprintNum.text = getString(R.string.my_defaultNum)
@@ -214,7 +214,7 @@ class MyFragment : BaseFragment() {
 //                    srlMy.isRefreshing = true
                     httpSelect()
                 }, {
-//                    srlMy.isRefreshing = true
+                    //                    srlMy.isRefreshing = true
                     httpSelect()
                 }, {}, { addSubscription(it) })
     }
@@ -222,7 +222,7 @@ class MyFragment : BaseFragment() {
     //页面内容赋值
     private fun setData(myInformation: MyInformation) {
         //头像
-        GlideLoader.load(this, myInformation.avatar, ivMyHeadPortrait, cacheType = CacheType.All)
+        GlideLoader.load(this, myInformation.avatar, ivMyHeadPortrait, cacheType = CacheType.All, placeholder = R.drawable.default_img_icon)
         tvMyUserName.text = myInformation.userName
         tvMyMyFollowNum.text = "${myInformation.myAttention}"
         tvMyMyLeavingMessageNum.text = "${myInformation.myComment}"

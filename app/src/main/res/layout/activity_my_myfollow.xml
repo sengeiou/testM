@@ -36,7 +36,15 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/my_settings_aboutus_icon"
+                    android:src="@mipmap/search_nothing"
+                    />
+
+                <TextView
+                    android:id="@+id/tvMyMyFollowTips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/padding_dp_10"
+                    android:text="@string/my_myFollow_null_tips"
                     />
             </LinearLayout>
 

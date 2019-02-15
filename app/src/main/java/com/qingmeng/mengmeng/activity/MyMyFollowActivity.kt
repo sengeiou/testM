@@ -53,12 +53,17 @@ class MyMyFollowActivity : BaseActivity() {
         val title = intent.getStringExtra("title")
         setHeadName(title)
         mIsMyFollow = title == getString(R.string.my_myFollow)
+        if (!mIsMyFollow) {
+            tvMyMyFollowTips.text = getString(R.string.my_myFootprint_null_tips)
+        }
 
         //适配器初始化
         initAdapter()
 
-        //自动刷新请求
-        srlMyMyFollow.isRefreshing = true
+//        //自动刷新请求
+//        srlMyMyFollow.isRefreshing = true
+        myDialog.showLoadingDialog()
+        httpLoad(1)
     }
 
     override fun initListener() {
@@ -160,6 +165,7 @@ class MyMyFollowActivity : BaseActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    myDialog.dismissLoadingDialog()
                     //刷新状态关闭
                     setRefreshAsFalse()
                     mCanHttpLoad = true
@@ -192,6 +198,7 @@ class MyMyFollowActivity : BaseActivity() {
                         }
                     }
                 }, {
+                    myDialog.dismissLoadingDialog()
                     setRefreshAsFalse()
                     mCanHttpLoad = true
                     llMyMyFollowTips.visibility = View.VISIBLE
