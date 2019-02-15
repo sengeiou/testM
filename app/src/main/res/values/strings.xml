@@ -143,6 +143,7 @@
     <string name="picture_neirong">请输入图片中的内容</string>
     <string name="read_accept">我已经认证阅读并接受</string>
     <string name="user_agreement">《盟盟用户协议》</string>
+    <string name="user_agreement1">用户协议</string>
     <string name="refresh">刷新</string>
     <string name="register">注册</string>
     <string name="bind_phone">绑定手机</string>
