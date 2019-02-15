@@ -12,6 +12,7 @@ import android.widget.TextView
 
 import com.aspsine.swipetoloadlayout.SwipeRefreshTrigger
 import com.aspsine.swipetoloadlayout.SwipeTrigger
+import com.bumptech.glide.Glide
 import com.qingmeng.mengmeng.R
 
 /**
@@ -31,6 +32,7 @@ class SwipeHeadView : FrameLayout, SwipeTrigger, SwipeRefreshTrigger {
     private var mHeight: Int = 0
     // 箭头
     private var mArrowImg: ImageView? = null
+    private lateinit var mRefresh: ImageView
     //
     private var mRotated = false
 
@@ -51,8 +53,10 @@ class SwipeHeadView : FrameLayout, SwipeTrigger, SwipeRefreshTrigger {
         View.inflate(context, R.layout.view_swipe_head, this)
         mHeight = resources.getDimension(R.dimen.swipe_widget_height).toInt()
         mArrowImg = findViewById(R.id.img_arrow)
+        mRefresh = findViewById(R.id.refresh)
         mHeadTxt = findViewById(R.id.txt_refresh_head)
         mProgressBar = findViewById(R.id.progress_bar)
+        Glide.with(context).load(R.drawable.main_icon_refresh).into(mRefresh)
         initAnimation()
     }
 
@@ -64,15 +68,15 @@ class SwipeHeadView : FrameLayout, SwipeTrigger, SwipeRefreshTrigger {
 
     override fun onPrepare() {
         mHeadTxt.text = context.resources.getString(R.string.txt_before_refresh)
-        mProgressBar.visibility = View.GONE
-        mArrowImg!!.visibility = View.VISIBLE
+//        mProgressBar.visibility = View.GONE
+//        mArrowImg!!.visibility = View.VISIBLE
         invalidate()
     }
 
     override fun onMove(i: Int, b: Boolean, b1: Boolean) {
         if (!b) {
-            mArrowImg!!.visibility = View.VISIBLE
-            mProgressBar.visibility = View.INVISIBLE
+//            mArrowImg!!.visibility = View.VISIBLE
+//            mProgressBar.visibility = View.INVISIBLE
             if (i > mHeight) {
                 mHeadTxt.setText(R.string.txt_loose_refresh)
                 if (!mRotated) {
@@ -94,15 +98,15 @@ class SwipeHeadView : FrameLayout, SwipeTrigger, SwipeRefreshTrigger {
     override fun onRefresh() {
         mHeadTxt.text = resources.getString(R.string.txt_refreshing)
         mArrowImg!!.clearAnimation()
-        mArrowImg!!.visibility = View.GONE
-        mProgressBar.visibility = View.VISIBLE
+//        mArrowImg!!.visibility = View.GONE
+//        mProgressBar.visibility = View.VISIBLE
         invalidate()
     }
 
     override fun onRelease() {
         mHeadTxt.text = resources.getString(R.string.txt_refreshing)
-        mArrowImg!!.visibility = View.GONE
-        mProgressBar.visibility = View.VISIBLE
+//        mArrowImg!!.visibility = View.GONE
+//        mProgressBar.visibility = View.VISIBLE
         invalidate()
     }
 
@@ -110,15 +114,15 @@ class SwipeHeadView : FrameLayout, SwipeTrigger, SwipeRefreshTrigger {
         mRotated = false
         mHeadTxt.text = resources.getString(R.string.txt_refreshed)
         mArrowImg!!.clearAnimation()
-        mArrowImg!!.visibility = View.GONE
-        mProgressBar.visibility = View.GONE
+//        mArrowImg!!.visibility = View.GONE
+//        mProgressBar.visibility = View.GONE
         invalidate()
     }
 
     override fun onReset() {
         mRotated = false
         mHeadTxt.text = resources.getString(R.string.txt_before_refresh)
-        mArrowImg!!.visibility = View.VISIBLE
-        mProgressBar.visibility = View.GONE
+//        mArrowImg!!.visibility = View.VISIBLE
+//        mProgressBar.visibility = View.GONE
     }
 }
