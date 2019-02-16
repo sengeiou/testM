@@ -211,6 +211,20 @@ class RedShopSeach : BaseActivity() {
             override fun onSelected(position: Int, view: View?) {
                 super.onSelected(position, view)
                 mbackHotSearch = mList[position].name
+                val search = SearchHistoryList().apply { id = 1;name = mbackHotSearch }
+                mHistorySearch.add(search)
+                //检查重复
+                var mHistoryrepeat = BoxUtils.getnameSearch(search.name)
+                if (mHistoryrepeat.isEmpty()) {
+                    //空
+                    //直接保存
+                    BoxUtils.saveSearch(mHistorySearch[0])
+                } else {
+                    //重复
+                    //删除记录，保存新纪录
+                    BoxUtils.removeSearchs(mHistoryrepeat)
+                    BoxUtils.saveSearch(mHistorySearch[0])
+                }
                 startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to mbackHotSearch)
             }
         }
