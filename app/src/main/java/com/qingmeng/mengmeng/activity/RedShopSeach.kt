@@ -99,8 +99,7 @@ class RedShopSeach : BaseActivity() {
                         || actionId == EditorInfo.IME_ACTION_DONE
                         || event != null && KeyEvent.KEYCODE_ENTER === event!!.getKeyCode() && KeyEvent.ACTION_DOWN === event!!.getAction()) {
                     //处理事件
-                    val search = SearchHistoryList().apply { id = 1;name = head_search2.text.toString() }
-
+                    var search = SearchHistoryList().apply { name = head_search2.text.toString() }
                     mHistorySearch.add(search)
                     //检查重复
                     var mHistoryrepeat = BoxUtils.getnameSearch(search.name)
@@ -115,6 +114,7 @@ class RedShopSeach : BaseActivity() {
                         BoxUtils.saveSearch(mHistorySearch[0])
                     }
                     startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to search.name)
+                    finish()
                 }
                 return false
             }
@@ -131,6 +131,7 @@ class RedShopSeach : BaseActivity() {
 
     override fun initData() {
         super.initData()
+        head_search2.setText("")
         //判断数据库是否为空
         bhotversion = hotidSearchData.isEmpty()
         bhistorySearch = historySearchData.isEmpty()
@@ -214,7 +215,7 @@ class RedShopSeach : BaseActivity() {
                 val search = SearchHistoryList().apply { id = 1;name = mbackHotSearch }
                 mHistorySearch.add(search)
                 //检查重复
-                var mHistoryrepeat = BoxUtils.getnameSearch(search.name)
+                val mHistoryrepeat = BoxUtils.getnameSearch(search.name)
                 if (mHistoryrepeat.isEmpty()) {
                     //空
                     //直接保存
@@ -226,6 +227,7 @@ class RedShopSeach : BaseActivity() {
                     BoxUtils.saveSearch(mHistorySearch[0])
                 }
                 startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to mbackHotSearch)
+                finish()
             }
         }
     }
@@ -267,10 +269,26 @@ class RedShopSeach : BaseActivity() {
             override fun onSelected(position: Int, view: View?) {
                 super.onSelected(position, view)
                 mbackHistorySearch = shistory[position]
+                val search = SearchHistoryList().apply { id = 1;name = mbackHistorySearch }
+                mHistorySearch.add(search)
+                //检查重复
+                val mHistoryrepeat = BoxUtils.getnameSearch(search.name)
+                if (mHistoryrepeat.isEmpty()) {
+                    //空
+                    //直接保存
+                    BoxUtils.saveSearch(mHistorySearch[0])
+                } else {
+                    //重复
+                    //删除记录，保存新纪录
+                    BoxUtils.removeSearchs(mHistoryrepeat)
+                    BoxUtils.saveSearch(mHistorySearch[0])
+                }
                 startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to mbackHistorySearch)
+                finish()
             }
         }
         tfl_search_history.adapter = adapter
     }
+
 
 }
