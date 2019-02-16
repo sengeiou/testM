@@ -178,7 +178,7 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
                             })
                             onBackPressed()
                         } else {
-                            ToastUtil.showShort(msg)
+                            ToastUtil.showShort(this.msg)
                         }
                     }
                 }, {

@@ -59,10 +59,10 @@ class ChatAdapter {
                                 setText(R.id.tvMyMessageChatRvTime, DateUtil.getTimeDiffDesc(msgTimeDate))
                             }
                             RenderType.MESSAGE_TYPE_MINE_REVOKE -> {    //自己撤回
-                                setText(R.id.tvMyMessageChatRvTime, "对方撤回了一条消息")
+                                setText(R.id.tvMyMessageChatRvTime, "您撤回了一条消息")
                             }
                             RenderType.MESSAGE_TYPE_OTHER_REVOKE -> {    //别人撤回
-                                setText(R.id.tvMyMessageChatRvTime, "您撤回了一条消息")
+                                setText(R.id.tvMyMessageChatRvTime, "对方撤回了一条消息")
                             }
                         }
                     }

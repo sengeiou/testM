@@ -13,7 +13,7 @@
         android:id="@+id/ivMyMessageChatRvOtherVideoHead"
         android:layout_width="@dimen/padding_dp_40"
         android:layout_height="@dimen/padding_dp_40"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/default_img_icon"
         />
 
     <RelativeLayout
@@ -35,7 +35,7 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_centerInParent="true"
-            android:src="@mipmap/my_settings_aboutus_icon"
+            android:src="@drawable/video_start"
             />
 
         <TextView
@@ -47,6 +47,7 @@
             android:layout_marginBottom="@dimen/padding_dp_10"
             android:layout_marginEnd="@dimen/padding_dp_10"
             android:text=""
+            android:textColor="@color/white"
             />
     </RelativeLayout>
 </LinearLayout>

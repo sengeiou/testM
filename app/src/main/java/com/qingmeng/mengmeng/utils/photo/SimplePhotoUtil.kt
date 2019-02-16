@@ -26,7 +26,7 @@ import java.util.*
 
 class SimplePhotoUtil {
     private var simplePhoto: PhotoConfig? = null
-    private var onPathCallback: ((path: String) -> Unit)? = null
+    private var onPathCallback: ((path: String, data: Intent) -> Unit)? = null
 
     var cutPath = getPhotoCutPath()
     var cameraPath = getPhotoPath()
@@ -37,7 +37,7 @@ class SimplePhotoUtil {
     }
 
     //直接打开视频文件
-    fun setConfig(activity: Activity, onPathCallback: (path: String) -> Unit) {
+    fun setConfig(activity: Activity, onPathCallback: (path: String, data: Intent) -> Unit) {
         this.onPathCallback = onPathCallback
         val intent = Intent()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {//ACTION_OPEN_DOCUMENT
@@ -219,7 +219,7 @@ class SimplePhotoUtil {
                 if (data != null) { //从视频返回的数据
                     //得到视频的全路径
                     val uri = data.data
-                    onPathCallback!!(UriUtil.getPath(simplePhoto?.context, uri))
+                    onPathCallback!!(UriUtil.getPath(simplePhoto?.context, uri),data)
                 } else {
                     Toast.makeText(simplePhoto?.context, "获取视频文件失败", Toast.LENGTH_SHORT).show()
                 }

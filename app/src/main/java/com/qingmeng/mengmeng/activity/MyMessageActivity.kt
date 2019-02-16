@@ -110,7 +110,7 @@ class MyMessageActivity : BaseActivity() {
             holder.apply {
                 //头像
                 t.avatar?.let {
-                    GlideLoader.load(this@MyMessageActivity, it[0], getView(R.id.ivMyMessageRvLogo), placeholder = R.mipmap.my_settings_aboutus_icon)
+                    GlideLoader.load(this@MyMessageActivity, it[0], getView(R.id.ivMyMessageRvLogo), placeholder = R.drawable.default_img_icon)
                 }
                 //未读消息
                 UnreadMsgUtils.show(getView(R.id.viewMyMessageRvTipsNum), t.unReadCnt)
@@ -122,13 +122,14 @@ class MyMessageActivity : BaseActivity() {
                 setText(R.id.tvMyMessageRvTime, DateUtil.getSessionTime(t.updateTime))
                 //消息点击
                 getView<LinearLayout>(R.id.llMyMessageRv).setOnClickListener {
-                    //                    startActivity(Intent(this@MyMessageActivity, MessageActivity::class.java).apply {
+//                    startActivity(Intent(this@MyMessageActivity, MessageActivity::class.java).apply {
 //                        putExtra(IntentConstant.KEY_SESSION_KEY, t.sessionKey)
 //                    })
                     startActivity<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to t.sessionKey)
                 }
                 //删除
                 getView<TextView>(R.id.tvMyMessageRvDelete).setOnClickListener {
+//                    startActivity<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to t.sessionKey)
                     //关闭view
                     getView<SwipeMenuLayout>(R.id.smlMyMessageRv).smoothClose()
                     mImService?.sessionManager?.reqRemoveSession(mRecentSessionList[position])

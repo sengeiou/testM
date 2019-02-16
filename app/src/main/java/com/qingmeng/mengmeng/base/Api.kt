@@ -206,6 +206,10 @@ interface Api {
     @GET("api/my_attention/un_subscribe")
     fun deleteMyFollow(@Query("brandId") brandId: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
 
+    //企业入驻
+    @GET("api/my_company/company_page")
+    fun myEnterpriseEntry(): Observable<BaseBean<Any>>
+
     //我的留言
     @GET("api/my_comment/get_comments")
     fun myLeavingMessage(@Query("pageNum") pageNum: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<MyMyLeavingMessageBean>>
