@@ -48,11 +48,11 @@
 
         <meta-data
             android:name="com.baidu.lbsapi.API_KEY"
-            android:value="c4PzRwuyUUnfU3vUfmbpBRuILEtUD4vt"/>
+            android:value="c4PzRwuyUUnfU3vUfmbpBRuILEtUD4vt" />
         <service
             android:name="com.baidu.location.f"
             android:enabled="true"
-            android:process=":remote"/>
+            android:process=":remote" />
 
         <activity
             android:name=".activity.SplashActivity"
@@ -131,9 +131,13 @@
             android:name=".activity.HeadDetailsActivity"
             android:label="@string/title_activity_head_details"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".activity.RedShopSeach" />
+        <activity
+            android:name=".activity.RedShopSeach"
+            android:launchMode="singleTask" />
         <!--搜索结果页-->
-        <activity android:name=".activity.RedShopSeachResult" />
+        <activity
+            android:name=".activity.RedShopSeachResult"
+            android:launchMode="singleTask" />
 
 
     </application>

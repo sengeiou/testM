@@ -80,7 +80,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
         keyWord = intent.getStringExtra(SEACH_RESULT) ?: ""
         fatherId = intent.getIntExtra(firstLevel, 0)
         typeId = intent.getIntExtra(REDSHOPID, 1)
-
+        head_search.setText(keyWord)
         // keyWord=intent.getStringExtra(REDSHOPNAME)
         goToSeach()
     }
@@ -158,7 +158,6 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
             } else {
                 it.join_search_brands(keyWord, fatherId, typeId, cityIds, capitalIds, modeIds, integratedSortId, pageNum)
             }
-            //  it.join_search_brands(typeId, capitalIds, modeIds, integratedSortId, pageNum)
         }
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -267,9 +266,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
             }
             popupMenu1.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
                 override fun onSelectCallBack(selectId: Int) {
-                    // ToastUtil.showShort("$selectId")
                     typeId = selectId
-//                    httpSeach(keyWord, typeId, fatherId, cityIds, capitalIds, modeIds, integratedSortId, mPageNum)
                     goToSeach()
                 }
             })
@@ -283,9 +280,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
             //回调数据    传入搜索接口
             popupMenu2.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
                 override fun onSelectCallBack(selectId: Int) {
-                    // ToastUtil.showShort("$selectId")
                     cityIds = selectId.toString()
-                    //  httpSeach(keyWord, typeId, fatherId, cityIds, capitalIds, modeIds, integratedSortId, mPageNum)
                     goToSeach()
                 }
             })
@@ -298,9 +293,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
             }
             popupMenu3.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
                 override fun onSelectCallBack(selectId: Int) {
-                    //ToastUtil.showShort("$selectId")
                     integratedSortId = selectId
-                    //  httpSeach(keyWord, typeId, fatherId, cityIds, capitalIds, modeIds, integratedSortId, mPageNum)
                     goToSeach()
                 }
             })
@@ -313,9 +306,6 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
             }
             popupMenu4.setOnSelectListener(selectListener = object : PopSeachCondition.SelectCallBack {
                 override fun onSelectCallBack(selectMoney: StringBuffer, selectType: StringBuffer) {
-                    //         httpSeach(keyWord, typeId, fatherId, cityIds, capitalIds, modeIds, integratedSortId, mPageNum)
-//                    ToastUtil.showShort("${selectMoney}" + "${selectType}")
-                    // ToastUtil.showShort("${capitalIds}" + "${modeIds}")
                     capitalIds = selectMoney.toString()        //投资金额ID
                     modeIds = selectType.toString()         //加盟模式ID
                     goToSeach()
