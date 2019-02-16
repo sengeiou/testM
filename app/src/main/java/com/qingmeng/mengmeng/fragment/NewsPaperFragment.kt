@@ -3,6 +3,7 @@ package com.qingmeng.mengmeng.fragment
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener
 import com.qingmeng.mengmeng.BaseFragment
