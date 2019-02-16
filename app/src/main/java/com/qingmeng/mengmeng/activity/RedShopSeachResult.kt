@@ -40,6 +40,7 @@ import kotlinx.android.synthetic.main.red_shop_search_result_item.*
 import org.jetbrains.anko.startActivity
 
 
+
 @SuppressLint("CheckResult")
 class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener {
 
@@ -258,7 +259,9 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
 
     override fun initListener() {
         super.initListener()
-        head_search.setOnClickListener { startActivity<RedShopSeach>() }
+        head_search.setOnClickListener { startActivity<RedShopSeach>()
+            finish()
+        }
         head_search_mBack.setOnClickListener { this.finish() }
         search_food_type.setOnClickListener {
             if (!mIsInstantiationOne) {
