@@ -92,6 +92,18 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     }
 
     override fun initListener() {
+        mToTop.setOnClickListener { _ ->
+            getView(tabList[vpList.currentItem].id).layoutManager?.let {
+                if ((it as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() != 0) {
+                    it.scrollToPosition(0)
+                }
+            }
+            barLayout.setExpanded(true)
+            swipeLayout.isLoadMoreEnabled = false
+            swipeLayout.isRefreshEnabled = true
+            swipeLayout.isRefreshing = true
+            onRefresh()
+        }
         mJoinMenu.setOnItemClickListener { _, _, position, _ ->
             menuList[position].apply {
                 if (fatherSkipId == 0) {
@@ -122,15 +134,17 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 }
             }
         })
-        barLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { appBarLayout, verticalOffset ->
+        barLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             //verticalOffset始终为0以下的负数
             val percent = Math.abs(verticalOffset * 1.0f) / mJoinBanner.height
             mSearchBg.alpha = percent
             if (percent == 0f) {
                 bottomSearch.visibility = View.VISIBLE
+                mToTop.visibility = View.GONE
                 topSearch.visibility = View.GONE
             } else {
                 bottomSearch.visibility = View.GONE
+                mToTop.visibility = View.VISIBLE
                 topSearch.visibility = View.VISIBLE
             }
         })
@@ -390,7 +404,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 5 -> {
                     try {
                         OpenMallApp.open(context!!, exteriorUrl)
-                    } catch (e: OpenMallApp.NotInstalledException){
+                    } catch (e: OpenMallApp.NotInstalledException) {
                         startActivity<WebViewActivity>(IConstants.detailUrl to url)
                     }
                 }
