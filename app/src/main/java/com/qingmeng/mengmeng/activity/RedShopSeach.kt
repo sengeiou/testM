@@ -17,6 +17,7 @@ import android.widget.TextView
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.HotSearchesList
 import com.qingmeng.mengmeng.entity.SearchHistoryList
 import com.qingmeng.mengmeng.utils.ApiUtils
@@ -113,7 +114,7 @@ class RedShopSeach : BaseActivity() {
                         BoxUtils.removeSearchs(mHistoryrepeat)
                         BoxUtils.saveSearch(mHistorySearch[0])
                     }
-                    startActivity<RedShopSeachResult>()
+                    startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to search.name)
                 }
                 return false
             }
@@ -210,7 +211,7 @@ class RedShopSeach : BaseActivity() {
             override fun onSelected(position: Int, view: View?) {
                 super.onSelected(position, view)
                 mbackHotSearch = mList[position].name
-                startActivity<RedShopSeachResult>()
+                startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to mbackHotSearch)
             }
         }
     }
@@ -252,7 +253,7 @@ class RedShopSeach : BaseActivity() {
             override fun onSelected(position: Int, view: View?) {
                 super.onSelected(position, view)
                 mbackHistorySearch = shistory[position]
-                startActivity<RedShopSeachResult>()
+                startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to mbackHistorySearch)
             }
         }
         tfl_search_history.adapter = adapter

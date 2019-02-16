@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".activity.RedShopSeachResult">
 
@@ -18,8 +20,9 @@
         android:orientation="horizontal">
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="@dimen/padding_dp_35"
+            android:layout_weight="1"
             android:background="@color/white"
             android:orientation="vertical">
 
@@ -28,7 +31,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginEnd="@dimen/padding_dp_10"
-                android:layout_marginStart="@dimen/padding_dp_25"
+                android:layout_marginStart="@dimen/padding_dp_20"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/seach_food_type"
@@ -39,14 +42,15 @@
                 android:id="@+id/search_food_type_bottom"
                 android:layout_width="@dimen/padding_dp_55"
                 android:layout_height="@dimen/padding_dp_2"
-                android:layout_marginStart="@dimen/padding_dp_25"
+                android:layout_marginStart="@dimen/padding_dp_20"
                 android:background="@color/color_5ab1e1"
                 android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="@dimen/padding_dp_35"
+            android:layout_weight="1"
             android:background="@color/white"
             android:orientation="vertical">
 
@@ -55,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginEnd="@dimen/padding_dp_10"
-                android:layout_marginStart="@dimen/padding_dp_25"
+                android:layout_marginStart="@dimen/padding_dp_20"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/seach_add_area"
@@ -66,14 +70,15 @@
                 android:id="@+id/search_add_area_bottom"
                 android:layout_width="@dimen/padding_dp_55"
                 android:layout_height="@dimen/padding_dp_2"
-                android:layout_marginStart="@dimen/padding_dp_25"
+                android:layout_marginStart="@dimen/padding_dp_20"
                 android:background="@color/color_5ab1e1"
                 android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="@dimen/padding_dp_35"
+            android:layout_weight="1"
             android:background="@color/white"
             android:orientation="vertical">
 
@@ -82,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginEnd="@dimen/padding_dp_10"
-                android:layout_marginStart="@dimen/padding_dp_25"
+                android:layout_marginStart="@dimen/padding_dp_20"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/seach_ranking"
@@ -93,14 +98,15 @@
                 android:id="@+id/search_ranking_bottom"
                 android:layout_width="@dimen/padding_dp_55"
                 android:layout_height="@dimen/padding_dp_2"
-                android:layout_marginStart="@dimen/padding_dp_25"
+                android:layout_marginStart="@dimen/padding_dp_20"
                 android:background="@color/color_5ab1e1"
                 android:visibility="gone" />
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="@dimen/padding_dp_35"
+            android:layout_weight="1"
             android:background="@color/white"
             android:orientation="vertical">
 
@@ -109,7 +115,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_marginEnd="@dimen/padding_dp_10"
-                android:layout_marginStart="@dimen/padding_dp_25"
+                android:layout_marginStart="@dimen/padding_dp_20"
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="@string/seach_screning_conditon"
@@ -120,7 +126,7 @@
                 android:id="@+id/search_screning_conditon_bottom"
                 android:layout_width="@dimen/padding_dp_55"
                 android:layout_height="@dimen/padding_dp_2"
-                android:layout_marginStart="@dimen/padding_dp_25"
+                android:layout_marginStart="@dimen/padding_dp_20"
                 android:background="@color/color_5ab1e1"
                 android:visibility="gone" />
         </LinearLayout>
@@ -156,16 +162,15 @@
             android:textSize="@dimen/text_size_15" />
     </LinearLayout>
 
-    <!--<com.qingmeng.mengmeng.view.SwipeLayout-->
-    <!--android:id="@+id/seach_result_swipeLayout"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--app:load_more_enabled="false">-->
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/search_result_recylerview"
+    <com.qingmeng.mengmeng.view.SwipeLayout
+        android:id="@+id/seach_result_swipeLayout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
-    <!--</com.qingmeng.mengmeng.view.SwipeLayout>-->
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/swipe_target"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </com.qingmeng.mengmeng.view.SwipeLayout>
 
 </LinearLayout>

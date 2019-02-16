@@ -100,12 +100,12 @@ class ShopDetailActivity : BaseActivity() {
     private fun setData(bean: BrandBean) {
         name = bean.name
         if (bean.status == 1) {
-            val spanString = SpannableString("认证\t$name")
+            val spanString = SpannableString("证$name")
             val drawable = resources.getDrawable(R.drawable.detail_icon_certification)
             val imageSpan = ImageSpan(drawable, ImageSpan.ALIGN_BASELINE)
-            spanString.setSpan(imageSpan, 0, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+            spanString.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
             val density = resources.displayMetrics.density
-            drawable.setBounds(0, (7 * density).toInt(), (26 * density).toInt(), (21 * density).toInt())
+            drawable.setBounds(0, (7 * density).toInt(), (14 * density).toInt(), (21 * density).toInt())
             mDetailName.text = spanString
         } else {
             mDetailName.text = name
@@ -129,8 +129,10 @@ class ShopDetailActivity : BaseActivity() {
         isAttention = bean.isAttention
         if (bean.isAttention == 0) {
             mCollection.setDrawableTop(R.drawable.detail_icon_collection)
+            mCollection.setText(R.string.attention)
         } else {
             mCollection.setDrawableTop(R.drawable.detail_icon_collected)
+            mCollection.setText(R.string.already_attention)
         }
         if (!mImgList.isEmpty()) {
             mImgList.clear()
@@ -256,6 +258,7 @@ class ShopDetailActivity : BaseActivity() {
                     if (bean.code == 12000) {
                         isAttention = 1
                         mCollection.setDrawableTop(R.drawable.detail_icon_collected)
+                        mCollection.setText(R.string.already_attention)
                     } else {
                         ToastUtil.showShort(bean.msg)
                     }
@@ -276,6 +279,7 @@ class ShopDetailActivity : BaseActivity() {
                     if (bean.code == 12000) {
                         isAttention = 0
                         mCollection.setDrawableTop(R.drawable.detail_icon_collection)
+                        mCollection.setText(R.string.attention)
                     } else {
                         ToastUtil.showShort(bean.msg)
                     }

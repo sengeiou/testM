@@ -19,7 +19,7 @@ class ImageCodeHandler(activity: BaseActivity, val tv: TextView) : Handler() {
         val activity = mWeakActivity.get() ?: return
         when (msg?.what) {
             activity.timingOver -> {
-                tv.setText(R.string.getMsg)
+                tv.setText(R.string.getMsg_again)
                 tv.isClickable = true
                 activity.totalTime = -1
             }

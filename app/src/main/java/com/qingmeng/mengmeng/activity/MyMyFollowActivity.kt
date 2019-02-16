@@ -133,6 +133,7 @@ class MyMyFollowActivity : BaseActivity() {
                 if (mIsMyFollow) {
                     setText(R.id.tvMyMyFollowRvBrandName, t.name)
                 } else {
+                    setText(R.id.tvMyMyFollowRvDelete,getString(R.string.delete))
                     setText(R.id.tvMyMyFollowRvBrandName, t.brandName)
                 }
                 setText(R.id.tvMyMyFollowRvCateringType, t.foodName)

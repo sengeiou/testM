@@ -166,7 +166,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
         }
     }
 
-    private fun loginCode(code: String) {
+     fun loginCode(code: String) {
         myDialog.showLoadingDialog()
         ApiUtils.getApi().getWeChatToken(IConstants.APPID_WECHAT, IConstants.SECRET_WECHAT, code)
                 .observeOn(AndroidSchedulers.mainThread())

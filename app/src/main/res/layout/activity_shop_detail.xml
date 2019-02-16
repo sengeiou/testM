@@ -200,13 +200,13 @@
             android:layout_centerVertical="true"
             android:layout_toEndOf="@+id/mCustomerService"
             android:drawableTop="@drawable/detail_icon_collection"
-            android:text="@string/collection"
+            android:text="@string/attention"
             android:textColor="@color/color_999999"
             android:textSize="@dimen/text_size_12"/>
 
         <TextView
             android:id="@+id/mGetJoinData"
-            android:layout_width="140dp"
+            android:layout_width="@dimen/padding_dp_100"
             android:layout_height="@dimen/padding_dp_31"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
