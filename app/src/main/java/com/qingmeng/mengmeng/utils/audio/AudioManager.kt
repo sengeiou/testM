@@ -12,6 +12,8 @@ import java.util.*
 class AudioManager(private val mDir: String) {
     private var onAccentuation: ((voiceValue: Int) -> Unit)? = null     //分贝值返回回调
     private var mMediaRecorder: MediaRecorder? = null                   //音频工具
+    private var startTime = 0L                                          //开始时间
+    private var recordTime = 0F                                         //音频时间
     private var currentFilePath: String? = null                         //音频路径
     private val MAX_LENGTH = 1000 * 60 * 10                             //录制最长时间
     private val mHandler = Handler()                                    //子线程查询当前分贝
@@ -51,6 +53,7 @@ class AudioManager(private val mDir: String) {
         mMediaRecorder?.prepare()
         //开始
         mMediaRecorder?.start()
+        startTime = System.currentTimeMillis()
         updateMicStatus()
     }
 
@@ -72,13 +75,18 @@ class AudioManager(private val mDir: String) {
     /**
      * 释放资源
      */
-    fun releaseAudio(audioPathCallBack: (path: String) -> Unit = {}) {
+    fun releaseAudio(audioPathCallBack: (path: String, recordTime: Float) -> Unit = { _, _ -> }) {
         if (mMediaRecorder != null) {
             mMediaRecorder!!.reset()
             mMediaRecorder = null
             mHandler.removeCallbacks(mUpdateMicStatusTimer)
-            audioPathCallBack(currentFilePath!!)
+            recordTime = getRecordTime()
+            audioPathCallBack(currentFilePath!!, recordTime)
         }
+    }
+
+    fun getRecordTime(): Float {
+        return (System.currentTimeMillis() - startTime) / 1000f
     }
 
     /**

@@ -160,14 +160,17 @@
     <string name="clearCache_defaultSize">0.00KB</string>
     <string name="my_myFollow">我的关注</string>
     <string name="my_myFollow_cancel">取消关注</string>
+    <string name="my_myFollow_null_tips">暂 无 关 注 哦</string>
     <string name="my_myFollow_cancel_fail">取消失败</string>
     <string name="my_myFollow_cateringType">餐饮类型：</string>
     <string name="my_myFollow_investmentAmount">投资金额：</string>
     <string name="my_myLeavingMessage">我的留言</string>
+    <string name="my_myLeavingMessage_null_tips">暂 无 留 言 哦</string>
     <string name="my_myLeavingMessage_reply">已回复</string>
     <string name="my_myLeavingMessage_noReply">待回复</string>
     <string name="my_myLeavingMessage_StoreNum">门店数：</string>
     <string name="my_myFootprint">我的足迹</string>
+    <string name="my_myFootprint_null_tips">暂 无 足 迹 哦</string>
     <string name="my_enterpriseEntry">企业入驻</string>
     <string name="my_threeBinding">第三方绑定</string>
     <string name="my_username">我的盟盟</string>

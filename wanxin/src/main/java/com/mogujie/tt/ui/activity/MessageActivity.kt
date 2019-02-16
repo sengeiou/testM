@@ -231,12 +231,14 @@ class MessageActivity : MessageBaseActivity(), OnRefreshListener2<ListView>, Vie
         }
         data?.let {
             when (requestCode) {
-                SysConstant.CAMERA_WITH_DATA -> {
+                SysConstant.CAMERA_WITH_DATA -> {   //拍照
                     SDPathUtil.updateImageSysStatu(applicationContext, takePhotoSavePath)
                     handleTakePhotoData(data)
                 }
-                SysConstant.VIDEO_WITH_DATA -> handleTakeVideoData(data)
-                SysConstant.ALBUM_BACK_DATA -> {
+                SysConstant.VIDEO_WITH_DATA -> {    //视频
+                    handleTakeVideoData(data)
+                }
+                SysConstant.ALBUM_BACK_DATA -> {    //相册
                     logger.d("pic#ALBUM_BACK_DATA")
                     intent = data
                 }
@@ -614,7 +616,7 @@ class MessageActivity : MessageBaseActivity(), OnRefreshListener2<ListView>, Vie
     }
 
 
-    // 主要是录制语音的
+    //主要是录制语音的
     override fun onTouch(v: View, event: MotionEvent): Boolean {
         val id = v.id
         scrollToBottomListItem()

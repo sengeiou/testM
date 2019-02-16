@@ -1,28 +1,29 @@
 package com.qingmeng.mengmeng.activity
 
-import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Dialog
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
-import android.net.Uri
 import android.provider.MediaStore
 import android.support.v4.app.Fragment
 import android.support.v4.view.PagerAdapter
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
-import android.text.TextUtils
 import android.text.TextWatcher
-import android.view.*
-import android.widget.*
+import android.view.MotionEvent
+import android.view.View
+import android.view.Window
+import android.view.WindowManager
+import android.widget.ImageView
+import android.widget.LinearLayout
+import com.app.common.api.subscribeExtApi
+import com.mogujie.tt.api.RequestManager
+import com.mogujie.tt.api.composeDefault
 import com.mogujie.tt.config.DBConstant
 import com.mogujie.tt.config.IntentConstant
-import com.mogujie.tt.config.MessageConstant
 import com.mogujie.tt.config.MessageExtConst
-import com.mogujie.tt.db.DBInterface
+import com.mogujie.tt.config.SysConstant
 import com.mogujie.tt.db.entity.GroupEntity
 import com.mogujie.tt.db.entity.MessageEntity
 import com.mogujie.tt.db.entity.PeerEntity
@@ -35,18 +36,16 @@ import com.mogujie.tt.imservice.event.UnreadEvent
 import com.mogujie.tt.imservice.manager.IMUnreadMsgManager
 import com.mogujie.tt.imservice.service.IMService
 import com.mogujie.tt.imservice.support.IMServiceConnector
+import com.mogujie.tt.ui.activity.PickPhotoActivity
+import com.mogujie.tt.ui.adapter.album.AlbumHelper
+import com.mogujie.tt.ui.adapter.album.ImageBucket
 import com.mogujie.tt.ui.adapter.album.ImageItem
-import com.mogujie.tt.ui.helper.AudioPlayerHandler
-import com.mogujie.tt.ui.helper.Emoparser
-import com.mogujie.tt.ui.widget.SpeekerToast
-import com.mogujie.tt.ui.widget.message.MessageOperatePopup
-import com.mogujie.tt.ui.widget.message.RenderType
 import com.mogujie.tt.utils.CommonUtil
-import com.mogujie.tt.utils.DateUtil
+import com.mogujie.tt.utils.SDPathUtil
+import com.mogujie.tt.utils.path.UriUtil
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.adapter.ChatAdapter
-import com.qingmeng.mengmeng.adapter.MultiItemTypeAdapter
+import com.qingmeng.mengmeng.adapter.ChatAdapterTwo
 import com.qingmeng.mengmeng.adapter.MyFragmentPagerAdapter
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.fragment.MyMessageChatExpressionTabLayoutFragment
@@ -55,16 +54,13 @@ import com.qingmeng.mengmeng.utils.PermissionUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.utils.audio.AudioManager
 import com.qingmeng.mengmeng.utils.audio.MediaManager
-import com.qingmeng.mengmeng.utils.getLoacalBitmap
 import com.qingmeng.mengmeng.utils.imageLoader.CacheType
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
-import com.qingmeng.mengmeng.utils.photo.PhotoConfig
 import com.qingmeng.mengmeng.utils.photo.SimplePhotoUtil
 import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.main.activity_my_message_chat.*
 import kotlinx.android.synthetic.main.layout_head.*
 import kotlinx.android.synthetic.main.view_dialog_sound_volume.*
-import org.jetbrains.anko.ctx
 import java.io.File
 import java.io.IOException
 import java.util.*
@@ -82,7 +78,7 @@ import java.util.*
 class MyMessageChatActivity : BaseActivity() {
     private lateinit var mKeyboardUtil: KeyboardUtil            //系统键盘工具
     private lateinit var mLayoutManager: LinearLayoutManager
-    private lateinit var mAdapter: MultiItemTypeAdapter<Any>
+    private lateinit var mAdapter: ChatAdapterTwo
     private lateinit var mPageAdapter: PagerAdapter
     private var mAudioManager = AudioManager.getInstance(IConstants.DIR_AUDIO_STR)    //语音工具类
     private lateinit var mSoundVolumeDialog: Dialog             //语音弹出框
@@ -93,7 +89,9 @@ class MyMessageChatActivity : BaseActivity() {
     private var mExpressionOrFunction = 0                       //变量 0默认（都不受理） 1表情点击 2工具+点击
     private var mFragmentList = ArrayList<Fragment>()           //表情fragment
     private val mTabTitles = arrayOf("", "", "")                //tabLayout头部 先加3个试试
-    private var mLocalVideoPath = ""                            //语音本地路径
+    private var albumHelper: AlbumHelper? = null                //相册数据
+    private var albumList: MutableList<ImageBucket>? = null
+    private var takePhotoSavePath: String? = ""                 //拍照路径
 
     /**
      * 消息用到的
@@ -103,9 +101,6 @@ class MyMessageChatActivity : BaseActivity() {
     private var loginUser: UserEntity? = null
     private var peerEntity: PeerEntity? = null
     private var msgObjectList = ArrayList<Any>()
-    private var currentPop: MessageOperatePopup? = null    //弹出气泡
-    private val mDefaultTimeDifference = 120               //默认时间差值
-    private var takePhotoSavePath: String? = ""
     private var historyTimes = 0
     private val imServiceConnector = object : IMServiceConnector() {
         override fun onIMServiceConnected() {
@@ -134,6 +129,8 @@ class MyMessageChatActivity : BaseActivity() {
         }
         //初始化音量对话框
         initSoundVolumeDlg()
+        //舒适化相册
+        initAlbumHelper()
         initAdapter()
         httpLoad()
 
@@ -153,7 +150,7 @@ class MyMessageChatActivity : BaseActivity() {
     private fun initMsgData() {
         historyTimes = 0
         loginUser = mImService?.loginManager?.loginInfo
-        ChatAdapter.setData(mImService!!, loginUser!!)
+        mAdapter.setImService(mImService, loginUser)
         if (peerEntity == null) {
             peerEntity = mImService!!.sessionManager.findPeerEntity(currentSessionKey)
         }
@@ -163,6 +160,15 @@ class MyMessageChatActivity : BaseActivity() {
         mImService?.unReadMsgManager?.readUnreadSession(currentSessionKey)
         mImService?.notificationManager?.cancelSessionNotifications(currentSessionKey)
     }
+
+    /**
+     * 初始化数据（相册,表情,数据库相关）
+     */
+    private fun initAlbumHelper() {
+        albumHelper = AlbumHelper.getHelper(this)
+        albumList = albumHelper!!.getImagesBucketList(false)
+    }
+
 
     override fun initListener() {
         super.initListener()
@@ -246,9 +252,14 @@ class MyMessageChatActivity : BaseActivity() {
                     //发送语音
                     if (y1 - y2 <= 180) {
                         //如果语音时间够的话就发送语音
-                        if (false) { //真.发送
-
+                        if (mAudioManager.getRecordTime() > 1) { //真.发送
                             mSoundVolumeDialog.dismiss()
+                            //释放录音
+                            mAudioManager.releaseAudio({ path, recordTime ->
+                                //                                ToastUtil.showShort(path)
+                                //发送语音
+                                onRecordVoiceEnd(path, recordTime)
+                            })
                         } else {  //发送条件未满足
                             mSoundVolumeImg.visibility = View.GONE
                             mSoundVolumeLayout.setBackgroundResource(R.drawable.view_dialog_sound_volume_short_tip_bg)
@@ -260,16 +271,13 @@ class MyMessageChatActivity : BaseActivity() {
                                     this.cancel()
                                 }
                             }, 700)
+                            mAudioManager.cancelAudio()
                         }
                     } else {  //取消发送
                         mSoundVolumeDialog.dismiss()
+                        //删除文件
+                        mAudioManager.cancelAudio()
                     }
-                    //释放录音
-                    mAudioManager.releaseAudio({
-                        ToastUtil.showShort(it)
-                        //录制路径赋值
-                        mLocalVideoPath = it
-                    })
                     false
                 }
                 else -> true
@@ -432,155 +440,55 @@ class MyMessageChatActivity : BaseActivity() {
                 ToastUtil.showShort(getString(R.string.play_audio_call))
             }
         }
+
+        //撤回删除事件
+        mAdapter.setPopCallBack(object : ChatAdapterTwo.PopCallBack {
+
+            //撤回
+            override fun onRevokeClick(position: Int) {
+                myDialog.showLoadingDialog()
+                val objectArrayList = mAdapter.msgObjectList
+                val messageEntity = objectArrayList[position] as MessageEntity
+                //网络请求
+                RequestManager.instanceApi
+                        .msgRevoke(messageEntity.fromId, messageEntity.toId, messageEntity.msgId)
+                        .compose(composeDefault())
+                        .subscribeExtApi({
+                            myDialog.dismissLoadingDialog()
+                            CmdMessage.buildForSend("撤回了一条消息", loginUser, currentSessionKey)?.apply {
+                                displayType = DBConstant.SHOW_REVOKE_TYPE
+                                setAttribute(MessageExtConst.MSGID, messageEntity.msgId)
+                                setAttribute(MessageExtConst.CMD_TIME, System.currentTimeMillis())
+                                mImService?.messageManager?.sendCMD(this)
+                            }
+                            //调用adapter的撤回方法
+                            mAdapter.revokeMsg(messageEntity)
+                        })
+            }
+
+            //删除
+            override fun onDeleteClick(position: Int) {
+                myDialog.showLoadingDialog()
+                val objectArrayList = mAdapter.msgObjectList
+                val messageEntity = objectArrayList[position] as MessageEntity
+                //网络请求
+                RequestManager.instanceApi
+                        .msgDelete(messageEntity.fromId, messageEntity.toId, messageEntity.msgId)
+                        .compose(composeDefault())
+                        .subscribeExtApi({
+                            myDialog.dismissLoadingDialog()
+                            //调用adapter的删除方法
+                            mAdapter.removeMsg(messageEntity)
+                        })
+            }
+        })
     }
 
     private fun initAdapter() {
         //消息适配器
         mLayoutManager = LinearLayoutManager(this)
         rvMyMessageChat.layoutManager = mLayoutManager
-        mAdapter = MultiItemTypeAdapter(this, msgObjectList, holderConvert = { _, _, _, _ -> }, holderConvertP = { holder, t, position, _, parent ->
-            holder.apply {
-                when (RenderType.values()[getItemViewType(position)]) {
-                    RenderType.MESSAGE_TYPE_TIME_TITLE, RenderType.MESSAGE_TYPE_MINE_REVOKE, RenderType.MESSAGE_TYPE_OTHER_REVOKE -> {    //时间(撤回)
-
-                    }
-                    RenderType.MESSAGE_TYPE_INVALID -> {    //品牌详情(失败类型)
-
-                    }
-                    RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF -> {    //自己文字(表情)
-                        getView<TextView>(R.id.tvMyMessageChatRvMineTextText).apply {
-                            //长按事件
-                            setOnLongClickListener {
-                                showPopWindow(position, parent, this)
-                                true
-                            }
-                        }
-                    }
-                    RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF -> {    //别人文字(表情)
-                        getView<TextView>(R.id.tvMyMessageChatRvOtherTextText).apply {
-                            //长按事件
-                            setOnLongClickListener {
-                                showPopWindow(position, parent, this)
-                                true
-                            }
-                        }
-                    }
-                    RenderType.MESSAGE_TYPE_MINE_IMAGE, RenderType.MESSAGE_TYPE_MINE_GIF_IMAGE -> {    //自己图片
-                        getView<ImageView>(R.id.ivMyMessageChatRvMineImageImage).setOnClickListener {
-                            val imageMessage = msgObjectList[position] as ImageMessage
-                            val imagePath = imageMessage.url
-                            ToastUtil.showShort("自己图片(gif)")
-                        }
-                        getView<ImageView>(R.id.ivMyMessageChatRvMineImageImage).apply {
-                            //长按事件
-                            setOnLongClickListener {
-                                showPopWindow(position, parent, this)
-                                true
-                            }
-                        }
-                    }
-                    RenderType.MESSAGE_TYPE_OTHER_IMAGE, RenderType.MESSAGE_TYPE_OTHER_GIF_IMAGE -> {    //别人图片
-                        getView<ImageView>(R.id.ivMyMessageChatRvOtherImageImage).setOnClickListener {
-                            val imageMessage = msgObjectList[position] as ImageMessage
-                            val imagePath = imageMessage.url
-                            ToastUtil.showShort("别人图片(gif)")
-                        }
-                        getView<ImageView>(R.id.ivMyMessageChatRvOtherImageImage).apply {
-                            //长按事件
-                            setOnLongClickListener {
-                                showPopWindow(position, parent, this)
-                                true
-                            }
-                        }
-                    }
-                    RenderType.MESSAGE_TYPE_MINE_AUDIO -> {    //自己语音
-                        getView<LinearLayout>(R.id.llMyMessageChatRvMineAudio).setOnClickListener {
-                            val audioMessage = msgObjectList[position] as AudioMessage
-                            val audioPath = audioMessage.audioPath
-                            ToastUtil.showShort("自己语音")
-                        }
-                        getView<LinearLayout>(R.id.llMyMessageChatRvMineAudio).apply {
-                            //长按事件
-                            setOnLongClickListener {
-                                showPopWindow(position, parent, this)
-                                true
-                            }
-                        }
-                    }
-                    RenderType.MESSAGE_TYPE_OTHER_AUDIO -> {    //别人语音
-                        getView<LinearLayout>(R.id.llMyMessageChatRvOtherAudio).setOnClickListener {
-                            val audioMessage = msgObjectList[position] as AudioMessage
-                            val audioPath = audioMessage.audioPath
-                            ToastUtil.showShort("别人语音")
-                        }
-                        getView<LinearLayout>(R.id.llMyMessageChatRvOtherAudio).apply {
-                            //长按事件
-                            setOnLongClickListener {
-                                showPopWindow(position, parent, this)
-                                true
-                            }
-                        }
-                    }
-                    RenderType.MESSAGE_TYPE_MINE_VIDEO -> {    //自己视频
-                        getView<RelativeLayout>(R.id.rlMyMessageChatRvMineVideo).setOnClickListener {
-                            val videoMessage = msgObjectList[position] as VideoMessage
-                            val path = videoMessage.path
-                            var url = videoMessage.url
-                            if (!TextUtils.isEmpty(path) && File(path).exists()) {
-                                url = path
-                            }
-                            val uri = Uri.parse(url)
-                            //调用系统自带的播放器
-                            val intent = Intent(Intent.ACTION_VIEW)
-                            intent.setDataAndType(uri, "video/mp4")
-                            ctx.startActivity(intent)
-                        }
-                        getView<RelativeLayout>(R.id.rlMyMessageChatRvMineVideo).apply {
-                            //长按事件
-                            setOnLongClickListener {
-                                showPopWindow(position, parent, this)
-                                true
-                            }
-                        }
-                    }
-                    RenderType.MESSAGE_TYPE_OTHER_VIDEO -> {    //别人视频
-                        getView<RelativeLayout>(R.id.rlMyMessageChatRvOtherVideo).setOnClickListener {
-                            val videoMessage = msgObjectList[position] as VideoMessage
-                            val path = videoMessage.path
-                            var url = videoMessage.url
-                            if (!TextUtils.isEmpty(path) && File(path).exists()) {
-                                url = path
-                            }
-                            val uri = Uri.parse(url)
-                            //调用系统自带的播放器
-                            val intent = Intent(Intent.ACTION_VIEW)
-                            intent.setDataAndType(uri, "video/mp4")
-                            ctx.startActivity(intent)
-                        }
-                        getView<RelativeLayout>(R.id.rlMyMessageChatRvOtherVideo).apply {
-                            //长按事件
-                            setOnLongClickListener {
-                                showPopWindow(position, parent, this)
-                                true
-                            }
-                        }
-                    }
-                }
-            }
-        }, itemClick = { _, _, _ ->
-            hiddenViewAndInputKeyboard()
-        })
-        mAdapter.addItemViewDelegate(ChatAdapter.DefaultLayout())
-        mAdapter.addItemViewDelegate(ChatAdapter.TimeLayout())
-        mAdapter.addItemViewDelegate(ChatAdapter.BrandLayout())
-        mAdapter.addItemViewDelegate(ChatAdapter.OtherVideoLayout())
-        mAdapter.addItemViewDelegate(ChatAdapter.MineVideoLayout())
-        mAdapter.addItemViewDelegate(ChatAdapter.OtherAudioLayout())
-        mAdapter.addItemViewDelegate(ChatAdapter.MineAudioLayout())
-        mAdapter.addItemViewDelegate(ChatAdapter.OtherImageLayout())
-        mAdapter.addItemViewDelegate(ChatAdapter.MineImageLayout())
-        mAdapter.addItemViewDelegate(ChatAdapter.OtherTextLayout())
-        mAdapter.addItemViewDelegate(ChatAdapter.MineTextLayout())
+        mAdapter = ChatAdapterTwo(this, msgObjectList)
         rvMyMessageChat.adapter = mAdapter
 
         //表情viewPager适配器
@@ -668,373 +576,14 @@ class MyMessageChatActivity : BaseActivity() {
      */
 
     /**
-     * 添加历史消息
-     */
-    private fun addItem(msg: MessageEntity) {
-        val nextTime = msg.created
-        if (msgObjectList.size > 0) {
-            val objectMessage = msgObjectList[msgObjectList.lastIndex]
-            if (objectMessage is MessageEntity) {
-                val preTime = (objectMessage as MessageEntity).created
-                val needTime = DateUtil.needDisplayTime(preTime, nextTime)
-                if (needTime) {
-                    msgObjectList.add(nextTime)
-                }
-            }
-        } else {
-            val message = msg.created
-            msgObjectList.add(message)
-        }
-        /**消息的判断 */
-        if (msg.displayType == DBConstant.SHOW_MIX_TEXT) {
-            val mixMessage = msg as MixMessage
-            msgObjectList.addAll(mixMessage.getMsgList())
-        } else {
-            msgObjectList.add(msg)
-        }
-        if (msg is ImageMessage) {
-            ImageMessage.addToImageMessageList(msg)
-        }
-        ChatAdapter.msgObjectList = msgObjectList
-        mAdapter.notifyDataSetChanged()
-    }
-
-    /**
-     * 删除一条消息
-     */
-    fun removeMsg(messageEntity: MessageEntity) {
-        //根据消息Id删除数据库内容
-        DBInterface.instance().deleteMessageByMsgId(messageEntity.msgId)
-        msgObjectList.remove(messageEntity)
-        mAdapter.notifyDataSetChanged()
-    }
-
-    /**
-     * 撤回一条消息
-     */
-    fun revokeMsg(entity: MessageEntity) {
-        entity.displayType = DBConstant.SHOW_REVOKE_TYPE
-        //根据消息修改数据库内容
-        DBInterface.instance().insertOrUpdateMessage(entity)
-        mAdapter.notifyDataSetChanged()
-    }
-
-    /**
-     * 修改新收到的消息
-     */
-    private fun updateRevokeMsg(entity: MessageEntity) {
-        val txtMsg = entity as TextMessage
-        for (objectList in msgObjectList) {
-            if (objectList is MessageEntity) {
-                val messageEntity = objectList as MessageEntity
-                if (messageEntity.msgId == txtMsg.getAttributeInt(MessageExtConst.MSGID)) {
-                    (objectList as MessageEntity).displayType = DBConstant.SHOW_REVOKE_TYPE
-                    //根据消息修改数据库内容
-                    DBInterface.instance().insertOrUpdateMessage(messageEntity)
-                    mAdapter.notifyDataSetChanged()
-                }
-            }
-        }
-    }
-
-    /**
-     * 是否是gif图
-     */
-    private fun isMsgGif(msg: MessageEntity): Boolean {
-        val content = msg.info
-        // @YM 临时处理  牙牙表情与消息混合出现的消息丢失
-        return if (TextUtils.isEmpty(content) || !(content.startsWith("[") && content.endsWith("]"))) {
-            false
-        } else Emoparser.getInstance(this.ctx)!!.isMessageGif(msg.info)
-    }
-
-    /**
-     * 获取第一个Message类
-     */
-    fun getTopMsgEntity(): MessageEntity? {
-        if (msgObjectList.size <= 0) {
-            return null
-        }
-        for (result in msgObjectList) {
-            if (result is MessageEntity) {
-                return result
-            }
-        }
-        return null
-    }
-
-    /**
-     * 时间比较
-     */
-    private class MessageTimeComparator : Comparator<MessageEntity> {
-        override fun compare(lhs: MessageEntity, rhs: MessageEntity): Int {
-            return if (lhs.created == rhs.created) {
-                lhs.msgId - rhs.msgId
-            } else lhs.created - rhs.created
-        }
-    }
-
-    /**
-     * 下拉载入历史消息,从最上面开始添加
-     */
-    private fun loadHistoryList(historyList: List<MessageEntity>?) {
-        if (null == historyList || historyList.isEmpty()) {
-            return
-        }
-        Collections.sort(historyList, MessageTimeComparator())
-        val chatList = ArrayList<Any>()
-        var preTime = 0
-        var nextTime = 0
-        val idset = HashSet<Int>()
-        for (msg in historyList) {
-            idset.add(msg.fromId)
-            if (msg.displayType == DBConstant.MSG_TYPE_SINGLE_TEXT) {
-                if (isMsgGif(msg)) {
-                    msg.isGIfEmo = true
-                }
-            }
-            nextTime = msg.created
-            val needTimeBubble = DateUtil.needDisplayTime(preTime, nextTime)
-            if (needTimeBubble) {
-                val `in` = nextTime
-                chatList.add(`in`)
-            }
-            preTime = nextTime
-            if (msg.displayType == DBConstant.SHOW_MIX_TEXT) {
-                val mixMessage = msg as MixMessage
-                chatList.addAll(mixMessage.getMsgList())
-            } else {
-                chatList.add(msg)
-            }
-        }
-        // 如果是历史消息，从头开始加
-        msgObjectList.addAll(0, chatList)
-        getImageList()
-        ChatAdapter.msgObjectList = msgObjectList
-        mAdapter.notifyDataSetChanged()
-        rvMyMessageChat.scrollToPosition(chatList.lastIndex)
-    }
-
-    /**
-     * 获取图片消息列表
-     */
-    private fun getImageList() {
-        for (i in msgObjectList.indices.reversed()) {
-            val item = msgObjectList[i]
-            if (item is ImageMessage) {
-                ImageMessage.addToImageMessageList(item)
-            }
-        }
-    }
-
-    /**
-     * 临时处理，一定要干掉
-     */
-    private fun hidePopup() {
-        if (currentPop != null) {
-            currentPop?.hidePopup()
-        }
-    }
-
-    /**
-     * msgId 是消息ID
-     * localId是本地的ID
-     * position 是list 的位置
-     *
-     * 只更新item的状态
-     * 刷新单条记录
-     */
-    fun updateItemState(position: Int, messageEntity: MessageEntity) {
-        //更新DB
-        //更新单条记录
-        mImService?.dbInterface?.insertOrUpdateMessage(messageEntity)
-        mAdapter.notifyDataSetChanged()
-    }
-
-    /**
-     * 对于混合消息的特殊处理
-     */
-    private fun updateItemState(messageEntity: MessageEntity) {
-        val dbId = messageEntity.id!!
-        val msgId = messageEntity.msgId
-        val len = msgObjectList.size
-        for (index in len - 1 downTo 1) {
-            val objectMessage = msgObjectList[index]
-            if (objectMessage is MessageEntity) {
-                if (objectMessage is ImageMessage) {
-                    ImageMessage.addToImageMessageList(objectMessage)
-                }
-                if (objectMessage.id == dbId && objectMessage.msgId == msgId) {
-                    msgObjectList[index] = messageEntity
-                    break
-                }
-            }
-        }
-        mAdapter.notifyDataSetChanged()
-    }
-
-    /**
-     * 获取消息类型
-     */
-    private fun getItemViewType(position: Int): Int {
-        /**默认是失败类型 */
-        var type = RenderType.MESSAGE_TYPE_INVALID
-        val obj = msgObjectList[position]
-        if (obj is Int) {
-            type = RenderType.MESSAGE_TYPE_TIME_TITLE
-        } else if (obj is MessageEntity) {
-            val isMine = obj.fromId == loginUser?.peerId
-            when (obj.displayType) {
-                DBConstant.SHOW_AUDIO_TYPE -> {
-                    type = if (isMine) {
-                        RenderType.MESSAGE_TYPE_MINE_AUDIO
-                    } else {
-                        RenderType.MESSAGE_TYPE_OTHER_AUDIO
-                    }
-                }
-                DBConstant.SHOW_IMAGE_TYPE -> {
-                    val imageMessage = obj as ImageMessage
-                    if (CommonUtil.gifCheck(imageMessage.url)) {
-                        type = if (isMine)
-                            RenderType.MESSAGE_TYPE_MINE_GIF_IMAGE
-                        else
-                            RenderType.MESSAGE_TYPE_OTHER_GIF_IMAGE
-                    } else {
-                        type = if (isMine)
-                            RenderType.MESSAGE_TYPE_MINE_IMAGE
-                        else
-                            RenderType.MESSAGE_TYPE_OTHER_IMAGE
-                    }
-                }
-                DBConstant.SHOW_ORIGIN_TEXT_TYPE -> {
-                    val txtMsg = obj as TextMessage
-                    if (obj.isGIfEmo) {
-                        type = if (isMine)
-                            RenderType.MESSAGE_TYPE_MINE_GIF
-                        else
-                            RenderType.MESSAGE_TYPE_OTHER_GIF
-                    } else if (txtMsg.contentEntity.infoType == DBConstant.SHOW_REVOKE_TYPE) {
-                        type = if (isMine)
-                            RenderType.MESSAGE_TYPE_MINE_REVOKE
-                        else
-                            RenderType.MESSAGE_TYPE_OTHER_REVOKE
-                    } else {
-                        type = if (isMine)
-                            RenderType.MESSAGE_TYPE_MINE_TEXT
-                        else
-                            RenderType.MESSAGE_TYPE_OTHER_TEXT
-                    }
-                }
-                DBConstant.SHOW_MIX_TEXT -> {
-                }
-                DBConstant.SHOW_VIDEO_TYPE -> {
-                    type = if (isMine) {
-                        RenderType.MESSAGE_TYPE_MINE_VIDEO
-                    } else {
-                        RenderType.MESSAGE_TYPE_OTHER_VIDEO
-                    }
-                }
-                DBConstant.SHOW_REVOKE_TYPE -> {    //撤回
-                    type = if (isMine) {
-                        RenderType.MESSAGE_TYPE_MINE_REVOKE
-                    } else {
-                        RenderType.MESSAGE_TYPE_OTHER_REVOKE
-                    }
-                }
-                else -> {
-                }
-            }
-        }
-        return type.ordinal
-    }
-
-    /**
-     * pop点击事件的定义
-     */
-    private fun getPopMenu(parent: ViewGroup, listener: MessageOperatePopup.OnItemClickListener): MessageOperatePopup {
-        val popupView = MessageOperatePopup.instance(ctx, parent)
-        currentPop = popupView
-        popupView.setOnItemClickListener(listener)
-        return popupView
-    }
-
-    private inner class OperateItemClickListener(private val mMsgInfo: MessageEntity, private val mPosition: Int) : MessageOperatePopup.OnItemClickListener {
-        private val mType: Int = mMsgInfo.displayType
-        @SuppressLint("NewApi")
-        override fun onCopyClick() {
-            try {
-                val manager = ctx.getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.HONEYCOMB) {
-                    val data = ClipData.newPlainText("data", mMsgInfo.content)
-                    manager.primaryClip = data
-                } else {
-                    manager.text = mMsgInfo.content
-                }
-            } catch (e: Exception) {
-
-            }
-        }
-
-        override fun onResendClick() {
-            try {
-                if (mType == DBConstant.SHOW_AUDIO_TYPE || mType == DBConstant.SHOW_ORIGIN_TEXT_TYPE) {
-                    if (mMsgInfo.displayType == DBConstant.SHOW_AUDIO_TYPE) {
-                        if (mMsgInfo.sendContent.size < 4) {
-                            return
-                        }
-                    }
-                } else if (mType == DBConstant.SHOW_IMAGE_TYPE) {
-                    // 之前的状态是什么 上传没有成功继续上传
-                    // 上传成功，发送消息
-                    val imageMessage = mMsgInfo as ImageMessage
-                    if (TextUtils.isEmpty(imageMessage.path)) {
-                        Toast.makeText(ctx, ctx.getString(com.leimo.wanxin.R.string.image_path_unavaluable), Toast.LENGTH_LONG).show()
-                        return
-                    }
-                }
-                mMsgInfo.status = MessageConstant.MSG_SENDING
-                msgObjectList.removeAt(mPosition)
-                addItem(mMsgInfo)
-                if (mImService != null) {
-                    mImService?.messageManager?.resendMessage(mMsgInfo)
-                }
-
-            } catch (e: Exception) {
-
-            }
-        }
-
-        override fun onSpeakerClick() {
-            val audioPlayerHandler = AudioPlayerHandler.getInstance()
-            if (audioPlayerHandler.getAudioMode(ctx) == android.media.AudioManager.MODE_NORMAL) {
-                audioPlayerHandler.setAudioMode(android.media.AudioManager.MODE_IN_CALL, ctx)
-                SpeekerToast.show(ctx, ctx.getText(com.leimo.wanxin.R.string.audio_in_call), Toast.LENGTH_SHORT)
-            } else {
-                audioPlayerHandler.setAudioMode(android.media.AudioManager.MODE_NORMAL, ctx)
-                SpeekerToast.show(ctx, ctx.getText(com.leimo.wanxin.R.string.audio_in_speeker), Toast.LENGTH_SHORT)
-            }
-        }
-
-        //撤回
-        override fun onRevokeClick(position: Int) {
-
-        }
-
-        //删除
-        override fun onDeleteClick(position: Int) {
-
-        }
-    }
-
-    /**
      * 添加单个消息
      */
     private fun pushList(msg: MessageEntity?) {
         //撤回的消息
         if (msg?.msgType == DBConstant.SHOW_REVOKE_TYPE) {
-            updateRevokeMsg(msg)
+            mAdapter.updateRevokeMsg(msg)
         } else {
-            addItem(msg!!)
+            mAdapter.addItem(msg!!, mLayoutManager)
         }
     }
 
@@ -1042,7 +591,7 @@ class MyMessageChatActivity : BaseActivity() {
      * 添加list消息
      */
     private fun pushList(entityList: List<MessageEntity>?) {
-        loadHistoryList(entityList)
+        mAdapter.loadHistoryList(entityList, mLayoutManager)
     }
 
     /**
@@ -1139,14 +688,14 @@ class MyMessageChatActivity : BaseActivity() {
                 onMsgUnAckTimeoutOrFailure(event.messageEntity)
             }
 
-            MessageEvent.Event.HANDLER_IMAGE_UPLOAD_SUCCESS, MessageEvent.Event.HANDLER_IMAGE_UPLOAD_FAILD -> {
+            MessageEvent.Event.HANDLER_IMAGE_UPLOAD_SUCCESS, MessageEvent.Event.HANDLER_IMAGE_UPLOAD_FAILD -> { //成功和失败
                 val imageMessage = event.messageEntity as ImageMessage
-                updateItemState(imageMessage)
+                mAdapter.updateItemState(imageMessage)
             }
 
             MessageEvent.Event.HANDLER_VIDEO_UPLOAD_SUCCESS, MessageEvent.Event.HANDLER_VIDEO_UPLOAD_FAILD -> {
                 val videoMessage = event.messageEntity as VideoMessage
-                updateItemState(videoMessage)
+                mAdapter.updateItemState(videoMessage)
             }
             MessageEvent.Event.HISTORY_MSG_OBTAIN -> {
                 if (historyTimes == 1) {
@@ -1179,7 +728,7 @@ class MyMessageChatActivity : BaseActivity() {
 
         /**到底采用哪种ID呐?? */
         val localId = messageEntity.id!!
-        updateItemState(messageEntity)
+        mAdapter.updateItemState(messageEntity)
     }
 
     /**
@@ -1196,7 +745,7 @@ class MyMessageChatActivity : BaseActivity() {
      */
     private fun onMsgUnAckTimeoutOrFailure(messageEntity: MessageEntity?) {
         // msgId 应该还是为0
-        updateItemState(messageEntity!!)
+        mAdapter.updateItemState(messageEntity!!)
     }
 
     /**
@@ -1234,10 +783,10 @@ class MyMessageChatActivity : BaseActivity() {
         val selectedVideo = data.data
         val filePathColumn = arrayOf(MediaStore.Video.Media.DATA)
         val cursor = contentResolver.query(selectedVideo!!, filePathColumn, null, null, null)
-        cursor!!.moveToFirst()
-        val columnIndex = cursor.getColumnIndex(filePathColumn[0])
-        val videoPath = cursor.getString(columnIndex)
-        cursor.close()
+        cursor?.moveToFirst()
+        val columnIndex = cursor?.getColumnIndex(filePathColumn[0]) ?: 0
+        val videoPath = cursor?.getString(columnIndex)
+        cursor?.close()
         val mediaPlayer = MediaPlayer()
         try {
             mediaPlayer.setDataSource(videoPath)
@@ -1254,9 +803,10 @@ class MyMessageChatActivity : BaseActivity() {
             val sendList = ArrayList<VideoMessage>(1)
             sendList.add(it)
             mImService?.messageManager?.sendVideos(sendList)
-            // 格式有些问题
+            //格式有些问题
             pushList(it)
-            etMyMessageChatContent?.clearFocus()//消除焦点
+            //消除焦点
+            etMyMessageChatContent?.clearFocus()
         }
     }
 
@@ -1275,28 +825,14 @@ class MyMessageChatActivity : BaseActivity() {
      */
     fun onPullDownToRefresh() {
         // 获取消息
-        val messageEntity = getTopMsgEntity()
+        val messageEntity = mAdapter.getTopMsgEntity()
         if (messageEntity != null) {
             val historyMsgInfo = mImService?.messageManager?.loadHistoryMsg(messageEntity, historyTimes)
             if (historyMsgInfo?.size ?: 0 > 0) {
                 historyTimes++
-                loadHistoryList(historyMsgInfo)
+                mAdapter.loadHistoryList(historyMsgInfo, mLayoutManager, true)
             }
         }
-    }
-
-    /**
-     * 显示气泡
-     */
-    private fun showPopWindow(position: Int, parent: ViewGroup, view: View) {
-        val message = (msgObjectList[position] as MessageEntity)
-        // 创建一个pop对象，然后 分支判断状态，然后显示需要的内容
-        val isMine = message.fromId == loginUser?.peerId
-        val popup = getPopMenu(parent, OperateItemClickListener(message, position))
-        val bResend = message.status == MessageConstant.MSG_FAILURE
-        //消息是否在2分钟之内创建的
-        val bRevoke = (System.currentTimeMillis() / 1000) - message.created < mDefaultTimeDifference
-        popup.show(view, message.displayType, bResend, isMine, bRevoke, position)
     }
 
     /**
@@ -1311,29 +847,72 @@ class MyMessageChatActivity : BaseActivity() {
 
     //打开相机拍照返回路径
     private fun openCamera() {
-        SimplePhotoUtil.instance.setConfig(PhotoConfig(this, true, onPathCallback = { path ->
-            //用ImageView显示出来
-            val bitmap = getLoacalBitmap(path)
-            ToastUtil.showShort(path)
-        }))
+        takePhotoSavePath = CommonUtil.getImageSavePath(System
+                .currentTimeMillis().toString() + ".jpg")
+        startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
+            putExtra(MediaStore.EXTRA_OUTPUT, UriUtil.getUri(applicationContext, File(takePhotoSavePath!!)))
+        }, SysConstant.CAMERA_WITH_DATA)
+        //切记清除焦点
+        etMyMessageChatContent.clearFocus()
+
+//        SimplePhotoUtil.instance.setConfig(PhotoConfig(this, true, onPathCallback = { path ->
+//            //            //用ImageView显示出来
+////            val bitmap = getLoacalBitmap(path)
+////            ToastUtil.showShort(path)
+//            handleTakePhotoData(path)
+//        }))
     }
 
     //打开相册读取文件返回路径
     private fun openAlbum() {
-        SimplePhotoUtil.instance.setConfig(PhotoConfig(this, false, onPathCallback = { path ->
-            val bitmap = getLoacalBitmap(path)
-            ToastUtil.showShort(path)
-        }))
+        if (albumList != null && albumList!!.size < 1) {
+            ToastUtil.showShort(resources.getString(com.leimo.wanxin.R.string.not_found_album))
+            return
+        }
+        startActivityForResult(Intent(this, PickPhotoActivity::class.java).apply {
+            putExtra(IntentConstant.KEY_SESSION_KEY, currentSessionKey)
+        }, SysConstant.ALBUM_BACK_DATA)
+        this.overridePendingTransition(com.leimo.wanxin.R.anim.tt_album_enter, com.leimo.wanxin.R.anim.tt_stay)
+        //切记清除焦点
+        etMyMessageChatContent.clearFocus()
+
+//        SimplePhotoUtil.instance.setConfig(PhotoConfig(this, false, onPathCallback = { path ->
+//            //            val bitmap = getLoacalBitmap(path)
+////            ToastUtil.showShort(path)
+//            handleTakePhotoData(path)
+//        }))
     }
 
     //打开视频文件读取返回路径
     private fun openVideo() {
-        SimplePhotoUtil.instance.setConfig(this, { path ->
-            ToastUtil.showShort(path)
-        })
+        startActivityForResult(Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI), SysConstant.VIDEO_WITH_DATA)
+        //切记清除焦点
+        etMyMessageChatContent.clearFocus()
+
+//        SimplePhotoUtil.instance.setConfig(this, { path, data ->
+//            //            ToastUtil.showShort(path)
+//            handleTakeVideoData(data)
+//        })
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (Activity.RESULT_OK != resultCode) {
+            return
+        }
+        data?.let {
+            when (requestCode) {
+                SysConstant.CAMERA_WITH_DATA -> {   //拍照
+                    SDPathUtil.updateImageSysStatu(applicationContext, takePhotoSavePath)
+                    handleTakePhotoData(data)
+                }
+                SysConstant.VIDEO_WITH_DATA -> {    //视频
+                    handleTakeVideoData(data)
+                }
+                SysConstant.ALBUM_BACK_DATA -> {    //相册
+                    intent = data
+                }
+            }
+        }
         super.onActivityResult(requestCode, resultCode, data)
         //选择照片（图库，拍照）
         SimplePhotoUtil.instance.onPhotoResult(requestCode, resultCode, data)
@@ -1356,7 +935,7 @@ class MyMessageChatActivity : BaseActivity() {
     }
 
     override fun onStop() {
-        hidePopup()
+        mAdapter.hidePopup()
 
         super.onStop()
     }

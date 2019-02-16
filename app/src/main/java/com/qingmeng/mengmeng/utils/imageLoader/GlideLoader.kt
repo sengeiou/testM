@@ -34,7 +34,7 @@ object GlideLoader : ILoader {
      */
     override fun load(context: Any, model: Any?, target: ImageView, placeholder: Int?, error: Int?, centerCrop: Boolean, thumbSize: Float, cacheType: Int, isCircleCrop: Boolean, roundRadius: Int?) {
         val options = RequestOptions()
-        options.dontAnimate()
+//        options.dontAnimate()
         placeholder?.let { options.placeholder(placeholder) }
         error?.let { options.error(error) }
         when (cacheType) {
@@ -46,7 +46,6 @@ object GlideLoader : ILoader {
             CacheType.RESOURCE -> options.diskCacheStrategy(DiskCacheStrategy.RESOURCE)//对应Glide 3中的DiskCacheStrategy.RESULT
             CacheType.DATA -> options.diskCacheStrategy(DiskCacheStrategy.DATA)//对应Glide 3中的DiskCacheStrategy.SOURCE
         }
-
 
         val requestManage: RequestManager? = when (context) {
             is Activity -> {
@@ -65,7 +64,7 @@ object GlideLoader : ILoader {
 
         options.apply {
             if (centerCrop) {
-                options.optionalCenterCrop()
+                optionalCenterCrop()
             }
             if (isCircleCrop) {
                 bitmapTransform(CircleCrop())
@@ -76,7 +75,6 @@ object GlideLoader : ILoader {
         }
 
         requestManage?.load(model)?.apply {
-            //            thumbnail(thumbSize)
             apply(options)
         }?.into(target)
     }

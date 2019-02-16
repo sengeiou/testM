@@ -49,8 +49,10 @@ class MyMyLeavingMessageActivity : BaseActivity() {
 
         initAdapter()
 
-        //自动刷新请求
-        srlMyMyLeavingMessage.isRefreshing = true
+//        //自动刷新请求
+//        srlMyMyLeavingMessage.isRefreshing = true
+        myDialog.showLoadingDialog()
+        httpLoad(1)
     }
 
     override fun initListener() {
@@ -142,6 +144,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    myDialog.dismissLoadingDialog()
                     //刷新状态关闭
                     setRefreshAsFalse()
                     mCanHttpLoad = true
@@ -174,6 +177,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                         }
                     }
                 }, {
+                    myDialog.dismissLoadingDialog()
                     setRefreshAsFalse()
                     mCanHttpLoad = true
                     llMyMyLeavingMessageTips.visibility = View.VISIBLE

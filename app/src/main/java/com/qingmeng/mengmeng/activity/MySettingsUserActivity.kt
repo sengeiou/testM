@@ -217,7 +217,7 @@ class MySettingsUserActivity : BaseActivity() {
     private fun updateUserHttp() {
         myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .updateMySettingsUser(mAvatar, mName, mSex, mPhone, mTelephone, mWx, mQQ, mEmail, mDistrictId, mCapitalId, mIndustryOfInterest, 1, token = MainApplication.instance.TOKEN)
+                .updateMySettingsUser(mAvatar, mName, mSex, mPhone, mTelephone, mWx, mQQ, mEmail, mDistrictId, mCapitalId, mIndustryOfInterest, MainApplication.instance.user.wxUid, token = MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -230,6 +230,8 @@ class MySettingsUserActivity : BaseActivity() {
                                 putExtra("mLocalPath", mLocalPath)
                             })
                             onBackPressed()
+                        } else {
+                            ToastUtil.showShort(msg)
                         }
                     }
                 }, {
@@ -373,7 +375,7 @@ class MySettingsUserActivity : BaseActivity() {
     //设置数据
     private fun setData(mySettingsUserBean: MySettingsUserBean) {
         //头像
-        GlideLoader.load(this, mySettingsUserBean.avatar, ivMySettingsUserHead, cacheType = CacheType.All)
+        GlideLoader.load(this, mySettingsUserBean.avatar, ivMySettingsUserHead, cacheType = CacheType.All, placeholder = R.drawable.default_img_icon)
         tvMySettingsUserUserName.text = mySettingsUserBean.userName
         etMySettingsName.setText(mySettingsUserBean.name)
         if (mySettingsUserBean.sex == 1) {

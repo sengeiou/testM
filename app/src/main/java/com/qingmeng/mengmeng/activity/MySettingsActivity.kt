@@ -58,7 +58,7 @@ class MySettingsActivity : BaseActivity() {
         mPhone = intent.getStringExtra("phone")
         mIsUpdatePass = intent.getBooleanExtra("isUpdatePass", false)
         //设置头像
-        GlideLoader.load(this, intent.getStringExtra("avatar"), ivMySettingsHead, cacheType = CacheType.All)
+        GlideLoader.load(this, intent.getStringExtra("avatar"), ivMySettingsHead, cacheType = CacheType.All, placeholder = R.drawable.default_img_icon)
         //设置用户名
         tvMySettingsUserName.text = intent.getStringExtra("userName")
         imServiceConnector.connect(this)
