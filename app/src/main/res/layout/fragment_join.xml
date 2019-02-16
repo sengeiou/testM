@@ -116,4 +116,15 @@
 
     </RelativeLayout>
 
+    <ImageView
+        android:id="@+id/mToTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/padding_dp_10"
+        android:layout_marginBottom="@dimen/padding_dp_54"
+        android:src="@drawable/main_icon_to_top"
+        android:visibility="gone"/>
+
 </RelativeLayout>
