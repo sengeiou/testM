@@ -14,6 +14,8 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
 import com.qingmeng.mengmeng.constant.IConstants
@@ -21,7 +23,6 @@ import com.qingmeng.mengmeng.entity.*
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.BoxUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
-import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -184,7 +185,8 @@ class PopSeachSelect : PopupWindow {
             mMenuView.right_recyclerView_pop.layoutManager = mGridManager
             mFoodAdapter = CommonAdapter(mActivity, R.layout.seach_food_type_right_in_item, mFoodList, holderConvert = { holder, data, position, payloads ->
                 holder.apply {
-                    GlideLoader.load(mActivity, data.logo, getView(R.id.Seach_food_type_right_inImageView))
+                    Glide.with(mActivity).load(data.logo).apply(RequestOptions()
+                            .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.Seach_food_type_right_inImageView))
                     setText(R.id.Seach_food_type_right_inContent, data.name)
                 }
             }, onItemClick = { view, holder, position ->
@@ -265,7 +267,6 @@ class PopSeachSelect : PopupWindow {
 
                     httpSeachJoinArea(getVersion(1))
                 }, {
-                    //   getNewData()
                     httpSeachJoinArea(getVersion(1))
                 }, {}, {})
     }
@@ -300,8 +301,6 @@ class PopSeachSelect : PopupWindow {
                             }
                         }
 
-                    } else if (bean.code != 12000) {
-//                        ToastUtil.showShort(bean.msg)
                     }
                 }, {
                     ToastUtil.showNetError()
@@ -330,7 +329,6 @@ class PopSeachSelect : PopupWindow {
                     if (!mFoodList.isEmpty()) {
                         mFoodAdapter.notifyDataSetChanged()
                     }
-
                     httpFoodType(getVersion(0))
                 }, {
                     httpFoodType(getVersion(0))
@@ -362,8 +360,6 @@ class PopSeachSelect : PopupWindow {
                                 //存入缓存
                             }
                         }
-                    } else if (bean.code != 12000) {
-//                        ToastUtil.showShort(bean.msg)
                     }
                 }, {
                     ToastUtil.showNetError()
@@ -390,10 +386,8 @@ class PopSeachSelect : PopupWindow {
                     if (!mRankingList.isEmpty()) {
                         mRankingAdapter.notifyDataSetChanged()
                     }
-                    // getNewData()
                     httpRangking(getVersion(2), 4)
                 }, {
-                    //   getNewData()
                     httpRangking(getVersion(2), 4)
                 }, {}, {})
     }
