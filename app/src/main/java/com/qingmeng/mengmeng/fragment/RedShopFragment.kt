@@ -35,11 +35,8 @@ class RedShopFragment : BaseFragment() {
     private var mLeftList = ArrayList<RedShopLeftBean>()
     private var mRightInListType = ArrayList<RedShopLeftBean>()
     private var mRightInListHost = ArrayList<RedShopLeftBean>()
-    //    private var mRedShopLeftListBean = RedShopLeftListBean()
-//    private var mRedShopRightListBean = RedShopLeftListBean()
     override fun getLayoutId(): Int = R.layout.fragment_red_shop
 
-    private var defItem = -1
     override fun initObject() {
         super.initObject()
         mRedNewsTitle.setText(R.string.tab_name_red_shop)
@@ -193,7 +190,7 @@ class RedShopFragment : BaseFragment() {
                 setText(R.id.red_shop_right_inContent, data.name)
                 //GlideLoader.load(this@RedShopFragment, data.logo, getView(R.id.red_shop_right_inImageView))
                 Glide.with(this@RedShopFragment).load(data.logo).apply(RequestOptions()
-                        .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(getView(R.id.red_shop_right_inImageView))
+                        .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.red_shop_right_inImageView))
                 getView<LinearLayout>(R.id.red_shop_all).setOnClickListener {
                     startActivity<RedShopSeachResult>(IConstants.REDSHOPID to data.id)
                 }
@@ -217,7 +214,7 @@ class RedShopFragment : BaseFragment() {
                 setText(R.id.red_shop_right_inContent, data.name)
                 //  GlideLoader.load(this@RedShopFragment, data.logo, getView(R.id.red_shop_right_inImageView))
                 Glide.with(this@RedShopFragment).load(data.logo).apply(RequestOptions()
-                        .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(getView(R.id.red_shop_right_inImageView))
+                        .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.red_shop_right_inImageView))
                 getView<LinearLayout>(R.id.red_shop_all).setOnClickListener {
                     startActivity<RedShopSeachResult>(IConstants.REDSHOPID to data.id)
                 }
