@@ -6,6 +6,9 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.utils.ApiUtils
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_enterpriseentry.*
 import kotlinx.android.synthetic.main.layout_head.*
 
@@ -44,7 +47,21 @@ class MyEnterpriseEntryActivity : BaseActivity() {
 
     private fun httpLoad() {
         myDialog.showLoadingDialog()
-        wvMyEnterPriseEntry.loadUrl("https://www.baidu.com")
+        ApiUtils.getApi()
+                .myEnterpriseEntry()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    it.apply {
+                        if (code == 12000) {
+                            wvMyEnterPriseEntry.loadUrl(data.toString())
+                        } else {
+                            myDialog.dismissLoadingDialog()
+                        }
+                    }
+                }, {
+                    myDialog.dismissLoadingDialog()
+                })
     }
 
     private fun initWebView() {

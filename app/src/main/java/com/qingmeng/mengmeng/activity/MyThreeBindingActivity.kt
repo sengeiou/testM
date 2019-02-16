@@ -33,7 +33,9 @@ class MyThreeBindingActivity : BaseActivity() {
 
         setHeadName(R.string.my_threeBinding)
 
-        srlMyThreeBinding.isRefreshing = true
+//        srlMyThreeBinding.isRefreshing = true
+        myDialog.showLoadingDialog()
+        httpLoad()
     }
 
     override fun initListener() {
@@ -85,6 +87,7 @@ class MyThreeBindingActivity : BaseActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    myDialog.dismissLoadingDialog()
                     srlMyThreeBinding.isRefreshing = false
                     it.apply {
                         if (code == 12000) {
@@ -95,6 +98,7 @@ class MyThreeBindingActivity : BaseActivity() {
                         }
                     }
                 }, {
+                    myDialog.dismissLoadingDialog()
                     srlMyThreeBinding.isRefreshing = false
                     llMyThreeBindingTips.visibility = View.VISIBLE
                 })

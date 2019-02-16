@@ -191,7 +191,7 @@ open class MessageBaseActivity : AppBaseActivity(), View.OnClickListener, Sensor
             }
             scrollToBottomListItem()
 
-        } else if (id == R.id.take_photo_btn) {//选择相册
+        } else if (id == R.id.take_photo_btn) { //选择相册
             if (albumList != null && albumList!!.size < 1) {
                 Toast.makeText(this@MessageBaseActivity,
                         resources.getString(R.string.not_found_album), Toast.LENGTH_LONG)
@@ -203,14 +203,14 @@ open class MessageBaseActivity : AppBaseActivity(), View.OnClickListener, Sensor
             startActivityForResult(intent, SysConstant.ALBUM_BACK_DATA)
             this@MessageBaseActivity.overridePendingTransition(R.anim.tt_album_enter, R.anim.tt_stay)
             edtMessageTxt.clearFocus()//切记清除焦点scrollToBottomListItem();
-        } else if (id == R.id.take_camera_btn) {//选择拍照
+        } else if (id == R.id.take_camera_btn) {    //选择拍照
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             takePhotoSavePath = CommonUtil.getImageSavePath(System
                     .currentTimeMillis().toString() + ".jpg")
             intent.putExtra(MediaStore.EXTRA_OUTPUT, UriUtil.getUri(applicationContext, File(takePhotoSavePath!!)))
             startActivityForResult(intent, SysConstant.CAMERA_WITH_DATA)
             edtMessageTxt.clearFocus()//切记清除焦点scrollToBottomListItem();
-        } else if (id == R.id.take_video_btn) {//选择视频
+        } else if (id == R.id.take_video_btn) { //选择视频
             val i = Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI)
             startActivityForResult(i, SysConstant.VIDEO_WITH_DATA)
             edtMessageTxt.clearFocus()//切记清除焦点scrollToBottomListItem();
