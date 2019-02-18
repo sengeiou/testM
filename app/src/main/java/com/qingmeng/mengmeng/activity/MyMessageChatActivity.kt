@@ -197,19 +197,22 @@ class MyMessageChatActivity : BaseActivity() {
 
         //音频
         ivMyMessageChatAudio.setOnClickListener {
-            //判断是否有权限
-            PermissionUtils.audio(this, {
-                PermissionUtils.readAndWrite(this, {
-                    //表情和工具布局隐藏 关闭软键盘
-                    hiddenViewAndInputKeyboard()
-                    //按住说话不显示就显示 反之隐藏
-                    tvMyMessageChatClickSay.visibility = if (tvMyMessageChatClickSay.visibility == View.GONE) {
-                        View.VISIBLE
-                    } else {
-                        View.GONE
-                    }
-                })
-            })
+//            mAdapter.notifyDataSetChanged()
+//            rvMyMessageChat.invalidate()
+            scrollToBottomListItem()
+//            //判断是否有权限
+//            PermissionUtils.audio(this, {
+//                PermissionUtils.readAndWrite(this, {
+//                    //表情和工具布局隐藏 关闭软键盘
+//                    hiddenViewAndInputKeyboard()
+//                    //按住说话不显示就显示 反之隐藏
+//                    tvMyMessageChatClickSay.visibility = if (tvMyMessageChatClickSay.visibility == View.GONE) {
+//                        View.VISIBLE
+//                    } else {
+//                        View.GONE
+//                    }
+//                })
+//            })
         }
 
         //按住说话
@@ -402,7 +405,6 @@ class MyMessageChatActivity : BaseActivity() {
             etMyMessageChatContent.setText("")
             //发送消息
             pushList(textMessage)
-            scrollToBottomListItem()
             etMyMessageChatContent.isFocusable = true
         }
 
@@ -568,7 +570,7 @@ class MyMessageChatActivity : BaseActivity() {
 
     //列表移到最后一个
     private fun scrollToBottomListItem() {
-        rvMyMessageChat.scrollToPosition(msgObjectList.lastIndex)
+        rvMyMessageChat.scrollToPosition(mAdapter.msgObjectList.lastIndex)
     }
 
     /**
@@ -699,7 +701,7 @@ class MyMessageChatActivity : BaseActivity() {
             }
             MessageEvent.Event.HISTORY_MSG_OBTAIN -> {
                 if (historyTimes == 1) {
-                    msgObjectList.clear()
+                    mAdapter.msgObjectList.clear()
                     reqHistoryMsg()
                 }
             }
@@ -714,7 +716,7 @@ class MyMessageChatActivity : BaseActivity() {
         when (event.event) {
             UnreadEvent.Event.UNREAD_MSG_RECEIVED, UnreadEvent.Event.UNREAD_MSG_LIST_OK, UnreadEvent.Event.SESSION_READED_UNREAD_MSG -> if (IMUnreadMsgManager.instance().totalUnreadCount > 0) {
                 historyTimes = 0
-                msgObjectList.clear()
+                mAdapter.msgObjectList.clear()
                 reqHistoryMsg()
             }
         }
@@ -737,7 +739,6 @@ class MyMessageChatActivity : BaseActivity() {
     private fun onMsgRecv(entity: MessageEntity) {
         mImService?.unReadMsgManager?.ackReadMsg(entity)
         pushList(entity)
-        scrollToBottomListItem()
     }
 
     /**
@@ -757,7 +758,6 @@ class MyMessageChatActivity : BaseActivity() {
             historyTimes++
             val msgList = mImService?.messageManager?.loadHistoryMsg(historyTimes, currentSessionKey, peerEntity)
             pushList(msgList)
-            scrollToBottomListItem()
         }
     }
 
@@ -817,7 +817,6 @@ class MyMessageChatActivity : BaseActivity() {
         val audioMessage = AudioMessage.buildForSend(audioLen, audioSavePath, loginUser, peerEntity)
         mImService?.messageManager?.sendVoice(audioMessage)
         pushList(audioMessage)
-        mAdapter.notifyDataSetChanged()
     }
 
     /**
