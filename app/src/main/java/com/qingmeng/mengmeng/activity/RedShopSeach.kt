@@ -99,7 +99,8 @@ class RedShopSeach : BaseActivity() {
                         || actionId == EditorInfo.IME_ACTION_DONE
                         || event != null && KeyEvent.KEYCODE_ENTER === event!!.getKeyCode() && KeyEvent.ACTION_DOWN === event!!.getAction()) {
                     //处理事件
-                    var search = SearchHistoryList().apply { name = head_search2.text.toString() }
+                    if(!head_search2.text.toString().trim().isEmpty()){
+                    var search = SearchHistoryList().apply { name = head_search2.text.toString().trim() }
                     mHistorySearch.add(search)
                     //检查重复
                     var mHistoryrepeat = BoxUtils.getnameSearch(search.name)
@@ -115,6 +116,12 @@ class RedShopSeach : BaseActivity() {
                     }
                     startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to search.name)
                     finish()
+                    }
+                    else{
+                        var search = SearchHistoryList().apply { name = head_search2.text.toString().trim() }
+                        startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to search.name)
+                        finish()
+                    }
                 }
                 return false
             }
