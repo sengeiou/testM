@@ -10,12 +10,17 @@ import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ImageSpan
+import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener
 import com.aspsine.swipetoloadlayout.OnRefreshListener
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
@@ -26,7 +31,6 @@ import com.qingmeng.mengmeng.constant.IConstants.firstLevel
 import com.qingmeng.mengmeng.entity.SearchDto
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
-import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.view.dialog.PopSeachCondition
 import com.qingmeng.mengmeng.view.dialog.PopSeachSelect
 import com.qingmeng.mengmeng.view.flowlayout.FlowLayout
@@ -38,7 +42,6 @@ import kotlinx.android.synthetic.main.activity_red_shop_seach_result.*
 import kotlinx.android.synthetic.main.layout_head_seach.*
 import kotlinx.android.synthetic.main.red_shop_search_result_item.*
 import org.jetbrains.anko.startActivity
-
 
 
 @SuppressLint("CheckResult")
@@ -102,7 +105,9 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
         swipe_target.layoutManager = mLauyoutManger
         mAdapter = CommonAdapter(this, R.layout.red_shop_search_result_item, mSeachResultList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
-                GlideLoader.load(this@RedShopSeachResult, data.logo, getView(R.id.search_result_bigLogo))
+                //  GlideLoader.load(this@RedShopSeachResult, data.logo, getView(R.id.search_result_bigLogo))
+                Glide.with(this@RedShopSeachResult).load(data.logo).apply(RequestOptions()
+                        .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.search_result_bigLogo))
                 val spanString = SpannableString("证\t${data.name}")
                 val drawable = resources.getDrawable(R.drawable.detail_icon_certification)
                 val imageSpan = ImageSpan(drawable, ImageSpan.ALIGN_BASELINE)
@@ -124,7 +129,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
 //                }
                 setTagFlowLayout(getView(R.id.seach_result_tagFliwLayout), data.affiliateSupport as ArrayList<String>)
                 getView<LinearLayout>(R.id.search_linearlayout).setOnClickListener {
-                    startActivity<ShopDetailActivity>(IConstants.BRANDID to it.id)
+                    startActivity<ShopDetailActivity>(IConstants.BRANDID to data.id)
                 }
             }
         }, onItemClick = { view, holder, position ->
@@ -259,9 +264,28 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
 
     override fun initListener() {
         super.initListener()
-        head_search.setOnClickListener { startActivity<RedShopSeach>()
-            finish()
-        }
+//        seach_result_allScreen.setOnTouchListener(object : View.OnTouchListener {
+//            override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//            }
+//        })
+
+//        head_search.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+//            override fun onEditorAction(p0: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+//                if (actionId == EditorInfo.IME_ACTION_SEND
+//                        || actionId == EditorInfo.IME_ACTION_DONE
+//                        || event != null && KeyEvent.KEYCODE_ENTER === event!!.getKeyCode() && KeyEvent.ACTION_DOWN === event!!.getAction()) {
+//
+//
+//                    finish()
+//                }
+//                return false
+//            }
+//
+//        })
+
+
+        head_search.setOnClickListener { startActivity<RedShopSeach>() }
         head_search_mBack.setOnClickListener { this.finish() }
         search_food_type.setOnClickListener {
             if (!mIsInstantiationOne) {
