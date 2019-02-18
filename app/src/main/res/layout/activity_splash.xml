@@ -11,6 +11,30 @@
         android:scaleType="fitXY"
         android:src="@drawable/img_splash"/>
 
+    <RelativeLayout
+        android:id="@+id/mGuideLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <android.support.v4.view.ViewPager
+            android:id="@+id/mSplashVp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+        <LinearLayout
+            android:id="@+id/mSplashPoint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/splash_vertical">
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
     <ImageView
         android:id="@+id/mSplashAdv"
         android:layout_width="match_parent"
