@@ -29,6 +29,7 @@ import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.GeetestUtil
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.utils.dp2px
+import com.qingmeng.mengmeng.view.widget.MyItemView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
@@ -177,43 +178,38 @@ class DialogCustom(private var mContext: Context?) {
         val compete = view.findViewById<TextView>(R.id.join_money_compete)
         compete.setOnClickListener { bottomSheetDialog.cancel() }
         val moneyTitle = view.findViewById<TextView>(R.id.join_money_title)
-        val totalTitle = view.findViewById<TextView>(R.id.money_total_title)
-        val totalContent = view.findViewById<TextView>(R.id.money_total_content)
-        val joinTitle = view.findViewById<TextView>(R.id.money_join_title)
-        val joinContent = view.findViewById<TextView>(R.id.money_join_content)
-        val ensureTitle = view.findViewById<TextView>(R.id.money_ensure_title)
-        val ensureContent = view.findViewById<TextView>(R.id.money_ensure_content)
-        val equipmentTitle = view.findViewById<TextView>(R.id.money_equipment_title)
-        val equipmentContent = view.findViewById<TextView>(R.id.money_equipment_content)
-        val otherTitle = view.findViewById<TextView>(R.id.money_other_title)
-        val otherContent = view.findViewById<TextView>(R.id.money_other_content)
+        val moneyTotal = view.findViewById<MyItemView>(R.id.money_total)
+        val moneyJoin = view.findViewById<MyItemView>(R.id.money_join)
+        val moneyEnsure = view.findViewById<MyItemView>(R.id.money_ensure)
+        val moneyEquipment = view.findViewById<MyItemView>(R.id.money_equipment)
+        val moneyOther = view.findViewById<MyItemView>(R.id.money_other)
         if (any is BrandInitialFee) {
             any.apply {
-                totalContent.text = affiliateFee
-                joinContent.text = joinGoldStr
-                ensureContent.text = marginStr
-                equipmentContent.text = equipmentFeeStr
-                otherContent.text = otherExpensesStr
+                moneyTotal.setContent(affiliateFee)
+                moneyJoin.setContent(joinGoldStr)
+                moneyEnsure.setContent(marginStr)
+                moneyEquipment.setContent(equipmentFeeStr)
+                moneyOther.setContent(otherExpensesStr)
             }
         } else {
             moneyTitle.setText(R.string.brand_information)
-            totalTitle.setText(R.string.brand_ownership)
-            joinTitle.setText(R.string.franchise_mode)
-            ensureTitle.setText(R.string.attracting_investment_area)
-            equipmentTitle.setText(R.string.regional_authorization)
-            otherTitle.setText(R.string.suitable_for_crowd)
+            moneyTotal.setTitle(R.string.brand_ownership)
+            moneyJoin.setTitle(R.string.franchise_mode)
+            moneyEnsure.setTitle(R.string.attracting_investment_area)
+            moneyEquipment.setTitle(R.string.regional_authorization)
+            moneyOther.setTitle(R.string.suitable_for_crowd)
             val bean = any as BrandInformation
-            totalContent.text = bean.belongName
+            moneyTotal.setContent(bean.belongName)
             var tempStr = ""
             bean.modeName.indices.forEach { tempStr += if (it == 0) bean.modeName[it] else ",${bean.modeName[it]}" }
-            joinContent.text = tempStr
+            moneyJoin.setContent(tempStr)
             tempStr = ""
             bean.cityName.indices.forEach { tempStr += if (it == 0) bean.cityName[it] else ",${bean.cityName[it]}" }
-            ensureContent.text = tempStr
-            equipmentContent.text = bean.regionWarrantName
+            moneyEnsure.setContent(tempStr)
+            moneyEquipment.setContent(bean.regionWarrantName)
             tempStr = ""
             bean.crowdName.indices.forEach { tempStr += if (it == 0) bean.crowdName[it] else ",${bean.crowdName[it]}" }
-            otherContent.text = tempStr
+            moneyOther.setContent(tempStr)
         }
 
         bottomSheetDialog.show()
