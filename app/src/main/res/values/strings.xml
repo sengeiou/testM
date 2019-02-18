@@ -162,6 +162,7 @@
     <string name="my_myFollow_cancel">取消关注</string>
     <string name="my_myFollow_null_tips">暂 无 关 注 哦</string>
     <string name="my_myFollow_cancel_fail">取消失败</string>
+    <string name="my_myFollow_delete_fail">删除失败</string>
     <string name="my_myFollow_cateringType">餐饮类型：</string>
     <string name="my_myFollow_investmentAmount">投资金额：</string>
     <string name="my_myLeavingMessage">我的留言</string>

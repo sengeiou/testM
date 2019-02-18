@@ -12,6 +12,7 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.MyFollow
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -22,6 +23,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_myfollow.*
 import kotlinx.android.synthetic.main.layout_head.*
+import org.jetbrains.anko.startActivity
 
 /**
  *  Description :设置 - 我的关注/我的足迹
@@ -133,14 +135,19 @@ class MyMyFollowActivity : BaseActivity() {
                 if (mIsMyFollow) {
                     setText(R.id.tvMyMyFollowRvBrandName, t.name)
                 } else {
-                    setText(R.id.tvMyMyFollowRvDelete,getString(R.string.delete))
+                    setText(R.id.tvMyMyFollowRvDelete, getString(R.string.delete))
                     setText(R.id.tvMyMyFollowRvBrandName, t.brandName)
                 }
                 setText(R.id.tvMyMyFollowRvCateringType, t.foodName)
                 setText(R.id.tvMyMyFollowRvInvestmentAmount, t.capitalName)
                 //item点击
                 getView<LinearLayout>(R.id.llMyMyFollowRv).setOnClickListener {
-
+                    //辨别是我的关注还是我的足迹
+                    if (mIsMyFollow) {
+                        startActivity<ShopDetailActivity>(IConstants.BRANDID to t.id)
+                    } else {
+                        startActivity<ShopDetailActivity>(IConstants.BRANDID to t.brandId)
+                    }
                 }
                 //item取消关注
                 getView<TextView>(R.id.tvMyMyFollowRvDelete).setOnClickListener {

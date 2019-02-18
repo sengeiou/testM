@@ -133,6 +133,7 @@ class MyFragment : BaseFragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
+                    myDialog.dismissLoadingDialog()
                     srlMy.isRefreshing = false
                     it.apply {
                         if (code == 12000) {
@@ -163,12 +164,14 @@ class MyFragment : BaseFragment() {
                         }
                     }
                 }, {
+                    myDialog.dismissLoadingDialog()
                     srlMy.isRefreshing = false
                     mLoginSuccess = mMyInformation.userName != ""
                 })
     }
 
     private fun httpSelect() {
+        myDialog.showLoadingDialog()
         //如果该字段是修改密码 那么就直接请求信息查询
         if (spf.getSharedPreference("isUpdatePass", false) as Boolean) {
             httpLoad()
@@ -189,11 +192,14 @@ class MyFragment : BaseFragment() {
                             spf.put("isUpdatePass", true)
                         } else if (code == 30001) { //设置密码
                             spf.put("isUpdatePass", false)
+                        }else{
+                            myDialog.dismissLoadingDialog()
                         }
                     }
                     //请求下一个接口
                     httpLoad()
                 }, {
+                    myDialog.dismissLoadingDialog()
                     srlMy.isRefreshing = false
                 })
     }
@@ -227,6 +233,13 @@ class MyFragment : BaseFragment() {
         tvMyMyFollowNum.text = "${myInformation.myAttention}"
         tvMyMyLeavingMessageNum.text = "${myInformation.myComment}"
         tvMyMyFootprintNum.text = "${myInformation.myFootprint}"
+    }
+
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+            httpSelect()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
