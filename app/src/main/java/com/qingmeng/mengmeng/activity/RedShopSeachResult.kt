@@ -10,8 +10,11 @@ import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ImageSpan
+import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
+import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener
@@ -261,6 +264,27 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
 
     override fun initListener() {
         super.initListener()
+//        seach_result_allScreen.setOnTouchListener(object : View.OnTouchListener {
+//            override fun onTouch(p0: View?, p1: MotionEvent?): Boolean {
+//                TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+//            }
+//        })
+
+//        head_search.setOnEditorActionListener(object : TextView.OnEditorActionListener {
+//            override fun onEditorAction(p0: TextView?, actionId: Int, event: KeyEvent?): Boolean {
+//                if (actionId == EditorInfo.IME_ACTION_SEND
+//                        || actionId == EditorInfo.IME_ACTION_DONE
+//                        || event != null && KeyEvent.KEYCODE_ENTER === event!!.getKeyCode() && KeyEvent.ACTION_DOWN === event!!.getAction()) {
+//
+//
+//                    finish()
+//                }
+//                return false
+//            }
+//
+//        })
+
+
         head_search.setOnClickListener { startActivity<RedShopSeach>() }
         head_search_mBack.setOnClickListener { this.finish() }
         search_food_type.setOnClickListener {

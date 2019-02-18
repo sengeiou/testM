@@ -27,6 +27,7 @@
             android:layout_marginStart="@dimen/padding_dp_10"
             android:background="@drawable/bg_seach"
             android:drawablePadding="@dimen/padding_dp_5"
+            android:focusable="false"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/padding_dp_5" />
 
