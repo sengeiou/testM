@@ -14,7 +14,8 @@ object IConstants {
     val JOIN_RECOMMEND = "joinRecommend"       //首页推荐缓存
     val RED_SHOP = "redShop"                   //红铺缓存
     val NEWS_PAGER = "newsPager"               //头报缓存
-    val SEACH_RESULT = "seachResult"           //搜索结果缓存
+    val SEACH_RESULT = "seachResult"           //搜索结果
+    val SEACH_RESULT_CACHE = "seachResultCache"           //搜索结果缓存
     val SEACH_RESULT_FOOD = "seachResultFood"  //搜索结果餐饮类型缓存
     val SEACH_RESULT_AREA = "seachResultArea"  //搜索结果加盟区域缓存
     val HOME_PAGE = "homePageBean"
@@ -33,6 +34,7 @@ object IConstants {
     val FIRSTLOGIN = "first_login"
     val BRANDID = "brandId"                  //商品id
     val REDSHOPID = "red_shop_ID"            //红铺id
+    val REDSHOPNAME = "red_shop_NAME"            //红铺名称
     val POSITION = "position"
     val articleUrl = "articleUrl"
     val IMGS = "imgs"
