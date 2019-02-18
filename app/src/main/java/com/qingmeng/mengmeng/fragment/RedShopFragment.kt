@@ -115,11 +115,9 @@ class RedShopFragment : BaseFragment() {
             val RightInListType = BoxUtils.getAllRedShop(fahterId, 2)
             val RightInListHost = BoxUtils.getAllRedShop(fahterId, 1)
             if (!mRightInListType.isEmpty()) {
-                BoxUtils.removeAllRedShop(mRightInListType)
                 mRightInListType.clear()
             }
             if (!mRightInListHost.isEmpty()) {
-                BoxUtils.removeAllRedShop(mRightInListHost)
                 mRightInListHost.clear()
             }
             mRightInListType.addAll(RightInListType)
@@ -188,11 +186,10 @@ class RedShopFragment : BaseFragment() {
                     red_shop_right_text_type.visibility = View.GONE
                 }
                 setText(R.id.red_shop_right_inContent, data.name)
-                //GlideLoader.load(this@RedShopFragment, data.logo, getView(R.id.red_shop_right_inImageView))
                 Glide.with(this@RedShopFragment).load(data.logo).apply(RequestOptions()
                         .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.red_shop_right_inImageView))
                 getView<LinearLayout>(R.id.red_shop_all).setOnClickListener {
-                    startActivity<RedShopSeachResult>(IConstants.REDSHOPID to data.id)
+                    startActivity<RedShopSeachResult>(IConstants.REDSHOPID to data.id, IConstants.SEACH_RESULT to data.name)
                 }
             }
         }, onItemClick = { view, holder, position ->
@@ -212,11 +209,10 @@ class RedShopFragment : BaseFragment() {
                     red_shop_right_text_host.visibility = View.GONE
                 }
                 setText(R.id.red_shop_right_inContent, data.name)
-                //  GlideLoader.load(this@RedShopFragment, data.logo, getView(R.id.red_shop_right_inImageView))
                 Glide.with(this@RedShopFragment).load(data.logo).apply(RequestOptions()
                         .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.red_shop_right_inImageView))
                 getView<LinearLayout>(R.id.red_shop_all).setOnClickListener {
-                    startActivity<RedShopSeachResult>(IConstants.REDSHOPID to data.id)
+                    startActivity<RedShopSeachResult>(IConstants.REDSHOPID to data.id, IConstants.SEACH_RESULT to data.name)
                 }
             }
         }, onItemClick = { view, holder, position ->

@@ -12,12 +12,12 @@ import com.qingmeng.mengmeng.utils.SharedSingleton
 class SeachResultBean(var data: ArrayList<SeachResultB>) {
 
     fun upDate(type: Int) {
-        SharedSingleton.instance.setString("${IConstants.SEACH_RESULT}$type", Gson().toJson(this))
+        SharedSingleton.instance.setString("${IConstants.SEACH_RESULT_CACHE}$type", Gson().toJson(this))
     }
 
     companion object {
         fun fromString(type: Int): SeachResultBean {
-            val stringBean = SharedSingleton.instance.getString("${IConstants.SEACH_RESULT}$type")
+            val stringBean = SharedSingleton.instance.getString("${IConstants.SEACH_RESULT_CACHE}$type")
             return if (TextUtils.isEmpty(stringBean)) {
                 SeachResultBean(ArrayList())
             } else {

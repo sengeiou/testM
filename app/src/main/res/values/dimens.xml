@@ -21,6 +21,7 @@
     <dimen name="padding_dp_15">15dp</dimen>
     <dimen name="padding_dp_15_5">15.5dp</dimen>
     <dimen name="padding_dp_16">16dp</dimen>
+    <dimen name="padding_dp_16_5">16.5dp</dimen>
     <dimen name="padding_dp_17">17dp</dimen>
     <dimen name="padding_dp_17_5">17.5dp</dimen>
     <dimen name="padding_dp_18">18dp</dimen>
