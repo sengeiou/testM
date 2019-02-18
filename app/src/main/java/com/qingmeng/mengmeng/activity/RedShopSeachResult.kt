@@ -16,6 +16,8 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener
 import com.aspsine.swipetoloadlayout.OnRefreshListener
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
@@ -26,7 +28,6 @@ import com.qingmeng.mengmeng.constant.IConstants.firstLevel
 import com.qingmeng.mengmeng.entity.SearchDto
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
-import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.view.dialog.PopSeachCondition
 import com.qingmeng.mengmeng.view.dialog.PopSeachSelect
 import com.qingmeng.mengmeng.view.flowlayout.FlowLayout
@@ -101,7 +102,9 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
         swipe_target.layoutManager = mLauyoutManger
         mAdapter = CommonAdapter(this, R.layout.red_shop_search_result_item, mSeachResultList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
-                GlideLoader.load(this@RedShopSeachResult, data.logo, getView(R.id.search_result_bigLogo))
+                //  GlideLoader.load(this@RedShopSeachResult, data.logo, getView(R.id.search_result_bigLogo))
+                Glide.with(this@RedShopSeachResult).load(data.logo).apply(RequestOptions()
+                        .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.search_result_bigLogo))
                 val spanString = SpannableString("证\t${data.name}")
                 val drawable = resources.getDrawable(R.drawable.detail_icon_certification)
                 val imageSpan = ImageSpan(drawable, ImageSpan.ALIGN_BASELINE)
@@ -123,7 +126,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
 //                }
                 setTagFlowLayout(getView(R.id.seach_result_tagFliwLayout), data.affiliateSupport as ArrayList<String>)
                 getView<LinearLayout>(R.id.search_linearlayout).setOnClickListener {
-                    startActivity<ShopDetailActivity>(IConstants.BRANDID to it.id)
+                    startActivity<ShopDetailActivity>(IConstants.BRANDID to data.id)
                 }
             }
         }, onItemClick = { view, holder, position ->
@@ -258,7 +261,10 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
 
     override fun initListener() {
         super.initListener()
-        head_search.setOnClickListener { startActivity<RedShopSeach>() }
+        head_search.setOnClickListener {
+            // keyWord = head_search.text.toString()
+            startActivity<RedShopSeach>()
+        }
         head_search_mBack.setOnClickListener { this.finish() }
         search_food_type.setOnClickListener {
             if (!mIsInstantiationOne) {

@@ -135,9 +135,7 @@
             android:name=".activity.RedShopSeach"
             android:launchMode="singleTask" />
         <!--搜索结果页-->
-        <activity
-            android:name=".activity.RedShopSeachResult"
-            android:launchMode="singleTask" />
+        <activity android:name=".activity.RedShopSeachResult" />
 
 
     </application>

@@ -6,6 +6,7 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener
+import com.aspsine.swipetoloadlayout.OnRefreshListener
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.HeadDetailsActivity
@@ -25,13 +26,14 @@ import kotlinx.android.synthetic.main.layout_red_news_head.*
 import org.jetbrains.anko.support.v4.startActivity
 
 @SuppressLint("CheckResult")
-class NewsPaperFragment : BaseFragment(), OnLoadMoreListener {
+class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener {
     private lateinit var mLauyoutManger: LinearLayoutManager
     private lateinit var mNewsPagerAdapter: NewsPaperAdapter
     private var mCanHttpLoad = true                          //是否请求接口
     private var mHasNextPage = true                          //是否请求下一页
     private var mPageNum: Int = 1                            //接口请求页数
     private var isLoadMore = false                              //加载更多
+    private var isRefeshing = false                             //下拉刷新
     private var mImgList = ArrayList<Banner>()
     private var mNewsList = ArrayList<NewsPagerList>()       //接口请求数据
     private var REQUEST_NEWS = 123
@@ -52,6 +54,7 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener {
     override fun initListener() {
         super.initListener()
         news_swipeLayout.setOnLoadMoreListener(this)
+        news_swipeLayout.setOnRefreshListener(this)
         swipe_target.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             internal var lastVisibleItemPosition: Int = 0
             //滚动状态改变时
@@ -140,11 +143,19 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener {
     }
 
     override fun onLoadMore() {
-        isLoadMore = false
+      //  isLoadMore = false
+        news_swipeLayout.isRefreshing=false
+        httpLoad(mPageNum)
+    }
+
+    override fun onRefresh() {
         httpLoad(mPageNum)
     }
 
     private fun endLoadingMore() {
+        if (news_swipeLayout.isRefreshing) {
+            news_swipeLayout.endRefresh()
+        }
         if (news_swipeLayout.isLoadingMore) {
             news_swipeLayout.endLoadMore()
         }
@@ -152,6 +163,7 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener {
 
     private fun getNewData() {
         isLoadMore = true
+        isRefeshing = true
         httpLoad(1)
         httpBannerLoad("")
     }
@@ -166,7 +178,7 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener {
                 .subscribe({
                     //加载状态关闭
                     endLoadingMore()
-                    mCanHttpLoad=true
+                    mCanHttpLoad = true
                     it.apply {
                         if (code == 12000) {
                             //请求后判断数据
@@ -179,27 +191,27 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener {
                             } else {
                                 mHasNextPage = true
                                 data?.let {
-                                    if(data!==null){
+                                    if (data !== null) {
                                         //如果页数是1 ，清空内容重新加载
                                         if (pageNum == 1) {
                                             //清空已选择集合
                                             BoxUtils.removeNewsPager(mNewsList)
                                             mNewsList.clear()
                                             mPageNum = 1
-                                            if(!mNewsList.isEmpty()){
+                                            if (!mNewsList.isEmpty()) {
                                                 mNewsList.clear()
                                             }
                                             mNewsPagerAdapter.updateItems(mNewsList)
                                         }
-                                        if(!mNewsList.isEmpty()){
-                                        BoxUtils.removeNewsPager(mNewsList)
-                                        mNewsList.clear()
+                                        if (!mNewsList.isEmpty()) {
+                                            BoxUtils.removeNewsPager(mNewsList)
+                                            mNewsList.clear()
                                         }
                                         mNewsList.addAll(it.data)
                                         //数据库存入缓存
                                         mNewsPagerAdapter.addItems(mNewsList)
                                         BoxUtils.saveNewsPager(mNewsList)
-                                        news_swipeLayout.isLoadMoreEnabled=false
+                                        news_swipeLayout.isLoadMoreEnabled = false
                                         mPageNum++
                                     }
                                 }

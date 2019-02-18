@@ -133,7 +133,7 @@ class PopSeachSelect : PopupWindow {
                     dismiss()
                 }
                 mCityList.clear()
-                mCityList.add(CityFilter(mProvinceList[position].id, mProvinceList[position].id, 0, 2, mProvinceList[position].name))
+                mCityList.add(CityFilter(mProvinceList[position].id, mProvinceList[position].id, 0, 2, "全部"))
                 mCityList.addAll(mProvinceList[position].cityFilter)
                 mCityAdapter.notifyDataSetChanged()
             })
@@ -191,6 +191,8 @@ class PopSeachSelect : PopupWindow {
                 }
             }, onItemClick = { view, holder, position ->
                 mSelectCallBack.onSelectCallBack(mFoodList[position].id)
+
+
                 dismiss()
             })
             mMenuView.right_recyclerView_pop.adapter = mFoodAdapter
@@ -204,6 +206,7 @@ class PopSeachSelect : PopupWindow {
 
             }, onItemClick = { view, holder, position ->
                 mSelectCallBack.onSelectCallBack(mCityList[position].id)
+
                 dismiss()
             })
             mMenuView.right_recyclerView_pop.adapter = mCityAdapter
