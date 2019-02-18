@@ -29,11 +29,13 @@ import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.GeetestUtil
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.utils.dp2px
+import com.qingmeng.mengmeng.view.widget.MyItemView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 
-@Suppress("IMPLICIT_BOXING_IN_IDENTITY_EQUALS", "DEPRECATED_IDENTITY_EQUALS", "DEPRECATION")
+@Suppress("IMPLICIT_BOXING_IN_IDENTITY_EQUALS", "DEPRECATED_IDENTITY_EQUALS", "DEPRECATION",
+        "RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
 @SuppressLint("ObsoleteSdkInt", "ClickableViewAccessibility", "ResourceAsColor", "InflateParams")
 class DialogCustom(private var mContext: Context?) {
     private var remindDialog: Dialog? = null
@@ -167,56 +169,54 @@ class DialogCustom(private var mContext: Context?) {
      * @param any 实体类
      * */
     fun showBrandDialog(any: Any) {
-        bottomSheetDialog = MyBottomDialog(mContext!!)
-        val view = LayoutInflater.from(mContext!!).inflate(R.layout.dialog_join_money, null)
-        bottomSheetDialog.setContentView(view)
-        val height = getWindowHeight()
-        bottomSheetDialog.windowHeight = height * 5 / 6
-        bottomSheetDialog.delegate.findViewById<View>(android.support.design.R.id.design_bottom_sheet)
-                ?.setBackgroundColor(mContext!!.resources.getColor(android.R.color.transparent))
-        val compete = view.findViewById<TextView>(R.id.join_money_compete)
-        compete.setOnClickListener { bottomSheetDialog.cancel() }
-        val moneyTitle = view.findViewById<TextView>(R.id.join_money_title)
-        val totalTitle = view.findViewById<TextView>(R.id.money_total_title)
-        val totalContent = view.findViewById<TextView>(R.id.money_total_content)
-        val joinTitle = view.findViewById<TextView>(R.id.money_join_title)
-        val joinContent = view.findViewById<TextView>(R.id.money_join_content)
-        val ensureTitle = view.findViewById<TextView>(R.id.money_ensure_title)
-        val ensureContent = view.findViewById<TextView>(R.id.money_ensure_content)
-        val equipmentTitle = view.findViewById<TextView>(R.id.money_equipment_title)
-        val equipmentContent = view.findViewById<TextView>(R.id.money_equipment_content)
-        val otherTitle = view.findViewById<TextView>(R.id.money_other_title)
-        val otherContent = view.findViewById<TextView>(R.id.money_other_content)
-        if (any is BrandInitialFee) {
-            any.apply {
-                totalContent.text = affiliateFee
-                joinContent.text = joinGoldStr
-                ensureContent.text = marginStr
-                equipmentContent.text = equipmentFeeStr
-                otherContent.text = otherExpensesStr
-            }
-        } else {
-            moneyTitle.setText(R.string.brand_information)
-            totalTitle.setText(R.string.brand_ownership)
-            joinTitle.setText(R.string.franchise_mode)
-            ensureTitle.setText(R.string.attracting_investment_area)
-            equipmentTitle.setText(R.string.regional_authorization)
-            otherTitle.setText(R.string.suitable_for_crowd)
-            val bean = any as BrandInformation
-            totalContent.text = bean.belongName
-            var tempStr = ""
-            bean.modeName.indices.forEach { tempStr += if (it == 0) bean.modeName[it] else ",${bean.modeName[it]}" }
-            joinContent.text = tempStr
-            tempStr = ""
-            bean.cityName.indices.forEach { tempStr += if (it == 0) bean.cityName[it] else ",${bean.cityName[it]}" }
-            ensureContent.text = tempStr
-            equipmentContent.text = bean.regionWarrantName
-            tempStr = ""
-            bean.crowdName.indices.forEach { tempStr += if (it == 0) bean.crowdName[it] else ",${bean.crowdName[it]}" }
-            otherContent.text = tempStr
-        }
+        BrandDialog(mContext!!, any).show()
+    }
 
-        bottomSheetDialog.show()
+    private inner class BrandDialog(context: Context, any: Any) : Dialog(context, R.style.dialog_share) {
+
+        init {
+            setContentView(R.layout.dialog_join_money)
+            val lp = window.attributes
+            lp.width = context.resources.displayMetrics.widthPixels // 设置宽度
+            window.setGravity(Gravity.BOTTOM)
+            window.attributes = lp
+            val compete = findViewById<TextView>(R.id.join_money_compete)
+            compete.setOnClickListener { bottomSheetDialog.cancel() }
+            val moneyTitle = findViewById<TextView>(R.id.join_money_title)
+            val moneyTotal = findViewById<MyItemView>(R.id.money_total)
+            val moneyJoin = findViewById<MyItemView>(R.id.money_join)
+            val moneyEnsure = findViewById<MyItemView>(R.id.money_ensure)
+            val moneyEquipment = findViewById<MyItemView>(R.id.money_equipment)
+            val moneyOther = findViewById<MyItemView>(R.id.money_other)
+            if (any is BrandInitialFee) {
+                any.apply {
+                    moneyTotal.setContent(affiliateFee)
+                    moneyJoin.setContent(joinGoldStr)
+                    moneyEnsure.setContent(marginStr)
+                    moneyEquipment.setContent(equipmentFeeStr)
+                    moneyOther.setContent(otherExpensesStr)
+                }
+            } else {
+                moneyTitle.setText(R.string.brand_information)
+                moneyTotal.setTitle(R.string.brand_ownership)
+                moneyJoin.setTitle(R.string.franchise_mode)
+                moneyEnsure.setTitle(R.string.attracting_investment_area)
+                moneyEquipment.setTitle(R.string.regional_authorization)
+                moneyOther.setTitle(R.string.suitable_for_crowd)
+                val bean = any as BrandInformation
+                moneyTotal.setContent(bean.belongName)
+                var tempStr = ""
+                bean.modeName.indices.forEach { tempStr += if (it == 0) bean.modeName[it] else ",${bean.modeName[it]}" }
+                moneyJoin.setContent(tempStr)
+                tempStr = ""
+                bean.cityName.indices.forEach { tempStr += if (it == 0) bean.cityName[it] else ",${bean.cityName[it]}" }
+                moneyEnsure.setContent(tempStr)
+                moneyEquipment.setContent(bean.regionWarrantName)
+                tempStr = ""
+                bean.crowdName.indices.forEach { tempStr += if (it == 0) bean.crowdName[it] else ",${bean.crowdName[it]}" }
+                moneyOther.setContent(tempStr)
+            }
+        }
     }
 
     /**
