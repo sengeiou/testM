@@ -261,10 +261,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
 
     override fun initListener() {
         super.initListener()
-        head_search.setOnClickListener {
-            // keyWord = head_search.text.toString()
-            startActivity<RedShopSeach>()
-        }
+        head_search.setOnClickListener { startActivity<RedShopSeach>() }
         head_search_mBack.setOnClickListener { this.finish() }
         search_food_type.setOnClickListener {
             if (!mIsInstantiationOne) {

@@ -11,6 +11,7 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.MyLeavingMessage
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -19,6 +20,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_myleavingmessage.*
 import kotlinx.android.synthetic.main.layout_head.*
+import org.jetbrains.anko.startActivity
 
 /**
  *  Description :设置 - 我的留言
@@ -112,14 +114,14 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                 setText(R.id.tvMyMyLeavingMessageRvTime, t.createTime)
                 //待查看
                 if (t.status == 0) {
-                    setText(R.id.tvMyMyLeavingMessageRvState, getString(R.string.my_myLeavingMessage_reply))
+                    setText(R.id.tvMyMyLeavingMessageRvState, getString(R.string.my_myLeavingMessage_noReply))
                     setTextColorRes(R.id.tvMyMyLeavingMessageRvState, R.color.red)
                 } else {    //已回复
-                    setText(R.id.tvMyMyLeavingMessageRvState, getString(R.string.my_myLeavingMessage_noReply))
+                    setText(R.id.tvMyMyLeavingMessageRvState, getString(R.string.my_myLeavingMessage_reply))
                     setTextColorRes(R.id.tvMyMyLeavingMessageRvState, R.color.green)
                 }
                 setText(R.id.tvMyMyLeavingMessageRvLeavingMessage, t.message)
-                GlideLoader.load(this, t.logo, getView(R.id.ivMyMyLeavingMessageRvLogo), centerCrop = false)
+                GlideLoader.load(this@MyMyLeavingMessageActivity, t.logo, getView(R.id.ivMyMyLeavingMessageRvLogo), centerCrop = false)
                 setText(R.id.tvMyMyLeavingMessageRvBrandName, t.brandName)
                 setText(R.id.tvMyMyLeavingMessageRvInvestmentAmount, t.capitalName)
                 setText(R.id.tvMyMyLeavingMessageRvStoreNum, t.storesNum)
@@ -129,7 +131,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                 }
                 //品牌详情点击
                 getView<RelativeLayout>(R.id.rlMyMyLeavingMessageRvBrandDetails).setOnClickListener {
-
+                    startActivity<ShopDetailActivity>(IConstants.BRANDID to t.id)
                 }
             }
         })
@@ -197,7 +199,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                         if (code == 12000) {
                             httpDelLoadTwo(data?.data!!, myLeavingMessageDel)
                         } else {
-                            ToastUtil.showShort(getString(R.string.my_myFollow_cancel_fail))
+                            ToastUtil.showShort(getString(R.string.my_myFollow_delete_fail))
                             myDialog.dismissLoadingDialog()
                         }
                     }
@@ -224,6 +226,8 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                                 mList.add(myLeavingMessageList[0])
                             }
                             mAdapter.notifyDataSetChanged()
+                        } else {
+                            ToastUtil.showShort(msg)
                         }
                     }
                 }, {
