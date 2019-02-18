@@ -223,15 +223,11 @@ class PopSeachCondition : PopupWindow {
                                     BoxUtils.removeMoneyType(mTextMoneyList)
                                     mTextMoneyList.clear()
                                 }
-                                //it.setVersion()
                                 mTextMoneyList.addAll(it.capitalList)
                                 BoxUtils.saveMoneyType(mTextMoneyList)
-                                //加入缓存
                                 mMoneyAdapter.notifyDataSetChanged()
                             }
                         }
-                    } else if (bean.code != 12000) {
-                        ToastUtil.showShort(bean.msg)
                     }
                 }, {
                     ToastUtil.showNetError()
@@ -254,15 +250,11 @@ class PopSeachCondition : PopupWindow {
                                     BoxUtils.removeJoinType(mTextJoinTypeList)
                                     mTextJoinTypeList.clear()
                                 }
-                                //  it.setVersion()
                                 mTextJoinTypeList.addAll(it.joinModes)
                                 BoxUtils.saveJoinType(mTextJoinTypeList)
                                 mJoinModelAdapter.notifyDataSetChanged()
-                                //加入缓存 未写
                             }
                         }
-                    } else if (bean.code != 12000) {
-                        ToastUtil.showShort(bean.msg)
                     }
                 }, {
                     ToastUtil.showNetError()

@@ -100,12 +100,9 @@ class PopSeachSelect : PopupWindow {
                 }
                 mFoodTypeList[position].checkState = true
                 mFoodTypeAdapter.notifyDataSetChanged()
-                if (position == 0) {
-                    mSelectCallBack.onSelectCallBack(0)
-                    dismiss()
-                }
+//
                 mFoodList.clear()
-                mFoodList.add(FoodTypeDto(mFoodTypeList[position].id, "", mFoodTypeList[position].id, logoUrl, mFoodTypeList[position].name))
+                mFoodList.add(FoodTypeDto(mFoodTypeList[position].id, "", mFoodTypeList[position].id, logoUrl, "全部"))
                 mFoodList.addAll(mFoodTypeList[position].foodTypeDto)
                 mFoodAdapter.notifyDataSetChanged()
             })
@@ -128,10 +125,7 @@ class PopSeachSelect : PopupWindow {
                 }
                 mProvinceList[position].checkState = true
                 mProvinceAdapter.notifyDataSetChanged()
-                if (position == 0) {
-                    mSelectCallBack.onSelectCallBack(0)
-                    dismiss()
-                }
+//
                 mCityList.clear()
                 mCityList.add(CityFilter(mProvinceList[position].id, mProvinceList[position].id, 0, 2, "全部"))
                 mCityList.addAll(mProvinceList[position].cityFilter)
@@ -159,19 +153,19 @@ class PopSeachSelect : PopupWindow {
                 mRankingList[position].checkState = true
                 mRankingAdapter.notifyDataSetChanged()
                 if (position == 0) {
-                    mSelectCallBack.onSelectCallBack(1)
+                    mSelectCallBack.onSelectCallBack(1, mRankingList[position].title)
                     dismiss()
                 } else if (position == 1) {
-                    mSelectCallBack.onSelectCallBack(2)
+                    mSelectCallBack.onSelectCallBack(2, mRankingList[position].title)
                     dismiss()
                 } else if (position == 2) {
-                    mSelectCallBack.onSelectCallBack(3)
+                    mSelectCallBack.onSelectCallBack(3, mRankingList[position].title)
                     dismiss()
                 } else if (position == 3) {
-                    mSelectCallBack.onSelectCallBack(4)
+                    mSelectCallBack.onSelectCallBack(4, mRankingList[position].title)
                     dismiss()
                 } else if (position == 4) {
-                    mSelectCallBack.onSelectCallBack(5)
+                    mSelectCallBack.onSelectCallBack(5, mRankingList[position].title)
                     dismiss()
                 }
             })
@@ -190,9 +184,17 @@ class PopSeachSelect : PopupWindow {
                     setText(R.id.Seach_food_type_right_inContent, data.name)
                 }
             }, onItemClick = { view, holder, position ->
-                mSelectCallBack.onSelectCallBack(mFoodList[position].id)
-
-
+                var mFatherName = String()
+                if (position == 0) {
+                    mFoodTypeList.forEach {
+                        if (it.id == mFoodList[position].fahterId) {
+                            mFatherName = it.name
+                        }
+                    }
+                    mSelectCallBack.onSelectCallBack(mFoodList[position].fahterId, mFatherName)
+                } else {
+                    mSelectCallBack.onSelectCallBack(mFoodList[position].id, mFoodList[position].name)
+                }
                 dismiss()
             })
             mMenuView.right_recyclerView_pop.adapter = mFoodAdapter
@@ -203,10 +205,18 @@ class PopSeachSelect : PopupWindow {
                 holder.apply {
                     setText(R.id.search_result_pop_right_item, data.name)
                 }
-
             }, onItemClick = { view, holder, position ->
-                mSelectCallBack.onSelectCallBack(mCityList[position].id)
-
+                var mFatherProvinceName = String()
+                if (position == 0) {
+                    mProvinceList.forEach {
+                        if (it.id == mCityList[position].fatherId) {
+                            mFatherProvinceName = it.name
+                        }
+                    }
+                    mSelectCallBack.onSelectCallBack(mCityList[position].fatherId, mFatherProvinceName)
+                } else {
+                    mSelectCallBack.onSelectCallBack(mCityList[position].id, mCityList[position].name)
+                }
                 dismiss()
             })
             mMenuView.right_recyclerView_pop.adapter = mCityAdapter
@@ -229,9 +239,15 @@ class PopSeachSelect : PopupWindow {
                                     BoxUtils.removeCache(IConstants.SEACH_RESULT_AREA)
                                     mProvinceList.clear()
                                 }
-                                mProvinceList.add(FatherDto(ArrayList<CityFilter>(), 0, 0, 0, 0, "全国", ""))
+                                mProvinceList.add(FatherDto(ArrayList<CityFilter>(), 0, 0, 0, 0, "全国", "1"))
                                 mProvinceList.addAll(it.fatherDtos)
-                                mCityList.add(CityFilter(it.fatherDtos[0].id, it.fatherDtos[0].id, 0, 2, it.fatherDtos[0].name))
+                                if (!mProvinceList.isEmpty()) {
+                                    mProvinceList[1].checkState = true
+                                }
+                                if(!mCityList.isEmpty()){
+                                    mCityList.clear()
+                                }
+                                mCityList.add(CityFilter(it.fatherDtos[0].id, it.fatherDtos[0].id, 0, 2, "全部"))
                                 mCityList.addAll(it.fatherDtos[0].cityFilter)
                                 BoxUtils.saveCache(it, IConstants.SEACH_RESULT_AREA)
                                 mProvinceAdapter.notifyDataSetChanged()
@@ -292,6 +308,9 @@ class PopSeachSelect : PopupWindow {
                                 }
                                 mFoodTypeList.add(FoodType(ArrayList(), 0, "", 0, logoUrl, "全部", "1"))
                                 mFoodTypeList.addAll(it.foodType)
+                                if (!mFoodTypeList.isEmpty()) {
+                                    mFoodTypeList[1].checkState = true
+                                }
                                 if (!mFoodList.isEmpty()) {
                                     mFoodList.clear()
                                 }
@@ -426,12 +445,13 @@ class PopSeachSelect : PopupWindow {
         }
     }
 
+
     //回调方法
     fun setOnSelectListener(selectListener: SelectCallBack) {
         mSelectCallBack = selectListener
     }
 
     interface SelectCallBack {
-        fun onSelectCallBack(selectId: Int)
+        fun onSelectCallBack(selectId: Int, selectName: String)
     }
 }
