@@ -153,19 +153,19 @@ class PopSeachSelect : PopupWindow {
                 mRankingList[position].checkState = true
                 mRankingAdapter.notifyDataSetChanged()
                 if (position == 0) {
-                    mSelectCallBack.onSelectCallBack(1, mRankingList[position].title)
+                    mSelectCallBack.onSelectCallBack(1, 0, mRankingList[position].title)
                     dismiss()
                 } else if (position == 1) {
-                    mSelectCallBack.onSelectCallBack(2, mRankingList[position].title)
+                    mSelectCallBack.onSelectCallBack(2, 0, mRankingList[position].title)
                     dismiss()
                 } else if (position == 2) {
-                    mSelectCallBack.onSelectCallBack(3, mRankingList[position].title)
+                    mSelectCallBack.onSelectCallBack(3, 0, mRankingList[position].title)
                     dismiss()
                 } else if (position == 3) {
-                    mSelectCallBack.onSelectCallBack(4, mRankingList[position].title)
+                    mSelectCallBack.onSelectCallBack(4, 0, mRankingList[position].title)
                     dismiss()
                 } else if (position == 4) {
-                    mSelectCallBack.onSelectCallBack(5, mRankingList[position].title)
+                    mSelectCallBack.onSelectCallBack(5, 0, mRankingList[position].title)
                     dismiss()
                 }
             })
@@ -191,9 +191,9 @@ class PopSeachSelect : PopupWindow {
                             mFatherName = it.name
                         }
                     }
-                    mSelectCallBack.onSelectCallBack(mFoodList[position].fahterId, mFatherName)
+                    mSelectCallBack.onSelectCallBack(mFoodList[position].id, mFoodList[position].fahterId, mFatherName)
                 } else {
-                    mSelectCallBack.onSelectCallBack(mFoodList[position].id, mFoodList[position].name)
+                    mSelectCallBack.onSelectCallBack(mFoodList[position].id, mFoodList[position].fahterId, mFoodList[position].name)
                 }
                 dismiss()
             })
@@ -213,9 +213,9 @@ class PopSeachSelect : PopupWindow {
                             mFatherProvinceName = it.name
                         }
                     }
-                    mSelectCallBack.onSelectCallBack(mCityList[position].fatherId, mFatherProvinceName)
+                    mSelectCallBack.onSelectCallBack(mCityList[position].fatherId, mCityList[position].fatherId, mFatherProvinceName)
                 } else {
-                    mSelectCallBack.onSelectCallBack(mCityList[position].id, mCityList[position].name)
+                    mSelectCallBack.onSelectCallBack(mCityList[position].id, mCityList[position].fatherId, mCityList[position].name)
                 }
                 dismiss()
             })
@@ -244,7 +244,7 @@ class PopSeachSelect : PopupWindow {
                                 if (!mProvinceList.isEmpty()) {
                                     mProvinceList[1].checkState = true
                                 }
-                                if(!mCityList.isEmpty()){
+                                if (!mCityList.isEmpty()) {
                                     mCityList.clear()
                                 }
                                 mCityList.add(CityFilter(it.fatherDtos[0].id, it.fatherDtos[0].id, 0, 2, "全部"))
@@ -452,6 +452,6 @@ class PopSeachSelect : PopupWindow {
     }
 
     interface SelectCallBack {
-        fun onSelectCallBack(selectId: Int, selectName: String)
+        fun onSelectCallBack(selectId: Int, selectFatherId: Int, selectName: String)
     }
 }

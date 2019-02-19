@@ -28,7 +28,6 @@ import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.REDSHOPID
-import com.qingmeng.mengmeng.constant.IConstants.REDSHOPNAME
 import com.qingmeng.mengmeng.constant.IConstants.SEACH_RESULT
 import com.qingmeng.mengmeng.constant.IConstants.firstLevel
 import com.qingmeng.mengmeng.entity.SearchDto
@@ -87,7 +86,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
 //        setData()
         //传入
         fatherId = intent.getIntExtra(firstLevel, 0)
-        typeId = intent.getIntExtra(REDSHOPID, 1)
+        typeId = intent.getIntExtra(REDSHOPID, 0)
         keyWord = intent.getStringExtra(SEACH_RESULT) ?: ""
 
 
@@ -301,9 +300,10 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
                 popupMenu1 = PopSeachSelect(this, 1)
             }
             popupMenu1.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
-                override fun onSelectCallBack(selectId: Int, selectName: String) {
+                override fun onSelectCallBack(selectId: Int, selectFatherId: Int, selectName: String) {
                     typeId = selectId
                     mTypeId = selectId.toString()
+                    fatherId = selectFatherId
                     search_food_type.text = selectName
                     goToSeach()
                 }
@@ -317,7 +317,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
             }
             //回调数据    传入搜索接口
             popupMenu2.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
-                override fun onSelectCallBack(selectId: Int, selectName: String) {
+                override fun onSelectCallBack(selectId: Int, selectFatherId: Int, selectName: String) {
                     cityIds = selectId.toString()
                     search_add_area.text = selectName
                     goToSeach()
@@ -331,7 +331,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
                 popupMenu3 = PopSeachSelect(this, 3)
             }
             popupMenu3.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
-                override fun onSelectCallBack(selectId: Int, selectName: String) {
+                override fun onSelectCallBack(selectId: Int, selectFatherId: Int, selectName: String) {
                     integratedSortId = selectId
                     mRankingId = selectId.toString()
                     search_ranking.text = selectName
