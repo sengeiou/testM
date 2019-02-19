@@ -6,8 +6,9 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
-import kotlinx.android.synthetic.main.activity_my_enterpriseentry.*
-import kotlinx.android.synthetic.main.layout_head.*
+import com.qingmeng.mengmeng.utils.ToastUtil
+import kotlinx.android.synthetic.main.view_dialog_user_agreement.*
+
 
 /**
  * Created by mingyue
@@ -16,35 +17,42 @@ import kotlinx.android.synthetic.main.layout_head.*
  * describe: 用户协议
  */
 class LoginUserAgreementActivity : BaseActivity() {
+
     override fun getLayoutId(): Int {
-        return R.layout.activity_my_enterpriseentry
+        return R.layout.view_dialog_user_agreement
     }
+
     override fun initObject() {
         super.initObject()
-
         setHeadName(R.string.user_agreement1)
-
         initWebView()
         httpLoad()
     }
 
-    override fun initListener() {
-        super.initListener()
 
-        //返回
-        mBack.setOnClickListener {
-            onBackPressed()
+    override fun initListener() {
+        //同意按钮
+        user_agreement_agree.setOnClickListener {
+            setResult(RESULT_OK, intent.putExtra("agreement", 1))
+            ToastUtil.showShort(R.string.user_agreement_yes)
+            finish()
+        }
+        user_agreement_agree_not.setOnClickListener {
+            ToastUtil.showShort(R.string.user_agreement_no)
+            finish()
         }
     }
 
+    //web链接
     private fun httpLoad() {
         myDialog.showLoadingDialog()
-        wvMyEnterPriseEntry.loadUrl("http://47.99.139.155:11000/api/page_render/enterprises_html")
+        user_agreement_webview.loadUrl("http://pubweb.oss-cn-hangzhou.aliyuncs.com/WebStatic%2Fmengmeng_test%2Fuser_agreement%2Fuser_agreement_Android.html")
     }
 
+    //web配置
     private fun initWebView() {
-        val mWebSettings = wvMyEnterPriseEntry.settings
-        wvMyEnterPriseEntry.isVerticalScrollBarEnabled = false
+        val mWebSettings = user_agreement_webview.settings
+        user_agreement_webview.isVerticalScrollBarEnabled = false
         mWebSettings.apply {
             defaultTextEncodingName = "UTF-8"
             javaScriptEnabled = true
@@ -57,7 +65,7 @@ class LoginUserAgreementActivity : BaseActivity() {
             layoutAlgorithm = WebSettings.LayoutAlgorithm.SINGLE_COLUMN
             javaScriptCanOpenWindowsAutomatically = true
         }
-        wvMyEnterPriseEntry.webChromeClient = object : WebChromeClient() {
+        user_agreement_webview.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView, progress: Int) {
                 if (progress >= 100) {
                     myDialog.dismissLoadingDialog()
@@ -68,4 +76,5 @@ class LoginUserAgreementActivity : BaseActivity() {
             mWebSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
     }
+
 }

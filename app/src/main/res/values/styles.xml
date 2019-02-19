@@ -136,4 +136,5 @@
         <item name="android:background">@drawable/seach_result_botton</item>
         <item name="android:textColor">@drawable/seach_result_botton_text</item>
     </style>
+
 </resources>

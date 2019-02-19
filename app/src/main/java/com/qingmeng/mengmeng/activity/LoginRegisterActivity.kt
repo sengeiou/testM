@@ -2,6 +2,7 @@ package com.qingmeng.mengmeng.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -27,10 +28,9 @@ import com.qingmeng.mengmeng.utils.ToastUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_log_register.*
-import kotlinx.android.synthetic.main.fragment_my.*
 import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.startActivity
 import org.json.JSONObject
+
 
 @SuppressLint("CheckResult")
 class LoginRegisterActivity : BaseActivity() {
@@ -92,9 +92,10 @@ class LoginRegisterActivity : BaseActivity() {
         mRegisterCode.addTextChangedListener(RegisterTextWatcher())
         mRegisterPsw.addTextChangedListener(RegisterTextWatcher())
         mRegisterSurePsw.addTextChangedListener(RegisterTextWatcher())
+
         //用户协议
         mUserProtocol.setOnClickListener {
-            startActivity<LoginUserAgreementActivity>()
+            startActivityForResult<LoginUserAgreementActivity>(  0)
         }
         //是否同意用户协议
         mRegisterAgree.setOnClickListener {
@@ -130,6 +131,18 @@ class LoginRegisterActivity : BaseActivity() {
                 !mRead -> ToastUtil.showShort(R.string.please_read_accept)
                 else -> if (contentType == 1) register() else bindPhone()
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val result = data?.getExtras()?.getInt("agreement")
+        if (result ==1){
+            mRead=true
+            mRegisterAgree.setImageResource(R.drawable.login_icon_yes_read_s)
+        }else{
+            mRead =false
+            mRegisterAgree.setImageResource(R.drawable.login_icon_not_read_n)
         }
     }
 

@@ -49,7 +49,7 @@ class PopSeachSelect : PopupWindow {
     private lateinit var mFoodTypeAdapter: CommonAdapter<FoodType>         //餐饮左类型适配
     private lateinit var mFoodAdapter: CommonAdapter<FoodTypeDto>             //餐饮右适配
     private var mFoodTypeList = ArrayList<FoodType>()                      //餐饮左数据
-    private var mFoodList = ArrayList<FoodTypeDto>()                          //餐饮右数据
+    private var mFoodList = ArrayList<FoodTypeDto>()                           //餐饮右数据
     private var logoUrl = "http://ossmeng.oss-cn-hangzhou.aliyuncs.com/mengmeng%2Ficon%2Frepast_type%2Fsnack%2F%E9%BA%BB%E8%BE%A3%E7%83%AB.png"
 
     //1 为餐饮类型  2为加盟区域 3 为综合排序
