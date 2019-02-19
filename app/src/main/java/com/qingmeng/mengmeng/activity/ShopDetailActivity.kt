@@ -51,6 +51,7 @@ class ShopDetailActivity : BaseActivity() {
     private val mJoinSupport = ArrayList<String>()
     private var brandInformation: BrandInformation? = null
     private var brandInitialFee: BrandInitialFee? = null
+    private var brandBean: BrandBean? = null
     private var name = ""
     private var id = 0
     private var totalImg = 0
@@ -98,6 +99,7 @@ class ShopDetailActivity : BaseActivity() {
     }
 
     private fun setData(bean: BrandBean) {
+        brandBean = bean
         name = bean.name
         if (bean.status == 1) {
             val spanString = SpannableString("证$name")
@@ -112,8 +114,8 @@ class ShopDetailActivity : BaseActivity() {
         }
         mDetailType.text = bean.foodName
         mDetailMoney.text = bean.capitalName
-        mDetailJoinCount.text = getString(R.string.join_count, bean.joinStoreNum)
-        mDetailDirectCount.text = getString(R.string.direct_count, bean.directStoreNum)
+        mDetailJoinCount.text = getString(R.string.join_count, bean.joinStoreNumStr)
+        mDetailDirectCount.text = getString(R.string.direct_count, bean.directStoreNumStr)
         if (!mJoinSupport.isEmpty()) {
             mJoinSupport.clear()
         }
