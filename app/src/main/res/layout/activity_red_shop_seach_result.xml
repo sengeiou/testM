@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/seach_result_allScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
@@ -28,12 +28,14 @@
 
             <TextView
                 android:id="@+id/search_food_type"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginEnd="@dimen/padding_dp_10"
                 android:layout_marginStart="@dimen/padding_dp_20"
                 android:layout_weight="1"
+                android:ellipsize="end"
                 android:gravity="center"
+                android:maxLines="1"
                 android:text="@string/seach_food_type"
                 android:textColor="@color/color_999999"
                 android:textSize="@dimen/text_size_14" />
@@ -42,8 +44,9 @@
                 android:id="@+id/search_food_type_bottom"
                 android:layout_width="@dimen/padding_dp_55"
                 android:layout_height="@dimen/padding_dp_2"
-                android:layout_marginStart="@dimen/padding_dp_20"
+                android:layout_marginStart="@dimen/padding_dp_23"
                 android:background="@color/color_5ab1e1"
+                android:gravity="center"
                 android:visibility="gone" />
         </LinearLayout>
 
@@ -56,12 +59,14 @@
 
             <TextView
                 android:id="@+id/search_add_area"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginEnd="@dimen/padding_dp_10"
                 android:layout_marginStart="@dimen/padding_dp_20"
                 android:layout_weight="1"
+                android:ellipsize="end"
                 android:gravity="center"
+                android:maxLines="1"
                 android:text="@string/seach_add_area"
                 android:textColor="@color/color_999999"
                 android:textSize="@dimen/text_size_14" />
@@ -70,8 +75,9 @@
                 android:id="@+id/search_add_area_bottom"
                 android:layout_width="@dimen/padding_dp_55"
                 android:layout_height="@dimen/padding_dp_2"
-                android:layout_marginStart="@dimen/padding_dp_20"
+                android:layout_marginStart="@dimen/padding_dp_23"
                 android:background="@color/color_5ab1e1"
+                android:gravity="center"
                 android:visibility="gone" />
         </LinearLayout>
 
@@ -84,12 +90,14 @@
 
             <TextView
                 android:id="@+id/search_ranking"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginEnd="@dimen/padding_dp_10"
                 android:layout_marginStart="@dimen/padding_dp_20"
                 android:layout_weight="1"
+                android:ellipsize="end"
                 android:gravity="center"
+                android:maxLines="1"
                 android:text="@string/seach_ranking"
                 android:textColor="@color/color_999999"
                 android:textSize="@dimen/text_size_14" />
@@ -98,8 +106,9 @@
                 android:id="@+id/search_ranking_bottom"
                 android:layout_width="@dimen/padding_dp_55"
                 android:layout_height="@dimen/padding_dp_2"
-                android:layout_marginStart="@dimen/padding_dp_20"
+                android:layout_marginStart="@dimen/padding_dp_23"
                 android:background="@color/color_5ab1e1"
+                android:gravity="center"
                 android:visibility="gone" />
         </LinearLayout>
 
@@ -112,12 +121,14 @@
 
             <TextView
                 android:id="@+id/search_screning_conditon"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_marginEnd="@dimen/padding_dp_10"
                 android:layout_marginStart="@dimen/padding_dp_20"
                 android:layout_weight="1"
+                android:ellipsize="end"
                 android:gravity="center"
+                android:maxLines="1"
                 android:text="@string/seach_screning_conditon"
                 android:textColor="@color/color_999999"
                 android:textSize="@dimen/text_size_14" />
@@ -126,8 +137,9 @@
                 android:id="@+id/search_screning_conditon_bottom"
                 android:layout_width="@dimen/padding_dp_55"
                 android:layout_height="@dimen/padding_dp_2"
-                android:layout_marginStart="@dimen/padding_dp_20"
+                android:layout_marginStart="@dimen/padding_dp_23"
                 android:background="@color/color_5ab1e1"
+                android:gravity="center"
                 android:visibility="gone" />
         </LinearLayout>
     </LinearLayout>

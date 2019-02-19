@@ -16,6 +16,8 @@
     <string name="save">保存</string>
     <string name="delete">删除</string>
     <string name="submit">提交</string>
+    <string name="agree">同意</string>
+    <string name="refuse">拒绝</string>
     <string name="submit_success">提交成功</string>
     <string name="pls_login">请先登录</string>
     <string name="cancel">取消</string>
@@ -104,7 +106,7 @@
     <string name="seach_shop_count">门店数：</string>
     <string name="seach_visit_count">浏览量：</string>
     <string name="seach_food_type">餐饮类型</string>
-    <string name="seach_add_area">加盟区域</string>
+    <string name="seach_add_area">加入区域</string>
     <string name="seach_ranking">综合排序</string>
     <string name="seach_screning_conditon">筛选条件</string>
     <string name="seach_nothing">嗨呀~没有找到相关内容 o(╥﹏╥)o</string>
@@ -144,6 +146,8 @@
     <string name="read_accept">我已经认真阅读并接受</string>
     <string name="user_agreement">《盟盟用户协议》</string>
     <string name="user_agreement1">用户协议</string>
+     <string name="user_agreement_yes">我已阅读并同意盟盟用户协议</string>
+    <string name="user_agreement_no">您拒绝接受协议</string>
     <string name="refresh">刷新</string>
     <string name="register">注册</string>
     <string name="bind_phone">绑定手机</string>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/tv_title"
+        style="@style/text_s15_c99"
+        android:layout_width="@dimen/padding_dp_60"
+        android:text="@string/join_money"/>
+
+    <TextView
+        android:id="@+id/tv_content"
+        style="@style/text_s15_c33"
+        android:layout_marginStart="@dimen/padding_dp_20"/>
+
+</LinearLayout>
