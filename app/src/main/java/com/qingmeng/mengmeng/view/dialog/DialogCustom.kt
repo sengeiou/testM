@@ -181,7 +181,7 @@ class DialogCustom(private var mContext: Context?) {
             window.setGravity(Gravity.BOTTOM)
             window.attributes = lp
             val compete = findViewById<TextView>(R.id.join_money_compete)
-            compete.setOnClickListener { bottomSheetDialog.cancel() }
+            compete.setOnClickListener { cancel() }
             val moneyTitle = findViewById<TextView>(R.id.join_money_title)
             val moneyTotal = findViewById<MyItemView>(R.id.money_total)
             val moneyJoin = findViewById<MyItemView>(R.id.money_join)
