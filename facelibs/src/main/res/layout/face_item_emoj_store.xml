@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:id="@+id/item_ll_emoj_store"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@color/white"
+              android:gravity="center_vertical"
+              android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp">
+
+        <ImageView
+            android:id="@+id/item_emojstore_avater"
+            android:layout_width="57dp"
+            android:layout_height="57dp"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/circle_iv_more_detail"
+            android:layout_toRightOf="@+id/circle_iv_more_detail"
+            android:scaleType="centerCrop"
+            />
+
+        <TextView
+            android:layout_centerVertical="true"
+            android:id="@+id/item_tv_emojstore_download"
+            android:layout_width="55dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/face_emoj_store_btn_shape"
+            android:gravity="center"
+            android:text="下载"
+            android:textColor="@color/text_color_green"
+            android:textSize="@dimen/textsize_smaller"
+            android:visibility="gone"/>
+
+        <ProgressBar
+            android:id="@+id/item_pb_emojstore_downloading"
+            android:layout_width="wrap_content"
+            android:layout_height="6dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:max="100"
+            android:progressDrawable="@drawable/face_downlod_bar"
+            android:visibility="visible"
+
+            />
+
+        <TextView
+            android:id="@+id/item_emojstore_downcomplete"
+            android:layout_width="55dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:gravity="center"
+            android:text="已下载"
+            android:textSize="@dimen/textsize_smaller"
+            android:textColor="@color/line_color_grey"
+            android:background="@drawable/face_emoj_store_btn_complete_shape"
+            android:visibility="gone"
+            />
+
+        <ImageView
+            android:id="@+id/circle_iv_more_detail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:layout_marginTop="18dp"
+            android:layout_toLeftOf="@+id/item_tv_emojstore_download"
+            android:layout_toRightOf="@id/item_emojstore_avater"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/item_tv_emojstore_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="小和尚1"
+                android:textColor="@color/face_text_color_black"
+                android:textSize="@dimen/textsize_smalls"/>
+
+            <TextView
+                android:layout_marginTop="9dp"
+                android:id="@+id/item_tv_emojstore_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="简介简介简介"
+                android:textColor="@color/item_operator_color"
+                android:textSize="@dimen/textsize_smaller"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:id="@+id/view"
+        android:layout_width="match_parent"
+        android:layout_height="0.33dp"
+        android:layout_marginLeft="12dp"
+        android:background="@color/default_line"/>
+</LinearLayout>

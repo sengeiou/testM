@@ -2,9 +2,13 @@ package com.qingmeng.mengmeng.adapter
 
 import AppManager
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -12,7 +16,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.lemo.emojcenter.utils.EmotionUtils
+import com.lemo.emojcenter.utils.SpanStringUtils
 import com.mogujie.tt.config.DBConstant
+import com.mogujie.tt.config.IntentConstant
 import com.mogujie.tt.config.MessageConstant
 import com.mogujie.tt.config.MessageExtConst
 import com.mogujie.tt.db.DBInterface
@@ -20,6 +27,7 @@ import com.mogujie.tt.db.entity.MessageEntity
 import com.mogujie.tt.db.entity.UserEntity
 import com.mogujie.tt.imservice.entity.*
 import com.mogujie.tt.imservice.service.IMService
+import com.mogujie.tt.ui.activity.PreviewMessageImagesActivity
 import com.mogujie.tt.ui.helper.AudioPlayerHandler
 import com.mogujie.tt.ui.helper.Emoparser
 import com.mogujie.tt.ui.widget.SpeekerToast
@@ -27,9 +35,12 @@ import com.mogujie.tt.ui.widget.message.MessageOperatePopup
 import com.mogujie.tt.ui.widget.message.RenderType
 import com.mogujie.tt.utils.CommonUtil
 import com.mogujie.tt.utils.DateUtil
+import com.mogujie.tt.utils.FileUtil
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.utils.getLoacalBitmap
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.utils.setMarginExt
+import java.io.File
 import java.util.*
 
 /**
@@ -41,7 +52,7 @@ import java.util.*
 
  *  Date: 2019/2/14
  */
-class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<Any>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<Any>, val audioClick: (audioMessage: AudioMessage) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mImService: IMService? = null
     private var loginUser: UserEntity? = null
     private var currentPop: MessageOperatePopup? = null    //弹出气泡
@@ -214,7 +225,8 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             val userEntity = getUserEntity(textMessage)
             GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherTextHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             tvMyMessageChatRvOtherTextText.let {
-                it.text = textMessage.info
+                //                it.text = textMessage.info
+                it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), textMessage.info, it)
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
                     true
@@ -236,6 +248,14 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherImageHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             ivMyMessageChatRvOtherImageImage.let {
                 GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15)
+                it.setOnClickListener {
+                    val i = Intent(context, PreviewMessageImagesActivity::class.java)
+                    val bundle = Bundle()
+                    bundle.putSerializable(IntentConstant.CUR_MESSAGE, imageMessage)
+                    i.putExtras(bundle)
+                    context.startActivity(i)
+                    (context as Activity).overridePendingTransition(R.anim.tt_image_enter, R.anim.tt_stay)
+                }
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
                     true
@@ -258,6 +278,11 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherAudioHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             tvMyMessageChatRvOtherAudioTime.text = "${audioMessage.audiolength}\""
             llMyMessageChatRvOtherAudio.let {
+                it.setOnClickListener {
+                    audioClick(audioMessage)
+                    audioMessage.readStatus = MessageConstant.AUDIO_READED
+                    mImService!!.dbInterface.insertOrUpdateMessage(audioMessage)
+                }
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
                     true
@@ -284,6 +309,20 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             //时间
             tvMyMessageChatRvOtherVideoTime.text = "${videoMessage.videolength}s"
             rlMyMessageChatRvOtherVideo.let {
+                it.setOnClickListener {
+                    val path = videoMessage.path
+                    var url = videoMessage.url
+                    if (!TextUtils.isEmpty(path) && File(path).exists()) {
+                        url = path
+                    }
+                    val uri = Uri.parse(url)
+                    uri?.let {
+                        //调用系统自带的播放器
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.setDataAndType(it, "video/mp4")
+                        context.startActivity(intent)
+                    }
+                }
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
                     true
@@ -303,15 +342,37 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val parent = viewGroup
         private val ivMyMessageChatRvMineTextHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineTextHead)
         private val tvMyMessageChatRvMineTextText = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvMineTextText)
+        private val pbMyMessageChatRvMineTextProgress = itemView.findViewById<ProgressBar>(R.id.pbMyMessageChatRvMineTextProgress)
+        private val ivMyMessageChatRvMineTextFail = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineTextFail)
         fun bindViewHolder(position: Int) {
             val textMessage = msgObjectList[position] as TextMessage
             val userEntity = getUserEntity(textMessage)
             GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineTextHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             tvMyMessageChatRvMineTextText.let {
-                it.text = textMessage.info
+                //                it.text = textMessage.info
+                it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), textMessage.info, it)
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
                     true
+                }
+            }
+            //失败点击
+            ivMyMessageChatRvMineTextFail.setOnClickListener {
+                showPopWindow(position, parent, it)
+            }
+            //消息发送状态
+            when (textMessage.status) {
+                MessageConstant.MSG_SENDING -> {  //发送中
+                    pbMyMessageChatRvMineTextProgress.visibility = View.VISIBLE
+                    ivMyMessageChatRvMineTextFail.visibility = View.GONE
+                }
+                MessageConstant.MSG_SUCCESS -> {   //发送成功
+                    pbMyMessageChatRvMineTextProgress.visibility = View.GONE
+                    ivMyMessageChatRvMineTextFail.visibility = View.GONE
+                }
+                MessageConstant.MSG_FAILURE -> {   //发送失败
+                    pbMyMessageChatRvMineTextProgress.visibility = View.GONE
+                    ivMyMessageChatRvMineTextFail.visibility = View.VISIBLE
                 }
             }
         }
@@ -324,19 +385,54 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val parent = viewGroup
         private val ivMyMessageChatRvMineImageHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineImageHead)
         private val ivMyMessageChatRvMineImageImage = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineImageImage)
+        private val pbMyMessageChatRvMineImageProgress = itemView.findViewById<ProgressBar>(R.id.pbMyMessageChatRvMineImageProgress)
+        private val ivMyMessageChatRvMineImageFail = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineImageFail)
         fun bindViewHolder(position: Int) {
             val imageMessage = msgObjectList[position] as ImageMessage
             val userEntity = getUserEntity(imageMessage)
             GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineImageHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             ivMyMessageChatRvMineImageImage.let {
-                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15)
+                //有本地的加载本地的
+                if (FileUtil.isFileExist(imageMessage.path)) {
+                    val bitmap = getLoacalBitmap(imageMessage.path)
+                    it.setImageBitmap(bitmap)
+                } else {
+                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15)
+                }
+                it.setOnClickListener {
+                    val i = Intent(context, PreviewMessageImagesActivity::class.java)
+                    val bundle = Bundle()
+                    bundle.putSerializable(IntentConstant.CUR_MESSAGE, imageMessage)
+                    i.putExtras(bundle)
+                    context.startActivity(i)
+                    (context as Activity).overridePendingTransition(R.anim.tt_image_enter, R.anim.tt_stay)
+                }
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
                     true
                 }
             }
-            when(imageMessage.loadStatus){
+            //失败点击
+            ivMyMessageChatRvMineImageFail.setOnClickListener {
+                showPopWindow(position, parent, it)
+            }
+            //图片发送状态
+            when (imageMessage.loadStatus) {
+                MessageConstant.IMAGE_UNLOAD -> {
 
+                }
+                MessageConstant.IMAGE_LOADING -> {  //发送中
+                    pbMyMessageChatRvMineImageProgress.visibility = View.VISIBLE
+                    ivMyMessageChatRvMineImageFail.visibility = View.GONE
+                }
+                MessageConstant.IMAGE_LOADED_SUCCESS -> {   //发送成功
+                    pbMyMessageChatRvMineImageProgress.visibility = View.GONE
+                    ivMyMessageChatRvMineImageFail.visibility = View.GONE
+                }
+                MessageConstant.IMAGE_LOADED_FAILURE -> {   //发送失败
+                    pbMyMessageChatRvMineImageProgress.visibility = View.GONE
+                    ivMyMessageChatRvMineImageFail.visibility = View.VISIBLE
+                }
             }
         }
     }
@@ -349,15 +445,41 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val ivMyMessageChatRvMineAudioHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineAudioHead)
         private val tvMyMessageChatRvMineAudioTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvMineAudioTime)
         private val llMyMessageChatRvMineAudio = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvMineAudio)
+        private val pbMyMessageChatRvMineAudioProgress = itemView.findViewById<ProgressBar>(R.id.pbMyMessageChatRvMineAudioProgress)
+        private val ivMyMessageChatRvMineAudioFail = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineAudioFail)
         fun bindViewHolder(position: Int) {
             val audioMessage = msgObjectList[position] as AudioMessage
             val userEntity = getUserEntity(audioMessage)
             GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineAudioHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             tvMyMessageChatRvMineAudioTime.text = "${audioMessage.audiolength}\""
             llMyMessageChatRvMineAudio.let {
+                it.setOnClickListener {
+                    audioClick(audioMessage)
+                    audioMessage.readStatus = MessageConstant.AUDIO_READED
+                    mImService!!.dbInterface.insertOrUpdateMessage(audioMessage)
+                }
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
                     true
+                }
+            }
+            //失败点击
+            ivMyMessageChatRvMineAudioFail.setOnClickListener {
+                showPopWindow(position, parent, it)
+            }
+            //语音发送状态
+            when (audioMessage.status) {
+                MessageConstant.MSG_SENDING -> {  //发送中
+                    pbMyMessageChatRvMineAudioProgress.visibility = View.VISIBLE
+                    ivMyMessageChatRvMineAudioFail.visibility = View.GONE
+                }
+                MessageConstant.MSG_SUCCESS -> {   //发送成功
+                    pbMyMessageChatRvMineAudioProgress.visibility = View.GONE
+                    ivMyMessageChatRvMineAudioFail.visibility = View.GONE
+                }
+                MessageConstant.MSG_FAILURE -> {   //发送失败
+                    pbMyMessageChatRvMineAudioProgress.visibility = View.GONE
+                    ivMyMessageChatRvMineAudioFail.visibility = View.VISIBLE
                 }
             }
         }
@@ -372,18 +494,65 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val ivMyMessageChatRvMineVideoCover = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineVideoCover)
         private val rlMyMessageChatRvMineVideo = itemView.findViewById<RelativeLayout>(R.id.rlMyMessageChatRvMineVideo)
         private val tvMyMessageChatRvMineVideoTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvMineVideoTime)
+        private val pbMyMessageChatRvMineVideoProgress = itemView.findViewById<ProgressBar>(R.id.pbMyMessageChatRvMineVideoProgress)
+        private val ivMyMessageChatRvMineVideoFail = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineVideoFail)
         fun bindViewHolder(position: Int) {
             val videoMessage = msgObjectList[position] as VideoMessage
             val userEntity = getUserEntity(videoMessage)
             GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineVideoHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             //封面
-            GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvMineVideoCover, roundRadius = 15)
+            //有本地的加载本地的
+            if (FileUtil.isFileExist(videoMessage.thumbPath)) {
+                val bitmap = getLoacalBitmap(videoMessage.thumbPath)
+                ivMyMessageChatRvMineVideoCover.setImageBitmap(bitmap)
+            } else {
+                GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvMineVideoCover, roundRadius = 15)
+            }
             //时间
             tvMyMessageChatRvMineVideoTime.text = "${videoMessage.videolength}s"
             rlMyMessageChatRvMineVideo.let {
+                it.setOnClickListener {
+                    val path = videoMessage.path
+                    var url = videoMessage.url
+                    if (!TextUtils.isEmpty(path) && File(path).exists()) {
+                        url = path
+                    }
+                    val uri = Uri.parse(url)
+                    uri?.let {
+                        //调用系统自带的播放器
+                        val intent = Intent(Intent.ACTION_VIEW)
+                        intent.setDataAndType(it, "video/mp4")
+                        context.startActivity(intent)
+                    }
+                }
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
                     true
+                }
+            }
+            //失败点击
+            ivMyMessageChatRvMineVideoFail.setOnClickListener {
+                showPopWindow(position, parent, it)
+            }
+            //视频发送状态
+            when (videoMessage.readStatus) {
+                MessageConstant.VIDEO_UNREAD -> {   //未查看
+
+                }
+                MessageConstant.VIDEO_READED -> {   //已查看
+
+                }
+                MessageConstant.VIDEO_LOADING -> {  //发送中
+                    pbMyMessageChatRvMineVideoProgress.visibility = View.VISIBLE
+                    ivMyMessageChatRvMineVideoFail.visibility = View.GONE
+                }
+                MessageConstant.VIDEO_LOADED_SUCCESS -> {   //发送成功
+                    pbMyMessageChatRvMineVideoProgress.visibility = View.GONE
+                    ivMyMessageChatRvMineVideoFail.visibility = View.GONE
+                }
+                MessageConstant.VIDEO_LOADED_FAILURE -> {   //发送失败
+                    pbMyMessageChatRvMineVideoProgress.visibility = View.GONE
+                    ivMyMessageChatRvMineVideoFail.visibility = View.VISIBLE
                 }
             }
         }
@@ -557,7 +726,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         notifyDataSetChanged()
         if (isPullDownToRefresh) {
             mLayoutManager.scrollToPositionWithOffset(chatList.lastIndex + 1, 0)
-        }else{
+        } else {
             mLayoutManager.scrollToPosition(msgObjectList.lastIndex)
         }
     }
@@ -705,7 +874,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     }
 
     private inner class OperateItemClickListener(private val mMsgInfo: MessageEntity, private val mPosition: Int) : MessageOperatePopup.OnItemClickListener {
-        private val mType: Int = mMsgInfo.displayType
+        val mType: Int = mMsgInfo.displayType
         //复制
         @SuppressLint("NewApi")
         override fun onCopyClick() {
@@ -746,7 +915,6 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 if (mImService != null) {
                     mImService?.messageManager?.resendMessage(mMsgInfo)
                 }
-
             } catch (e: Exception) {
 
             }

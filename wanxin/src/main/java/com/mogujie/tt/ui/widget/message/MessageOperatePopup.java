@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.AudioManager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -17,7 +16,6 @@ import android.widget.TextView;
 
 import com.leimo.wanxin.R;
 import com.mogujie.tt.config.DBConstant;
-import com.mogujie.tt.ui.helper.AudioPlayerHandler;
 
 /**
  * A popup window that can be used to display an arbitrary view
@@ -134,12 +132,12 @@ public class MessageOperatePopup implements View.OnClickListener, View.OnTouchLi
 
         // 语音类型
         if (type == DBConstant.SHOW_AUDIO_TYPE) {
-            speakerBtn.setVisibility(View.VISIBLE);
-            if (AudioPlayerHandler.getInstance().getAudioMode(context) == AudioManager.MODE_NORMAL) {
-                speakerBtn.setText(R.string.call_mode);
-            } else {
-                speakerBtn.setText(R.string.speaker_mode);
-            }
+//            speakerBtn.setVisibility(View.VISIBLE);
+//            if (AudioPlayerHandler.getInstance().getAudioMode(context) == AudioManager.MODE_NORMAL) {
+//                speakerBtn.setText(R.string.call_mode);
+//            } else {
+//                speakerBtn.setText(R.string.speaker_mode);
+//            }
             bspeakerShow = true;
         } else {
             speakerBtn.setVisibility(View.GONE);
@@ -171,7 +169,7 @@ public class MessageOperatePopup implements View.OnClickListener, View.OnTouchLi
                 revokeBtn.setVisibility(View.GONE);
             }
             bresendShow = false;
-            if (type != DBConstant.SHOW_IMAGE_TYPE && type != DBConstant.SHOW_AUDIO_TYPE && type != DBConstant.SHOW_GIF_TYPE) {
+            if (type == DBConstant.SHOW_ORIGIN_TEXT_TYPE) {
                 copyBtn.setVisibility(View.VISIBLE);
                 bcopyShow = true;
             } else {
@@ -180,7 +178,7 @@ public class MessageOperatePopup implements View.OnClickListener, View.OnTouchLi
             }
         } else {    //不是自己的
             revokeBtn.setVisibility(View.GONE);
-            if (type != DBConstant.SHOW_IMAGE_TYPE && type != DBConstant.SHOW_AUDIO_TYPE && type != DBConstant.SHOW_GIF_TYPE) {
+            if (type == DBConstant.SHOW_ORIGIN_TEXT_TYPE) {
                 copyBtn.setVisibility(View.VISIBLE);
                 bcopyShow = true;
             } else {

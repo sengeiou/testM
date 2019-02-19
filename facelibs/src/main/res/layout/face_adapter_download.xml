@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+    >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="78dp">
+
+        <ImageView
+            android:id="@+id/download_image"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_marginBottom="9dp"
+            android:layout_marginLeft="12dp"
+            android:layout_marginTop="9dp"
+            android:src="@mipmap/face_no_data_background"
+            />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="72dp"
+            android:orientation="vertical">
+
+            <TextView
+                android:gravity="center"
+                android:layout_marginTop="15dp"
+                android:id="@+id/emoj_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="12dp"
+                android:layout_toRightOf="@id/download_image"
+                android:text="表情名称"
+                android:textColor="@color/face_text_color_black"
+                android:textSize="16sp"/>
+
+            <TextView
+                android:id="@+id/download_time"
+                android:gravity="center"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="12dp"
+                android:textSize="12sp"
+                android:textColor="@color/item_operator_color"
+                android:text="2018-02-04"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/downloaded"
+            android:layout_width="55dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="27dp"
+            android:background="@drawable/face_downloaded_bg"
+            android:gravity="center"
+            android:text="已下载"
+            android:textColor="@color/item_operator_color"
+            android:textSize="12sp"
+            android:visibility="gone"/>
+
+        <TextView
+            android:id="@+id/download"
+            android:layout_width="55dp"
+            android:layout_height="24dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="12dp"
+            android:layout_marginTop="27dp"
+            android:background="@drawable/face_download"
+            android:gravity="center"
+            android:text="下载"
+            android:textColor="@color/text_color_green"
+            android:textSize="12sp"/>
+
+        <ProgressBar
+            android:id="@+id/progress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="6dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="12dp"
+            android:max="100"
+            android:progressDrawable="@drawable/face_downlod_bar"
+            android:visibility="gone"
+
+            />
+
+        <TextView
+            android:id="@+id/bottom_view"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_alignParentBottom="true"
+            android:layout_marginLeft="12dp"
+            android:background="@color/default_line"/>
+    </RelativeLayout>
+
+
+</RelativeLayout>

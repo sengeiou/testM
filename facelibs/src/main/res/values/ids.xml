@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    //图片地址 String
+    <item name="face_image_uri" type="id"/>
+    //图片加载状态 int
+    <item name="face_image_statu" type="id"/>
+</resources>

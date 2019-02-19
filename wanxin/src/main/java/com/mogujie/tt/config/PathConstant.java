@@ -12,7 +12,7 @@ import com.mogujie.tt.utils.SDPathUtil;
  */
 
 public class PathConstant {
-    public static final String PATH_MAIN_NAME = "tt";
+    public static final String PATH_MAIN_NAME = "mengmeng";
 
     public interface Log{
         String SendMsg="sendMsg";
