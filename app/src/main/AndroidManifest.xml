@@ -96,7 +96,7 @@
         <activity android:name=".activity.LoginPwdActivity" />
         <activity android:name=".activity.LoginChangePswActivity" />
         <activity android:name=".activity.LoginUserAgreementActivity"
-            android:theme="@style/user_agreement_dialogstyle"/>
+            android:hardwareAccelerated="false"/>
 
 
         <activity

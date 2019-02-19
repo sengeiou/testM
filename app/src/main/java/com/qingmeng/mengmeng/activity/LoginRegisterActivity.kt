@@ -2,6 +2,7 @@ package com.qingmeng.mengmeng.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.Intent
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
@@ -12,7 +13,6 @@ import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.AVATAR
 import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
 import com.qingmeng.mengmeng.constant.IConstants.THIRD_USERNAME
@@ -30,6 +30,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_log_register.*
 import org.jetbrains.anko.*
 import org.json.JSONObject
+
 
 @SuppressLint("CheckResult")
 class LoginRegisterActivity : BaseActivity() {
@@ -62,7 +63,6 @@ class LoginRegisterActivity : BaseActivity() {
     override fun getLayoutId(): Int = R.layout.activity_log_register
 
     override fun initObject() {
-        IConstants.USER_AGREEMENT=false
         openId = intent.getStringExtra(THREE_OPENID) ?: ""
         token = intent.getStringExtra(THREE_TOKEN) ?: ""
         weChatUnionId = intent.getStringExtra(WE_CHAT_UNIONID) ?: ""
@@ -95,16 +95,14 @@ class LoginRegisterActivity : BaseActivity() {
 
         //用户协议
         mUserProtocol.setOnClickListener {
-            startActivity<LoginUserAgreementActivity>()
+            startActivityForResult<LoginUserAgreementActivity>(  0)
         }
         //是否同意用户协议
         mRegisterAgree.setOnClickListener {
             mRead = if (!mRead) {
-                IConstants.USER_AGREEMENT =mRead
                 mRegisterAgree.setImageResource(R.drawable.login_icon_yes_read_s)
                 true
             } else {
-                IConstants.USER_AGREEMENT =mRead
                 mRegisterAgree.setImageResource(R.drawable.login_icon_not_read_n)
                 false
             }
@@ -136,16 +134,18 @@ class LoginRegisterActivity : BaseActivity() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        if (IConstants.USER_AGREEMENT){
-            mRead = IConstants.USER_AGREEMENT
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val result = data?.getExtras()?.getInt("agreement")
+        if (result ==1){
+            mRead=true
             mRegisterAgree.setImageResource(R.drawable.login_icon_yes_read_s)
         }else{
-            mRead =IConstants.USER_AGREEMENT
+            mRead =false
             mRegisterAgree.setImageResource(R.drawable.login_icon_not_read_n)
         }
     }
+
     //绑定手机
     private fun bindPhone() {
         myDialog.showLoadingDialog()
