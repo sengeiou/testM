@@ -43,7 +43,7 @@ object IConstants {
     val firstLevel = "firstLevel"         //一级分类id
     val secondLevel = "secondLevel"       //二级分类id
     val LOGIN_BACK = 10010
-
+    var USER_AGREEMENT = false
     //图片验证码
     val GET_IMAGE_CODE = BASE_URL + "api/captcha_app/image_app?account="
 

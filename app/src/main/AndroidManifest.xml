@@ -95,7 +95,8 @@
         <activity android:name=".activity.LoginMainActivity" />
         <activity android:name=".activity.LoginPwdActivity" />
         <activity android:name=".activity.LoginChangePswActivity" />
-        <activity android:name=".activity.LoginUserAgreementActivity" />
+        <activity android:name=".activity.LoginUserAgreementActivity"
+            android:theme="@style/user_agreement_dialogstyle"/>
 
 
         <activity

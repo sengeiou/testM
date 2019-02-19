@@ -12,6 +12,7 @@ import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.AVATAR
 import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
 import com.qingmeng.mengmeng.constant.IConstants.THIRD_USERNAME
@@ -27,9 +28,7 @@ import com.qingmeng.mengmeng.utils.ToastUtil
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_log_register.*
-import kotlinx.android.synthetic.main.fragment_my.*
 import org.jetbrains.anko.*
-import org.jetbrains.anko.support.v4.startActivity
 import org.json.JSONObject
 
 @SuppressLint("CheckResult")
@@ -63,6 +62,7 @@ class LoginRegisterActivity : BaseActivity() {
     override fun getLayoutId(): Int = R.layout.activity_log_register
 
     override fun initObject() {
+        IConstants.USER_AGREEMENT=false
         openId = intent.getStringExtra(THREE_OPENID) ?: ""
         token = intent.getStringExtra(THREE_TOKEN) ?: ""
         weChatUnionId = intent.getStringExtra(WE_CHAT_UNIONID) ?: ""
@@ -92,6 +92,7 @@ class LoginRegisterActivity : BaseActivity() {
         mRegisterCode.addTextChangedListener(RegisterTextWatcher())
         mRegisterPsw.addTextChangedListener(RegisterTextWatcher())
         mRegisterSurePsw.addTextChangedListener(RegisterTextWatcher())
+
         //用户协议
         mUserProtocol.setOnClickListener {
             startActivity<LoginUserAgreementActivity>()
@@ -99,9 +100,11 @@ class LoginRegisterActivity : BaseActivity() {
         //是否同意用户协议
         mRegisterAgree.setOnClickListener {
             mRead = if (!mRead) {
+                IConstants.USER_AGREEMENT =mRead
                 mRegisterAgree.setImageResource(R.drawable.login_icon_yes_read_s)
                 true
             } else {
+                IConstants.USER_AGREEMENT =mRead
                 mRegisterAgree.setImageResource(R.drawable.login_icon_not_read_n)
                 false
             }
@@ -133,6 +136,16 @@ class LoginRegisterActivity : BaseActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (IConstants.USER_AGREEMENT){
+            mRead = IConstants.USER_AGREEMENT
+            mRegisterAgree.setImageResource(R.drawable.login_icon_yes_read_s)
+        }else{
+            mRead =IConstants.USER_AGREEMENT
+            mRegisterAgree.setImageResource(R.drawable.login_icon_not_read_n)
+        }
+    }
     //绑定手机
     private fun bindPhone() {
         myDialog.showLoadingDialog()
