@@ -20,7 +20,7 @@ import java.util.Set;
  * Created by zhy on 15/9/10.
  */
 public class TagFlowLayout extends FlowLayout
-        implements TagAdapter.OnDataChangedListener {
+implements TagAdapter.OnDataChangedListener {
 
     private TagAdapter mTagAdapter;
     private int mSelectedMax = 1;//-1为不限制数量
@@ -100,16 +100,10 @@ public class TagFlowLayout extends FlowLayout
             tagView.setDuplicateParentStateEnabled(true);
             if (tagView.getLayoutParams() != null) {
                 tagViewContainer.setLayoutParams(tagView.getLayoutParams());
-
-
             } else {
                 ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        ViewGroup.LayoutParams.WRAP_CONTENT);
-                lp.setMargins(dip2px(getContext(), 5),
-                        dip2px(getContext(), 5),
-                        dip2px(getContext(), 5),
-                        dip2px(getContext(), 5));
+                ViewGroup.LayoutParams.WRAP_CONTENT, dip2px(getContext(), 19));
+                lp.setMargins(0, 0, dip2px(getContext(), 10), 0);
                 tagViewContainer.setLayoutParams(lp);
             }
             ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -133,7 +127,7 @@ public class TagFlowLayout extends FlowLayout
                     doSelect(finalTagViewContainer, position);
                     if (mOnTagClickListener != null) {
                         mOnTagClickListener.onTagClick(finalTagViewContainer, position,
-                                TagFlowLayout.this);
+                        TagFlowLayout.this);
                     }
                 }
             });
