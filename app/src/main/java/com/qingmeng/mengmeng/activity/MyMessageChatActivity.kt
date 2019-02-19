@@ -5,19 +5,17 @@ import android.app.Dialog
 import android.content.Intent
 import android.media.MediaPlayer
 import android.provider.MediaStore
-import android.support.v4.app.Fragment
-import android.support.v4.view.PagerAdapter
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
 import android.text.TextWatcher
-import android.view.MotionEvent
-import android.view.View
-import android.view.Window
-import android.view.WindowManager
+import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import com.app.common.api.subscribeExtApi
+import com.lemo.emojcenter.constant.FaceLocalConstant
+import com.lemo.emojcenter.utils.EmotionUtils
+import com.lemo.emojcenter.utils.SpanStringUtils
 import com.mogujie.tt.api.RequestManager
 import com.mogujie.tt.api.composeDefault
 import com.mogujie.tt.config.DBConstant
@@ -40,28 +38,21 @@ import com.mogujie.tt.ui.activity.PickPhotoActivity
 import com.mogujie.tt.ui.adapter.album.AlbumHelper
 import com.mogujie.tt.ui.adapter.album.ImageBucket
 import com.mogujie.tt.ui.adapter.album.ImageItem
-import com.mogujie.tt.utils.CommonUtil
-import com.mogujie.tt.utils.SDPathUtil
-import com.mogujie.tt.utils.path.UriUtil
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.ChatAdapterTwo
-import com.qingmeng.mengmeng.adapter.MyFragmentPagerAdapter
 import com.qingmeng.mengmeng.constant.IConstants
-import com.qingmeng.mengmeng.fragment.MyMessageChatExpressionTabLayoutFragment
 import com.qingmeng.mengmeng.utils.KeyboardUtil
 import com.qingmeng.mengmeng.utils.PermissionUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.utils.audio.AudioManager
 import com.qingmeng.mengmeng.utils.audio.MediaManager
-import com.qingmeng.mengmeng.utils.imageLoader.CacheType
-import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
+import com.qingmeng.mengmeng.utils.photo.PhotoConfig
 import com.qingmeng.mengmeng.utils.photo.SimplePhotoUtil
 import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.main.activity_my_message_chat.*
 import kotlinx.android.synthetic.main.layout_head.*
 import kotlinx.android.synthetic.main.view_dialog_sound_volume.*
-import java.io.File
 import java.io.IOException
 import java.util.*
 
@@ -79,19 +70,19 @@ class MyMessageChatActivity : BaseActivity() {
     private lateinit var mKeyboardUtil: KeyboardUtil            //系统键盘工具
     private lateinit var mLayoutManager: LinearLayoutManager
     private lateinit var mAdapter: ChatAdapterTwo
-    private lateinit var mPageAdapter: PagerAdapter
+    //    private lateinit var mPageAdapter: PagerAdapter
     private var mAudioManager = AudioManager.getInstance(IConstants.DIR_AUDIO_STR)    //语音工具类
+    private var mMediaManager = MediaManager
     private lateinit var mSoundVolumeDialog: Dialog             //语音弹出框
     private lateinit var mSoundVolumeImg: ImageView
     private lateinit var mSoundVolumeLayout: LinearLayout
     private var y1 = 0                                          //手指坐标
     private var y2 = 0
     private var mExpressionOrFunction = 0                       //变量 0默认（都不受理） 1表情点击 2工具+点击
-    private var mFragmentList = ArrayList<Fragment>()           //表情fragment
-    private val mTabTitles = arrayOf("", "", "")                //tabLayout头部 先加3个试试
+    //    private var mFragmentList = ArrayList<Fragment>()           //表情fragment
+//    private val mTabTitles = arrayOf("", "")                    //tabLayout头部 初始化两个
     private var albumHelper: AlbumHelper? = null                //相册数据
     private var albumList: MutableList<ImageBucket>? = null
-    private var takePhotoSavePath: String? = ""                 //拍照路径
 
     /**
      * 消息用到的
@@ -118,15 +109,14 @@ class MyMessageChatActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
-//        setHeadName(intent.getStringExtra("title"))
-
+        setHeadName(intent.getStringExtra("title"))
         //实例化键盘工具
         mKeyboardUtil = KeyboardUtil(this, etMyMessageChatContent)
-        //表情里添加fragment
-        mTabTitles.forEachIndexed { index, _ ->
-            mFragmentList.add(MyMessageChatExpressionTabLayoutFragment())
-            (mFragmentList[index] as MyMessageChatExpressionTabLayoutFragment).setContent("$index")
-        }
+//        //表情里添加fragment
+//        mTabTitles.forEachIndexed { index, _ ->
+//            mFragmentList.add(MyMessageChatExpressionTabLayoutFragment())
+//            (mFragmentList[index] as MyMessageChatExpressionTabLayoutFragment).setContent("$index")
+//        }
         //初始化音量对话框
         initSoundVolumeDlg()
         //舒适化相册
@@ -197,22 +187,22 @@ class MyMessageChatActivity : BaseActivity() {
 
         //音频
         ivMyMessageChatAudio.setOnClickListener {
-//            mAdapter.notifyDataSetChanged()
+            //            mAdapter.notifyDataSetChanged()
 //            rvMyMessageChat.invalidate()
-            scrollToBottomListItem()
-//            //判断是否有权限
-//            PermissionUtils.audio(this, {
-//                PermissionUtils.readAndWrite(this, {
-//                    //表情和工具布局隐藏 关闭软键盘
-//                    hiddenViewAndInputKeyboard()
-//                    //按住说话不显示就显示 反之隐藏
-//                    tvMyMessageChatClickSay.visibility = if (tvMyMessageChatClickSay.visibility == View.GONE) {
-//                        View.VISIBLE
-//                    } else {
-//                        View.GONE
-//                    }
-//                })
-//            })
+//            scrollToBottomListItem()
+            //判断是否有权限
+            PermissionUtils.audio(this, {
+                PermissionUtils.readAndWrite(this, {
+                    //表情和工具布局隐藏 关闭软键盘
+                    hiddenViewAndInputKeyboard()
+                    //按住说话不显示就显示 反之隐藏
+                    tvMyMessageChatClickSay.visibility = if (tvMyMessageChatClickSay.visibility == View.GONE) {
+                        View.VISIBLE
+                    } else {
+                        View.GONE
+                    }
+                })
+            })
         }
 
         //按住说话
@@ -434,11 +424,11 @@ class MyMessageChatActivity : BaseActivity() {
 
         //语音听筒扬声器切换
         ivMyMessageChatSwitchAudio.setOnClickListener {
-            if (MediaManager.mIsCall) {
-                MediaManager.switchPlay(false)
+            if (mMediaManager.mIsCall) {
+                mMediaManager.switchPlay(false)
                 ToastUtil.showShort(getString(R.string.play_audio_music))
             } else {
-                MediaManager.switchPlay(true)
+                mMediaManager.switchPlay(true)
                 ToastUtil.showShort(getString(R.string.play_audio_call))
             }
         }
@@ -484,29 +474,66 @@ class MyMessageChatActivity : BaseActivity() {
                         })
             }
         })
+
+        //表情商城点击事件
+        evMyMessageChatExpression.setClickCallBack {
+            val localPath = it.pathLocal
+            val url = it.url
+            when (it.type) {
+                FaceLocalConstant.IMGTYPE_FACE -> { //其他表情
+
+                }
+                FaceLocalConstant.IMGTYPE_COLLECT -> {  //收藏表情
+
+                }
+                FaceLocalConstant.IMGTYPE_EMOJ -> { //emoji表情
+                    val msg = it.name
+                    val curPosition = etMyMessageChatContent.selectionStart
+                    val sb = StringBuilder(etMyMessageChatContent.text.toString())
+                    sb.insert(curPosition, msg)
+                    // 特殊文字处理,将表情等转换一下
+                    etMyMessageChatContent.setText(SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, this@MyMessageChatActivity, sb.toString(), etMyMessageChatContent))
+                    // 将光标设置到新增完表情的右侧
+                    etMyMessageChatContent.setSelection(curPosition + msg!!.length)
+                }
+                FaceLocalConstant.IMGTYPE_EMOJ_DELETE -> etMyMessageChatContent.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
+                else -> {
+
+                }
+            }
+        }
     }
 
     private fun initAdapter() {
         //消息适配器
         mLayoutManager = LinearLayoutManager(this)
         rvMyMessageChat.layoutManager = mLayoutManager
-        mAdapter = ChatAdapterTwo(this, msgObjectList)
+        mAdapter = ChatAdapterTwo(this, msgObjectList, {
+            //音频点击事件
+            mMediaManager.play(this, it.audioPath, {
+                //刚开始播放
+                ivMyMessageChatSwitchAudio.visibility = View.VISIBLE
+            }, {
+                //播放结束
+                ivMyMessageChatSwitchAudio.visibility = View.GONE
+            })
+        })
         rvMyMessageChat.adapter = mAdapter
 
-        //表情viewPager适配器
-        mPageAdapter = MyFragmentPagerAdapter(supportFragmentManager, mFragmentList, mTabTitles)
-        vpMyMessageChat.adapter = mPageAdapter
-        //设置ViewPager缓存为5
-        vpMyMessageChat.offscreenPageLimit = 5
-        //将ViewPager和TabLayout绑定
-        tlMyMessageChat.setupWithViewPager(vpMyMessageChat)
+//        //表情viewPager适配器
+//        mPageAdapter = MyFragmentPagerAdapter(supportFragmentManager, mFragmentList, mTabTitles)
+//        vpMyMessageChat.adapter = mPageAdapter
+//        //设置ViewPager缓存为5
+//        vpMyMessageChat.offscreenPageLimit = 5
+//        //将ViewPager和TabLayout绑定
+//        tlMyMessageChat.setupWithViewPager(vpMyMessageChat)
 
-        mTabTitles.forEachIndexed { index, _ ->
-            //tabLayout里添加view
-            val tabView = View.inflate(this, R.layout.view_tab_layout, null)
-            GlideLoader.load(this, "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3236989755,3566217273&fm=26&gp=0.jpg", tabView.findViewById(R.id.ivChatExpressionIcon), cacheType = CacheType.All)
-            tlMyMessageChat.getTabAt(index)?.customView = tabView
-        }
+//        mTabTitles.forEachIndexed { index, _ ->
+//            //tabLayout里添加view
+//            val tabView = View.inflate(this, R.layout.view_tab_layout, null)
+//            GlideLoader.load(this, "https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=3236989755,3566217273&fm=26&gp=0.jpg", tabView.findViewById(R.id.ivChatExpressionIcon), cacheType = CacheType.All)
+//            tlMyMessageChat.getTabAt(index)?.customView = tabView
+//        }
     }
 
     //消息接口请求
@@ -764,9 +791,9 @@ class MyMessageChatActivity : BaseActivity() {
     /**
      * 处理拍照后的数据
      */
-    private fun handleTakePhotoData(data: Intent) {
-        if (takePhotoSavePath != null && loginUser != null && peerEntity != null) {
-            val imageMessage = ImageMessage.buildForSend(takePhotoSavePath!!, loginUser!!, peerEntity!!)
+    private fun handleTakePhotoData(takePhotoSavePath: String) {
+        if (takePhotoSavePath != "" && loginUser != null && peerEntity != null) {
+            val imageMessage = ImageMessage.buildForSend(takePhotoSavePath, loginUser!!, peerEntity!!)
             val sendList = ArrayList<ImageMessage>(1)
             sendList.add(imageMessage)
             mImService?.messageManager?.sendImages(sendList)
@@ -846,20 +873,21 @@ class MyMessageChatActivity : BaseActivity() {
 
     //打开相机拍照返回路径
     private fun openCamera() {
-        takePhotoSavePath = CommonUtil.getImageSavePath(System
-                .currentTimeMillis().toString() + ".jpg")
-        startActivityForResult(Intent(MediaStore.ACTION_IMAGE_CAPTURE).apply {
-            putExtra(MediaStore.EXTRA_OUTPUT, UriUtil.getUri(applicationContext, File(takePhotoSavePath!!)))
-        }, SysConstant.CAMERA_WITH_DATA)
-        //切记清除焦点
-        etMyMessageChatContent.clearFocus()
+//        takePhotoSavePath = CommonUtil.getImageSavePath("img_" + System.currentTimeMillis().toString() + ".jpg")
+//        startActivityForResult(Intent("android.media.action.IMAGE_CAPTURE").apply {
+//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+//                //添加这一句表示对目标应用临时授权该Uri所代表的文件
+//                addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+//            }
+//            putExtra(MediaStore.EXTRA_OUTPUT, UriUtil.getUri(applicationContext, File(takePhotoSavePath!!)))
+//        }, SysConstant.CAMERA_WITH_DATA)
 
-//        SimplePhotoUtil.instance.setConfig(PhotoConfig(this, true, onPathCallback = { path ->
-//            //            //用ImageView显示出来
-////            val bitmap = getLoacalBitmap(path)
-////            ToastUtil.showShort(path)
-//            handleTakePhotoData(path)
-//        }))
+        SimplePhotoUtil.instance.setConfig(PhotoConfig(this, true, onPathCallback = { path ->
+            //            //用ImageView显示出来
+//            val bitmap = getLoacalBitmap(path)
+//            ToastUtil.showShort(path)
+            handleTakePhotoData(path)
+        }))
     }
 
     //打开相册读取文件返回路径
@@ -872,11 +900,9 @@ class MyMessageChatActivity : BaseActivity() {
             putExtra(IntentConstant.KEY_SESSION_KEY, currentSessionKey)
         }, SysConstant.ALBUM_BACK_DATA)
         this.overridePendingTransition(com.leimo.wanxin.R.anim.tt_album_enter, com.leimo.wanxin.R.anim.tt_stay)
-        //切记清除焦点
-        etMyMessageChatContent.clearFocus()
 
 //        SimplePhotoUtil.instance.setConfig(PhotoConfig(this, false, onPathCallback = { path ->
-//            //            val bitmap = getLoacalBitmap(path)
+////            val bitmap = getLoacalBitmap(path)
 ////            ToastUtil.showShort(path)
 //            handleTakePhotoData(path)
 //        }))
@@ -885,8 +911,6 @@ class MyMessageChatActivity : BaseActivity() {
     //打开视频文件读取返回路径
     private fun openVideo() {
         startActivityForResult(Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI), SysConstant.VIDEO_WITH_DATA)
-        //切记清除焦点
-        etMyMessageChatContent.clearFocus()
 
 //        SimplePhotoUtil.instance.setConfig(this, { path, data ->
 //            //            ToastUtil.showShort(path)
@@ -895,24 +919,22 @@ class MyMessageChatActivity : BaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (Activity.RESULT_OK != resultCode) {
             return
         }
-        data?.let {
-            when (requestCode) {
-                SysConstant.CAMERA_WITH_DATA -> {   //拍照
-                    SDPathUtil.updateImageSysStatu(applicationContext, takePhotoSavePath)
-                    handleTakePhotoData(data)
-                }
-                SysConstant.VIDEO_WITH_DATA -> {    //视频
-                    handleTakeVideoData(data)
-                }
-                SysConstant.ALBUM_BACK_DATA -> {    //相册
-                    intent = data
-                }
+        when (requestCode) {
+//            SysConstant.CAMERA_WITH_DATA -> {   //拍照
+//                SDPathUtil.updateImageSysStatu(applicationContext, takePhotoSavePath)
+//                handleTakePhotoData()
+//            }
+            SysConstant.VIDEO_WITH_DATA -> {    //视频
+                handleTakeVideoData(data!!)
+            }
+            SysConstant.ALBUM_BACK_DATA -> {    //相册
+                intent = data
             }
         }
-        super.onActivityResult(requestCode, resultCode, data)
         //选择照片（图库，拍照）
         SimplePhotoUtil.instance.onPhotoResult(requestCode, resultCode, data)
     }
@@ -941,10 +963,13 @@ class MyMessageChatActivity : BaseActivity() {
 
     override fun onDestroy() {
         historyTimes = 0
-        MediaManager.release()
+        mMediaManager.release()
         imServiceConnector.disconnect(this)
         EventBus.getDefault().unregister(this)
 
+        if (albumList != null) {
+            albumList?.clear()
+        }
         super.onDestroy()
     }
 }

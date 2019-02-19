@@ -12,7 +12,7 @@ import com.bumptech.glide.load.engine.bitmap_recycle.BitmapPool
 import com.bumptech.glide.load.engine.cache.ExternalCacheDiskCacheFactory
 import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
-import com.bumptech.glide.load.resource.bitmap.VideoDecoder
+import com.bumptech.glide.load.resource.bitmap.VideoBitmapDecoder
 import com.bumptech.glide.request.RequestOptions
 import java.io.File
 import java.math.BigDecimal
@@ -191,7 +191,7 @@ object GlideCacheUtils {
     @SuppressLint("CheckResult")
     fun loadVideoScreenshot(context: Context, uri: String, imageView: ImageView, frameTimeMicros: Long) {
         val requestOptions = RequestOptions.frameOf(frameTimeMicros)
-        requestOptions.set(VideoDecoder.FRAME_OPTION, MediaMetadataRetriever.OPTION_CLOSEST)
+        requestOptions.set(VideoBitmapDecoder.FRAME_OPTION, MediaMetadataRetriever.OPTION_CLOSEST)
         requestOptions.transform(object : BitmapTransformation() {
             override fun updateDiskCacheKey(messageDigest: MessageDigest) {
                 try {

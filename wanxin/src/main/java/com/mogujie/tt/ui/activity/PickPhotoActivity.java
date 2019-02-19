@@ -1,4 +1,3 @@
-
 package com.mogujie.tt.ui.activity;
 
 import android.app.Activity;
@@ -14,21 +13,21 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.leimo.wanxin.R;
+import com.mogujie.tt.config.IntentConstant;
 import com.mogujie.tt.ui.adapter.album.AlbumHelper;
 import com.mogujie.tt.ui.adapter.album.ImageBucket;
 import com.mogujie.tt.ui.adapter.album.ImageBucketAdapter;
-import com.mogujie.tt.config.IntentConstant;
 import com.mogujie.tt.utils.Logger;
 
 import java.io.Serializable;
 import java.util.List;
 
 /**
- * @Description 相册列表
  * @author Nana
+ * @Description 相册列表
  * @date 2014-5-6
  */
-public class PickPhotoActivity extends Activity  {
+public class PickPhotoActivity extends Activity {
     List<ImageBucket> dataList = null;
     ListView listView = null;
     ImageBucketAdapter adapter = null;
@@ -37,19 +36,18 @@ public class PickPhotoActivity extends Activity  {
     public static Bitmap bimap = null;
     boolean touchable = true;
     private String currentSessionKey;
-	private Logger logger = Logger.getLogger(PickPhotoActivity.class);
+    private Logger logger = Logger.getLogger(PickPhotoActivity.class);
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if(resultCode==Activity.RESULT_OK)
-        {
+        if (resultCode == Activity.RESULT_OK) {
             this.finish();
         }
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-    	logger.d("pic#PickPhotoActivity onCreate");
+        logger.d("pic#PickPhotoActivity onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.tt_activity_pick_photo);
         initData();
@@ -60,12 +58,12 @@ public class PickPhotoActivity extends Activity  {
      * 初始化数据
      */
     private void initData() {
-        Bundle bundle =  getIntent().getExtras();
+        Bundle bundle = getIntent().getExtras();
         currentSessionKey = bundle.getString(IntentConstant.KEY_SESSION_KEY);
         helper = AlbumHelper.getHelper(getApplicationContext());
         dataList = helper.getImagesBucketList(true);
         bimap = BitmapFactory.decodeResource(getResources(),
-                R.drawable.tt_default_album_grid_image);
+            R.drawable.tt_default_album_grid_image);
     }
 
     /**
@@ -76,21 +74,21 @@ public class PickPhotoActivity extends Activity  {
         adapter = new ImageBucketAdapter(this, dataList);
 
         listView.setAdapter(adapter);
-//        listView.setOnTouchListener(this);
+        //        listView.setOnTouchListener(this);
 
         listView.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view,
-                    int position, long id) {
+                                    int position, long id) {
                 Intent intent = new Intent(PickPhotoActivity.this,
-                        ImageGridActivity.class);
+                    ImageGridActivity.class);
                 intent.putExtra(IntentConstant.EXTRA_IMAGE_LIST,
-                        (Serializable) dataList.get(position).imageList);
+                    (Serializable) dataList.get(position).imageList);
                 intent.putExtra(IntentConstant.EXTRA_ALBUM_NAME,
-                        dataList.get(position).bucketName);
-                intent.putExtra(IntentConstant.KEY_SESSION_KEY,currentSessionKey);
+                    dataList.get(position).bucketName);
+                intent.putExtra(IntentConstant.KEY_SESSION_KEY, currentSessionKey);
                 startActivityForResult(intent, 1);//requestcode》＝0
-//                PickPhotoActivity.this.finish();
+                //                PickPhotoActivity.this.finish();
             }
         });
         cancel = (TextView) findViewById(R.id.cancel);
@@ -102,7 +100,5 @@ public class PickPhotoActivity extends Activity  {
                 overridePendingTransition(R.anim.tt_stay, R.anim.tt_album_exit);
             }
         });
-
     }
-
 }

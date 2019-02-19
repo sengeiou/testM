@@ -5,20 +5,23 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.os.StatFs;
-import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
-
-
 import android.util.Log;
+
 import com.leimo.wanxin.BuildConfig;
 
-import java.io.*;
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 /**
  * http://blog.csdn.net/jason_996/article/details/51605614
@@ -460,17 +463,16 @@ public class SDPathUtil {
         if (!TextUtils.isEmpty(path)) {
             File file = new File(path);
             if (context != null && file != null && file.exists()) {
-                // 把文件插入到系统图库
-                try {
-                    MediaStore.Images.Media.insertImage(context.getContentResolver(), file.getAbsolutePath(), "zuzu", "租租");
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+//                // 把文件插入到系统图库
+//                try {
+//                    MediaStore.Images.Media.insertImage(context.getContentResolver(), file.getAbsolutePath(), "mengmeng", "盟盟");
+//                } catch (FileNotFoundException e) {
+//                    e.printStackTrace();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
                 updateFileStatu(context, file);
             }
-
         } else {
             Log.d(TAG, "updateFileStatu: path is null");
         }

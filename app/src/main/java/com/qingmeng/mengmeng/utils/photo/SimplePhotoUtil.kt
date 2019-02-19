@@ -72,7 +72,9 @@ class SimplePhotoUtil {
         cameraPath = simplePhoto?.cameraPath ?: getPhotoPath()
 
         val cameraFile = File(cameraPath)
-        if (cameraFile.exists()) cameraFile.delete()
+        if (cameraFile.exists()) {
+            cameraFile.delete()
+        }
 
         val cameraUri = UriUtil.getUri(simplePhoto?.context, cameraFile)
         // 激活相机
@@ -175,7 +177,7 @@ class SimplePhotoUtil {
             return
         }
         if (resultCode == Activity.RESULT_OK) {
-            if (requestCode == PHOTO_REQUEST_GALLERY) {//相册
+            if (requestCode == PHOTO_REQUEST_GALLERY) { //相册
                 if (data != null) {// 从相册返回的数据
                     val uri = data.data// 得到图片的全路径
                     simplePhoto?.let {
@@ -190,7 +192,7 @@ class SimplePhotoUtil {
                     Toast.makeText(simplePhoto?.context, "获取相册照片失败", Toast.LENGTH_SHORT).show()
                 }
             }
-            if (requestCode == PHOTO_REQUEST_CAMERA) {//拍照
+            if (requestCode == PHOTO_REQUEST_CAMERA) {  //拍照
                 if (!TextUtils.isEmpty(cameraPath)) {
                     simplePhoto?.let {
                         if (simplePhoto!!.isCuted) {//裁剪
@@ -219,7 +221,7 @@ class SimplePhotoUtil {
                 if (data != null) { //从视频返回的数据
                     //得到视频的全路径
                     val uri = data.data
-                    onPathCallback!!(UriUtil.getPath(simplePhoto?.context, uri),data)
+                    onPathCallback!!(UriUtil.getPath(simplePhoto?.context, uri), data)
                 } else {
                     Toast.makeText(simplePhoto?.context, "获取视频文件失败", Toast.LENGTH_SHORT).show()
                 }
