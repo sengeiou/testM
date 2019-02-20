@@ -30,6 +30,8 @@
             android:imeOptions="actionSearch"
             android:background="@drawable/bg_seach"
             android:drawablePadding="@dimen/padding_dp_5"
+            android:textColor="@color/color_333333"
+            android:textColorHint="@color/color_999999"
             android:gravity="center_vertical"
             android:paddingLeft="@dimen/padding_dp_5" />
 
