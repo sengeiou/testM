@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.view.View

@@ -13,6 +13,7 @@ import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.AVATAR
 import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
 import com.qingmeng.mengmeng.constant.IConstants.THIRD_USERNAME
@@ -140,6 +141,9 @@ class LoginRegisterActivity : BaseActivity() {
         if (result ==1){
             mRead=true
             mRegisterAgree.setImageResource(R.drawable.login_icon_yes_read_s)
+        }else if(requestCode == IConstants.LOGIN_BACK && resultCode == Activity.RESULT_OK){
+            setResult(Activity.RESULT_OK)
+            finish()
         }else{
             mRead =false
             mRegisterAgree.setImageResource(R.drawable.login_icon_not_read_n)
@@ -200,9 +204,10 @@ class LoginRegisterActivity : BaseActivity() {
 
     private fun registerOver() {
         if (from == 0) {
-            startActivity(intentFor<MySettingsUserActivity>().newTask().clearTask())
-            AppManager.instance.finishActivity(LoginMainActivity().javaClass)
-            finish()
+//            startActivity(intentFor<MySettingsUserActivity>().newTask().clearTask())
+//            AppManager.instance.finishActivity(LoginMainActivity().javaClass)
+//            finish()
+            startActivityForResult<MySettingsUserActivity>(IConstants.LOGIN_BACK)
         } else {
             setResult(Activity.RESULT_OK)
             finish()

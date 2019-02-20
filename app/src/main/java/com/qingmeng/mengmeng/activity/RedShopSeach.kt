@@ -88,7 +88,25 @@ class RedShopSeach : BaseActivity() {
         head_search_mMenu2.setOnClickListener {
             this.finish()
         }
+        head_search2.setOnTouchListener(object : View.OnTouchListener {
+            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+                // et.getCompoundDrawables()得到一个长度为4的数组，分别表示左右上下四张图片
+                val drawable = head_search2.getCompoundDrawables()[2]
+                //如果右边没有图片，不再处理
+                if (drawable == null)
+                    return false
+                //如果不是按下事件，不再处理
+                if (event?.getAction() != MotionEvent.ACTION_UP)
+                    return false
+                if (event?.getX() > head_search2.getWidth()
+                        - head_search2.getPaddingRight()
+                        - drawable.getIntrinsicWidth()) {
+                    head_search2.setText("")
+                }
+                return false
+            }
 
+        })
         head_search2.setOnEditorActionListener(object : TextView.OnEditorActionListener {
 
             override fun onEditorAction(v: TextView, actionId: Int, event: KeyEvent?): Boolean {
@@ -99,25 +117,24 @@ class RedShopSeach : BaseActivity() {
                         || actionId == EditorInfo.IME_ACTION_DONE
                         || event != null && KeyEvent.KEYCODE_ENTER === event!!.getKeyCode() && KeyEvent.ACTION_DOWN === event!!.getAction()) {
                     //处理事件
-                    if(!head_search2.text.toString().trim().isEmpty()){
-                    var search = SearchHistoryList().apply { name = head_search2.text.toString().trim() }
-                    mHistorySearch.add(search)
-                    //检查重复
-                    var mHistoryrepeat = BoxUtils.getnameSearch(search.name)
-                    if (mHistoryrepeat.isEmpty()) {
-                        //空
-                        //直接保存
-                        BoxUtils.saveSearch(mHistorySearch[0])
+                    if (!head_search2.text.toString().trim().isEmpty()) {
+                        var search = SearchHistoryList().apply { name = head_search2.text.toString().trim() }
+                        mHistorySearch.add(search)
+                        //检查重复
+                        var mHistoryrepeat = BoxUtils.getnameSearch(search.name)
+                        if (mHistoryrepeat.isEmpty()) {
+                            //空
+                            //直接保存
+                            BoxUtils.saveSearch(mHistorySearch[0])
+                        } else {
+                            //重复
+                            //删除记录，保存新纪录
+                            BoxUtils.removeSearchs(mHistoryrepeat)
+                            BoxUtils.saveSearch(mHistorySearch[0])
+                        }
+                        startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to search.name)
+                        finish()
                     } else {
-                        //重复
-                        //删除记录，保存新纪录
-                        BoxUtils.removeSearchs(mHistoryrepeat)
-                        BoxUtils.saveSearch(mHistorySearch[0])
-                    }
-                    startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to search.name)
-                    finish()
-                    }
-                    else{
                         var search = SearchHistoryList().apply { name = head_search2.text.toString().trim() }
                         startActivity<RedShopSeachResult>(IConstants.SEACH_RESULT to search.name)
                         finish()
@@ -125,6 +142,8 @@ class RedShopSeach : BaseActivity() {
                 }
                 return false
             }
+
+
         })
         //删除按钮
         search_cancel_search.setOnClickListener {
