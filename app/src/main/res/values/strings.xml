@@ -121,6 +121,7 @@
     <string name="please_input_phone_num">请输入手机号码</string>
     <string name="please_read_accept">请同意用户协议</string>
     <string name="please_input_password">请输入6–12位数字或英文密码</string>
+    <string name="please_input_password1">请输入密码</string>
     <string name="use_sms_verify_login">使用短信验证登录</string>
     <string name="use_name_login">使用账号密码登录</string>
     <string name="forget_password">忘记密码?</string>
