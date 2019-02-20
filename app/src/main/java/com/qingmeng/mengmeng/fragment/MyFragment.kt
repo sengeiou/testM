@@ -4,8 +4,6 @@ import android.app.Activity
 import android.content.Intent
 import android.view.View
 import com.dragger2.activitytest0718.util.SharedPreferencesHelper
-import com.lemo.emojcenter.utils.EmotionUtils
-import com.lemo.emojcenter.utils.SpanStringUtils
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
@@ -62,7 +60,11 @@ class MyFragment : BaseFragment() {
 
         //头像
         ivMyHeadPortrait.setOnClickListener {
-
+            if (mLoginSuccess) {
+                startActivityForResult(Intent(context, MySettingsUserActivity::class.java), REQUEST_MY)
+            } else {
+                startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
+            }
         }
 
         //设置
@@ -171,8 +173,8 @@ class MyFragment : BaseFragment() {
     }
 
     private fun httpSelect() {
-        tvMyTest.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, context!!,"[呲牙]测试咯[你好]嘿嘿[鼓掌]",tvMyTest)
-                //如果该字段是修改密码 那么就直接请求信息查询
+//        tvMyTest.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, context!!,"[呲牙]测试咯[你好]嘿嘿[鼓掌]",tvMyTest)
+        //如果该字段是修改密码 那么就直接请求信息查询
         if (spf.getSharedPreference("isUpdatePass", false) as Boolean) {
             httpLoad()
         } else {

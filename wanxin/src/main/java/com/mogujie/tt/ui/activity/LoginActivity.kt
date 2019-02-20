@@ -160,14 +160,14 @@ class LoginActivity : TTBaseActivity() {
         EventBus.getDefault().register(this)
 
         setContentView(R.layout.tt_activity_login)
-        mSwitchLoginServer = findViewById(R.id.sign_switch_login_server) as TextView
+        mSwitchLoginServer = findViewById<TextView>(R.id.sign_switch_login_server)
         mSwitchLoginServer!!.setOnClickListener {
             val builder = AlertDialog.Builder(ContextThemeWrapper(this@LoginActivity, android.R.style.Theme_Holo_Light_Dialog))
             val inflater = getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
             val dialog_view = inflater.inflate(R.layout.tt_custom_dialog, null)
-            val editText = dialog_view.findViewById(R.id.dialog_edit_content) as EditText
+            val editText = dialog_view.findViewById<EditText>(R.id.dialog_edit_content)
             editText.setText(SystemConfigSp.instance().getStrConfig(SystemConfigSp.SysCfgDimension.LOGINSERVER))
-            val textText = dialog_view.findViewById(R.id.dialog_title) as TextView
+            val textText = dialog_view.findViewById<TextView>(R.id.dialog_title)
             textText.setText(R.string.switch_login_server_title)
             builder.setView(dialog_view)
             builder.setPositiveButton(getString(R.string.tt_ok)) { dialog, which ->
@@ -180,8 +180,8 @@ class LoginActivity : TTBaseActivity() {
             builder.show()
         }
 
-        mNameView = findViewById(R.id.name) as EditText
-        mPasswordView = findViewById(R.id.password) as EditText
+        mNameView = findViewById(R.id.name)
+        mPasswordView = findViewById(R.id.password)
         mPasswordView!!.setOnEditorActionListener(TextView.OnEditorActionListener { textView, id, keyEvent ->
             if (id == R.id.login || id == EditorInfo.IME_NULL) {
                 attemptLogin()

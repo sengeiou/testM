@@ -37,7 +37,6 @@ import com.mogujie.tt.utils.CommonUtil
 import com.mogujie.tt.utils.DateUtil
 import com.mogujie.tt.utils.FileUtil
 import com.qingmeng.mengmeng.R
-import com.qingmeng.mengmeng.utils.getLoacalBitmap
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.utils.setMarginExt
 import java.io.File
@@ -225,7 +224,6 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             val userEntity = getUserEntity(textMessage)
             GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherTextHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             tvMyMessageChatRvOtherTextText.let {
-                //                it.text = textMessage.info
                 it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), textMessage.info, it)
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
@@ -310,10 +308,10 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             tvMyMessageChatRvOtherVideoTime.text = "${videoMessage.videolength}s"
             rlMyMessageChatRvOtherVideo.let {
                 it.setOnClickListener {
-                    val path = videoMessage.path
-                    var url = videoMessage.url
-                    if (!TextUtils.isEmpty(path) && File(path).exists()) {
-                        url = path
+                    val url = if (!TextUtils.isEmpty(videoMessage.path) && File(videoMessage.path).exists()) {
+                        videoMessage.path
+                    } else {
+                        videoMessage.url
                     }
                     val uri = Uri.parse(url)
                     uri?.let {
@@ -349,7 +347,6 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             val userEntity = getUserEntity(textMessage)
             GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineTextHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             tvMyMessageChatRvMineTextText.let {
-                //                it.text = textMessage.info
                 it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), textMessage.info, it)
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
@@ -393,12 +390,12 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineImageHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             ivMyMessageChatRvMineImageImage.let {
                 //有本地的加载本地的
-                if (FileUtil.isFileExist(imageMessage.path)) {
-                    val bitmap = getLoacalBitmap(imageMessage.path)
-                    it.setImageBitmap(bitmap)
+                val url = if (FileUtil.isFileExist(imageMessage.path)) {
+                    imageMessage.path
                 } else {
-                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15)
+                    imageMessage.url
                 }
+                GlideLoader.load(AppManager.instance.currentActivity(), url, it, roundRadius = 15)
                 it.setOnClickListener {
                     val i = Intent(context, PreviewMessageImagesActivity::class.java)
                     val bundle = Bundle()
@@ -500,22 +497,21 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             val videoMessage = msgObjectList[position] as VideoMessage
             val userEntity = getUserEntity(videoMessage)
             GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineVideoHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
-            //封面
-            //有本地的加载本地的
-            if (FileUtil.isFileExist(videoMessage.thumbPath)) {
-                val bitmap = getLoacalBitmap(videoMessage.thumbPath)
-                ivMyMessageChatRvMineVideoCover.setImageBitmap(bitmap)
+            //封面 有本地的加载本地的
+            val url = if (FileUtil.isFileExist(videoMessage.thumbPath)) {
+                videoMessage.thumbPath
             } else {
-                GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvMineVideoCover, roundRadius = 15)
+                videoMessage.thumbUrl
             }
+            GlideLoader.load(AppManager.instance.currentActivity(), url, ivMyMessageChatRvMineVideoCover, roundRadius = 15)
             //时间
             tvMyMessageChatRvMineVideoTime.text = "${videoMessage.videolength}s"
             rlMyMessageChatRvMineVideo.let {
                 it.setOnClickListener {
-                    val path = videoMessage.path
-                    var url = videoMessage.url
-                    if (!TextUtils.isEmpty(path) && File(path).exists()) {
-                        url = path
+                    val url = if (!TextUtils.isEmpty(videoMessage.path) && File(videoMessage.path).exists()) {
+                        videoMessage.path
+                    } else {
+                        videoMessage.url
                     }
                     val uri = Uri.parse(url)
                     uri?.let {
@@ -594,7 +590,6 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         if (msg is ImageMessage) {
             ImageMessage.addToImageMessageList(msg)
         }
-        notifyDataSetChanged()
         mLayoutManager?.scrollToPosition(msgObjectList.lastIndex)
     }
 
@@ -630,7 +625,6 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                     objectList.displayType = DBConstant.SHOW_REVOKE_TYPE
                     //根据消息修改数据库内容
                     DBInterface.instance().insertOrUpdateMessage(messageEntity)
-                    notifyDataSetChanged()
                 }
             }
         }
@@ -690,7 +684,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     /**
      * 下拉载入历史消息,从最上面开始添加
      */
-    fun loadHistoryList(historyList: List<MessageEntity>?, mLayoutManager: LinearLayoutManager, isPullDownToRefresh: Boolean = false) {
+    fun loadHistoryList(historyList: List<MessageEntity>?, mLayoutManager: LinearLayoutManager? = null, isPullDownToRefresh: Boolean = false) {
         if (null == historyList || historyList.isEmpty()) {
             return
         }
@@ -724,10 +718,10 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         msgObjectList.addAll(0, chatList)
         getImageList()
         notifyDataSetChanged()
-        if (isPullDownToRefresh) {
-            mLayoutManager.scrollToPositionWithOffset(chatList.lastIndex + 1, 0)
-        } else {
-            mLayoutManager.scrollToPosition(msgObjectList.lastIndex)
+        if (isPullDownToRefresh) {  //加载历史
+            mLayoutManager?.scrollToPositionWithOffset(chatList.lastIndex + 1, 0)
+        } else {    //直接添加历史
+            mLayoutManager?.scrollToPosition(msgObjectList.lastIndex)
         }
     }
 

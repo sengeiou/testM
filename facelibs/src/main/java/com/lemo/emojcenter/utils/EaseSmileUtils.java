@@ -4,15 +4,13 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.support.v4.util.ArrayMap;
 import android.text.Spannable;
 import android.text.TextUtils;
 import android.text.style.ImageSpan;
 
-import com.lemo.emojcenter.bean.EmojBean;
-
 import java.io.File;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -270,13 +268,13 @@ public class EaseSmileUtils {
     private static Map<Integer,Drawable> drawables = new HashMap<>();
 
     static {
-        ArrayMap<String, Integer> emotionMap = EmotionUtils.getEmojiMap(EmotionUtils.EMOTION_CLASSIC_TYPE);
-        for (int i = 0; i < emotionMap.size(); i++) {
-            String content = emotionMap.keyAt(i);
-            Integer resId = emotionMap.valueAt(i);
-            EmojBean emojBean = new EmojBean(content, resId);
-            addPattern(content, resId);
-        }
+        LinkedHashMap<String, Integer> emotionMap = EmotionUtils.getEmojiMap(EmotionUtils.EMOTION_CLASSIC_TYPE);
+//        for (int i = 0; i < emotionMap.size(); i++) {
+//            String content = emotionMap.keyAt(i);
+//            Integer resId = emotionMap.valueAt(i);
+//            EmojBean emojBean = new EmojBean(content, resId);
+//            addPattern(content, resId);
+//        }
     }
 
     /**

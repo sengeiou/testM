@@ -43,6 +43,7 @@
                     android:id="@+id/tvMyMyFollowTips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_dp_21"
                     android:layout_marginTop="@dimen/padding_dp_10"
                     android:text="@string/my_myFollow_null_tips"
                     />

@@ -228,6 +228,7 @@ class MySettingsUserActivity : BaseActivity() {
                             //把本地图片地址返回给上一页
                             setResult(Activity.RESULT_OK, Intent().apply {
                                 putExtra("mLocalPath", mLocalPath)
+                                putExtra("mPhoneChange", true)
                             })
                             onBackPressed()
                         } else {

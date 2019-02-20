@@ -17,19 +17,31 @@ import com.baidu.location.LocationClient
 import com.baidu.location.LocationClientOption
 import com.mogujie.tt.config.UrlConstant
 import com.mogujie.tt.db.sp.SystemConfigSp
+import com.mogujie.tt.imservice.event.LoginEvent
+import com.mogujie.tt.imservice.event.ReconnectEvent
+import com.mogujie.tt.imservice.event.SocketEvent
+import com.mogujie.tt.imservice.service.IMService
 import com.mogujie.tt.imservice.support.IMServiceConnector
+import com.mogujie.tt.utils.IMUIHelper
+import com.mogujie.tt.utils.NetworkUtil
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.base.MainTab
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.MainTabBean
+import com.qingmeng.mengmeng.entity.UserBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.PermissionUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.view.dialog.DialogCommon
 import de.greenrobot.event.EventBus
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
+import org.jetbrains.anko.clearTask
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.newTask
 
 @Suppress("DEPRECATION")
 @SuppressLint("CheckResult")
@@ -39,20 +51,25 @@ class MainActivity : BaseActivity() {
     private var mLocationClient: LocationClient? = null
 
     //完信相关
+    private var mImService: IMService? = null
     private val imServiceConnector = object : IMServiceConnector() {
         override fun onServiceDisconnected() {}
 
         override fun onIMServiceConnected() {
-            IMServiceConnector.logger.d("login#onIMServiceConnected")
+            IMServiceConnector.logger.d("MainActivity#onIMServiceConnected")
+            mImService = this.imService
+            if (mImService == null) {
+                //why ,some reason
+                return
+            }
             //自动登录完信
             if (MainApplication.instance.user.wxUid != 0 && !TextUtils.isEmpty(MainApplication.instance.user.wxToken)) {
-                imService?.loginManager?.login("${MainApplication.instance.user.wxUid}", MainApplication.instance.user.wxToken)
+                mImService?.loginManager?.login("${MainApplication.instance.user.wxUid}", MainApplication.instance.user.wxToken)
             }
         }
     }
 
     override fun getLayoutId(): Int = R.layout.activity_main
-
 
     @SuppressLint("ObsoleteSdkInt")
     override fun initObject() {
@@ -98,7 +115,6 @@ class MainActivity : BaseActivity() {
         } catch (ex: Exception) {
             ex.printStackTrace()
         }
-
     }
 
     private fun initTabs() {
@@ -118,9 +134,146 @@ class MainActivity : BaseActivity() {
         }
     }
 
+    /**
+     * -------------------------------------------------------------start-------------------------------------------------------------
+     * EventBus事件/完信掉线逻辑
+     */
     fun onEvent(mainTabBean: MainTabBean) {
         tabhost.tabWidget.getChildTabViewAt(mainTabBean.tabIndex).performClick()
     }
+
+    fun onEventMainThread(loginEvent: LoginEvent) {
+        when (loginEvent) {
+            LoginEvent.LOCAL_LOGIN_SUCCESS, LoginEvent.LOGIN_OK -> { //登录成功
+                (AppManager.instance.currentActivity() as BaseActivity).let {
+                    it.myDialog.dismissLoadingDialog()
+                }
+            }
+            LoginEvent.LOGIN_AUTH_FAILED, LoginEvent.LOGIN_INNER_FAILED -> { //登录失败
+                (AppManager.instance.currentActivity() as BaseActivity).let {
+                    it.myDialog.dismissLoadingDialog()
+                }
+                onLoginFailure(loginEvent)
+            }
+            LoginEvent.LOGINING -> {    //刷新数据
+//                myDialog.showLoadingDialog()
+            }
+            LoginEvent.LOCAL_LOGIN_MSG_SERVICE -> {
+            }
+            LoginEvent.PC_ONLINE -> { //pc在线
+                onPCLoginStatusNotify(true)
+            }
+            LoginEvent.PC_OFFLINE -> {  //pc下线
+            }
+            LoginEvent.KICK_PC_SUCCESS -> { //踢pc成功
+                onPCLoginStatusNotify(false)
+            }
+            LoginEvent.KICK_PC_FAILED -> { //踢pc失败
+                ToastUtil.showShort(getString(R.string.kick_pc_failed))
+            }
+            else -> {
+                (AppManager.instance.currentActivity() as BaseActivity).let {
+                    it.myDialog.dismissLoadingDialog()
+                }
+            }
+        }
+    }
+
+    fun onEventMainThread(socketEvent: SocketEvent) {
+        when (socketEvent) {
+            SocketEvent.MSG_SERVER_DISCONNECTED -> handleServerDisconnected()
+
+            SocketEvent.CONNECT_MSG_SERVER_FAILED -> {
+            }
+            SocketEvent.REQ_MSG_SERVER_ADDRS_FAILED -> {
+                handleServerDisconnected()
+                onSocketFailure(socketEvent)
+            }
+        }
+    }
+
+    fun onEventMainThread(reconnectEvent: ReconnectEvent) {
+        when (reconnectEvent) {
+            ReconnectEvent.DISABLE -> handleServerDisconnected()
+        }
+    }
+
+    /**
+     * 登录失败
+     */
+    private fun onLoginFailure(event: LoginEvent) {
+        val errorTip = getString(IMUIHelper.getLoginErrorTip(event))
+        ToastUtil.showShort(errorTip)
+    }
+
+    /**
+     * socket失败
+     */
+    private fun onSocketFailure(event: SocketEvent) {
+        val errorTip = getString(IMUIHelper.getSocketErrorTip(event))
+        ToastUtil.showShort(errorTip)
+    }
+
+    /**
+     * 多端，PC端在线状态通知
+     */
+    private fun onPCLoginStatusNotify(isOnline: Boolean) {
+        if (isOnline) { //pc在线
+//            //添加踢出事件
+//            **.setOnClickListener{
+//                mImService?.loginManager?.reqKickPCClient()
+//            }
+            ToastUtil.showShort("pc已上线")
+        } else {    //踢出pc后处理。。。
+            ToastUtil.showShort("pc已下线")
+        }
+    }
+
+    /**
+     * 下线提示
+     */
+    private fun handleServerDisconnected() {
+        //重连、断线、被其他移动端挤掉
+        if (mImService != null) {
+            if (mImService?.loginManager?.isKickout == true) {  //他人登录
+                (AppManager.instance.currentActivity() as BaseActivity).let {
+                    if (!it.mDialogCommon.isShowing) {
+                        it.mDialogCommon.show()
+                    }
+                    it.mDialogCommon.setOnCallBack(object : DialogCommon.CallBack {
+                        override fun onLeftClick(view: View) {
+                            logOut()
+                        }
+
+                        override fun onRightClick(view: View) {
+                            if (NetworkUtil.isNetWorkAvalible(this@MainActivity)) {
+                                it.myDialog.showLoadingDialog()
+//                                IMLoginManager.instance().relogin()
+                                mImService?.loginManager?.login("${MainApplication.instance.user.wxUid}", MainApplication.instance.user.wxToken)
+                            } else {
+                                ToastUtil.showShort("网络连接不可用")
+                            }
+                        }
+                    })
+                }
+            } else {  //其他
+
+            }
+        }
+    }
+
+    //退出登录
+    private fun logOut() {
+        mImService?.loginManager?.logOut()
+        MainApplication.instance.user = UserBean()
+        MainApplication.instance.TOKEN = ""
+        sharedSingleton.setString(IConstants.USER)
+        startActivity(intentFor<MainActivity>().newTask().clearTask())
+    }
+
+    /**
+     * -------------------------------------------------------------end-------------------------------------------------------------
+     */
 
     override fun onBackPressed() {
         val secondTime = System.currentTimeMillis()

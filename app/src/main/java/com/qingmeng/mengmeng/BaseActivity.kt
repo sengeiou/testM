@@ -12,6 +12,7 @@ import android.view.WindowManager
 import com.qingmeng.mengmeng.constant.ImageCodeHandler
 import com.qingmeng.mengmeng.utils.SharedSingleton
 import com.qingmeng.mengmeng.utils.TimerHandler
+import com.qingmeng.mengmeng.view.dialog.DialogCommon
 import com.qingmeng.mengmeng.view.dialog.DialogCustom
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -22,8 +23,9 @@ import kotlinx.android.synthetic.main.layout_head.*
  */
 abstract class BaseActivity : AppCompatActivity() {
     protected val sharedSingleton = SharedSingleton.instance
-    protected lateinit var myDialog: DialogCustom
+    lateinit var myDialog: DialogCustom
     lateinit var imgHandler: ImageCodeHandler
+    lateinit var mDialogCommon: DialogCommon
     var totalTime = -1
     var timing = 1
     var timingOver = 2
@@ -41,6 +43,8 @@ abstract class BaseActivity : AppCompatActivity() {
         AppManager.instance.addActivity(this)
         requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT //禁止横屏
         myDialog = DialogCustom(AppManager.instance.currentActivity())
+        mDialogCommon = DialogCommon(this, getString(R.string.tips), getString(R.string.otherLogin_tips),
+                getString(R.string.exit), getString(R.string.loginAgain), canBackCancel = false)
         setShowBack(true)
         initObject()
         initListener()
@@ -95,7 +99,9 @@ abstract class BaseActivity : AppCompatActivity() {
 
     abstract fun getLayoutId(): Int
 
-    open fun initObject() {}
+    open fun initObject() {
+
+    }
 
     open fun initData() {}
 
