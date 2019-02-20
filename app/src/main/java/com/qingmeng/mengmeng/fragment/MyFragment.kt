@@ -4,6 +4,8 @@ import android.app.Activity
 import android.content.Intent
 import android.view.View
 import com.dragger2.activitytest0718.util.SharedPreferencesHelper
+import com.lemo.emojcenter.utils.EmotionUtils
+import com.lemo.emojcenter.utils.SpanStringUtils
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
@@ -133,7 +135,6 @@ class MyFragment : BaseFragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
-                    myDialog.dismissLoadingDialog()
                     srlMy.isRefreshing = false
                     it.apply {
                         if (code == 12000) {
@@ -164,15 +165,14 @@ class MyFragment : BaseFragment() {
                         }
                     }
                 }, {
-                    myDialog.dismissLoadingDialog()
                     srlMy.isRefreshing = false
                     mLoginSuccess = mMyInformation.userName != ""
                 })
     }
 
     private fun httpSelect() {
-        myDialog.showLoadingDialog()
-        //如果该字段是修改密码 那么就直接请求信息查询
+        tvMyTest.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, context!!,"[呲牙]测试咯[你好]嘿嘿[鼓掌]",tvMyTest)
+                //如果该字段是修改密码 那么就直接请求信息查询
         if (spf.getSharedPreference("isUpdatePass", false) as Boolean) {
             httpLoad()
         } else {
@@ -192,14 +192,12 @@ class MyFragment : BaseFragment() {
                             spf.put("isUpdatePass", true)
                         } else if (code == 30001) { //设置密码
                             spf.put("isUpdatePass", false)
-                        }else{
-                            myDialog.dismissLoadingDialog()
+                        } else {
                         }
                     }
                     //请求下一个接口
                     httpLoad()
                 }, {
-                    myDialog.dismissLoadingDialog()
                     srlMy.isRefreshing = false
                 })
     }

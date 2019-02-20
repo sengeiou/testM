@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="down_error">#FA6A8A</color>
+    <color name="text_color_green">#3fa122</color>
+
+    <color name="emojicon_tab_line">#80BBBBBB</color>
+
+    <color name="emojicon_tab_selected">#80DEDEDE</color>
+    <color name="emojicon_tab_nomal">#ffffff</color>
+
+    <color name="gray_bg">#f5f5f5</color>
+    <color name="face_gray_bg">#80f5f5f5</color>
+    <color name="line_icon">#f6f6f6</color>
+
+    <color name="my_emoj_grey">#efeff4</color>
+    <color name="my_addemoj_red">#ff8b8b</color>
+    <color name="my_addemoj_select">#ff102d</color>
+
+    <color name="keyboard_bg">#f5f5f7</color>
+
+    <color name="tab_text_normal">#232323</color>
+
+    <color name="item_operator_color">#909090</color>
+
+    <color name="bt_bg">#ededed</color>
+    <color name="bg_bar_grey">#dedddc</color>
+    <color name="bg_bar_green">#3fa122</color>
+
+    <color name="face_text_color_black">#111111</color>
+    <color name="text_color_yellow">#c3722a</color>
+    <color name="gray_normal">#666667</color>
+    <!-- 白色 -->
+    <color name="white">#ffffff</color>
+    <color name="white_80">#80ffffff</color>
+    <color name="white_holder">#eeffffff</color>
+
+
+    <!-- 深灰色背景 -->
+    <color name="default_bg_darkergrey">#aeaeae</color>
+    <color name="bg_blue_select">#a4ddf9</color>
+    <color name="bg_blue_normal">#94cde9</color>
+    <!-- 默认灰色字体 -->
+    <color name="text_color_grey">#646464</color>
+    <color name="line_color_grey">#bbb9b9</color>
+
+    <color name="bg_button">#3F51B5</color>
+    <color name="bg_indicator_point_normal">#D8D8D8</color>
+    <color name="bg_indicator_point_selected">#A6A6A6</color>
+    <color name="bg_horizontal_btn_normal">#eeeeee</color>
+    <color name="bg_horizontal_btn_selected">#70a3a4a7</color>
+    //
+    <color name="text_color_light_grey">#363539</color>
+    <color name="bg_horizontal_line_color">#80a3a4a7</color>
+    <!-- 黑色 -->
+    <color name="black">#646464</color>
+    <!-- 默认线条颜色 -->
+    <color name="default_line">#dcdcdc</color>
+
+</resources>

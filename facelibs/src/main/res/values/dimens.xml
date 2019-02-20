@@ -1,0 +1,16 @@
+<resources>
+    <!-- 更小字体-->
+    <dimen name="textsize_smallest">11sp</dimen>
+    <dimen name="textsize_smaller">12sp</dimen>
+    <!-- 小中字体-->
+    <dimen name="textsize_smal">13sp</dimen>
+    <!-- 小字体-->
+    <dimen name="textsize_small">14sp</dimen>
+    <!-- 小中字体-->
+    <dimen name="textsize_smalls">15sp</dimen>
+    <!-- 中等字体-->
+    <dimen name="textsize_middle">16sp</dimen>
+    <!-- 大字体-->
+    <dimen name="textsize_big">18sp</dimen>
+
+</resources>
