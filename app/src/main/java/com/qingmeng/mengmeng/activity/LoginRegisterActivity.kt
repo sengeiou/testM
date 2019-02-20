@@ -74,7 +74,7 @@ class LoginRegisterActivity : BaseActivity() {
         contentType = intent.getIntExtra(TYPE, 1)
         if (contentType == 1) {
             setHeadName(R.string.register)
-        } else{
+        } else {
             setHeadName(R.string.bind_phone)
         }
         imgHandler = ImageCodeHandler(this, mRegisterGetCode)
@@ -96,7 +96,7 @@ class LoginRegisterActivity : BaseActivity() {
 
         //用户协议
         mUserProtocol.setOnClickListener {
-            startActivityForResult<LoginUserAgreementActivity>(  0)
+            startActivityForResult<LoginUserAgreementActivity>(0)
         }
         //是否同意用户协议
         mRegisterAgree.setOnClickListener {
@@ -138,14 +138,19 @@ class LoginRegisterActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val result = data?.getExtras()?.getInt("agreement")
-        if (result ==1){
-            mRead=true
+        if (result == 1) {
+            mRead = true
             mRegisterAgree.setImageResource(R.drawable.login_icon_yes_read_s)
-        }else if(requestCode == IConstants.LOGIN_BACK && resultCode == Activity.RESULT_OK){
-            setResult(Activity.RESULT_OK)
-            finish()
-        }else{
-            mRead =false
+        } else if (requestCode == IConstants.LOGIN_BACK && resultCode == Activity.RESULT_OK) {
+            if (from == 0) {
+                startActivity(intentFor<MainActivity>().newTask().clearTask())
+                finish()
+            } else {
+                setResult(Activity.RESULT_OK)
+                finish()
+            }
+        } else {
+            mRead = false
             mRegisterAgree.setImageResource(R.drawable.login_icon_not_read_n)
         }
     }
@@ -203,15 +208,7 @@ class LoginRegisterActivity : BaseActivity() {
     }
 
     private fun registerOver() {
-        if (from == 0) {
-//            startActivity(intentFor<MySettingsUserActivity>().newTask().clearTask())
-//            AppManager.instance.finishActivity(LoginMainActivity().javaClass)
-//            finish()
-            startActivityForResult<MySettingsUserActivity>(IConstants.LOGIN_BACK)
-        } else {
-            setResult(Activity.RESULT_OK)
-            finish()
-        }
+        startActivityForResult<MySettingsUserActivity>(IConstants.LOGIN_BACK)
     }
 
     //验证手机号，用户名是否合格
