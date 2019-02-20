@@ -200,7 +200,9 @@ class LoginRegisterActivity : BaseActivity() {
 
     private fun registerOver() {
         if (from == 0) {
-            startActivity(intentFor<MainActivity>().newTask().clearTask())
+            startActivity(intentFor<MySettingsUserActivity>().newTask().clearTask())
+            AppManager.instance.finishActivity(LoginMainActivity().javaClass)
+            finish()
         } else {
             setResult(Activity.RESULT_OK)
             finish()
