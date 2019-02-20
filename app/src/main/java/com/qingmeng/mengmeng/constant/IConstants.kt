@@ -34,7 +34,7 @@ object IConstants {
     val FIRSTLOGIN = "first_login"
     val BRANDID = "brandId"                  //商品id
     val REDSHOPID = "red_shop_ID"            //红铺id
-    val REDSHOPNAME = "red_shop_NAME"            //红铺名称
+    val REDSHOPFATHERID = "red_shop_fatherId"            //红铺名称
     val POSITION = "position"
     val articleUrl = "articleUrl"
     val IMGS = "imgs"

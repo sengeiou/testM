@@ -27,10 +27,13 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
 import com.qingmeng.mengmeng.constant.IConstants
-import com.qingmeng.mengmeng.constant.IConstants.REDSHOPID
 import com.qingmeng.mengmeng.constant.IConstants.SEACH_RESULT
 import com.qingmeng.mengmeng.constant.IConstants.firstLevel
+import com.qingmeng.mengmeng.constant.IConstants.secondLevel
+import com.qingmeng.mengmeng.entity.FatherDto
+import com.qingmeng.mengmeng.entity.FoodType
 import com.qingmeng.mengmeng.entity.SearchDto
+import com.qingmeng.mengmeng.entity.StaticBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.view.dialog.PopSeachCondition
@@ -83,17 +86,13 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
     override fun initObject() {
         super.initObject()
         initAdapter()
-//        setData()
         //传入
         fatherId = intent.getIntExtra(firstLevel, 0)
-        typeId = intent.getIntExtra(REDSHOPID, 0)
+        typeId = intent.getIntExtra(secondLevel, 0)
         keyWord = intent.getStringExtra(SEACH_RESULT) ?: ""
-
-
         head_search.setText(keyWord)
         head_search.setSelection(head_search.text.toString().length)
         goToSeach()
-
     }
 
     private fun goToSeach() {
@@ -103,7 +102,6 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
 
     override fun initData() {
         super.initData()
-
     }
 
     private fun initAdapter() {
@@ -114,7 +112,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
             holder.apply {
                 Glide.with(this@RedShopSeachResult).load(data.logo).apply(RequestOptions.bitmapTransform(RoundedCorners(10))
                         .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.search_result_bigLogo))
-                val spanString = SpannableString("证\t${data.name}")
+                val spanString = SpannableString("证\t\t\t${data.name}")
                 val drawable = resources.getDrawable(R.drawable.detail_icon_certification)
                 val imageSpan = ImageSpan(drawable, ImageSpan.ALIGN_BASELINE)
                 spanString.setSpan(imageSpan, 0, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)

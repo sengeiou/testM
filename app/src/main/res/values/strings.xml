@@ -96,7 +96,7 @@
     <!-- =======================================红铺===================================== -->
     <string name="red_shop_food_type">分类</string>
     <string name="red_shop_hot">热门品牌</string>
-
+    <string name="seach_all">全部</string>
     <string name="seach_button_sure">确定</string>
     <string name="seach_button_exit">重置</string>
     <string name="seach_money">投资金额</string>
