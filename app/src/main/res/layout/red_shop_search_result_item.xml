@@ -22,32 +22,25 @@
             android:layout_height="@dimen/padding_dp_100"
             android:layout_marginStart="@dimen/padding_dp_10" />
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/padding_dp_100"
             android:orientation="vertical">
 
-            <RelativeLayout
-            android:id="@+id/rlSearchResultName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding_dp_10">
-
             <TextView
                 android:id="@+id/search_result_name"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/padding_dp_10"
                 android:maxLines="2"
                 android:textColor="@color/color_333333"
                 android:textSize="@dimen/text_size_16" />
-            </RelativeLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/rlSearchResultName"
-                android:layout_marginStart="@dimen/padding_dp_10"
-                android:layout_marginTop="@dimen/padding_dp_15"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
                 android:orientation="horizontal">
 
                 <LinearLayout
@@ -96,12 +89,9 @@
                 android:id="@+id/seach_result_tagFliwLayout"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/padding_dp_19"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="@dimen/padding_dp_10">
+                android:layout_marginStart="@dimen/padding_dp_10"/>
 
-            </com.qingmeng.mengmeng.view.flowlayout.TagFlowLayout>
-
-        </RelativeLayout>
+        </LinearLayout>
 
     </LinearLayout>
 
