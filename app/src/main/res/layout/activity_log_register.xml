@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/common_bg"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:orientation="vertical">
 
-    <include layout="@layout/layout_head"/>
+    <include layout="@layout/layout_head" />
 
     <include
         layout="@layout/layout_line_no_padding"
         android:layout_width="match_parent"
         android:layout_height="@dimen/padding_dp_1"
-        android:layout_marginTop="10dp"/>
+        android:layout_marginTop="10dp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -33,10 +33,11 @@
             android:maxLength="12"
             android:singleLine="true"
             android:textColor="@color/color_333333"
+            android:textColorHint="@color/color_999999"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="@dimen/text_size_16"/>
+            android:textSize="@dimen/text_size_16" />
 
-        <include layout="@layout/layout_line_no_padding"/>
+        <include layout="@layout/layout_line_no_padding" />
 
         <EditText
             android:id="@+id/mRegisterPhone"
@@ -47,13 +48,15 @@
             android:drawablePadding="@dimen/padding_dp_10"
             android:gravity="center_vertical"
             android:hint="@string/please_input_phone_num"
+            android:inputType="number"
             android:maxLength="11"
             android:textColor="@color/color_333333"
+            android:textColorHint="@color/color_999999"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="@dimen/text_size_16"/>
+            android:textSize="@dimen/text_size_16" />
 
 
-        <include layout="@layout/layout_line_no_padding"/>
+        <include layout="@layout/layout_line_no_padding" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -73,8 +76,9 @@
                 android:maxLength="12"
                 android:singleLine="true"
                 android:textColor="@color/color_333333"
+                android:textColorHint="@color/color_999999"
                 android:textCursorDrawable="@drawable/color_cursor"
-                android:textSize="@dimen/text_size_16"/>
+                android:textSize="@dimen/text_size_16" />
 
             <TextView
                 android:id="@+id/mRegisterGetCode"
@@ -85,11 +89,11 @@
                 android:gravity="center"
                 android:text="@string/getMsg"
                 android:textColor="@color/color_5ab1e1"
-                android:textSize="@dimen/text_size_14"/>
+                android:textSize="@dimen/text_size_14" />
 
         </LinearLayout>
 
-        <include layout="@layout/layout_line_no_padding"/>
+        <include layout="@layout/layout_line_no_padding" />
 
         <EditText
             android:id="@+id/mRegisterPsw"
@@ -104,10 +108,11 @@
             android:maxLength="12"
             android:singleLine="true"
             android:textColor="@color/color_333333"
+            android:textColorHint="@color/color_999999"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="@dimen/text_size_16"/>
+            android:textSize="@dimen/text_size_16" />
 
-        <include layout="@layout/layout_line_no_padding"/>
+        <include layout="@layout/layout_line_no_padding" />
 
         <EditText
             android:id="@+id/mRegisterSurePsw"
@@ -122,12 +127,13 @@
             android:maxLength="12"
             android:singleLine="true"
             android:textColor="@color/color_333333"
+            android:textColorHint="@color/color_999999"
             android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="@dimen/text_size_16"/>
+            android:textSize="@dimen/text_size_16" />
 
     </LinearLayout>
 
-    <include layout="@layout/layout_line_no_padding"/>
+    <include layout="@layout/layout_line_no_padding" />
 
     <TextView
         android:id="@+id/mRegisterSure"
@@ -135,12 +141,12 @@
         android:layout_height="@dimen/padding_dp_45"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"
-        android:enabled="false"
         android:background="@drawable/bg_login_button"
+        android:enabled="false"
         android:gravity="center"
         android:text="@string/register"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_18"/>
+        android:textSize="@dimen/text_size_18" />
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -157,7 +163,7 @@
             android:paddingTop="@dimen/padding_dp_5"
             android:paddingEnd="@dimen/padding_dp_10"
             android:paddingBottom="@dimen/padding_dp_10"
-            android:src="@drawable/login_icon_not_read_n"/>
+            android:src="@drawable/login_icon_not_read_n" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -166,7 +172,7 @@
             android:paddingBottom="@dimen/padding_dp_10"
             android:text="@string/read_accept"
             android:textColor="@color/color_909090"
-            android:textSize="@dimen/text_size_12"/>
+            android:textSize="@dimen/text_size_12" />
 
         <TextView
             android:id="@+id/mUserProtocol"
@@ -176,6 +182,6 @@
             android:paddingBottom="@dimen/padding_dp_10"
             android:text="@string/user_agreement"
             android:textColor="@color/color_5ab1e1"
-            android:textSize="@dimen/text_size_12"/>
+            android:textSize="@dimen/text_size_12" />
     </LinearLayout>
 </LinearLayout>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="TopView">
+        <attr name="face_title" format="string"/>
+        <attr name="face_back" format="string"/>
+    </declare-styleable>
+
+</resources>

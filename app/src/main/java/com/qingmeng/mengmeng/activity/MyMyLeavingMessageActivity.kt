@@ -131,7 +131,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                 }
                 //品牌详情点击
                 getView<RelativeLayout>(R.id.rlMyMyLeavingMessageRvBrandDetails).setOnClickListener {
-                    startActivity<ShopDetailActivity>(IConstants.BRANDID to t.id)
+                    startActivity<ShopDetailActivity>(IConstants.BRANDID to t.brandId)
                 }
             }
         })

@@ -1,0 +1,71 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
+android {
+    compileSdkVersion 26
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions { annotationProcessorOptions { includeCompileClasspath = true } }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    //noinspection GradleCompatible
+    implementation 'com.android.support:appcompat-v7:26.1.0'
+    implementation 'com.android.support:cardview-v7:26.1.0'
+    implementation 'com.android.support:recyclerview-v7:26.1.0'
+    implementation 'com.github.bumptech.glide:glide:4.0.0'
+    implementation 'io.reactivex.rxjava2:rxjava:2.1.0'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.0.1'
+    implementation 'com.tbruyelle.rxpermissions2:rxpermissions:0.9.4@aar'
+    implementation 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.30'
+    implementation files('libs/okhttputils_2.1.5.jar')
+    implementation('com.squareup.okhttp3:okhttp:3.7.0') {
+        exclude group: 'com.squareup.okhttp3'
+    }
+    implementation 'org.greenrobot:eventbus:3.0.0'
+    implementation 'com.google.code.gson:gson:2.8.1'
+    implementation 'com.aliyun.dpa:oss-android-sdk:2.4.5'
+    implementation 'com.android.support:multidex:1.0.1'
+    implementation 'com.bigkoo:convenientbanner:2.0.5'
+
+    implementation 'com.github.LuckSiege.PictureSelector:picture_library:v2.2.3'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+
+}
+
+//View ＞ Tool Windows ＞ Gradle ＞ module名称 ＞ Tasks ＞  other ＞ exportJar 执行生成jar包
+task deleteOldJar(type: Delete) {
+    delete 'build/outputs/faceLibLeimo.jar'    //如果存在jar则删除掉
+}
+
+task exportJar(type: Copy) {
+    from('build/intermediates/bundles/release/')   //jar文件来源
+    into('build/outputs/')    //生成路径
+    include('classes.jar')
+    rename('classes.jar', 'faceLibLeimo.jar')  //命名为test.jar这里根据需要自己定义
+}
+
+exportJar.dependsOn(deleteOldJar, build)
+
+//allprojects {
+//    //版本冲突：强制使用某版本依赖
+//    configurations.all {
+//        resolutionStrategy.force 'com.github.bumptech.glide:glide:4.0.0'
+//    }
+//}

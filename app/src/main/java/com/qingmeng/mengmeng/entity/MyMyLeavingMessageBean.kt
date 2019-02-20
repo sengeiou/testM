@@ -19,7 +19,10 @@ data class MyLeavingMessage(
         val status: Int,
         val createTime: String,
         val brandName: String,
+        val brandId: Int,
         val logo: String,
         val capitalName: String,
-        val storesNum: String
+        val storesNum: String,
+        val directStoreNum: Int,
+        val joinStoreNum: Int
 )

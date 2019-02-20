@@ -75,4 +75,13 @@ object InputCheckUtils {
         val matcher = pattern.matcher(tel)
         return matcher.matches()
     }
+
+    /**
+     * 5-6位数字
+     */
+    fun checkFiveOrSixNum(qq: String): Boolean {
+        val pattern = Pattern.compile("^[0-9]{5,6}")
+        val matcher = pattern.matcher(qq)
+        return matcher.matches()
+    }
 }
