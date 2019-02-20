@@ -15,7 +15,7 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/red_shop_left_recyclerview"
             android:layout_width="@dimen/padding_dp_90"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@color/page_background_f5" />
 
         <android.support.v4.widget.NestedScrollView

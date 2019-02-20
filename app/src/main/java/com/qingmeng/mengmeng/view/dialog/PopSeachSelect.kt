@@ -33,9 +33,11 @@ import kotlinx.android.synthetic.main.activity_common_pop_window.view.*
  * 搜索结果筛选菜单PopWindow
  */
 @SuppressLint("CheckResult")
-class PopSeachSelect : PopupWindow {
+class PopSeachSelect//设置宽高popWindow  动画 背景
+//点击popwindow 外部消失
+//1 为餐饮类型  2为加盟区域 3 为综合排序
+(private var mActivity: Activity, type: Int) : PopupWindow(mActivity) {
 
-    private var mActivity: Activity
     private var mMenuView: View
     private lateinit var mLauyoutManger: LinearLayoutManager
     private lateinit var mGridManager: GridLayoutManager
@@ -52,17 +54,13 @@ class PopSeachSelect : PopupWindow {
     private var mFoodList = ArrayList<FoodTypeDto>()                           //餐饮右数据
     private var logoUrl = "http://ossmeng.oss-cn-hangzhou.aliyuncs.com/mengmeng%2Ficon%2Frepast_type%2Fsnack%2F%E9%BA%BB%E8%BE%A3%E7%83%AB.png"
 
-    //1 为餐饮类型  2为加盟区域 3 为综合排序
-    constructor(mActivity: Activity, type: Int) : super(mActivity) {
-        this.mActivity = mActivity
+    init {
         mMenuView = LayoutInflater.from(mActivity).inflate(R.layout.activity_common_pop_window, null)
-        //设置宽高popWindow  动画 背景
-        this.contentView = mMenuView
-        this.width = ViewGroup.LayoutParams.MATCH_PARENT
-        this.height = ViewGroup.LayoutParams.WRAP_CONTENT
-        this.animationStyle = R.style.TopPopWindow_animStyle
-        this.setBackgroundDrawable(ColorDrawable(-0x00000000))
-        //点击popwindow 外部消失
+        contentView = mMenuView
+        width = ViewGroup.LayoutParams.MATCH_PARENT
+        height = ViewGroup.LayoutParams.WRAP_CONTENT
+        animationStyle = R.style.TopPopWindow_animStyle
+        setBackgroundDrawable(ColorDrawable(-0x00000000))
         mMenuView.bottom_view.setOnClickListener {
             dismiss()
         }
@@ -71,20 +69,15 @@ class PopSeachSelect : PopupWindow {
             2 -> getJoinAreaCache()
             3 -> getRankingCache()
         }
-        initListener()
         initLeftAdapter(type)
         initRightAdapter(type)
     }
 
-    private fun initListener() {
-
-    }
-
     //加载   左边适配
     private fun initLeftAdapter(type: Int) {
+        mLauyoutManger = LinearLayoutManager(mActivity)
+        mMenuView.left_recyclerView_pop.layoutManager = mLauyoutManger
         if (type == 1) {
-            mLauyoutManger = LinearLayoutManager(mActivity)
-            mMenuView.left_recyclerView_pop.layoutManager = mLauyoutManger
             mFoodTypeAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mFoodTypeList, holderConvert = { holder, data, position, payloads ->
                 holder.apply {
                     if (data.checkState) {
@@ -100,16 +93,13 @@ class PopSeachSelect : PopupWindow {
                 }
                 mFoodTypeList[position].checkState = true
                 mFoodTypeAdapter.notifyDataSetChanged()
-//
                 mFoodList.clear()
-                mFoodList.add(FoodTypeDto(mFoodTypeList[position].id, "", mFoodTypeList[position].id, logoUrl, "全部"))
+                // mFoodList.add(FoodTypeDto(mFoodTypeList[position].id, "", mFoodTypeList[position].id, logoUrl, "全部"))
                 mFoodList.addAll(mFoodTypeList[position].foodTypeDto)
                 mFoodAdapter.notifyDataSetChanged()
             })
             mMenuView.left_recyclerView_pop.adapter = mFoodTypeAdapter
         } else if (type == 2) {
-            mLauyoutManger = LinearLayoutManager(mActivity)
-            mMenuView.left_recyclerView_pop.layoutManager = mLauyoutManger
             mProvinceAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mProvinceList, holderConvert = { holder, data, position, payloads ->
                 holder.apply {
                     if (data.checkState) {
@@ -125,7 +115,6 @@ class PopSeachSelect : PopupWindow {
                 }
                 mProvinceList[position].checkState = true
                 mProvinceAdapter.notifyDataSetChanged()
-//
                 mCityList.clear()
                 mCityList.add(CityFilter(mProvinceList[position].id, mProvinceList[position].id, 0, 2, "全部"))
                 mCityList.addAll(mProvinceList[position].cityFilter)
@@ -133,8 +122,6 @@ class PopSeachSelect : PopupWindow {
             })
             mMenuView.left_recyclerView_pop.adapter = mProvinceAdapter
         } else if (type == 3) {
-            mLauyoutManger = LinearLayoutManager(mActivity)
-            mMenuView.left_recyclerView_pop.layoutManager = mLauyoutManger
             mRankingAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mRankingList, holderConvert = { holder, data, position, payloads ->
                 holder.apply {
                     getView<LinearLayout>(R.id.seach_ranking_linear).apply {
@@ -152,22 +139,8 @@ class PopSeachSelect : PopupWindow {
                 }
                 mRankingList[position].checkState = true
                 mRankingAdapter.notifyDataSetChanged()
-                if (position == 0) {
-                    mSelectCallBack.onSelectCallBack(1, mRankingList[position].title)
-                    dismiss()
-                } else if (position == 1) {
-                    mSelectCallBack.onSelectCallBack(2, mRankingList[position].title)
-                    dismiss()
-                } else if (position == 2) {
-                    mSelectCallBack.onSelectCallBack(3, mRankingList[position].title)
-                    dismiss()
-                } else if (position == 3) {
-                    mSelectCallBack.onSelectCallBack(4, mRankingList[position].title)
-                    dismiss()
-                } else if (position == 4) {
-                    mSelectCallBack.onSelectCallBack(5, mRankingList[position].title)
-                    dismiss()
-                }
+                mSelectCallBack.onSelectCallBack(position + 1, 0, mRankingList[position].title)
+                dismiss()
             })
             mMenuView.left_recyclerView_pop.adapter = mRankingAdapter
         }
@@ -179,22 +152,31 @@ class PopSeachSelect : PopupWindow {
             mMenuView.right_recyclerView_pop.layoutManager = mGridManager
             mFoodAdapter = CommonAdapter(mActivity, R.layout.seach_food_type_right_in_item, mFoodList, holderConvert = { holder, data, position, payloads ->
                 holder.apply {
+                    mMenuView.seach_result_right_text_type.visibility = View.VISIBLE
+                    mMenuView.seach_result_right_text_type.setOnClickListener {
+                        if (mFoodList.isEmpty()) {
+                            mMenuView.seach_result_right_text_type.setOnClickListener {
+                                mSelectCallBack.onSelectCallBack(0, 0, "全部")
+                                dismiss()
+                            }
+                        } else {
+                            var mFatherName = ""
+                            mFoodTypeList.forEach {
+                                if (it.id == data.fahterId) {
+                                    mFatherName = it.name
+                                }
+                            }
+                            mSelectCallBack.onSelectCallBack(data.id, data.fahterId, mFatherName)
+                            dismiss()
+                        }
+
+                    }
                     Glide.with(mActivity).load(data.logo).apply(RequestOptions()
                             .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.Seach_food_type_right_inImageView))
                     setText(R.id.Seach_food_type_right_inContent, data.name)
                 }
             }, onItemClick = { view, holder, position ->
-                var mFatherName = String()
-                if (position == 0) {
-                    mFoodTypeList.forEach {
-                        if (it.id == mFoodList[position].fahterId) {
-                            mFatherName = it.name
-                        }
-                    }
-                    mSelectCallBack.onSelectCallBack(mFoodList[position].fahterId, mFatherName)
-                } else {
-                    mSelectCallBack.onSelectCallBack(mFoodList[position].id, mFoodList[position].name)
-                }
+                mSelectCallBack.onSelectCallBack(mFoodList[position].id, mFoodList[position].fahterId, mFoodList[position].name)
                 dismiss()
             })
             mMenuView.right_recyclerView_pop.adapter = mFoodAdapter
@@ -213,9 +195,9 @@ class PopSeachSelect : PopupWindow {
                             mFatherProvinceName = it.name
                         }
                     }
-                    mSelectCallBack.onSelectCallBack(mCityList[position].fatherId, mFatherProvinceName)
+                    mSelectCallBack.onSelectCallBack(mCityList[position].fatherId, mCityList[position].fatherId, mFatherProvinceName)
                 } else {
-                    mSelectCallBack.onSelectCallBack(mCityList[position].id, mCityList[position].name)
+                    mSelectCallBack.onSelectCallBack(mCityList[position].id, mCityList[position].fatherId, mCityList[position].name)
                 }
                 dismiss()
             })
@@ -244,7 +226,7 @@ class PopSeachSelect : PopupWindow {
                                 if (!mProvinceList.isEmpty()) {
                                     mProvinceList[1].checkState = true
                                 }
-                                if(!mCityList.isEmpty()){
+                                if (!mCityList.isEmpty()) {
                                     mCityList.clear()
                                 }
                                 mCityList.add(CityFilter(it.fatherDtos[0].id, it.fatherDtos[0].id, 0, 2, "全部"))
@@ -315,7 +297,7 @@ class PopSeachSelect : PopupWindow {
                                     mFoodList.clear()
                                 }
                                 //加入缓存
-                                mFoodList.add(FoodTypeDto(it.foodType[0].id, "", 0, logoUrl, "全部"))
+                                // mFoodList.add(FoodTypeDto(it.foodType[0].id, "", 0, logoUrl, "全部"))
                                 mFoodList.addAll(it.foodType[0].foodTypeDto)
                                 BoxUtils.saveCache(it, IConstants.SEACH_RESULT_FOOD)
                                 mFoodTypeAdapter.notifyDataSetChanged()
@@ -452,6 +434,6 @@ class PopSeachSelect : PopupWindow {
     }
 
     interface SelectCallBack {
-        fun onSelectCallBack(selectId: Int, selectName: String)
+        fun onSelectCallBack(selectId: Int, selectFatherId: Int, selectName: String)
     }
 }
