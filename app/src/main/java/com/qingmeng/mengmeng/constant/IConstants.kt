@@ -34,7 +34,7 @@ object IConstants {
     val FIRSTLOGIN = "first_login"
     val BRANDID = "brandId"                  //商品id
     val REDSHOPID = "red_shop_ID"            //红铺id
-    val REDSHOPNAME = "red_shop_NAME"            //红铺名称
+    val REDSHOPFATHERID = "red_shop_fatherId"            //红铺名称
     val POSITION = "position"
     val articleUrl = "articleUrl"
     val IMGS = "imgs"
@@ -43,7 +43,6 @@ object IConstants {
     val firstLevel = "firstLevel"         //一级分类id
     val secondLevel = "secondLevel"       //二级分类id
     val LOGIN_BACK = 10010
-    val USER_AGREEMENT = "user_agreement"   //注册协议： 0：拒绝 1：同意
     //图片验证码
     val GET_IMAGE_CODE = BASE_URL + "api/captcha_app/image_app?account="
 

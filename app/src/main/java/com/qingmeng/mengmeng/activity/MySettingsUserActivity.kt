@@ -463,6 +463,11 @@ class MySettingsUserActivity : BaseActivity() {
         })
     }
 
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_OK)
+        super.onBackPressed()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         //选择照片（图库，拍照）

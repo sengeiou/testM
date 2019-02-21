@@ -100,9 +100,6 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
             }
             barLayout.setExpanded(true)
             swipeLayout.isLoadMoreEnabled = false
-            swipeLayout.isRefreshEnabled = true
-            swipeLayout.isRefreshing = true
-            onRefresh()
         }
         mJoinMenu.setOnItemClickListener { _, _, position, _ ->
             menuList[position].apply {

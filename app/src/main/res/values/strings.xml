@@ -99,7 +99,7 @@
     <!-- =======================================红铺===================================== -->
     <string name="red_shop_food_type">分类</string>
     <string name="red_shop_hot">热门品牌</string>
-
+    <string name="seach_all">全部</string>
     <string name="seach_button_sure">确定</string>
     <string name="seach_button_exit">重置</string>
     <string name="seach_money">投资金额</string>
@@ -122,6 +122,7 @@
     <string name="please_input_phone_num">请输入手机号码</string>
     <string name="please_read_accept">请同意用户协议</string>
     <string name="please_input_password">请输入6–12位数字或英文密码</string>
+    <string name="please_input_password1">请输入密码</string>
     <string name="use_sms_verify_login">使用短信验证登录</string>
     <string name="use_name_login">使用账号密码登录</string>
     <string name="forget_password">忘记密码?</string>
