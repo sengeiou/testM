@@ -187,22 +187,19 @@ class MyMessageChatActivity : BaseActivity() {
 
         //音频
         ivMyMessageChatAudio.setOnClickListener {
-            mAdapter.notifyDataSetChanged()
-//            rvMyMessageChat.invalidate()
-            scrollToBottomListItem()
             //判断是否有权限
-//            PermissionUtils.audio(this, {
-//                PermissionUtils.readAndWrite(this, {
-//                    //表情和工具布局隐藏 关闭软键盘
-//                    hiddenViewAndInputKeyboard()
-//                    //按住说话不显示就显示 反之隐藏
-//                    tvMyMessageChatClickSay.visibility = if (tvMyMessageChatClickSay.visibility == View.GONE) {
-//                        View.VISIBLE
-//                    } else {
-//                        View.GONE
-//                    }
-//                })
-//            })
+            PermissionUtils.audio(this, {
+                PermissionUtils.readAndWrite(this, {
+                    //表情和工具布局隐藏 关闭软键盘
+                    hiddenViewAndInputKeyboard()
+                    //按住说话不显示就显示 反之隐藏
+                    tvMyMessageChatClickSay.visibility = if (tvMyMessageChatClickSay.visibility == View.GONE) {
+                        View.VISIBLE
+                    } else {
+                        View.GONE
+                    }
+                })
+            })
         }
 
         //按住说话
@@ -791,7 +788,7 @@ class MyMessageChatActivity : BaseActivity() {
         if (peerEntity != null) {
             historyTimes++
             val msgList = mImService?.messageManager?.loadHistoryMsg(historyTimes, currentSessionKey, peerEntity)
-            pushList(msgList,isFirstLoad)
+            pushList(msgList, isFirstLoad)
         }
     }
 

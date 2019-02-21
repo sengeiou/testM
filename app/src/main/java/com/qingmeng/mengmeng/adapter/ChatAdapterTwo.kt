@@ -77,8 +77,11 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF_IMAGE -> {    //文本(表情)
                     (it as OtherTextViewHolder).bindViewHolder(position)
                 }
-                RenderType.MESSAGE_TYPE_OTHER_IMAGE, RenderType.MESSAGE_TYPE_OTHER_GIF -> { //图片(gif)
+                RenderType.MESSAGE_TYPE_OTHER_IMAGE -> { //图片
                     (it as OtherImageViewHolder).bindViewHolder(position)
+                }
+                RenderType.MESSAGE_TYPE_OTHER_GIF -> { //gif
+                    (it as OtherGifViewHolder).bindViewHolder(position)
                 }
                 RenderType.MESSAGE_TYPE_OTHER_AUDIO -> {    //语音
                     (it as OtherAudioViewHolder).bindViewHolder(position)
@@ -92,8 +95,11 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF_IMAGE -> {  //文本(表情)
                     (it as MineTextViewHolder).bindViewHolder(position)
                 }
-                RenderType.MESSAGE_TYPE_MINE_IMAGE, RenderType.MESSAGE_TYPE_MINE_GIF -> {   //图片(gif)
+                RenderType.MESSAGE_TYPE_MINE_IMAGE -> {   //图片
                     (it as MineImageViewHolder).bindViewHolder(position)
+                }
+                RenderType.MESSAGE_TYPE_MINE_GIF -> {   //gif
+                    (it as MineGifViewHolder).bindViewHolder(position)
                 }
                 RenderType.MESSAGE_TYPE_MINE_AUDIO -> { //语音
                     (it as MineAudioViewHolder).bindViewHolder(position)
@@ -127,9 +133,13 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_text, viewGroup, false)
                 OtherTextViewHolder(view, viewGroup)
             }
-            RenderType.MESSAGE_TYPE_OTHER_IMAGE, RenderType.MESSAGE_TYPE_OTHER_GIF -> { //图片(gif)
+            RenderType.MESSAGE_TYPE_OTHER_IMAGE -> { //图片
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_image, viewGroup, false)
                 OtherImageViewHolder(view, viewGroup)
+            }
+            RenderType.MESSAGE_TYPE_OTHER_GIF -> { //gif
+                view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_gif, viewGroup, false)
+                OtherGifViewHolder(view, viewGroup)
             }
             RenderType.MESSAGE_TYPE_OTHER_AUDIO -> {    //语音
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_audio, viewGroup, false)
@@ -146,9 +156,13 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_text, viewGroup, false)
                 MineTextViewHolder(view, viewGroup)
             }
-            RenderType.MESSAGE_TYPE_MINE_IMAGE, RenderType.MESSAGE_TYPE_MINE_GIF -> {   //图片(gif)
+            RenderType.MESSAGE_TYPE_MINE_IMAGE -> {   //图片
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_image, viewGroup, false)
                 MineImageViewHolder(view, viewGroup)
+            }
+            RenderType.MESSAGE_TYPE_MINE_GIF -> {   //gif
+                view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_gif, viewGroup, false)
+                MineGifViewHolder(view, viewGroup)
             }
             RenderType.MESSAGE_TYPE_MINE_AUDIO -> { //语音
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_audio, viewGroup, false)
@@ -234,7 +248,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     }
 
     /**
-     * 图片(gif)
+     * 图片
      */
     inner class OtherImageViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
         private val parent = viewGroup
@@ -245,6 +259,35 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             val userEntity = getUserEntity(imageMessage)
             GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherImageHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             ivMyMessageChatRvOtherImageImage.let {
+                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15)
+                it.setOnClickListener {
+                    val i = Intent(context, PreviewMessageImagesActivity::class.java)
+                    val bundle = Bundle()
+                    bundle.putSerializable(IntentConstant.CUR_MESSAGE, imageMessage)
+                    i.putExtras(bundle)
+                    context.startActivity(i)
+                    (context as Activity).overridePendingTransition(R.anim.tt_image_enter, R.anim.tt_stay)
+                }
+                it.setOnLongClickListener {
+                    showPopWindow(position, parent, it)
+                    true
+                }
+            }
+        }
+    }
+
+    /**
+     * gif
+     */
+    inner class OtherGifViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
+        private val parent = viewGroup
+        private val ivMyMessageChatRvOtherGifHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherGifHead)
+        private val ivMyMessageChatRvOtherGifImage = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherGifImage)
+        fun bindViewHolder(position: Int) {
+            val imageMessage = msgObjectList[position] as ImageMessage
+            val userEntity = getUserEntity(imageMessage)
+            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherGifHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            ivMyMessageChatRvOtherGifImage.let {
                 GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15)
                 it.setOnClickListener {
                     val i = Intent(context, PreviewMessageImagesActivity::class.java)
@@ -376,7 +419,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     }
 
     /**
-     * 图片(gif)
+     * 图片
      */
     inner class MineImageViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
         private val parent = viewGroup
@@ -389,13 +432,11 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             val userEntity = getUserEntity(imageMessage)
             GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineImageHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             ivMyMessageChatRvMineImageImage.let {
-                //有本地的加载本地的
-                val url = if (FileUtil.isFileExist(imageMessage.path)) {
-                    imageMessage.path
-                } else {
-                    imageMessage.url
+                //有本地的先加载本地的
+                if (FileUtil.isFileExist(imageMessage.path)) {
+                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, roundRadius = 15)
                 }
-                GlideLoader.load(AppManager.instance.currentActivity(), url, it, roundRadius = 15)
+                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15)
                 it.setOnClickListener {
                     val i = Intent(context, PreviewMessageImagesActivity::class.java)
                     val bundle = Bundle()
@@ -429,6 +470,63 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 MessageConstant.IMAGE_LOADED_FAILURE -> {   //发送失败
                     pbMyMessageChatRvMineImageProgress.visibility = View.GONE
                     ivMyMessageChatRvMineImageFail.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    /**
+     * gif
+     */
+    inner class MineGifViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
+        private val parent = viewGroup
+        private val ivMyMessageChatRvMineGifHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineGifHead)
+        private val ivMyMessageChatRvMineGifImage = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineGifImage)
+        private val pbMyMessageChatRvMineGifProgress = itemView.findViewById<ProgressBar>(R.id.pbMyMessageChatRvMineGifProgress)
+        private val ivMyMessageChatRvMineGifFail = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineGifFail)
+        fun bindViewHolder(position: Int) {
+            val imageMessage = msgObjectList[position] as ImageMessage
+            val userEntity = getUserEntity(imageMessage)
+            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineGifHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            ivMyMessageChatRvMineGifImage.let {
+                //有本地的先加载本地的
+                if (FileUtil.isFileExist(imageMessage.path)) {
+                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, roundRadius = 15)
+                }
+                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15)
+                it.setOnClickListener {
+                    val i = Intent(context, PreviewMessageImagesActivity::class.java)
+                    val bundle = Bundle()
+                    bundle.putSerializable(IntentConstant.CUR_MESSAGE, imageMessage)
+                    i.putExtras(bundle)
+                    context.startActivity(i)
+                    (context as Activity).overridePendingTransition(R.anim.tt_image_enter, R.anim.tt_stay)
+                }
+                it.setOnLongClickListener {
+                    showPopWindow(position, parent, it)
+                    true
+                }
+            }
+            //失败点击
+            ivMyMessageChatRvMineGifFail.setOnClickListener {
+                showPopWindow(position, parent, it)
+            }
+            //图片发送状态
+            when (imageMessage.loadStatus) {
+                MessageConstant.IMAGE_UNLOAD -> {
+
+                }
+                MessageConstant.IMAGE_LOADING -> {  //发送中
+                    pbMyMessageChatRvMineGifProgress.visibility = View.VISIBLE
+                    ivMyMessageChatRvMineGifFail.visibility = View.GONE
+                }
+                MessageConstant.IMAGE_LOADED_SUCCESS -> {   //发送成功
+                    pbMyMessageChatRvMineGifProgress.visibility = View.GONE
+                    ivMyMessageChatRvMineGifFail.visibility = View.GONE
+                }
+                MessageConstant.IMAGE_LOADED_FAILURE -> {   //发送失败
+                    pbMyMessageChatRvMineGifProgress.visibility = View.GONE
+                    ivMyMessageChatRvMineGifFail.visibility = View.VISIBLE
                 }
             }
         }
