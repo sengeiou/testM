@@ -102,7 +102,7 @@ class ShopDetailActivity : BaseActivity() {
         brandBean = bean
         name = bean.name
         if (bean.status == 1) {
-            val spanString = SpannableString("证$name")
+            val spanString = SpannableString("证 $name")
             val drawable = resources.getDrawable(R.drawable.detail_icon_certification)
             val imageSpan = ImageSpan(drawable, ImageSpan.ALIGN_BASELINE)
             spanString.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
@@ -124,7 +124,7 @@ class ShopDetailActivity : BaseActivity() {
             operateSupport?.let { mJoinSupport.addAll(it) }
             operationalSupervision?.let { mJoinSupport.addAll(it) }
             if (!TextUtils.isEmpty(decorationName)) mJoinSupport.add(decorationName)
-            if (!TextUtils.isEmpty(trainingMethodName)) mJoinSupport.add(decorationName)
+            if (!TextUtils.isEmpty(trainingMethodName)) mJoinSupport.add(trainingMethodName)
         }
         brandInformation = bean.brandInformation
         brandInitialFee = bean.brandInitialFee
