@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="tab_height">49dp</dimen>
+    <dimen name="padding_dp_0_5">0.5dp</dimen>
     <dimen name="padding_dp_1">1dp</dimen>
     <dimen name="padding_dp_2">2dp</dimen>
     <dimen name="padding_dp_3">3dp</dimen>
@@ -104,6 +105,7 @@
     <dimen name="text_size_6">6sp</dimen>
     <dimen name="text_size_9">9sp</dimen>
     <dimen name="text_size_13">13sp</dimen>
+    <dimen name="text_size_13_3">13.3sp</dimen>
     <dimen name="text_size_14">14sp</dimen>
     <dimen name="text_size_15">15sp</dimen>
     <dimen name="text_size_16">16sp</dimen>

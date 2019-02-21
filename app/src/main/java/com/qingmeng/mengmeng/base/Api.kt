@@ -28,6 +28,7 @@ interface Api {
     fun sendSms(@Field("phone") phone: String, @Field("type") type: Int, @Field("code") code: String = "",
                 @Field("geetest_challenge") geetest_challenge: String = "", @Field("geetest_validate") geetest_validate: String = "",
                 @Field("geetest_seccode") geetest_seccode: String = ""): Observable<BaseBean<Any>>
+
     //第三方绑定
     @POST("app/user/third_party_phone_binding")
     @FormUrlEncoded
@@ -177,8 +178,7 @@ interface Api {
     //爱加盟首页搜索
     @POST("/api/join/get_search_brands")
     @FormUrlEncoded
-    fun join_search_brands(@Field("keyWord") keyWord: String,//搜索关键字
-                           @Field("fatherId") fatherId: Int?,//餐饮类型父ID
+    fun join_search_brands(@Field("fatherId") fatherId: Int?,//餐饮类型父ID
                            @Field("typeId") typeId: Int?,//餐饮类型ID
                            @Field("cityIds") cityIds: String?,//爱加盟区域ID
                            @Field("capitalIds") capitalIds: String?,//投资金额ID
@@ -190,7 +190,6 @@ interface Api {
     @POST("/api/join/get_search_brands")
     @FormUrlEncoded
     fun join_search_brands(@Field("keyWord") keyWord: String?,//搜索关键字
-                           @Field("typeId") typeId: Int?,//餐饮类型ID
                            @Field("cityIds") cityIds: String?,//爱加盟区域ID
                            @Field("capitalIds") capitalIds: String?,//投资金额ID
                            @Field("modeIds") modeIds: String?,//加盟模式ID

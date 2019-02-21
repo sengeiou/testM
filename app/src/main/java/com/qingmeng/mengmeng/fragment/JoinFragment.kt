@@ -109,7 +109,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 if (fatherSkipId == 0) {
                     EventBus.getDefault().post(MainTabBean(1))
                 } else {
-                    startActivity<RedShopSeachResult>(IConstants.firstLevel to fatherSkipId, IConstants.secondLevel to skipId)
+                    startActivity<RedShopSeachResult>(IConstants.firstLevel to fatherSkipId, IConstants.secondLevel to skipId, IConstants.THREELEVEL to title)
                 }
             }
         }

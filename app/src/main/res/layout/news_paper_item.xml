@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/padding_dp_102"
-    android:orientation="horizontal">
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="@dimen/padding_dp_10"
-        android:layout_marginStart="@dimen/padding_dp_10"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/padding_dp_12"
+        android:layout_marginStart="@dimen/padding_dp_10"
+        android:layout_marginBottom="@dimen/padding_dp_10"
         android:layout_marginTop="@dimen/padding_dp_10"
         android:orientation="horizontal">
 
@@ -23,14 +24,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="@dimen/padding_dp_82"
-            android:layout_marginBottom="@dimen/padding_dp_10"
             android:orientation="vertical">
 
             <TextView
                 android:id="@+id/news_pager_tittle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_dp_7"
+                android:layout_marginTop="@dimen/padding_dp_4"
                 android:singleLine="true"
                 android:text="aaaaa"
                 android:textColor="@color/color_333333"
@@ -39,9 +39,9 @@
             <TextView
                 android:id="@+id/news_pager_content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/padding_dp_10"
+                android:layout_height="0dp"
                 android:maxLines="2"
+                android:layout_weight="1"
                 android:text="ahdksahkaks"
                 android:textColor="@color/color_666666"
                 android:textSize="@dimen/text_size_15" />
@@ -55,13 +55,11 @@
                 android:textSize="@dimen/text_size_12" />
         </LinearLayout>
 
-
     </LinearLayout>
 
-    <TextView
+    <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_dp_1"
-        android:layout_alignParentBottom="true"
-        android:background="@color/color_666666" />
+        android:layout_height="@dimen/padding_dp_0_5"
+        android:background="@color/color_999999" />
 </LinearLayout>
 
