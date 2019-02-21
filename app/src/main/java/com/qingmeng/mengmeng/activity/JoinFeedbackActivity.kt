@@ -189,6 +189,8 @@ class JoinFeedbackActivity : BaseActivity() {
     }
 
     private fun showPop() {
+        val mInputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        mInputMethodManager.hideSoftInputFromWindow(recy_join_feedback.windowToken, 0)
         val bottomView = View.inflate(this@JoinFeedbackActivity, R.layout.layout_feedback_bottom_dialog, null)
         val mAlbum = bottomView.findViewById<TextView>(R.id.tv_album)
         val mCamera = bottomView.findViewById<TextView>(R.id.tv_camera)
