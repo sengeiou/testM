@@ -2,6 +2,7 @@ package com.qingmeng.mengmeng.activity
 
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MotionEvent
+import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.lemo.emojcenter.FaceInitData
@@ -9,11 +10,13 @@ import com.mogujie.tt.config.DBConstant
 import com.mogujie.tt.config.IntentConstant
 import com.mogujie.tt.db.entity.GroupEntity
 import com.mogujie.tt.imservice.entity.RecentInfo
-import com.mogujie.tt.imservice.event.*
+import com.mogujie.tt.imservice.event.GroupEvent
+import com.mogujie.tt.imservice.event.SessionEvent
+import com.mogujie.tt.imservice.event.UnreadEvent
+import com.mogujie.tt.imservice.event.UserInfoEvent
 import com.mogujie.tt.imservice.service.IMService
 import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.mogujie.tt.utils.DateUtil
-import com.mogujie.tt.utils.IMUIHelper
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
@@ -54,7 +57,7 @@ class MyMessageActivity : BaseActivity() {
         }
 
         override fun onIMServiceConnected() {
-            IMServiceConnector.logger.d("chatfragment#recent#onIMServiceConnected")
+            IMServiceConnector.logger.d("MyMessageActivity#recent#onIMServiceConnected")
             mImService = this.imService
             if (mImService == null) {
                 //why ,some reason
@@ -124,7 +127,7 @@ class MyMessageActivity : BaseActivity() {
                 setText(R.id.tvMyMessageRvTime, DateUtil.getSessionTime(t.updateTime))
                 //消息点击
                 getView<LinearLayout>(R.id.llMyMessageRv).setOnClickListener {
-//                                        startActivity(Intent(this@MyMessageActivity, MessageActivity::class.java).apply {
+                    //                                        startActivity(Intent(this@MyMessageActivity, MessageActivity::class.java).apply {
 //                        putExtra(IntentConstant.KEY_SESSION_KEY, t.sessionKey)
 //                    })
                     FaceInitData.init(applicationContext)
@@ -133,7 +136,7 @@ class MyMessageActivity : BaseActivity() {
                 }
                 //删除
                 getView<TextView>(R.id.tvMyMessageRvDelete).setOnClickListener {
-//                                        startActivity<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to t.sessionKey)
+                    //                                        startActivity<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to t.sessionKey)
                     //关闭view
                     getView<SwipeMenuLayout>(R.id.smlMyMessageRv).smoothClose()
                     mImService?.sessionManager?.reqRemoveSession(mRecentSessionList[position])
@@ -221,83 +224,6 @@ class MyMessageActivity : BaseActivity() {
         }
     }
 
-    fun onEventMainThread(loginEvent: LoginEvent) {
-        when (loginEvent) {
-            LoginEvent.LOCAL_LOGIN_SUCCESS -> {
-            }
-            LoginEvent.LOGINING -> {
-//                if (reconnectingProgressBar != null) {
-//                    reconnectingProgressBar.setVisibility(View.VISIBLE)
-//                }
-                ToastUtil.showShort("ProgressBar显示")
-            }
-            LoginEvent.LOCAL_LOGIN_MSG_SERVICE -> {
-            }
-            LoginEvent.LOGIN_OK -> {
-//                isManualMConnect = false
-//                noNetworkView.setVisibility(View.GONE)
-                ToastUtil.showShort("view隐藏")
-            }
-            LoginEvent.LOGIN_AUTH_FAILED -> {
-            }
-            LoginEvent.LOGIN_INNER_FAILED -> {
-                onLoginFailure(loginEvent)
-            }
-            LoginEvent.PC_OFFLINE -> {
-            }
-            LoginEvent.KICK_PC_SUCCESS -> onPCLoginStatusNotify(false)
-            LoginEvent.KICK_PC_FAILED -> ToastUtil.showShort(getString(R.string.kick_pc_failed))
-            LoginEvent.PC_ONLINE -> onPCLoginStatusNotify(true)
-            else -> {
-//                reconnectingProgressBar.setVisibility(View.GONE)
-                ToastUtil.showShort("ProgressBar隐藏")
-            }
-        }
-    }
-
-
-    fun onEventMainThread(socketEvent: SocketEvent) {
-        when (socketEvent) {
-            SocketEvent.MSG_SERVER_DISCONNECTED -> handleServerDisconnected()
-
-            SocketEvent.CONNECT_MSG_SERVER_FAILED -> {
-            }
-            SocketEvent.REQ_MSG_SERVER_ADDRS_FAILED -> {
-                handleServerDisconnected()
-                onSocketFailure(socketEvent)
-            }
-        }
-    }
-
-    fun onEventMainThread(reconnectEvent: ReconnectEvent) {
-        when (reconnectEvent) {
-            ReconnectEvent.DISABLE -> handleServerDisconnected()
-        }
-    }
-
-    /**
-     * 登录失败
-     */
-    private fun onLoginFailure(event: LoginEvent) {
-//        if (!isManualMConnect) {
-//            return
-//        }
-//        isManualMConnect = false
-        val errorTip = getString(IMUIHelper.getLoginErrorTip(event))
-//        reconnectingProgressBar.setVisibility(View.GONE)
-        ToastUtil.showShort(errorTip)
-    }
-
-    private fun onSocketFailure(event: SocketEvent) {
-//        if (!isManualMConnect) {
-//            return
-//        }
-//        isManualMConnect = false
-        val errorTip = getString(IMUIHelper.getSocketErrorTip(event))
-//        reconnectingProgressBar.setVisibility(View.GONE)
-        ToastUtil.showShort(errorTip)
-    }
-
     /**
      * 更新页面以及 下面的未读总计数
      */
@@ -331,61 +257,6 @@ class MyMessageActivity : BaseActivity() {
     }
 
     /**
-     * 多端，PC端在线状态通知
-     */
-    fun onPCLoginStatusNotify(isOnline: Boolean) {
-        if (isOnline) {
-//            reconnectingProgressBar.setVisibility(View.GONE)
-//            noNetworkView.setVisibility(View.VISIBLE)
-//            notifyImage.setImageResource(com.leimo.wanxin.R.drawable.pc_notify)
-//            displayView.setText(com.leimo.wanxin.R.string.pc_status_notify)
-            /**添加踢出事件 */
-//            noNetworkView.setOnClickListener(View.OnClickListener {
-//                reconnectingProgressBar.setVisibility(View.VISIBLE)
-//                imService.getLoginManager().reqKickPCClient()
-//            })
-            ToastUtil.showShort("onPCLoginStatusNotify()\n多端，PC端在线状态通知")
-        } else {
-//            noNetworkView.setVisibility(View.GONE)
-        }
-    }
-
-    /**
-     * 下线提示
-     */
-    private fun handleServerDisconnected() {
-//        if (reconnectingProgressBar != null) {
-//            reconnectingProgressBar.setVisibility(View.GONE)
-//        }
-
-//        if (noNetworkView != null) {
-//            notifyImage.setImageResource(com.leimo.wanxin.R.drawable.warning)
-//            noNetworkView.setVisibility(View.VISIBLE)
-//            if (imService != null) {
-//                if (imService.getLoginManager().isKickout()) {
-//                    displayView.setText(com.leimo.wanxin.R.string.disconnect_kickout)
-//                } else {
-//                    displayView.setText(com.leimo.wanxin.R.string.no_network)
-//                }
-//            }
-//            /**重连【断线、被其他移动端挤掉】 */
-//            noNetworkView.setOnClickListener(View.OnClickListener {
-//                TTBaseFragment.logger.d("chatFragment#noNetworkView clicked")
-//                val manager = imService.getReconnectManager()
-//                if (NetworkUtil.isNetWorkAvalible(getActivity())) {
-//                    isManualMConnect = true
-//                    IMLoginManager.instance().relogin()
-//                } else {
-//                    Toast.makeText(getActivity(), com.leimo.wanxin.R.string.no_network_toast, Toast.LENGTH_SHORT).show()
-//                    return@OnClickListener
-//                }
-//                reconnectingProgressBar.setVisibility(View.VISIBLE)
-//            })
-//        }
-        ToastUtil.showShort("handleServerDisconnected()\n下线提示")
-    }
-
-    /**
      * 这个处理有点过于粗暴 消息列表展示
      */
     private fun onRecentContactDataReady() {
@@ -415,10 +286,9 @@ class MyMessageActivity : BaseActivity() {
      */
     private fun setNoChatView(recentSessionList: List<RecentInfo>) {
         if (recentSessionList.isEmpty()) {
-//            noChatView.setVisibility(View.VISIBLE)
-            ToastUtil.showShort("暂无消息")
+            llMyMessageTips.visibility = View.VISIBLE
         } else {
-//            noChatView.setVisibility(View.GONE)
+            llMyMessageTips.visibility = View.GONE
         }
     }
 

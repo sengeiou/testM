@@ -43,6 +43,7 @@ object DBConstant {
     const val SHOW_VIDEO_TYPE = 5//视频
     const val SHOW_FILE_TYPE = 6//文件
     const val SHOW_REVOKE_TYPE = 8 //撤回
+    const val SHOW_BRAND_TYPE = 11 //品牌详情
 
     const val SHOW_MIX_TEXT = 10
 

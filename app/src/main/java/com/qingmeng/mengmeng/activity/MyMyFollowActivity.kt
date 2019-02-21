@@ -131,7 +131,7 @@ class MyMyFollowActivity : BaseActivity() {
         mAdapter = CommonAdapter(this, R.layout.activity_my_myfollow_item, mList, holderConvert = { holder, t, position, payloads ->
             holder.apply {
                 //glide加载图片
-                GlideLoader.load(this@MyMyFollowActivity, t.logo, getView(R.id.ivMyMyFollowRvLogo), cacheType = CacheType.All)
+                GlideLoader.load(this@MyMyFollowActivity, t.logo, getView(R.id.ivMyMyFollowRvLogo), cacheType = CacheType.All, placeholder = R.drawable.default_img_icon)
                 if (mIsMyFollow) {
                     setText(R.id.tvMyMyFollowRvBrandName, t.name)
                 } else {
@@ -139,7 +139,11 @@ class MyMyFollowActivity : BaseActivity() {
                     setText(R.id.tvMyMyFollowRvBrandName, t.brandName)
                 }
                 setText(R.id.tvMyMyFollowRvCateringType, t.foodName)
-                setText(R.id.tvMyMyFollowRvInvestmentAmount, t.capitalName)
+                if (t.capitalName.isBlank()) {
+                    setText(R.id.tvMyMyFollowRvInvestmentAmount, getString(R.string.face))
+                } else {
+                    setText(R.id.tvMyMyFollowRvInvestmentAmount, t.capitalName)
+                }
                 //item点击
                 getView<LinearLayout>(R.id.llMyMyFollowRv).setOnClickListener {
                     //辨别是我的关注还是我的足迹

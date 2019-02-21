@@ -1,6 +1,5 @@
 package com.qingmeng.mengmeng
 
-import AppManager
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.view.LayoutInflater
@@ -28,7 +27,7 @@ abstract class BaseFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        myDialog = DialogCustom(AppManager.instance.currentActivity())
+        myDialog = DialogCustom(context)
         initObject()
         initListener()
         initData()

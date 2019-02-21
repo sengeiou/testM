@@ -51,7 +51,7 @@ class LoginPwdActivity : BaseActivity() {
         override fun onServiceDisconnected() {}
 
         override fun onIMServiceConnected() {
-            IMServiceConnector.logger.d("login#onIMServiceConnected")
+            IMServiceConnector.logger.d("LoginPwdActivity#onIMServiceConnected")
             mImService = this.imService
         }
     }

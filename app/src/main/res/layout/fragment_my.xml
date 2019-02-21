@@ -282,16 +282,16 @@
                 android:textSize="@dimen/text_size_18"
                 />
 
-            <TextView
-                android:id="@+id/tvMyTest"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/padding_dp_50"
-                android:gravity="center"
-                android:textColor="@color/green"
-                android:textSize="@dimen/text_size_17"
-                />
+            <!--<TextView-->
+                <!--android:id="@+id/tvMyTest"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_gravity="center_horizontal"-->
+                <!--android:layout_marginTop="@dimen/padding_dp_50"-->
+                <!--android:gravity="center"-->
+                <!--android:textColor="@color/green"-->
+                <!--android:textSize="@dimen/text_size_17"-->
+                <!--/>-->
         </LinearLayout>
     </com.qingmeng.mengmeng.view.SwipeLayout>
 </LinearLayout>

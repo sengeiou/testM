@@ -123,7 +123,11 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                 setText(R.id.tvMyMyLeavingMessageRvLeavingMessage, t.message)
                 GlideLoader.load(this@MyMyLeavingMessageActivity, t.logo, getView(R.id.ivMyMyLeavingMessageRvLogo), centerCrop = false)
                 setText(R.id.tvMyMyLeavingMessageRvBrandName, t.brandName)
-                setText(R.id.tvMyMyLeavingMessageRvInvestmentAmount, t.capitalName)
+                if (t.capitalName.isBlank()) {
+                    setText(R.id.tvMyMyLeavingMessageRvInvestmentAmount, getString(R.string.face))
+                } else {
+                    setText(R.id.tvMyMyLeavingMessageRvInvestmentAmount, t.capitalName)
+                }
                 setText(R.id.tvMyMyLeavingMessageRvStoreNum, t.storesNum)
                 //删除点击
                 getView<LinearLayout>(R.id.llMyMyLeavingMessageRvDelete).setOnClickListener {

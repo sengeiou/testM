@@ -350,6 +350,7 @@ class EmojView : LinearLayout {
             }
         }
     }
+
     //发送事件和回调
     private fun postInfo(emotionFaceSendInfo: EmotionFaceSendInfo) {
         EventBus.getDefault().post(emotionFaceSendInfo)

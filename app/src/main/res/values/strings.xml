@@ -49,6 +49,7 @@
     <string name="camera">拍照</string>
     <string name="photo">照片</string>
     <string name="video">视频</string>
+    <string name="face">面议</string>
     <string name="seach">搜索感兴趣的品牌</string>
     <!-- =======================================爱加盟===================================== -->
     <string name="join_feedback_description">请输入反馈描述，上传照片有助于我们判断，提升投诉通过率哦！</string>
@@ -147,7 +148,7 @@
     <string name="read_accept">我已经认真阅读并接受</string>
     <string name="user_agreement">《盟盟用户协议》</string>
     <string name="user_agreement1">用户协议</string>
-     <string name="user_agreement_yes">我已阅读并同意盟盟用户协议</string>
+    <string name="user_agreement_yes">我已阅读并同意盟盟用户协议</string>
     <string name="user_agreement_no">您拒绝接受协议</string>
     <string name="refresh">刷新</string>
     <string name="register">注册</string>
@@ -172,6 +173,7 @@
     <string name="my_myFollow_investmentAmount">投资金额：</string>
     <string name="my_myLeavingMessage">我的留言</string>
     <string name="my_myLeavingMessage_null_tips">暂 无 留 言 哦</string>
+    <string name="my_message_null_tips">暂 无 消 息 哦</string>
     <string name="my_myLeavingMessage_reply">已回复</string>
     <string name="my_myLeavingMessage_noReply">待回复</string>
     <string name="my_myLeavingMessage_StoreNum">门店数：</string>
@@ -242,6 +244,9 @@
     <string name="cancel_to_send">取消 发送</string>
     <string name="play_audio_call">当前是听筒模式</string>
     <string name="play_audio_music">当前是扬声器模式</string>
+    <string name="otherLogin_tips">您的账号已在另一台设备上登录，是否重新登录？</string>
+    <string name="exit">退出</string>
+    <string name="loginAgain">重新登录</string>
 
     <!-- 上拉下拉 -->
     <string name="txt_before_refresh">下拉刷新</string>
