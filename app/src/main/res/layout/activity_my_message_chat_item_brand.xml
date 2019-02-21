@@ -23,7 +23,7 @@
             android:id="@+id/tvMyMessageChatRvLogo"
             android:layout_width="@dimen/padding_dp_60"
             android:layout_height="@dimen/padding_dp_60"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/default_img_icon"
             />
 
         <RelativeLayout

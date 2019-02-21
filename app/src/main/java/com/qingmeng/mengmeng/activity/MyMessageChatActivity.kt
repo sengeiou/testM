@@ -146,7 +146,7 @@ class MyMessageChatActivity : BaseActivity() {
         }
         // 头像、历史消息加载、取消通知
         setTitleByUser()
-        reqHistoryMsg()
+        reqHistoryMsg(true)
         mImService?.unReadMsgManager?.readUnreadSession(currentSessionKey)
         mImService?.notificationManager?.cancelSessionNotifications(currentSessionKey)
     }
@@ -187,9 +187,6 @@ class MyMessageChatActivity : BaseActivity() {
 
         //音频
         ivMyMessageChatAudio.setOnClickListener {
-            //            mAdapter.notifyDataSetChanged()
-//            rvMyMessageChat.invalidate()
-//            scrollToBottomListItem()
             //判断是否有权限
             PermissionUtils.audio(this, {
                 PermissionUtils.readAndWrite(this, {
@@ -394,7 +391,7 @@ class MyMessageChatActivity : BaseActivity() {
             //输入框置空
             etMyMessageChatContent.setText("")
             //发送消息
-            pushList(textMessage)
+            pushList(textMessage, true)
             etMyMessageChatContent.isFocusable = true
         }
 
@@ -607,20 +604,28 @@ class MyMessageChatActivity : BaseActivity() {
     /**
      * 添加单个消息
      */
-    private fun pushList(msg: MessageEntity?) {
+    private fun pushList(msg: MessageEntity?, isMinePhone: Boolean = false) {
         //撤回的消息
-        if (msg?.msgType == DBConstant.SHOW_REVOKE_TYPE) {
+        if (msg?.infoType == DBConstant.SHOW_REVOKE_TYPE) {
             mAdapter.updateRevokeMsg(msg)
         } else {
-            mAdapter.addItem(msg!!, mLayoutManager)
+            if (isMinePhone) {
+                mAdapter.addItem(msg!!, mLayoutManager)
+            } else {
+                mAdapter.addItem(msg!!)
+            }
         }
     }
 
     /**
      * 添加list消息
      */
-    private fun pushList(entityList: List<MessageEntity>?) {
-        mAdapter.loadHistoryList(entityList, mLayoutManager)
+    private fun pushList(entityList: List<MessageEntity>?, isFirstLoad: Boolean) {
+        if (isFirstLoad) {
+            mAdapter.loadHistoryList(entityList, mLayoutManager)
+        } else {
+            mAdapter.loadHistoryList(entityList)
+        }
     }
 
     /**
@@ -662,7 +667,7 @@ class MyMessageChatActivity : BaseActivity() {
         for (item in itemList) {
             ImageMessage.buildForSend(item, loginUser, peerEntity)?.let {
                 listMsg.add(it)
-                pushList(it)
+                pushList(it, true)
             }
         }
         mImService?.messageManager?.sendImages(listMsg)
@@ -729,12 +734,11 @@ class MyMessageChatActivity : BaseActivity() {
             MessageEvent.Event.HISTORY_MSG_OBTAIN -> {
                 if (historyTimes == 1) {
                     mAdapter.msgObjectList.clear()
-                    reqHistoryMsg()
+                    reqHistoryMsg(false)
                 }
             }
         }
     }
-
 
     /**
      * EventBus
@@ -744,7 +748,7 @@ class MyMessageChatActivity : BaseActivity() {
             UnreadEvent.Event.UNREAD_MSG_RECEIVED, UnreadEvent.Event.UNREAD_MSG_LIST_OK, UnreadEvent.Event.SESSION_READED_UNREAD_MSG -> if (IMUnreadMsgManager.instance().totalUnreadCount > 0) {
                 historyTimes = 0
                 mAdapter.msgObjectList.clear()
-                reqHistoryMsg()
+                reqHistoryMsg(false)
             }
         }
     }
@@ -780,11 +784,11 @@ class MyMessageChatActivity : BaseActivity() {
      * 1.初始化请求历史消息
      * 2.本地消息不全，也会触发
      */
-    private fun reqHistoryMsg() {
+    private fun reqHistoryMsg(isFirstLoad: Boolean) {
         if (peerEntity != null) {
             historyTimes++
             val msgList = mImService?.messageManager?.loadHistoryMsg(historyTimes, currentSessionKey, peerEntity)
-            pushList(msgList)
+            pushList(msgList, isFirstLoad)
         }
     }
 
@@ -798,7 +802,7 @@ class MyMessageChatActivity : BaseActivity() {
             sendList.add(imageMessage)
             mImService?.messageManager?.sendImages(sendList)
             // 格式有些问题
-            pushList(imageMessage)
+            pushList(imageMessage, true)
             etMyMessageChatContent.clearFocus()//消除焦点
         }
     }
@@ -831,7 +835,7 @@ class MyMessageChatActivity : BaseActivity() {
             sendList.add(it)
             mImService?.messageManager?.sendVideos(sendList)
             //格式有些问题
-            pushList(it)
+            pushList(it, true)
             //消除焦点
             etMyMessageChatContent?.clearFocus()
         }
@@ -843,7 +847,7 @@ class MyMessageChatActivity : BaseActivity() {
     private fun onRecordVoiceEnd(audioSavePath: String, audioLen: Float) {
         val audioMessage = AudioMessage.buildForSend(audioLen, audioSavePath, loginUser, peerEntity)
         mImService?.messageManager?.sendVoice(audioMessage)
-        pushList(audioMessage)
+        pushList(audioMessage, true)
     }
 
     /**

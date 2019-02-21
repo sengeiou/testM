@@ -255,5 +255,6 @@
         android:gravity="center"
         android:text="@string/my_settings_exitUser"
         android:textColor="@color/white"
+        android:textSize="@dimen/sp_16"
         />
 </LinearLayout>

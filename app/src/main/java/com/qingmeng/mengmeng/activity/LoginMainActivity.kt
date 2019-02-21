@@ -82,6 +82,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
 
     //初始化Object
     override fun initObject() {
+        AppManager.instance.addActivity(this)
         //设置状态栏隐藏
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)

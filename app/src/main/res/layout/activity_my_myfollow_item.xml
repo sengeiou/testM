@@ -21,12 +21,12 @@
             android:orientation="horizontal"
             >
 
-            <ImageView
+            <com.qingmeng.mengmeng.view.RoundImageView
                 android:id="@+id/ivMyMyFollowRvLogo"
                 android:layout_width="@dimen/padding_dp_40"
                 android:layout_height="@dimen/padding_dp_40"
                 android:layout_marginStart="@dimen/padding_dp_15"
-                android:src="@mipmap/ic_launcher"
+                android:src="@drawable/default_img_icon"
                 />
 
             <LinearLayout

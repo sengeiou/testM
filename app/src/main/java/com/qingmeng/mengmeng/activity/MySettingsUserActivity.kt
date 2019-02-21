@@ -228,6 +228,7 @@ class MySettingsUserActivity : BaseActivity() {
                             //把本地图片地址返回给上一页
                             setResult(Activity.RESULT_OK, Intent().apply {
                                 putExtra("mLocalPath", mLocalPath)
+                                putExtra("mPhoneChange", true)
                             })
                             onBackPressed()
                         } else {
@@ -460,6 +461,11 @@ class MySettingsUserActivity : BaseActivity() {
             cutHeight = 300
             cutWidth = 300
         })
+    }
+
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_OK)
+        super.onBackPressed()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

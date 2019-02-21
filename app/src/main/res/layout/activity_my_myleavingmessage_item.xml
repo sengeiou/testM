@@ -87,7 +87,7 @@
             android:id="@+id/ivMyMyLeavingMessageRvLogo"
             android:layout_width="@dimen/padding_dp_75"
             android:layout_height="@dimen/padding_dp_75"
-            android:src="@mipmap/ic_launcher"
+            android:src="@drawable/default_img_icon"
             />
 
         <TextView

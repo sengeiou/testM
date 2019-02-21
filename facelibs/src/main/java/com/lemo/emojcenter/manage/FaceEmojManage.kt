@@ -153,7 +153,7 @@ class FaceEmojManage private constructor() {
     }
 
     @Synchronized
-    fun removeEmojByFaceId(context:Context,faceId: Int) {
+    fun removeEmojByFaceId(context: Context, faceId: Int) {
         if (mEmojList == null) {
             init()
         }
@@ -291,10 +291,12 @@ class FaceEmojManage private constructor() {
                 val emojGroupEmotion = EmojGroupBean(FaceLocalConstant.FACE_ID_EMOJ, "", "")
                 emojGroupEmotion.emojType = FaceEmojType.NORMAL
                 if (emotionMap != null) {
-                    for (i in 0 until emotionMap.size) {
-                        val content = emotionMap.keyAt(i)
-                        val resId = emotionMap.valueAt(i)
-                        val emojBean = EmojBean(content, resId!!)
+                    val iter = emotionMap.entries.iterator()
+                    while (iter.hasNext()) {
+                        val entry = (iter.next()) as Map.Entry<*, *>
+                        val content = entry.key.toString()
+                        val resId = entry.value as Int
+                        val emojBean = EmojBean(content, resId)
                         emojGroupEmotion.emojiconList.add(emojBean)
                     }
                 }
@@ -305,6 +307,9 @@ class FaceEmojManage private constructor() {
                 emojBeanAdd.emojType = FaceEmojType.COLLECTION_ADD
                 emojBeanAdd.iconRes = R.mipmap.face_tianjia
                 emojGroupCollect.emojiconList.add(emojBeanAdd)
+                /**
+                 * 收藏表情
+                 */
                 if (collectsBeanList != null) {
                     for (collectsBean in collectsBeanList) {
                         val emojBean = EmojBean(collectsBean)
@@ -314,7 +319,7 @@ class FaceEmojManage private constructor() {
                         emojGroupCollect.emojiconList.add(emojBean)
                     }
                 }
-                emojGroupList.add(emojGroupCollect)
+//                emojGroupList.add(emojGroupCollect)
                 if (keysBeanList != null) {
                     for (keysBean in keysBeanList) {
                         val faceIdStr = keysBean.faceId.toString()
@@ -335,6 +340,7 @@ class FaceEmojManage private constructor() {
                 return emojGroupList
             }
     }
+
     //删除表情文件
     fun onDeleteFile(context: Context, filePackName: String) {
         FaceDecompressionUtil.deleteDir(context, filePackName)

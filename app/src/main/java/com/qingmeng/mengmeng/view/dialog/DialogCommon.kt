@@ -19,6 +19,7 @@ import com.qingmeng.mengmeng.R
 class DialogCommon constructor(context: Context, val titleText: String = "", val contentText: String = "",
                                val leftText: String = "", val rightText: String = "",
                                val onLeftClick: (view: View) -> Unit = { }, val onRightClick: (view: View) -> Unit = { },
+                               private val canBackCancel: Boolean = true,
                                theme: Int = R.style.dialog_common) : AlertDialog(context, theme), DialogInterface {
     private lateinit var mDialogView: View
     //内容
@@ -26,6 +27,8 @@ class DialogCommon constructor(context: Context, val titleText: String = "", val
     lateinit var tvContent: TextView
     lateinit var tvLeft: TextView
     lateinit var tvRight: TextView
+    private var mCallBack: CallBack? = null     //回调
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         mDialogView = View.inflate(context, R.layout.view_dialog_layout, null)
@@ -33,6 +36,8 @@ class DialogCommon constructor(context: Context, val titleText: String = "", val
         initView()
         initListener()
         setCanceledOnTouchOutside(false)
+        //不可以用返回键取消
+        setCancelable(canBackCancel)
     }
 
     private fun initView() {
@@ -67,11 +72,23 @@ class DialogCommon constructor(context: Context, val titleText: String = "", val
 //        setOnShowListener { DialogAnimas.startAnimaByFadeIns(mDialogView) }
         tvLeft.setOnClickListener {
             onLeftClick(it)
+            mCallBack?.onLeftClick(it)
             dismiss()
         }
         tvRight.setOnClickListener {
-            dismiss()
             onRightClick(it)
+            mCallBack?.onRightClick(it)
+            dismiss()
         }
+    }
+
+    //回调方法
+    fun setOnCallBack(callBack: CallBack) {
+        this.mCallBack = callBack
+    }
+
+    interface CallBack {
+        fun onLeftClick(view: View)
+        fun onRightClick(view: View)
     }
 }

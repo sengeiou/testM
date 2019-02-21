@@ -44,7 +44,7 @@ class PopCitySelect : PopupWindow {
     private var mPointPosition = Point()                             //手指按下坐标
     private var record = arrayOf(0, 0)                               //存放手指按下坐标和时间戳
     private var defaultTop = 0                                       //弹框原始距离顶部位置
-    private lateinit var mCitySelectCallBack: CitySelectCallBack     //回调
+    private var mCitySelectCallBack: CitySelectCallBack? = null      //回调
 
     //构造方法
     constructor(activity: Activity) : super(activity) {
@@ -202,7 +202,7 @@ class PopCitySelect : PopupWindow {
                 }
                 //如果mList是空的 那么就直接关闭pop 调回调方法
                 if (mList.isEmpty()) {
-                    mCitySelectCallBack.onCitySelectCallBack(mOneCityList[position])
+                    mCitySelectCallBack?.onCitySelectCallBack(mOneCityList[position])
                     dismiss()
                 } else {
                     //滚到第一个
@@ -224,7 +224,7 @@ class PopCitySelect : PopupWindow {
                     }
                 }
                 if (mList.isEmpty()) {
-                    mCitySelectCallBack.onCitySelectCallBack(city)
+                    mCitySelectCallBack?.onCitySelectCallBack(city)
                     dismiss()
                 } else {
                     //滚到第一个
@@ -233,7 +233,7 @@ class PopCitySelect : PopupWindow {
                 }
             } else {  //选择第三个县
                 //调用回调
-                mCitySelectCallBack.onCitySelectCallBack(mList[position])
+                mCitySelectCallBack?.onCitySelectCallBack(mList[position])
                 dismiss()
             }
         })
