@@ -41,7 +41,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/padding_dp_15"
-                android:layout_marginStart="@dimen/padding_dp_5" />
+                />
         </LinearLayout>
     </LinearLayout>
 

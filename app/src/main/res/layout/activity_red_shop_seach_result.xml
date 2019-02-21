@@ -1,188 +1,205 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/seach_result_allScreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
     android:orientation="vertical"
     tools:context=".activity.RedShopSeachResult">
 
-    <include
-        android:id="@+id/head_search_include"
-        layout="@layout/layout_head_seach" />
-
     <LinearLayout
-        android:id="@+id/search_result_linear"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_dp_35"
-        android:background="@color/white"
-        android:orientation="horizontal">
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="@dimen/padding_dp_35"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/search_food_type"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginEnd="@dimen/padding_dp_10"
-                android:layout_marginStart="@dimen/padding_dp_20"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxLines="1"
-                android:text="@string/seach_food_type"
-                android:textColor="@color/color_999999"
-                android:textSize="@dimen/text_size_14" />
-
-            <TextView
-                android:id="@+id/search_food_type_bottom"
-                android:layout_width="@dimen/padding_dp_55"
-                android:layout_height="@dimen/padding_dp_2"
-                android:layout_marginStart="@dimen/padding_dp_23"
-                android:background="@color/color_5ab1e1"
-                android:gravity="center"
-                android:visibility="gone" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="@dimen/padding_dp_35"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/search_add_area"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginEnd="@dimen/padding_dp_10"
-                android:layout_marginStart="@dimen/padding_dp_20"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxLines="1"
-                android:text="@string/seach_add_area"
-                android:textColor="@color/color_999999"
-                android:textSize="@dimen/text_size_14" />
-
-            <TextView
-                android:id="@+id/search_add_area_bottom"
-                android:layout_width="@dimen/padding_dp_55"
-                android:layout_height="@dimen/padding_dp_2"
-                android:layout_marginStart="@dimen/padding_dp_23"
-                android:background="@color/color_5ab1e1"
-                android:gravity="center"
-                android:visibility="gone" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="@dimen/padding_dp_35"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/search_ranking"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginEnd="@dimen/padding_dp_10"
-                android:layout_marginStart="@dimen/padding_dp_20"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxLines="1"
-                android:text="@string/seach_ranking"
-                android:textColor="@color/color_999999"
-                android:textSize="@dimen/text_size_14" />
-
-            <TextView
-                android:id="@+id/search_ranking_bottom"
-                android:layout_width="@dimen/padding_dp_55"
-                android:layout_height="@dimen/padding_dp_2"
-                android:layout_marginStart="@dimen/padding_dp_23"
-                android:background="@color/color_5ab1e1"
-                android:gravity="center"
-                android:visibility="gone" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="@dimen/padding_dp_35"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/search_screning_conditon"
-                android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginEnd="@dimen/padding_dp_10"
-                android:layout_marginStart="@dimen/padding_dp_20"
-                android:layout_weight="1"
-                android:ellipsize="end"
-                android:gravity="center"
-                android:maxLines="1"
-                android:text="@string/seach_screning_conditon"
-                android:textColor="@color/color_999999"
-                android:textSize="@dimen/text_size_14" />
-
-            <TextView
-                android:id="@+id/search_screning_conditon_bottom"
-                android:layout_width="@dimen/padding_dp_55"
-                android:layout_height="@dimen/padding_dp_2"
-                android:layout_marginStart="@dimen/padding_dp_23"
-                android:background="@color/color_5ab1e1"
-                android:gravity="center"
-                android:visibility="gone" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <View
-        android:id="@+id/search_result_view"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="@color/color_999999" />
-
-    <LinearLayout
-        android:id="@+id/seach_result_nothing"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:gravity="center_horizontal"
-        android:orientation="vertical"
-        android:visibility="gone">
+        android:orientation="vertical">
 
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_dp_100"
-            android:src="@mipmap/seach_nothing" />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/padding_dp_15"
-            android:text="@string/seach_nothing"
-            android:textColor="@color/color_333333"
-            android:textSize="@dimen/text_size_15" />
+        <include
+            android:id="@+id/head_search_include"
+            layout="@layout/layout_head_seach" />
+
+        <LinearLayout
+            android:id="@+id/search_result_linear"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_dp_35"
+            android:background="@color/white"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="@dimen/padding_dp_35"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/search_food_type"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="@dimen/padding_dp_10"
+                    android:layout_marginStart="@dimen/padding_dp_20"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="@string/seach_food_type"
+                    android:textColor="@color/color_999999"
+                    android:textSize="@dimen/text_size_14" />
+
+                <TextView
+                    android:id="@+id/search_food_type_bottom"
+                    android:layout_width="@dimen/padding_dp_55"
+                    android:layout_height="@dimen/padding_dp_2"
+                    android:layout_marginStart="@dimen/padding_dp_23"
+                    android:background="@color/color_5ab1e1"
+                    android:gravity="center"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="@dimen/padding_dp_35"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/search_add_area"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="@dimen/padding_dp_10"
+                    android:layout_marginStart="@dimen/padding_dp_20"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="@string/seach_add_area"
+                    android:textColor="@color/color_999999"
+                    android:textSize="@dimen/text_size_14" />
+
+                <TextView
+                    android:id="@+id/search_add_area_bottom"
+                    android:layout_width="@dimen/padding_dp_55"
+                    android:layout_height="@dimen/padding_dp_2"
+                    android:layout_marginStart="@dimen/padding_dp_23"
+                    android:background="@color/color_5ab1e1"
+                    android:gravity="center"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="@dimen/padding_dp_35"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/search_ranking"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="@dimen/padding_dp_10"
+                    android:layout_marginStart="@dimen/padding_dp_20"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="@string/seach_ranking"
+                    android:textColor="@color/color_999999"
+                    android:textSize="@dimen/text_size_14" />
+
+                <TextView
+                    android:id="@+id/search_ranking_bottom"
+                    android:layout_width="@dimen/padding_dp_55"
+                    android:layout_height="@dimen/padding_dp_2"
+                    android:layout_marginStart="@dimen/padding_dp_23"
+                    android:background="@color/color_5ab1e1"
+                    android:gravity="center"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="@dimen/padding_dp_35"
+                android:layout_weight="1"
+                android:background="@color/white"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/search_screning_conditon"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="@dimen/padding_dp_10"
+                    android:layout_marginStart="@dimen/padding_dp_20"
+                    android:layout_weight="1"
+                    android:ellipsize="end"
+                    android:gravity="center"
+                    android:maxLines="1"
+                    android:text="@string/seach_screning_conditon"
+                    android:textColor="@color/color_999999"
+                    android:textSize="@dimen/text_size_14" />
+
+                <TextView
+                    android:id="@+id/search_screning_conditon_bottom"
+                    android:layout_width="@dimen/padding_dp_55"
+                    android:layout_height="@dimen/padding_dp_2"
+                    android:layout_marginStart="@dimen/padding_dp_23"
+                    android:background="@color/color_5ab1e1"
+                    android:gravity="center"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/search_result_view"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/padding_dp_0_5"
+            android:background="@color/color_999999" />
+
+        <LinearLayout
+            android:id="@+id/seach_result_nothing"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/white"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_dp_100"
+                android:src="@mipmap/seach_nothing" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/padding_dp_15"
+                android:text="@string/seach_nothing"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/text_size_15" />
+        </LinearLayout>
+
+        <com.qingmeng.mengmeng.view.SwipeLayout
+            android:id="@+id/seach_result_swipeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/swipe_target"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.qingmeng.mengmeng.view.SwipeLayout>
     </LinearLayout>
 
-    <com.qingmeng.mengmeng.view.SwipeLayout
-        android:id="@+id/seach_result_swipeLayout"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/swipe_target"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </com.qingmeng.mengmeng.view.SwipeLayout>
-
-</LinearLayout>
+    <ImageView
+        android:id="@+id/mSeachToTop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/padding_dp_54"
+        android:layout_marginEnd="@dimen/padding_dp_10"
+        android:src="@drawable/main_icon_to_top"
+        android:visibility="gone" />
+</RelativeLayout>

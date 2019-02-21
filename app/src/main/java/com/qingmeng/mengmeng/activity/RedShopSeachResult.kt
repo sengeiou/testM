@@ -5,17 +5,13 @@ package com.qingmeng.mengmeng.activity
  * 搜索结果页
  */
 import android.annotation.SuppressLint
-import android.content.Context
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ImageSpan
-import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener
@@ -28,12 +24,10 @@ import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.SEACH_RESULT
+import com.qingmeng.mengmeng.constant.IConstants.THREELEVEL
 import com.qingmeng.mengmeng.constant.IConstants.firstLevel
 import com.qingmeng.mengmeng.constant.IConstants.secondLevel
-import com.qingmeng.mengmeng.entity.FatherDto
-import com.qingmeng.mengmeng.entity.FoodType
 import com.qingmeng.mengmeng.entity.SearchDto
-import com.qingmeng.mengmeng.entity.StaticBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.view.dialog.PopSeachCondition
@@ -79,6 +73,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
     private var mHasNextPage = true                //是否有下一页
     private var mTypeId = String()               //餐饮类型返回参数
     private var mRankingId = String()            //综合排序返回参数
+    private var mShowTittle: String = ""            //进入选中
     private var isRefreshing = false
     private var isLoading = false
     override fun getLayoutId(): Int = R.layout.activity_red_shop_seach_result
@@ -90,18 +85,21 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
         fatherId = intent.getIntExtra(firstLevel, 0)
         typeId = intent.getIntExtra(secondLevel, 0)
         keyWord = intent.getStringExtra(SEACH_RESULT) ?: ""
+        mShowTittle = intent.getStringExtra(THREELEVEL) ?: ""
+        if (mShowTittle.isEmpty()) {
+            search_food_type.text = "餐饮类型"
+        } else {
+            search_food_type.text = mShowTittle
+            search_food_type.setTextColor(resources.getColor(R.color.color_5ab1e1))
+        }
         head_search.setText(keyWord)
-        head_search.setSelection(head_search.text.toString().length)
+        // head_search.setSelection(head_search.text.toString().length)
         goToSeach()
     }
 
     private fun goToSeach() {
         seach_result_swipeLayout.isRefreshing = true
         httpSeach(keyWord, fatherId, typeId, cityIds, capitalIds, modeIds, integratedSortId, mPageNum)
-    }
-
-    override fun initData() {
-        super.initData()
     }
 
     private fun initAdapter() {
@@ -119,17 +117,16 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
                 val density = resources.displayMetrics.density
                 drawable.setBounds(0, (7 * density).toInt(), (14 * density).toInt(), (21 * density).toInt())
                 setSpannableStringText(R.id.search_result_name, spanString)
-                setText(R.id.search_result_capitalName, "¥\t${data.capitalName}")
+                if (data.capitalName.isNullOrEmpty()) {
+                    setText(R.id.search_result_capitalName, "¥\t面议")
+                } else {
+                    setText(R.id.search_result_capitalName, "¥\t${data.capitalName}")
+                }
                 if (data.joinStoreNum > 9999) {
 
                 } else {
                     setText(R.id.search_result_joinStoreNum, data.joinStoreNum.toString())
                 }
-//                if (data.joinStoreNum > 9999) {
-//
-//                } else {
-//                    setText(R.id.search_result_directStoreNum, data.directStoreNum.toString())
-//                }
                 setTagFlowLayout(getView(R.id.seach_result_tagFliwLayout), data.affiliateSupport as ArrayList<String>)
                 getView<LinearLayout>(R.id.search_linearlayout).setOnClickListener {
                     startActivity<ShopDetailActivity>(IConstants.BRANDID to data.id)
@@ -139,6 +136,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
 
         })
         swipe_target.adapter = mAdapter
+
     }
 
     private fun setTagFlowLayout(view: TagFlowLayout, maffiliateSupportList: ArrayList<String>) {
@@ -152,7 +150,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
         }
     }
 
-    /**搜索接口  Keyword、pageNum 必选
+    /**搜索接口  pageNum 必选
     参数：keyWord  搜索关键字  fatherId: 餐饮类型父级id  typeId: 餐饮类型id  cityIds: 爱加盟区域id
     capitalIds: 投资金额id（多个投资金额用英文逗号隔开如：1,2,3）
     modeIds: 加盟模式id （多个加盟模式用英文逗号隔开如：1,2,3）
@@ -162,10 +160,10 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
     private fun httpSeach(keyWord: String, fatherId: Int, typeId: Int, cityIds: String, capitalIds: String, modeIds: String, integratedSortId: Int, pageNum: Int) {
         mCanHttpLoad = false
         ApiUtils.getApi().let {
-            if (fatherId == 0) {
-                it.join_search_brands(keyWord, typeId, cityIds, capitalIds, modeIds, integratedSortId, pageNum)
+            if (!keyWord.isEmpty()) {
+                it.join_search_brands(keyWord, cityIds, capitalIds, modeIds, integratedSortId, pageNum)
             } else {
-                it.join_search_brands(keyWord, fatherId, typeId, cityIds, capitalIds, modeIds, integratedSortId, pageNum)
+                it.join_search_brands(fatherId, typeId, cityIds, capitalIds, modeIds, integratedSortId, pageNum)
             }
         }
                 .observeOn(AndroidSchedulers.mainThread())
@@ -264,38 +262,15 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
 
     override fun initListener() {
         super.initListener()
-//        seach_result_allScreen.setOnTouchListener(object : View.OnTouchListener {
-//            override fun onTouch(v: View?, event: MotionEvent?): Boolean {
-//                if (null != this@RedShopSeachResult.getCurrentFocus()) {
-//                    //点击取消EditText的焦点
-//                    seach_result_allScreen.setFocusable(true)
-//                    seach_result_allScreen.setFocusableInTouchMode(true)
-//                    seach_result_allScreen.requestFocus()
-//                    /** * 点击空白位置 隐藏软键盘  */
-//                    val mInputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-//                    return mInputMethodManager!!.hideSoftInputFromWindow(this@RedShopSeachResult.getCurrentFocus()!!.getWindowToken(), 0)
-//                }
-//                return false
-//            }
-//        })
-        //软键盘点击完成后触发
-        head_search.setOnEditorActionListener(object : TextView.OnEditorActionListener {
-            override fun onEditorAction(v: TextView?, actionId: Int, event: KeyEvent?): Boolean {
-                if (actionId == EditorInfo.IME_ACTION_SEND
-                        || actionId == EditorInfo.IME_ACTION_DONE
-                        || event != null && KeyEvent.KEYCODE_ENTER === event!!.getKeyCode() && KeyEvent.ACTION_DOWN === event!!.getAction()) {
-                    keyWord = head_search.text.toString()
-                    goToSeach()
-                    val mInputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                    return mInputMethodManager!!.hideSoftInputFromWindow(this@RedShopSeachResult.getCurrentFocus()!!.getWindowToken(), 0)
-                }
-                return false
-            }
-        })
+        head_search.setOnClickListener { startActivity<RedShopSeach>() }
         head_search_mBack.setOnClickListener { this.finish() }
+        mSeachToTop.setOnClickListener {
+            swipe_target.scrollToPosition(0)
+            seach_result_swipeLayout.isLoadMoreEnabled = false
+        }
         search_food_type.setOnClickListener {
             if (!mIsInstantiationOne) {
-                popupMenu1 = PopSeachSelect(this, 1)
+                popupMenu1 = PopSeachSelect(this, 1, fatherId)
             }
             popupMenu1.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
                 override fun onSelectCallBack(selectId: Int, selectFatherId: Int, selectName: String) {
@@ -311,7 +286,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
         }
         search_add_area.setOnClickListener {
             if (!mIsInstantiationTwo) {
-                popupMenu2 = PopSeachSelect(this, 2)
+                popupMenu2 = PopSeachSelect(this, 2, -1)
             }
             //回调数据    传入搜索接口
             popupMenu2.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
@@ -326,7 +301,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
         }
         search_ranking.setOnClickListener {
             if (!mIsInstantiationThree) {
-                popupMenu3 = PopSeachSelect(this, 3)
+                popupMenu3 = PopSeachSelect(this, 3, -1)
             }
             popupMenu3.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
                 override fun onSelectCallBack(selectId: Int, selectFatherId: Int, selectName: String) {
@@ -362,12 +337,14 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition + 1 == mAdapter.itemCount) {
                     seach_result_swipeLayout.isLoadMoreEnabled = true
                 }
+                 //   mSeachToTop.visibility = View.VISIBLE
             }
 
-            //滑动
+            //滚动时
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 lastVisibleItemPosition = mLauyoutManger.findLastVisibleItemPosition()
+              //  mSeachToTop.visibility = View.GONE
             }
         })
         seach_result_swipeLayout.setOnRefreshListener(this)

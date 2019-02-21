@@ -17,7 +17,7 @@
         app:banner_pointAutoPlayInterval="3000"
         app:banner_pointContainerBackground="@color/transparent"
         app:banner_pointContainerLeftRightPadding="@dimen/padding_dp_8"
-        app:banner_pointDrawable="@drawable/point_banner"
+        app:banner_pointDrawable="@drawable/point_head_banner"
         app:banner_pointTopBottomMargin="@dimen/padding_dp_8"
         app:banner_tipTextColor="@color/white"
         app:banner_tipTextSize="@dimen/text_size_14"
