@@ -41,8 +41,8 @@
             android:id="@+id/llMyMyLeavingMessageRvDelete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/padding_dp_5"
             android:layout_marginTop="@dimen/padding_dp_9"
+            android:padding="@dimen/padding_dp_5"
             >
 
             <ImageView
@@ -87,6 +87,8 @@
             android:id="@+id/ivMyMyLeavingMessageRvLogo"
             android:layout_width="@dimen/padding_dp_75"
             android:layout_height="@dimen/padding_dp_75"
+            android:layout_marginBottom="0.5dp"
+            android:layout_marginTop="0.5dp"
             android:src="@drawable/default_img_icon"
             />
 

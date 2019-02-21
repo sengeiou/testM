@@ -68,8 +68,11 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 RenderType.MESSAGE_TYPE_TIME_TITLE, RenderType.MESSAGE_TYPE_OTHER_REVOKE, RenderType.MESSAGE_TYPE_MINE_REVOKE -> {  //时间
                     (it as TimeViewHolder).bindViewHolder(msgObjectList[position])
                 }
-                RenderType.MESSAGE_TYPE_INVALID -> {    //品牌详情
-                    (it as BrandViewHolder).bindViewHolder(msgObjectList[position])
+                RenderType.MESSAGE_TYPE_INVALID -> {    //默认失败类型
+
+                }
+                RenderType.MESSAGE_TYPE_BRAND -> {    //品牌详情
+                    (it as BrandViewHolder).bindViewHolder(position)
                 }
             /**
              * 别人消息
@@ -77,35 +80,41 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF_IMAGE -> {    //文本(表情)
                     (it as OtherTextViewHolder).bindViewHolder(position)
                 }
-                RenderType.MESSAGE_TYPE_OTHER_IMAGE -> { //图片
+                RenderType.MESSAGE_TYPE_OTHER_IMAGE -> { //别人图片
                     (it as OtherImageViewHolder).bindViewHolder(position)
                 }
-                RenderType.MESSAGE_TYPE_OTHER_GIF -> { //gif
+                RenderType.MESSAGE_TYPE_OTHER_GIF -> { //别人gif
                     (it as OtherGifViewHolder).bindViewHolder(position)
                 }
-                RenderType.MESSAGE_TYPE_OTHER_AUDIO -> {    //语音
+                RenderType.MESSAGE_TYPE_OTHER_AUDIO -> {    //别人语音
                     (it as OtherAudioViewHolder).bindViewHolder(position)
                 }
-                RenderType.MESSAGE_TYPE_OTHER_VIDEO -> {    //视频
+                RenderType.MESSAGE_TYPE_OTHER_VIDEO -> {    //别人视频
                     (it as OtherVideoViewHolder).bindViewHolder(position)
+                }
+                RenderType.MESSAGE_TYPE_OTHER_BRAND -> {    //别人品牌详情
+                    (it as OtherBrandViewHolder).bindViewHolder(position)
                 }
             /**
              * 自己消息
              */
-                RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF_IMAGE -> {  //文本(表情)
+                RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF_IMAGE -> {  //自己文本(表情)
                     (it as MineTextViewHolder).bindViewHolder(position)
                 }
-                RenderType.MESSAGE_TYPE_MINE_IMAGE -> {   //图片
+                RenderType.MESSAGE_TYPE_MINE_IMAGE -> {   //自己图片
                     (it as MineImageViewHolder).bindViewHolder(position)
                 }
-                RenderType.MESSAGE_TYPE_MINE_GIF -> {   //gif
+                RenderType.MESSAGE_TYPE_MINE_GIF -> {   //自己gif
                     (it as MineGifViewHolder).bindViewHolder(position)
                 }
-                RenderType.MESSAGE_TYPE_MINE_AUDIO -> { //语音
+                RenderType.MESSAGE_TYPE_MINE_AUDIO -> { //自己语音
                     (it as MineAudioViewHolder).bindViewHolder(position)
                 }
-                RenderType.MESSAGE_TYPE_MINE_VIDEO -> { //视频
+                RenderType.MESSAGE_TYPE_MINE_VIDEO -> { //自己视频
                     (it as MineVideoViewHolder).bindViewHolder(position)
+                }
+                RenderType.MESSAGE_TYPE_MINE_BRAND -> { //品牌详情
+                    (it as MineBrandViewHolder).bindViewHolder(position)
                 }
             }
         }
@@ -122,55 +131,67 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_time, viewGroup, false)
                 TimeViewHolder(view)
             }
-            RenderType.MESSAGE_TYPE_INVALID -> {    //品牌详情
+            RenderType.MESSAGE_TYPE_INVALID -> {    //默认失败类型
+                view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_defalut, viewGroup, false)
+                DefaultViewHolder(view)
+            }
+            RenderType.MESSAGE_TYPE_BRAND -> {    //公共品牌详情
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_brand, viewGroup, false)
                 BrandViewHolder(view)
             }
         /**
          * 别人消息
          */
-            RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF_IMAGE -> {    //文本(表情)
+            RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF_IMAGE -> {    //别人文本(表情)
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_text, viewGroup, false)
                 OtherTextViewHolder(view, viewGroup)
             }
-            RenderType.MESSAGE_TYPE_OTHER_IMAGE -> { //图片
+            RenderType.MESSAGE_TYPE_OTHER_IMAGE -> { //别人图片
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_image, viewGroup, false)
                 OtherImageViewHolder(view, viewGroup)
             }
-            RenderType.MESSAGE_TYPE_OTHER_GIF -> { //gif
+            RenderType.MESSAGE_TYPE_OTHER_GIF -> { //别人gif
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_gif, viewGroup, false)
                 OtherGifViewHolder(view, viewGroup)
             }
-            RenderType.MESSAGE_TYPE_OTHER_AUDIO -> {    //语音
+            RenderType.MESSAGE_TYPE_OTHER_AUDIO -> {    //别人语音
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_audio, viewGroup, false)
                 OtherAudioViewHolder(view, viewGroup)
             }
-            RenderType.MESSAGE_TYPE_OTHER_VIDEO -> {    //视频
+            RenderType.MESSAGE_TYPE_OTHER_VIDEO -> {    //别人视频
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_video, viewGroup, false)
                 OtherVideoViewHolder(view, viewGroup)
+            }
+            RenderType.MESSAGE_TYPE_OTHER_BRAND -> {    //别人品牌详情
+                view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_brand, viewGroup, false)
+                OtherBrandViewHolder(view, viewGroup)
             }
         /**
          * 自己消息
          */
-            RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF_IMAGE -> {  //文本(表情)
+            RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF_IMAGE -> {  //自己文本(表情)
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_text, viewGroup, false)
                 MineTextViewHolder(view, viewGroup)
             }
-            RenderType.MESSAGE_TYPE_MINE_IMAGE -> {   //图片
+            RenderType.MESSAGE_TYPE_MINE_IMAGE -> {   //自己图片
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_image, viewGroup, false)
                 MineImageViewHolder(view, viewGroup)
             }
-            RenderType.MESSAGE_TYPE_MINE_GIF -> {   //gif
+            RenderType.MESSAGE_TYPE_MINE_GIF -> {   //自己gif
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_gif, viewGroup, false)
                 MineGifViewHolder(view, viewGroup)
             }
-            RenderType.MESSAGE_TYPE_MINE_AUDIO -> { //语音
+            RenderType.MESSAGE_TYPE_MINE_AUDIO -> { //自己语音
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_audio, viewGroup, false)
                 MineAudioViewHolder(view, viewGroup)
             }
-            RenderType.MESSAGE_TYPE_MINE_VIDEO -> { //视频
+            RenderType.MESSAGE_TYPE_MINE_VIDEO -> { //自己视频
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_video, viewGroup, false)
                 MineVideoViewHolder(view, viewGroup)
+            }
+            RenderType.MESSAGE_TYPE_MINE_BRAND -> {    //自己品牌详情
+                view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_video, viewGroup, false)
+                MineBrandViewHolder(view, viewGroup)
             }
         }
     }
@@ -209,15 +230,45 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     }
 
     /**
+     * 失败类型
+     */
+    inner class DefaultViewHolder(view: View) : RecyclerView.ViewHolder(view)
+
+    /**
      * 品牌详情
      */
     inner class BrandViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val llMyMessageChatRvAllBrand = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvAllBrand)
-        fun bindViewHolder(item: Any) {
-            if (msgObjectList[0] == item) {
+        private val llMyMessageChatRvBrand = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvBrand)
+        private val ivMyMessageChatRvLogo = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvLogo)
+        private val tvMyMessageChatRvBrandName = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvBrandName)
+        private val tvMyMessageChatRvInvestmentAmount = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvInvestmentAmount)
+        private val tvMyMessageChatRvBrandSend = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvBrandSend)
+        fun bindViewHolder(position: Int) {
+            val brandMessage = msgObjectList[position] as BrandMessage
+            if (position == 0) {
                 llMyMessageChatRvAllBrand.setMarginExt(top = 30)
             } else {
                 llMyMessageChatRvAllBrand.setMarginExt(top = 0)
+            }
+            //有本地的先加载本地的
+            if (FileUtil.isFileExist(brandMessage.logoPath)) {
+                GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.logoPath, ivMyMessageChatRvLogo, placeholder = R.drawable.default_img_icon)
+            }
+            GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.logoUrl, ivMyMessageChatRvLogo, placeholder = R.drawable.default_img_icon)
+            tvMyMessageChatRvBrandName.text = brandMessage.brandName
+            if (brandMessage.brandAmount.isNullOrBlank()) {
+                tvMyMessageChatRvInvestmentAmount.text = "面议"
+            } else {
+                tvMyMessageChatRvInvestmentAmount.text = brandMessage.brandAmount
+            }
+            //品牌详情
+            llMyMessageChatRvBrand.setOnClickListener {
+                mPopCallBack?.onBrandClick(position)
+            }
+            //发送品牌
+            tvMyMessageChatRvBrandSend.setOnClickListener {
+                mPopCallBack?.onSendBrandClick(position)
             }
         }
     }
@@ -227,7 +278,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
      */
 
     /**
-     * 文本(表情)
+     * 别人文本(表情)
      */
     inner class OtherTextViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
         private val parent = viewGroup
@@ -235,8 +286,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val tvMyMessageChatRvOtherTextText = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvOtherTextText)
         fun bindViewHolder(position: Int) {
             val textMessage = msgObjectList[position] as TextMessage
-            val userEntity = getUserEntity(textMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherTextHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            setHeadImage(textMessage, ivMyMessageChatRvOtherTextHead)
             tvMyMessageChatRvOtherTextText.let {
                 it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), textMessage.info, it)
                 it.setOnLongClickListener {
@@ -248,7 +298,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     }
 
     /**
-     * 图片
+     * 别人图片
      */
     inner class OtherImageViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
         private val parent = viewGroup
@@ -256,10 +306,13 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val ivMyMessageChatRvOtherImageImage = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherImageImage)
         fun bindViewHolder(position: Int) {
             val imageMessage = msgObjectList[position] as ImageMessage
-            val userEntity = getUserEntity(imageMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherImageHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            setHeadImage(imageMessage, ivMyMessageChatRvOtherImageHead)
             ivMyMessageChatRvOtherImageImage.let {
-                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15)
+                //有本地的先加载本地的
+                if (FileUtil.isFileExist(imageMessage.path)) {
+                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                }
+                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15, placeholder = R.drawable.default_img_icon)
                 it.setOnClickListener {
                     val i = Intent(context, PreviewMessageImagesActivity::class.java)
                     val bundle = Bundle()
@@ -277,7 +330,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     }
 
     /**
-     * gif
+     * 别人gif
      */
     inner class OtherGifViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
         private val parent = viewGroup
@@ -285,10 +338,13 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val ivMyMessageChatRvOtherGifImage = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherGifImage)
         fun bindViewHolder(position: Int) {
             val imageMessage = msgObjectList[position] as ImageMessage
-            val userEntity = getUserEntity(imageMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherGifHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            setHeadImage(imageMessage, ivMyMessageChatRvOtherGifHead)
             ivMyMessageChatRvOtherGifImage.let {
-                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15)
+                //有本地的先加载本地的
+                if (FileUtil.isFileExist(imageMessage.path)) {
+                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                }
+                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 it.setOnClickListener {
                     val i = Intent(context, PreviewMessageImagesActivity::class.java)
                     val bundle = Bundle()
@@ -306,7 +362,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     }
 
     /**
-     * 语音
+     * 别人语音
      */
     inner class OtherAudioViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
         private val parent = viewGroup
@@ -315,8 +371,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val llMyMessageChatRvOtherAudio = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvOtherAudio)
         fun bindViewHolder(position: Int) {
             val audioMessage = msgObjectList[position] as AudioMessage
-            val userEntity = getUserEntity(audioMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherAudioHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            setHeadImage(audioMessage, ivMyMessageChatRvOtherAudioHead)
             tvMyMessageChatRvOtherAudioTime.text = "${audioMessage.audiolength}\""
             llMyMessageChatRvOtherAudio.let {
                 it.setOnClickListener {
@@ -333,7 +388,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     }
 
     /**
-     * 视频
+     * 别人视频
      */
     inner class OtherVideoViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
         private val parent = viewGroup
@@ -343,21 +398,24 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val tvMyMessageChatRvOtherVideoTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvOtherVideoTime)
         fun bindViewHolder(position: Int) {
             val videoMessage = msgObjectList[position] as VideoMessage
-            val userEntity = getUserEntity(videoMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvOtherVideoHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
-            //封面
-            GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvOtherVideoCover, roundRadius = 15)
+            setHeadImage(videoMessage, ivMyMessageChatRvOtherVideoHead)
+            //封面 有本地的先加载本地的
+            if (FileUtil.isFileExist(videoMessage.thumbPath)) {
+                GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            }
+            GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             //时间
             tvMyMessageChatRvOtherVideoTime.text = "${videoMessage.videolength}s"
             rlMyMessageChatRvOtherVideo.let {
                 it.setOnClickListener {
-                    val url = if (!TextUtils.isEmpty(videoMessage.path) && File(videoMessage.path).exists()) {
+                    //视频地址 有本地的用本地的
+                    val videoUrl = if (!TextUtils.isEmpty(videoMessage.path) && File(videoMessage.path).exists()) {
                         videoMessage.path
                     } else {
                         videoMessage.url
                     }
-                    val uri = Uri.parse(url)
-                    uri?.let {
+                    val videoUri = Uri.parse(videoUrl)
+                    videoUri?.let {
                         //调用系统自带的播放器
                         val intent = Intent(Intent.ACTION_VIEW)
                         intent.setDataAndType(it, "video/mp4")
@@ -373,11 +431,40 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     }
 
     /**
+     * 别人品牌详情
+     */
+    inner class OtherBrandViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
+        private val parent = viewGroup
+        private val ivMyMessageChatRvOtherBrandHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherBrandHead)
+        private val ivMyMessageChatRvOtherMineLogo = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherMineLogo)
+        private val tvMyMessageChatRvOtherBrandName = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvOtherBrandName)
+        private val tvMyMessageChatRvOtherBrandAmount = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvOtherBrandAmount)
+        private val llMyMessageChatRvOtherBrand = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvOtherBrand)
+        fun bindViewHolder(position: Int) {
+            val brandMessage = msgObjectList[position] as TextMessage
+            setHeadImage(brandMessage, ivMyMessageChatRvOtherBrandHead)
+//            GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.avatar, ivMyMessageChatRvOtherMineLogo, placeholder = R.drawable.default_img_icon)
+//            tvMyMessageChatRvOtherBrandName.text = brandMessage.""
+//            tvMyMessageChatRvOtherBrandAmount.text = brandMessage.""
+            //点击事件
+            llMyMessageChatRvOtherBrand.let {
+                it.setOnClickListener {
+
+                }
+                it.setOnLongClickListener {
+                    showPopWindow(position, parent, it)
+                    true
+                }
+            }
+        }
+    }
+
+    /**
      * ---------------------------------------------自己消息---------------------------------------------
      */
 
     /**
-     * 文本(表情)
+     * 自己文本(表情)
      */
     inner class MineTextViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
         private val parent = viewGroup
@@ -387,8 +474,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val ivMyMessageChatRvMineTextFail = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineTextFail)
         fun bindViewHolder(position: Int) {
             val textMessage = msgObjectList[position] as TextMessage
-            val userEntity = getUserEntity(textMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineTextHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            setHeadImage(textMessage, ivMyMessageChatRvMineTextHead)
             tvMyMessageChatRvMineTextText.let {
                 it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), textMessage.info, it)
                 it.setOnLongClickListener {
@@ -419,7 +505,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     }
 
     /**
-     * 图片
+     * 自己图片
      */
     inner class MineImageViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
         private val parent = viewGroup
@@ -429,14 +515,13 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val ivMyMessageChatRvMineImageFail = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineImageFail)
         fun bindViewHolder(position: Int) {
             val imageMessage = msgObjectList[position] as ImageMessage
-            val userEntity = getUserEntity(imageMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineImageHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            setHeadImage(imageMessage, ivMyMessageChatRvMineImageHead)
             ivMyMessageChatRvMineImageImage.let {
                 //有本地的先加载本地的
                 if (FileUtil.isFileExist(imageMessage.path)) {
-                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, roundRadius = 15)
+                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 }
-                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15)
+                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 it.setOnClickListener {
                     val i = Intent(context, PreviewMessageImagesActivity::class.java)
                     val bundle = Bundle()
@@ -476,7 +561,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     }
 
     /**
-     * gif
+     * 自己gif
      */
     inner class MineGifViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
         private val parent = viewGroup
@@ -486,14 +571,13 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val ivMyMessageChatRvMineGifFail = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineGifFail)
         fun bindViewHolder(position: Int) {
             val imageMessage = msgObjectList[position] as ImageMessage
-            val userEntity = getUserEntity(imageMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineGifHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            setHeadImage(imageMessage, ivMyMessageChatRvMineGifHead)
             ivMyMessageChatRvMineGifImage.let {
                 //有本地的先加载本地的
                 if (FileUtil.isFileExist(imageMessage.path)) {
-                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, roundRadius = 15)
+                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 }
-                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15)
+                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 it.setOnClickListener {
                     val i = Intent(context, PreviewMessageImagesActivity::class.java)
                     val bundle = Bundle()
@@ -533,7 +617,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     }
 
     /**
-     * 语音
+     * 自己语音
      */
     inner class MineAudioViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
         private val parent = viewGroup
@@ -544,8 +628,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val ivMyMessageChatRvMineAudioFail = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineAudioFail)
         fun bindViewHolder(position: Int) {
             val audioMessage = msgObjectList[position] as AudioMessage
-            val userEntity = getUserEntity(audioMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineAudioHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            setHeadImage(audioMessage, ivMyMessageChatRvMineAudioHead)
             tvMyMessageChatRvMineAudioTime.text = "${audioMessage.audiolength}\""
             llMyMessageChatRvMineAudio.let {
                 it.setOnClickListener {
@@ -581,7 +664,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     }
 
     /**
-     * 视频
+     * 自己视频
      */
     inner class MineVideoViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
         private val parent = viewGroup
@@ -593,26 +676,24 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val ivMyMessageChatRvMineVideoFail = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineVideoFail)
         fun bindViewHolder(position: Int) {
             val videoMessage = msgObjectList[position] as VideoMessage
-            val userEntity = getUserEntity(videoMessage)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, ivMyMessageChatRvMineVideoHead, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            setHeadImage(videoMessage, ivMyMessageChatRvMineVideoHead)
             //封面 有本地的加载本地的
-            val url = if (FileUtil.isFileExist(videoMessage.thumbPath)) {
-                videoMessage.thumbPath
-            } else {
-                videoMessage.thumbUrl
+            if (FileUtil.isFileExist(videoMessage.thumbPath)) {
+                GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             }
-            GlideLoader.load(AppManager.instance.currentActivity(), url, ivMyMessageChatRvMineVideoCover, roundRadius = 15)
+            GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             //时间
             tvMyMessageChatRvMineVideoTime.text = "${videoMessage.videolength}s"
             rlMyMessageChatRvMineVideo.let {
                 it.setOnClickListener {
-                    val url = if (!TextUtils.isEmpty(videoMessage.path) && File(videoMessage.path).exists()) {
+                    //视频地址 有本地的用本地的
+                    val videoUrl = if (!TextUtils.isEmpty(videoMessage.path) && File(videoMessage.path).exists()) {
                         videoMessage.path
                     } else {
                         videoMessage.url
                     }
-                    val uri = Uri.parse(url)
-                    uri?.let {
+                    val videoUri = Uri.parse(videoUrl)
+                    videoUri?.let {
                         //调用系统自带的播放器
                         val intent = Intent(Intent.ACTION_VIEW)
                         intent.setDataAndType(it, "video/mp4")
@@ -647,6 +728,56 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 MessageConstant.VIDEO_LOADED_FAILURE -> {   //发送失败
                     pbMyMessageChatRvMineVideoProgress.visibility = View.GONE
                     ivMyMessageChatRvMineVideoFail.visibility = View.VISIBLE
+                }
+            }
+        }
+    }
+
+    /**
+     * 自己品牌详情
+     */
+    inner class MineBrandViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
+        private val parent = viewGroup
+        private val ivMyMessageChatRvMineBrandHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineBrandHead)
+        private val ivMyMessageChatRvOtherMineLogo = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherMineLogo)
+        private val tvMyMessageChatRvMineBrandName = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvMineBrandName)
+        private val tvMyMessageChatRvMineBrandAmount = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvMineBrandAmount)
+        private val llMyMessageChatRvMineBrand = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvMineBrand)
+        private val pbMyMessageChatRvMineBrandProgress = itemView.findViewById<ProgressBar>(R.id.pbMyMessageChatRvMineBrandProgress)
+        private val ivMyMessageChatRvMineBrandFail = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineBrandFail)
+        fun bindViewHolder(position: Int) {
+            val brandMessage = msgObjectList[position] as TextMessage
+            setHeadImage(brandMessage, ivMyMessageChatRvMineBrandHead)
+//            GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.avatar, ivMyMessageChatRvOtherMineLogo, placeholder = R.drawable.default_img_icon)
+//            tvMyMessageChatRvMineBrandName.text = brandMessage.""
+//            tvMyMessageChatRvMineBrandAmount.text = brandMessage.""
+            //点击事件
+            llMyMessageChatRvMineBrand.let {
+                it.setOnClickListener {
+
+                }
+                it.setOnLongClickListener {
+                    showPopWindow(position, parent, it)
+                    true
+                }
+            }
+            //失败点击
+            ivMyMessageChatRvMineBrandFail.setOnClickListener {
+                showPopWindow(position, parent, it)
+            }
+            //消息发送状态
+            when (brandMessage.status) {
+                MessageConstant.MSG_SENDING -> {  //发送中
+                    pbMyMessageChatRvMineBrandProgress.visibility = View.VISIBLE
+                    ivMyMessageChatRvMineBrandFail.visibility = View.GONE
+                }
+                MessageConstant.MSG_SUCCESS -> {   //发送成功
+                    pbMyMessageChatRvMineBrandProgress.visibility = View.GONE
+                    ivMyMessageChatRvMineBrandFail.visibility = View.GONE
+                }
+                MessageConstant.MSG_FAILURE -> {   //发送失败
+                    pbMyMessageChatRvMineBrandProgress.visibility = View.GONE
+                    ivMyMessageChatRvMineBrandFail.visibility = View.VISIBLE
                 }
             }
         }
@@ -771,7 +902,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
      */
     private fun getUserEntity(textMessage: MessageEntity): UserEntity {
         val userEntity: UserEntity?
-        if (textMessage.fromId == loginUser?.peerId) {//自己
+        if (textMessage.fromId == loginUser?.peerId) {  //自己
             userEntity = loginUser
         } else {
             userEntity = mImService?.contactManager?.findContact(textMessage.fromId)
@@ -948,11 +1079,27 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                         RenderType.MESSAGE_TYPE_OTHER_REVOKE
                     }
                 }
+                DBConstant.SHOW_BRAND_TYPE -> { //公共品牌详情
+                    type = RenderType.MESSAGE_TYPE_BRAND
+                }
                 else -> {
                 }
             }
         }
         return type.ordinal
+    }
+
+    /**
+     * 设置头像
+     */
+    private fun setHeadImage(message: MessageEntity, imageView: ImageView) {
+        //直接加载头像（此消息是假消息）
+        if (message.fromId == 0) {
+            GlideLoader.load(AppManager.instance.currentActivity(), "", imageView, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+        } else {
+            val userEntity = getUserEntity(message)
+            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, imageView, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+        }
     }
 
     /**
@@ -1026,16 +1173,12 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
 
         //撤回
         override fun onRevokeClick(position: Int) {
-            if (mPopCallBack != null) {
-                mPopCallBack!!.onRevokeClick(position)
-            }
+            mPopCallBack?.onRevokeClick(position)
         }
 
         //删除
         override fun onDeleteClick(position: Int) {
-            if (mPopCallBack != null) {
-                mPopCallBack!!.onDeleteClick(position)
-            }
+            mPopCallBack?.onDeleteClick(position)
         }
     }
 
@@ -1050,7 +1193,11 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         val bResend = message.status == MessageConstant.MSG_FAILURE
         //消息是否在2分钟之内创建的
         val bRevoke = (System.currentTimeMillis() / 1000) - message.created < mDefaultTimeDifference
-        popup.show(view, message.displayType, bResend, isMine, bRevoke, position)
+        if (message.fromId == 0) {
+            popup.show(view, message.displayType, bResend, isMine, bRevoke, -1)
+        } else {
+            popup.show(view, message.displayType, bResend, isMine, bRevoke, position)
+        }
     }
 
     fun setPopCallBack(popCallBack: PopCallBack) {
@@ -1061,5 +1208,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         fun onRevokeClick(position: Int)
 
         fun onDeleteClick(position: Int)
+
+        fun onBrandClick(position: Int)
+
+        fun onSendBrandClick(position: Int)
     }
 }

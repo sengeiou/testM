@@ -123,7 +123,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                 setText(R.id.tvMyMyLeavingMessageRvLeavingMessage, t.message)
                 GlideLoader.load(this@MyMyLeavingMessageActivity, t.logo, getView(R.id.ivMyMyLeavingMessageRvLogo), centerCrop = false)
                 setText(R.id.tvMyMyLeavingMessageRvBrandName, t.brandName)
-                if (t.capitalName.isBlank()) {
+                if (t.capitalName.isNullOrBlank()) {
                     setText(R.id.tvMyMyLeavingMessageRvInvestmentAmount, getString(R.string.face))
                 } else {
                     setText(R.id.tvMyMyLeavingMessageRvInvestmentAmount, t.capitalName)

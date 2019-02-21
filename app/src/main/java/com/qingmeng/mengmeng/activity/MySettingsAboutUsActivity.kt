@@ -2,6 +2,7 @@ package com.qingmeng.mengmeng.activity
 
 import android.content.Context
 import android.view.View
+import com.lemo.emojcenter.FaceInitData
 import com.mogujie.tt.config.IntentConstant
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
@@ -60,6 +61,8 @@ class MySettingsAboutUsActivity : BaseActivity() {
                 if (etChat.text.toString().trim() == "${MainApplication.instance.user.wxUid}") {
                     ToastUtil.showShort("这是你自己的id")
                 } else {
+                    FaceInitData.init(applicationContext)
+                    FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
                     startActivity<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to "1_${etChat.text.toString().trim()}")
                 }
             } else {

@@ -43,6 +43,7 @@ fun MessageEntity.parseFromDB(): MessageEntity? {
         DBConstant.SHOW_IMAGE_TYPE -> ImageMessage.parseFromDB(this)
         DBConstant.SHOW_ORIGIN_TEXT_TYPE -> TextMessage.parseFromDB(this)
         DBConstant.SHOW_VIDEO_TYPE -> VideoMessage.parseFromDB(this)
+        DBConstant.SHOW_BRAND_TYPE -> BrandMessage.parseFromDB(this)
         else -> TextMessage.parseFromDB(this)
     }
 }

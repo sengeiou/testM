@@ -21,15 +21,18 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
+import com.qingmeng.mengmeng.entity.MyMessage
+import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.view.SwipeMenuLayout
 import com.qingmeng.mengmeng.view.dot.UnreadMsgUtils
 import de.greenrobot.event.EventBus
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_message.*
 import kotlinx.android.synthetic.main.layout_head.*
 import org.jetbrains.anko.startActivity
-import java.util.*
 
 /**
  *  Description :设置 - 消息
@@ -44,6 +47,7 @@ class MyMessageActivity : BaseActivity() {
     private lateinit var mLayoutManager: LinearLayoutManager
     private lateinit var mAdapter: CommonAdapter<RecentInfo>
     private var mRecentSessionList = ArrayList<RecentInfo>()             //消息内容
+    private var mList = ArrayList<MyMessage>()                           //接口消息内容
 
     /**
      * 消息用到的
@@ -78,6 +82,7 @@ class MyMessageActivity : BaseActivity() {
         setHeadName(R.string.message)
 
         initAdapter()
+        httpLoad()
 
         /**
          * 消息用到的
@@ -146,6 +151,35 @@ class MyMessageActivity : BaseActivity() {
 
         })
         rvMyMessage.adapter = mAdapter
+    }
+
+    private fun httpLoad() {
+        myDialog.showLoadingDialog()
+        ApiUtils.getApi()
+                .getMyMessage()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    myDialog.dismissLoadingDialog()
+                    it.apply {
+                        if (code == 12000) {
+                            setData(data!!.chatInfoList)
+                        } else {
+                            ToastUtil.showShort(msg)
+                        }
+                    }
+                }, {
+                    myDialog.dismissLoadingDialog()
+                })
+    }
+
+    private fun setData(chatInfoList: List<MyMessage>) {
+        mList.clear()
+        mList.addAll(chatInfoList)
+        mList.forEachIndexed { index, myMessage ->
+            mRecentSessionList.add(index, myMessage as RecentInfo)
+        }
+        mAdapter.notifyDataSetChanged()
     }
 
     /**
