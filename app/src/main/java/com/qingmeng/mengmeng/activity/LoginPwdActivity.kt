@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
@@ -284,12 +285,16 @@ class LoginPwdActivity : BaseActivity() {
         if (type == 0) {
             mLoginPsw.visibility = View.VISIBLE
             mLoginCode.visibility = View.GONE
+            mPasswordPhone.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(20))
             mPasswordPhone.setHint(R.string.please_input_user_name_or_phone_num)
             mPasswordSmsLogin.setText(R.string.use_sms_verify_login)
         } else {
             mLoginPsw.visibility = View.GONE
             mLoginCode.visibility = View.VISIBLE
             mPasswordPhone.setHint(R.string.please_input_phone_num)
+            //arrayOf(InputFilter.LengthFilter(11))
+            mPasswordPhone.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(11))
+      //      mPasswordPhone.filters(arrayOf<InputFilter>(InputFilter.LengthFilter(10)))
             mPasswordSmsLogin.setText(R.string.use_name_login)
         }
     }

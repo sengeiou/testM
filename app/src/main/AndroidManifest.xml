@@ -141,6 +141,8 @@
         <activity
             android:name=".activity.RedShopSeach"
             android:launchMode="singleTask"/>
+            android:windowSoftInputMode="adjustResize"
+            android:launchMode="singleTask" />
         <!--搜索结果页-->
         <activity
             android:name=".activity.RedShopSeachResult"
