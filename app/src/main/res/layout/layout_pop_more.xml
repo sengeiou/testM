@@ -8,7 +8,7 @@
               android:paddingTop="@dimen/padding_dp_5">
 
     <TextView
-        android:id="@+id/pop_more_message"
+        android:id="@+id/popMoreMessage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/detail_icon_message"
@@ -19,7 +19,7 @@
         android:textSize="@dimen/text_size_14"/>
 
     <TextView
-        android:id="@+id/pop_more_homepage"
+        android:id="@+id/popMoreHomepage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/detail_icon_home_page"
@@ -30,7 +30,7 @@
         android:textSize="@dimen/text_size_14"/>
 
     <TextView
-        android:id="@+id/pop_more_feedback"
+        android:id="@+id/popMoreFeedback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/detail_icon_feedback"
@@ -44,7 +44,7 @@
         android:textSize="@dimen/text_size_14"/>
 
     <TextView
-        android:id="@+id/pop_more_share"
+        android:id="@+id/popMoreShare"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/detail_icon_share"
