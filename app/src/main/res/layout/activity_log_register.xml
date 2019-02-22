@@ -114,23 +114,6 @@
 
         <include layout="@layout/layout_line_no_padding" />
 
-        <EditText
-            android:id="@+id/mRegisterSurePsw"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/padding_dp_45"
-            android:background="@null"
-            android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-            android:drawableStart="@drawable/login_icon_input_pw_s"
-            android:drawablePadding="@dimen/padding_dp_13"
-            android:hint="@string/confirm_password"
-            android:inputType="textPassword"
-            android:maxLength="12"
-            android:singleLine="true"
-            android:textColor="@color/color_333333"
-            android:textColorHint="@color/color_999999"
-            android:textCursorDrawable="@drawable/color_cursor"
-            android:textSize="@dimen/text_size_16" />
-
     </LinearLayout>
 
     <include layout="@layout/layout_line_no_padding" />

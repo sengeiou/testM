@@ -12,6 +12,7 @@ import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
 import com.qingmeng.mengmeng.constant.ImageCodeHandler
 import com.qingmeng.mengmeng.utils.ApiUtils
@@ -186,6 +187,8 @@ class LoginChangePswActivity : BaseActivity() {
                         12000 -> bean.data?.let {
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
+                            IConstants.login_phone = phone
+                            IConstants.login_paw = password
                             it.upDate()
                             //还要登录完信..
                             mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
