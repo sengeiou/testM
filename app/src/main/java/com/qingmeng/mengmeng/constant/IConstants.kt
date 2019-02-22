@@ -44,6 +44,8 @@ object IConstants {
     val secondLevel = "secondLevel"       //二级分类id
     val THREELEVEL = "threeLevel"         //展示名称
     val LOGIN_BACK = 10010
+    var login_name = ""                     //账号密码登录时保存账号
+    var login_paw = ""                    //账号密码登录时保存密码
     //图片验证码
     val GET_IMAGE_CODE = BASE_URL + "api/captcha_app/image_app?account="
 
