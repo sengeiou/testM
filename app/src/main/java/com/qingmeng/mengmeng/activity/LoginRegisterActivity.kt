@@ -149,10 +149,11 @@ class LoginRegisterActivity : BaseActivity() {
                 setResult(Activity.RESULT_OK)
                 finish()
             }
-        } else {
-            mRead = false
-            mRegisterAgree.setImageResource(R.drawable.login_icon_not_read_n)
         }
+//        else {
+//            mRead = false
+//            mRegisterAgree.setImageResource(R.drawable.login_icon_not_read_n)
+//        }
     }
 
     //绑定手机
