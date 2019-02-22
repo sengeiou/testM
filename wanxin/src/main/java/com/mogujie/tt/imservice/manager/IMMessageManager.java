@@ -307,23 +307,25 @@ public class IMMessageManager extends IMManager {
         sessionManager.updateSession(audioMessage);
         sendMessage(audioMessage);
     }
-    public void sendBrand(BrandMessage brandMessage) {
-        if (brandMessage == null) {
-            return;
-        }
-        logger.i("chat#text#textMessage");
-        brandMessage.setStatus(MessageConstant.MSG_SENDING);
-        brandMessage.setContent(brandMessage.getContent());
-        long pkId = DBInterface.instance().insertOrUpdateMessage(brandMessage);
-        sessionManager.updateSession(brandMessage);
-        sendMessage(brandMessage);
-    }
 
     public void sendSingleImage(ImageMessage msg) {
         logger.d("ImMessageManager#sendImage ");
         ArrayList<ImageMessage> msgList = new ArrayList<>();
         msgList.add(msg);
         sendImages(msgList);
+    }
+
+    //发送品牌详情
+    public void sendBrand(BrandMessage brandMessage) {
+        if (brandMessage == null) {
+            return;
+        }
+        logger.i("chat#text#brandMessage");
+        brandMessage.setStatus(MessageConstant.MSG_SENDING);
+        brandMessage.setContent(brandMessage.getContent());
+        long pkId = DBInterface.instance().insertOrUpdateMessage(brandMessage);
+        sessionManager.updateSession(brandMessage);
+        sendMessage(brandMessage);
     }
 
     /**

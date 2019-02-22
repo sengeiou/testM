@@ -17,18 +17,11 @@ class BrandMessage() : TextMessage(), Serializable {
             setAttribute(MessageExtConst.BRAND_ID, value)
             field = value
         }
-    //本地logo
-    var logoPath = ""
-        get() = getAttributeString(MessageExtConst.BRAND_LOGO_PATH)
+    //logo
+    var logo = ""
+        get() = getAttributeString(MessageExtConst.BRAND_LOGO)
         set(value) {
-            setAttribute(MessageExtConst.BRAND_LOGO_PATH, value)
-            field = value
-        }
-    //网络logo
-    var logoUrl = ""
-        get() = getAttributeString(MessageExtConst.BRAND_LOGO_URL)
-        set(value) {
-            setAttribute(MessageExtConst.BRAND_LOGO_URL, value)
+            setAttribute(MessageExtConst.BRAND_LOGO, value)
             field = value
         }
     //品牌名称
@@ -67,15 +60,15 @@ class BrandMessage() : TextMessage(), Serializable {
         }
 
         // 消息页面，发送品牌详情消息
-        fun buildForSend(brandId: Int?, logoPath: String?, brandName: String?, brandAmount: String?, fromUser: UserEntity?, sessionKey: String?): BrandMessage? {
-            if (brandId == null || logoPath == null || brandName == null ||  brandAmount == null || fromUser == null || sessionKey == null) {
+        fun buildForSend(brandId: Int?, logo: String?, brandName: String?, brandAmount: String?, fromUser: UserEntity?, sessionKey: String?): BrandMessage? {
+            if (brandId == null || logo == null || brandName == null || brandAmount == null || fromUser == null || sessionKey == null) {
                 return null
             }
             val peerEntity = PeerEntity.getPeerEntity(sessionKey)
             return BrandMessage().apply {
                 buildSendMessage(fromUser, peerEntity, "[品牌详情]", DBConstant.SHOW_BRAND_TYPE)
-                this.logoPath = logoPath
                 this.brandId = brandId
+                this.logo = logo
                 this.brandName = brandName
                 this.brandAmount = brandAmount
             }

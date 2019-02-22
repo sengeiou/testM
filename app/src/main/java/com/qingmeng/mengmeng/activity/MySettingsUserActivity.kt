@@ -351,8 +351,8 @@ class MySettingsUserActivity : BaseActivity() {
     private fun contentVerification() {
         when {
             mName.isBlank() -> ToastUtil.showShort(getString(R.string.my_settings_user_name_tips))   //真实姓名
-            mPhone.isBlank() -> ToastUtil.showShort(getString(R.string.phoneTips))  //手机号
-            !InputCheckUtils.checkPhone(mPhone) -> ToastUtil.showShort(getString(R.string.phoneFormat_tips))   //手机号格式错误
+//            mPhone.isBlank() -> ToastUtil.showShort(getString(R.string.phoneTips))  //手机号
+//            !InputCheckUtils.checkPhone(mPhone) -> ToastUtil.showShort(getString(R.string.phoneFormat_tips))   //手机号格式错误
             mDistrictId == 0 -> ToastUtil.showShort(getString(R.string.popCitySelect_twoTips))   //城市id
             mCapitalId == 0 -> ToastUtil.showShort(getString(R.string.my_settings_user_money_tips))   //创业资本
             mIndustryOfInterest.isBlank() -> ToastUtil.showShort(getString(R.string.my_settings_user_interestIndustry_tips)) //感兴趣行业

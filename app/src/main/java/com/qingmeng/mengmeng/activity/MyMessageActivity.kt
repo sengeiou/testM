@@ -118,6 +118,8 @@ class MyMessageActivity : BaseActivity() {
         rvMyMessage.layoutManager = mLayoutManager
         mAdapter = CommonAdapter(this, R.layout.activity_my_message_item, mRecentSessionList, holderConvert = { holder, t, position, payloads ->
             holder.apply {
+                //接口请求的不给他左滑
+                getView<SwipeMenuLayout>(R.id.smlMyMessageRv).isSwipeEnable = t.sessionType != 0
                 //头像
                 t.avatar?.let {
                     GlideLoader.load(this@MyMessageActivity, it[0], getView(R.id.ivMyMessageRvLogo), placeholder = R.drawable.default_img_icon)
@@ -132,7 +134,7 @@ class MyMessageActivity : BaseActivity() {
                 setText(R.id.tvMyMessageRvTime, DateUtil.getSessionTime(t.updateTime))
                 //消息点击
                 getView<LinearLayout>(R.id.llMyMessageRv).setOnClickListener {
-                    //                    startActivity(Intent(this@MyMessageActivity, MessageActivity::class.java).apply {
+//                    startActivity(Intent(this@MyMessageActivity, MessageActivity::class.java).apply {
 //                        putExtra(IntentConstant.KEY_SESSION_KEY, t.sessionKey)
 //                    })
                     FaceInitData.init(applicationContext)
@@ -141,7 +143,7 @@ class MyMessageActivity : BaseActivity() {
                 }
                 //删除
                 getView<TextView>(R.id.tvMyMessageRvDelete).setOnClickListener {
-                    //                     startActivity<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to t.sessionKey)
+//                    startActivity<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to t.sessionKey)
                     //关闭view
                     getView<SwipeMenuLayout>(R.id.smlMyMessageRv).smoothClose()
                     mImService?.sessionManager?.reqRemoveSession(mRecentSessionList[position])
@@ -186,6 +188,7 @@ class MyMessageActivity : BaseActivity() {
             val recentInfo = RecentInfo()
             recentInfo.avatar = listOf(myMessage.avatar)
             recentInfo.name = myMessage.name
+            recentInfo.peerId = myMessage.wxUid
             recentInfo.sessionKey = "1_${myMessage.wxUid}"
             if (myMessage.name == "系统通知") {
                 mRecentSessionList.add(0, recentInfo)
