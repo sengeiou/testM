@@ -299,7 +299,7 @@ class LoginRegisterActivity : BaseActivity() {
             mCode = mRegisterCode.text.toString().trim()
             mPsw = mRegisterPsw.text.toString().trim()
             mRegisterSure.enabled = (!TextUtils.isEmpty(mUserName) && !TextUtils.isEmpty(mPhone)
-                    && !TextUtils.isEmpty(mCode) && !TextUtils.isEmpty(mPsw) && !TextUtils.isEmpty(mSurePsw))
+                    && !TextUtils.isEmpty(mCode) && !TextUtils.isEmpty(mPsw))
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
