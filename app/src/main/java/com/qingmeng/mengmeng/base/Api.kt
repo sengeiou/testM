@@ -238,6 +238,10 @@ interface Api {
     @GET("app/user/third_party_unbind")
     fun unThreeBinding(@Query("type") type: Int, @Header("ACCESS-TOKEN") accessToken: String): Observable<BaseBean<Any>>
 
+    //获取系统消息
+    @GET("api/chat/chat_Info")
+    fun getMyMessage(): Observable<BaseBean<MyMessageBean>>
+
     //获取头报文章列表
     @GET("/api/newspaper/article_list")
     fun getNewsHeadList(@Query("pageNum") pageNum: Int): Observable<BaseBean<NewsPagerListBean>>
