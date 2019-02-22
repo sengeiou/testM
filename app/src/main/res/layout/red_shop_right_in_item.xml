@@ -10,9 +10,10 @@
 
     <ImageView
         android:id="@+id/red_shop_right_inImageView"
-        android:layout_width="@dimen/padding_dp_50"
-        android:layout_height="@dimen/padding_dp_60"
-        android:layout_marginTop="@dimen/padding_dp_12" />
+        android:layout_width="@dimen/padding_dp_65"
+        android:layout_height="@dimen/padding_dp_65"
+        android:layout_marginTop="@dimen/padding_dp_12"
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/red_shop_right_inContent"

@@ -55,8 +55,6 @@ class PopSeachCondition : PopupWindow {
         this.height = ViewGroup.LayoutParams.WRAP_CONTENT
         this.animationStyle = R.style.TopPopWindow_animStyle
         this.setBackgroundDrawable(ColorDrawable(-0x00000000))
-
-
         mMenuView.bottom_condition_view.setOnClickListener {
             dismiss()
         }
@@ -146,7 +144,7 @@ class PopSeachCondition : PopupWindow {
         mMenuView.search_result_condition_recycler_money.isNestedScrollingEnabled = false
         mMoneyAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextMoneyList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
-                if (mTextMoneyList.isNotEmpty()) {
+                if (!mTextMoneyList.isEmpty()) {
                     mMenuView.search_result_condition_Money.visibility = View.VISIBLE
                     getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
                         if (data.checkState) {
@@ -178,7 +176,7 @@ class PopSeachCondition : PopupWindow {
         mMenuView.search_result_condition_recycler_joinType.isNestedScrollingEnabled = false
         mJoinModelAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextJoinTypeList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
-                if (mTextJoinTypeList.isNotEmpty()) {
+                if (!mTextJoinTypeList.isEmpty()) {
                     mMenuView.search_result_condition_joinType.visibility = View.VISIBLE
                     getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
                         if (data.checkState) {
@@ -267,9 +265,9 @@ class PopSeachCondition : PopupWindow {
         mMenuView.bottom_condition_view.visibility = View.VISIBLE
         //解决7.0showAsDropDown  失效
         if (Build.VERSION.SDK_INT == 24) {
-            var rect = Rect()
+            val rect = Rect()
             anchor.getGlobalVisibleRect(rect)
-            var h = anchor.resources.displayMetrics.heightPixels - rect.bottom
+            val h = anchor.resources.displayMetrics.heightPixels - rect.bottom
             height = h
         }
         super.showAsDropDown(anchor, xoff, yoff, gravity)
