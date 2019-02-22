@@ -72,13 +72,15 @@
     <string name="join_support">加入支持</string>
     <string name="brand_information">品牌信息</string>
     <string name="join_money">加入费用</string>
-    <string name="join_money_total">加入金</string>
+    <string name="input_money">投入费用</string>
+    <string name="join_money_total">加入费</string>
     <string name="join_money_ensure">保证金</string>
     <string name="join_money_equipment">设备费用</string>
     <string name="join_money_other">其他费用</string>
     <string name="join_data_name">请输入你的姓名</string>
     <string name="join_data_sex">请选择你的性别</string>
     <string name="join_data_phone">请输入你的手机号</string>
+    <string name="correct_phone">请输入正确的手机号</string>
     <string name="join_data_msg">请输入留言</string>
     <string name="brand_detail">品牌详情</string>
     <string name="brand_ownership">品牌所属</string>
@@ -87,9 +89,12 @@
     <string name="attracting_investment_area">招商区域</string>
     <string name="regional_authorization">区域授权</string>
     <string name="suitable_for_crowd">适合人群</string>
-    <string name="join_data_message" formatted="false">我想了解%s项目的加盟详情和方案</string>
+    <string name="join_money_tip">以上费用为预估，具体费用请咨询企业</string>
+    <string name="join_data_message" formatted="false">我想了解%s项目的加入详情和方案</string>
     <string name="join_count" formatted="false">加入店数量：%s</string>
+    <string name="join_count_normal">加入店数量：</string>
     <string name="direct_count" formatted="false">直营店数量：%s</string>
+    <string name="direct_count_normal">直营店数量：</string>
 
     <string name="join_feedback_type1">品牌信息有误</string>
     <string name="join_feedback_type2">品牌不存在</string>
