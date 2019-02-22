@@ -128,8 +128,6 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
                     startActivity<ShopDetailActivity>(IConstants.BRANDID to data.id)
                 }
             }
-        }, onItemClick = { view, holder, position ->
-
         })
         swipe_target.adapter = mAdapter
 
@@ -259,14 +257,21 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
     override fun initListener() {
         super.initListener()
         head_search.setOnClickListener { startActivity<RedShopSeach>() }
-        head_search_mBack.setOnClickListener { this.finish() }
+        head_search_mBack.setOnClickListener {
+            //            if (popupMenu1.isShowing) popupMenu1.dismiss()
+//            if (popupMenu2.isShowing) popupMenu2.dismiss()
+//            if (popupMenu3.isShowing) popupMenu3.dismiss()
+//            if (popupMenu4.isShowing) popupMenu4.dismiss()
+            this.finish()
+        }
         mSeachToTop.setOnClickListener {
             swipe_target.scrollToPosition(0)
+            mSeachToTop.visibility = View.GONE
             seach_result_swipeLayout.isLoadMoreEnabled = false
         }
         search_food_type.setOnClickListener {
             if (!mIsInstantiationOne) {
-                popupMenu1 = PopSeachSelect(this, 1, fatherId)
+                if (fatherId == 0) popupMenu1 = PopSeachSelect(this, 1, typeId) else popupMenu1 = PopSeachSelect(this, 1, fatherId)
             }
             popupMenu1.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
                 override fun onSelectCallBack(selectId: Int, selectFatherId: Int, selectName: String) {
@@ -336,14 +341,6 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
                 }
             }
 
-            fun selectItem(dy: Int) {
-                if (dy == 0) {
-                    mSeachToTop.visibility = View.GONE
-                } else {
-                    mSeachToTop.visibility = View.VISIBLE
-                }
-            }
-
             //滚动时
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
@@ -352,7 +349,11 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
                 val view: View = mLauyoutManger.findViewByPosition(firstVisibleItemPosition)!!
                 val firstVisiableChildViewTop = view.top
                 val itemHeight = view.height
-                selectItem((firstVisibleItemPosition) * itemHeight - firstVisiableChildViewTop)
+                if ((firstVisibleItemPosition) * itemHeight - firstVisiableChildViewTop == 0) {
+                    mSeachToTop.visibility = View.GONE
+                } else {
+                    mSeachToTop.visibility = View.VISIBLE
+                }
             }
         })
         seach_result_swipeLayout.setOnRefreshListener(this)
@@ -569,5 +570,11 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
             }
         }
     }
-
+//    override fun onDestroy() {
+//        if (popupMenu1.isShowing) popupMenu1.dismiss()
+//        if (popupMenu2.isShowing) popupMenu2.dismiss()
+//        if (popupMenu3.isShowing) popupMenu3.dismiss()
+//        if (popupMenu4.isShowing) popupMenu4.dismiss()
+//        super.onDestroy()
+//    }
 }

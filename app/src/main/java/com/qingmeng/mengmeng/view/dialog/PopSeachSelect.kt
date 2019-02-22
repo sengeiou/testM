@@ -64,8 +64,10 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
         mMenuView.bottom_view.setOnClickListener {
             dismiss()
         }
-        if (mfatherId >= 0) {
+        if (mfatherId > 0) {
             mFathId = mfatherId
+        } else {
+            mFathId = 1
         }
         when (type) {
             1 -> getFoodTypeCache()
@@ -80,8 +82,9 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
     private fun initLeftAdapter(type: Int) {
         mLauyoutManger = LinearLayoutManager(mActivity)
         mMenuView.left_recyclerView_pop.layoutManager = mLauyoutManger
+     //   mMenuView.left_recyclerView_pop.scrollToPosition(mFathId)
         if (type == 1) {
-            mFoodTypeAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mFoodTypeList, holderConvert = { holder, data, position, payloads ->
+            mFoodTypeAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mFoodTypeList, holderConvert = { holder, data, _, _ ->
                 holder.apply {
                     if (data.checkState) {
                         getView<ImageView>(R.id.search_result_pop_left_arrows).visibility = View.VISIBLE
@@ -90,7 +93,7 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
                     }
                     setText(R.id.search_result_pop_left_item, data.name)
                 }
-            }, onItemClick = { view, holder, position ->
+            }, onItemClick = { _, _, position ->
                 mFoodTypeList.forEach {
                     it.checkState = false
                 }
@@ -102,7 +105,7 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
             })
             mMenuView.left_recyclerView_pop.adapter = mFoodTypeAdapter
         } else if (type == 2) {
-            mProvinceAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mProvinceList, holderConvert = { holder, data, position, payloads ->
+            mProvinceAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mProvinceList, holderConvert = { holder, data, _, _ ->
                 holder.apply {
                     if (data.checkState) {
                         getView<ImageView>(R.id.search_result_pop_left_arrows).visibility = View.VISIBLE
@@ -111,7 +114,7 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
                     }
                     setText(R.id.search_result_pop_left_item, data.name)
                 }
-            }, onItemClick = { view, holder, position ->
+            }, onItemClick = { _, _, position ->
                 mProvinceList.forEach {
                     it.checkState = false
                 }
@@ -125,7 +128,7 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
             mMenuView.left_recyclerView_pop.adapter = mProvinceAdapter
         } else if (type == 3) {
             height = ViewGroup.LayoutParams.WRAP_CONTENT
-            mRankingAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mRankingList, holderConvert = { holder, data, position, payloads ->
+            mRankingAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mRankingList, holderConvert = { holder, data, _, _ ->
                 holder.apply {
                     getView<LinearLayout>(R.id.seach_ranking_linear).apply {
                         if (data.checkState) {
@@ -136,7 +139,7 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
                         setText(R.id.search_result_pop_left_item, data.title)
                     }
                 }
-            }, onItemClick = { view, holder, position ->
+            }, onItemClick = { _, _, position ->
                 mRankingList.forEach {
                     it.checkState = false
                 }
@@ -153,8 +156,8 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
         if (type == 1) {
             mGridManager = GridLayoutManager(mActivity, 3)
             mMenuView.right_recyclerView_pop.layoutManager = mGridManager
-            mMenuView.right_recyclerView_pop.isNestedScrollingEnabled=false
-            mFoodAdapter = CommonAdapter(mActivity, R.layout.seach_food_type_right_in_item, mFoodList, holderConvert = { holder, data, position, payloads ->
+            mMenuView.right_recyclerView_pop.isNestedScrollingEnabled = false
+            mFoodAdapter = CommonAdapter(mActivity, R.layout.seach_food_type_right_in_item, mFoodList, holderConvert = { holder, data, _, _ ->
                 holder.apply {
                     mMenuView.seach_result_right_text_type.visibility = View.VISIBLE
                     mMenuView.seach_result_right_text_type.setOnClickListener {
@@ -178,7 +181,7 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
                             .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.Seach_food_type_right_inImageView))
                     setText(R.id.Seach_food_type_right_inContent, data.name)
                 }
-            }, onItemClick = { view, holder, position ->
+            }, onItemClick = { _, _, position ->
                 mSelectCallBack.onSelectCallBack(mFoodList[position].id, mFoodList[position].fahterId, mFoodList[position].name)
                 dismiss()
             })
@@ -186,12 +189,12 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
         } else if (type == 2) {
             mLauyoutManger = LinearLayoutManager(mActivity)
             mMenuView.right_recyclerView_pop.layoutManager = mLauyoutManger
-            mMenuView.right_recyclerView_pop.isNestedScrollingEnabled=false
-            mCityAdapter = CommonAdapter(mActivity, R.layout.seach_result_right_item, mCityList, holderConvert = { holder, data, position, payloads ->
+            mMenuView.right_recyclerView_pop.isNestedScrollingEnabled = false
+            mCityAdapter = CommonAdapter(mActivity, R.layout.seach_result_right_item, mCityList, holderConvert = { holder, data, _, _ ->
                 holder.apply {
                     setText(R.id.search_result_pop_right_item, data.name)
                 }
-            }, onItemClick = { view, holder, position ->
+            }, onItemClick = { _, _, position ->
                 var mFatherProvinceName = String()
                 if (position == 0) {
                     mProvinceList.forEach {
@@ -269,7 +272,6 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
                     if (!mCityList.isEmpty()) {
                         mCityAdapter.notifyDataSetChanged()
                     }
-
                     httpSeachJoinArea(getVersion(1))
                 }, {
                     httpSeachJoinArea(getVersion(1))
@@ -294,23 +296,29 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
                                 }
                                 mFoodTypeList.add(FoodType(ArrayList(), 0, "", 0, "", "全部", "1"))
                                 mFoodTypeList.addAll(it.foodType)
-                                if (!mFoodTypeList.isEmpty()) {
-                                    //打开直接选中所在分组 mFathId
-                                    mFoodTypeList[mFathId].checkState = true
-                                }
                                 if (!mFoodList.isEmpty()) {
                                     mFoodList.clear()
                                 }
+                                if (!mFoodTypeList.isEmpty()) {
+                                    //打开直接选中所在分组 mFathId
+                                    mFoodTypeList.forEach {
+                                        if (it.id == mFathId) {
+                                            it.checkState = true
+                                            //打开直接选中所在分组 mFathId
+                                            mFoodList.addAll(it.foodTypeDto)
+//                                            val index = mFoodTypeList.indexOfFirst { it.id == mFathId }
+//                                            mMenuView.left_recyclerView_pop.scrollToPosition(index)
+                                        }
+                                    }
+                                }
+
                                 //加入缓存
                                 // mFoodList.add(FoodTypeDto(it.foodType[0].id, "", 0, logoUrl, "全部"))
-                                //打开直接选中所在分组 mFathId
-                                mFoodList.addAll(it.foodType[mFathId-1].foodTypeDto)
                                 BoxUtils.saveCache(it, IConstants.SEACH_RESULT_FOOD)
                                 mFoodTypeAdapter.notifyDataSetChanged()
                                 mFoodAdapter.notifyDataSetChanged()
                             }
                         }
-
                     }
                 }, {
                     ToastUtil.showNetError()
