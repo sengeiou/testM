@@ -104,7 +104,7 @@
                     android:layout_below="@+id/mDetailMoney"
                     android:layout_alignBaseline="@id/mDetailType"
                     android:layout_centerHorizontal="true"
-                    android:text="@string/join_count"/>
+                    android:text="@string/join_count_normal"/>
 
                 <TextView
                     android:id="@+id/mDetailDirectCount"
@@ -112,7 +112,7 @@
                     android:layout_below="@+id/mDetailMoney"
                     android:layout_alignBaseline="@id/mDetailType"
                     android:layout_alignParentEnd="true"
-                    android:text="@string/direct_count"/>
+                    android:text="@string/direct_count_normal"/>
             </RelativeLayout>
 
             <LinearLayout

@@ -4,8 +4,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="500dp"
                 android:background="@color/white"
-                android:paddingStart="@dimen/padding_dp_10"
-                android:paddingEnd="@dimen/padding_dp_10"
+                android:paddingStart="@dimen/padding_dp_15"
+                android:paddingEnd="@dimen/padding_dp_15"
                 android:paddingBottom="@dimen/padding_dp_10">
 
     <TextView
@@ -22,7 +22,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/join_money_compete"
+        android:layout_above="@+id/money_tip"
         android:layout_below="@+id/join_money_title"
         android:paddingBottom="@dimen/padding_dp_10"
         android:scrollbars="none">
@@ -37,7 +37,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:my_item_content="100W"
-                app:my_item_title="@string/join_money"/>
+                app:my_item_title="@string/input_money"/>
 
             <com.qingmeng.mengmeng.view.widget.MyItemView
                 android:id="@+id/money_join"
@@ -74,6 +74,18 @@
         </LinearLayout>
 
     </ScrollView>
+
+    <TextView
+        android:id="@+id/money_tip"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/join_money_compete"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="@dimen/padding_dp_10"
+        android:text="@string/join_money_tip"
+        android:textColor="@color/color_999999"
+        android:textSize="@dimen/text_size_13"
+        android:visibility="gone"/>
 
     <TextView
         android:id="@+id/join_money_compete"
