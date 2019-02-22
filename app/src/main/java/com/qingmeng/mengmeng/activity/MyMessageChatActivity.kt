@@ -86,7 +86,11 @@ class MyMessageChatActivity : BaseActivity() {
 //    private val mTabTitles = arrayOf("", "")                    //tabLayout头部 初始化两个
     private var albumHelper: AlbumHelper? = null                //相册数据
     private var albumList: MutableList<ImageBucket>? = null
-    private var mBundle: Bundle? = null                          //品牌详情内容
+    private var mBundle: Bundle? = null                         //品牌详情内容
+
+    companion object {
+        var mAvatar = ""                                        //默认发送者头像
+    }
 
     /**
      * 消息用到的
@@ -115,6 +119,11 @@ class MyMessageChatActivity : BaseActivity() {
 
         setHeadName(intent.getStringExtra("title"))
         mBundle = intent.getBundleExtra("bundle")
+        if (mBundle != null) {
+            mAvatar = mBundle!!.getString("avatar")
+        } else {
+            mAvatar = intent.getStringExtra("avatar")
+        }
         //实例化键盘工具
         mKeyboardUtil = KeyboardUtil(this, etMyMessageChatContent)
 //        //表情里添加fragment
@@ -395,7 +404,6 @@ class MyMessageChatActivity : BaseActivity() {
             mImService!!.messageManager.sendText(textMessage)
             //输入框置空
             etMyMessageChatContent.setText("")
-            //发送消息
             pushList(textMessage, true)
             etMyMessageChatContent.isFocusable = true
         }
@@ -484,12 +492,13 @@ class MyMessageChatActivity : BaseActivity() {
             //发送品牌
             override fun onSendBrandClick(position: Int) {
                 val id = (mAdapter.msgObjectList[position] as BrandMessage).brandId
-                val avatar = (mAdapter.msgObjectList[position] as BrandMessage).logoUrl
+                val avatar = (mAdapter.msgObjectList[position] as BrandMessage).logo
                 val name = (mAdapter.msgObjectList[position] as BrandMessage).brandName
                 val capitalName = (mAdapter.msgObjectList[position] as BrandMessage).brandAmount
                 val brandMessage = BrandMessage.buildForSend(id, avatar, name, capitalName, loginUser, currentSessionKey)
-                mImService?.messageManager?.sendText(brandMessage)
+                mImService?.messageManager?.sendBrand(brandMessage)
                 mAdapter.msgObjectList.remove(mAdapter.msgObjectList[position])
+                pushList(brandMessage, true)
             }
         })
 
@@ -653,10 +662,9 @@ class MyMessageChatActivity : BaseActivity() {
                 val logo = mBundle?.getString("logo")
                 val name = mBundle?.getString("name")
                 val capitalName = mBundle?.getString("capitalName")
-                val avatar = mBundle?.getString("avatar")
                 val brandMessage = BrandMessage()
                 brandMessage.brandId = id!!
-                brandMessage.logoUrl = logo!!
+                brandMessage.logo = logo!!
                 brandMessage.brandName = name!!
                 brandMessage.brandAmount = capitalName!!
                 brandMessage.displayType = DBConstant.SHOW_BRAND_TYPE

@@ -40,6 +40,5 @@ object MessageExtConst {
     const val BRAND_ID = "brandId"
     const val BRAND_NAME = "brandName"
     const val BRAND_AMOUNT = "brandAmount"
-    const val BRAND_LOGO_PATH = "logoPath"
-    const val BRAND_LOGO_URL = "logoUrl"
+    const val BRAND_LOGO = "logo"
 }
