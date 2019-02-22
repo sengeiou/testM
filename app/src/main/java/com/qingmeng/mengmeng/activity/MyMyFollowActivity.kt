@@ -139,7 +139,7 @@ class MyMyFollowActivity : BaseActivity() {
                     setText(R.id.tvMyMyFollowRvBrandName, t.brandName)
                 }
                 setText(R.id.tvMyMyFollowRvCateringType, t.foodName)
-                if (t.capitalName.isBlank()) {
+                if (t.capitalName.isNullOrBlank()) {
                     setText(R.id.tvMyMyFollowRvInvestmentAmount, getString(R.string.face))
                 } else {
                     setText(R.id.tvMyMyFollowRvInvestmentAmount, t.capitalName)

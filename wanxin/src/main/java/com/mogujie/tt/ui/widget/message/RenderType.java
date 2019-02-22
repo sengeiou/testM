@@ -4,21 +4,24 @@ package com.mogujie.tt.ui.widget.message;
  * @author : yingmu on 15-1-8.
  * @email : yingmu@mogujie.com.
  */
-public enum  RenderType {
+public enum RenderType {
     MESSAGE_TYPE_INVALID,
     MESSAGE_TYPE_TIME_TITLE,
+    MESSAGE_TYPE_BRAND,         //公共品牌详情
     MESSAGE_TYPE_MINE_TEXT,
-    MESSAGE_TYPE_MINE_GIF ,
+    MESSAGE_TYPE_MINE_GIF,
     MESSAGE_TYPE_MINE_IMAGE,
     MESSAGE_TYPE_MINE_GIF_IMAGE,
     MESSAGE_TYPE_MINE_AUDIO,
     MESSAGE_TYPE_MINE_VIDEO,
     MESSAGE_TYPE_MINE_REVOKE,   //自己的撤回
+    MESSAGE_TYPE_MINE_BRAND,    //自己发送的品牌详情
     MESSAGE_TYPE_OTHER_TEXT,
     MESSAGE_TYPE_OTHER_GIF,
     MESSAGE_TYPE_OTHER_IMAGE,
     MESSAGE_TYPE_OTHER_GIF_IMAGE,
     MESSAGE_TYPE_OTHER_AUDIO,
     MESSAGE_TYPE_OTHER_VIDEO,
-    MESSAGE_TYPE_OTHER_REVOKE   //別人的撤回
+    MESSAGE_TYPE_OTHER_REVOKE,  //別人的撤回
+    MESSAGE_TYPE_OTHER_BRAND,   //别人发送的品牌详情
 }

@@ -153,6 +153,7 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
         if (type == 1) {
             mGridManager = GridLayoutManager(mActivity, 3)
             mMenuView.right_recyclerView_pop.layoutManager = mGridManager
+            mMenuView.right_recyclerView_pop.isNestedScrollingEnabled=false
             mFoodAdapter = CommonAdapter(mActivity, R.layout.seach_food_type_right_in_item, mFoodList, holderConvert = { holder, data, position, payloads ->
                 holder.apply {
                     mMenuView.seach_result_right_text_type.visibility = View.VISIBLE
@@ -172,7 +173,6 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
                             mSelectCallBack.onSelectCallBack(data.fahterId, 0, mFatherName)
                             dismiss()
                         }
-
                     }
                     Glide.with(mActivity).load(data.logo).apply(RequestOptions()
                             .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.Seach_food_type_right_inImageView))
@@ -186,6 +186,7 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
         } else if (type == 2) {
             mLauyoutManger = LinearLayoutManager(mActivity)
             mMenuView.right_recyclerView_pop.layoutManager = mLauyoutManger
+            mMenuView.right_recyclerView_pop.isNestedScrollingEnabled=false
             mCityAdapter = CommonAdapter(mActivity, R.layout.seach_result_right_item, mCityList, holderConvert = { holder, data, position, payloads ->
                 holder.apply {
                     setText(R.id.search_result_pop_right_item, data.name)
