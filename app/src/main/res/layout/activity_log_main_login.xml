@@ -47,7 +47,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="112dp"
+            android:layout_marginStart="94dp"
             android:drawableStart="@drawable/login_icon_input_pw_n"
             android:drawablePadding="@dimen/padding_dp_10"
             android:text="@string/use_name_password_login"
@@ -70,7 +70,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="112dp"
+            android:layout_marginStart="92dp"
             android:drawableStart="@drawable/login_icon_verification_code"
             android:drawablePadding="@dimen/padding_dp_10"
             android:text="@string/sms_verify_login"

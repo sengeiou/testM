@@ -19,6 +19,8 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import cn.jzvd.Jzvd
 import cn.jzvd.JzvdStd
+import com.lemo.emojcenter.FaceInitData
+import com.mogujie.tt.config.IntentConstant
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
@@ -174,7 +176,19 @@ class ShopDetailActivity : BaseActivity() {
         mDetailJoinSupport.setOnClickListener { myDialog.showBrandDialog(mJoinSupport) }
         mDetailBrandInformation.setOnClickListener { _ -> brandInformation?.let { myDialog.showBrandDialog(it) } }
         mDetailJoinMoney.setOnClickListener { _ -> brandInitialFee?.let { myDialog.showBrandDialog(it) } }
-        mCustomerService.setOnClickListener { }
+        mCustomerService.setOnClickListener {
+            brandBean?.let {
+                FaceInitData.init(applicationContext)
+                FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
+                toNext<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to "1_${it.wxServiceId}", "title" to it.nickname, "bundle" to Bundle().apply {
+                    putInt("id", id)
+                    putString("logo", it.logo)
+                    putString("name", it.name)
+                    putString("capitalName", it.capitalName)
+                    putString("avatar", it.avatar)
+                })
+            }
+        }
         mCollection.setOnClickListener {
             if (TextUtils.isEmpty(MainApplication.instance.TOKEN)) {
                 startActivity<LoginMainActivity>(FROM_TYPE to 1)
@@ -184,8 +198,17 @@ class ShopDetailActivity : BaseActivity() {
             if (isAttention == 0) addAttention() else unAttention()
         }
         mDetailJoin.setOnClickListener {
-            //todo 跳消息列表
-            toNext<MyMessageActivity>()
+            brandBean?.let {
+                FaceInitData.init(applicationContext)
+                FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
+                toNext<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to "1_${it.wxServiceId}", "title" to it.nickname, "bundle" to Bundle().apply {
+                    putInt("id", id)
+                    putString("logo", it.logo)
+                    putString("name", it.name)
+                    putString("capitalName", it.capitalName)
+                    putString("avatar", it.avatar)
+                })
+            }
         }
         mGetJoinData.setOnClickListener { myDialog.showJoinDataDialog(name) { name, phone, message -> join(name, phone, message) } }
         mDetailScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->

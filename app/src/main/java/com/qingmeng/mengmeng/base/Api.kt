@@ -44,7 +44,7 @@ interface Api {
     @POST("app/user/phone_register")
     @FormUrlEncoded
     fun register(@Field("userName") userName: String, @Field("phone") phone: String, @Field("smsCode") smsCode: String,
-                 @Field("password") password: String, @Field("verifyPassword") verifyPassword: String,
+                 @Field("password") password: String,
                  @Field("type") type: Int, @Field("isUserProtocol") isUserProtocol: Int = 1): Observable<BaseBean<UserBean>>
 
     /**
@@ -237,6 +237,10 @@ interface Api {
     //第三方解绑绑定 1.QQ 2.微信
     @GET("app/user/third_party_unbind")
     fun unThreeBinding(@Query("type") type: Int, @Header("ACCESS-TOKEN") accessToken: String): Observable<BaseBean<Any>>
+
+    //获取系统消息
+    @GET("api/chat/chat_Info")
+    fun getMyMessage(): Observable<BaseBean<MyMessageBean>>
 
     //获取头报文章列表
     @GET("/api/newspaper/article_list")

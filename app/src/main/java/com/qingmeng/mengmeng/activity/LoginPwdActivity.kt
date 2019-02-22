@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.text.Editable
+import android.text.InputFilter
 import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.View
@@ -14,6 +15,7 @@ import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
 import com.qingmeng.mengmeng.constant.IConstants.LOGIN_BACK
 import com.qingmeng.mengmeng.constant.IConstants.LOGIN_TYPE
@@ -165,6 +167,8 @@ class LoginPwdActivity : BaseActivity() {
                         12000 -> bean.data?.let {
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
+                            IConstants.login_name = username
+                            IConstants.login_paw = password
                             it.upDate()
                             //还要登录完信..
                             mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
@@ -284,12 +288,16 @@ class LoginPwdActivity : BaseActivity() {
         if (type == 0) {
             mLoginPsw.visibility = View.VISIBLE
             mLoginCode.visibility = View.GONE
+            mPasswordPhone.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(20))
             mPasswordPhone.setHint(R.string.please_input_user_name_or_phone_num)
             mPasswordSmsLogin.setText(R.string.use_sms_verify_login)
         } else {
             mLoginPsw.visibility = View.GONE
             mLoginCode.visibility = View.VISIBLE
             mPasswordPhone.setHint(R.string.please_input_phone_num)
+            //arrayOf(InputFilter.LengthFilter(11))
+            mPasswordPhone.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(11))
+      //      mPasswordPhone.filters(arrayOf<InputFilter>(InputFilter.LengthFilter(10)))
             mPasswordSmsLogin.setText(R.string.use_name_login)
         }
     }

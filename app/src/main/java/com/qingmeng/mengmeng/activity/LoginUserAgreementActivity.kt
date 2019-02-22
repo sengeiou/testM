@@ -34,13 +34,10 @@ class LoginUserAgreementActivity : BaseActivity() {
         //同意按钮
         user_agreement_agree.setOnClickListener {
             setResult(RESULT_OK, intent.putExtra("agreement", 1))
-            ToastUtil.showShort(R.string.user_agreement_yes)
+   //         ToastUtil.showShort(R.string.user_agreement_yes)
             finish()
         }
-        user_agreement_agree_not.setOnClickListener {
-            ToastUtil.showShort(R.string.user_agreement_no)
-            finish()
-        }
+
     }
 
     //web链接

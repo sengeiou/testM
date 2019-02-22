@@ -69,6 +69,8 @@ class RedShopSeach : BaseActivity() {
 
     override fun initListener() {
         super.initListener()
+
+
         //点击页面其他地方取消EditText的焦点并且隐藏软键盘
         ll_red_shop_seach.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View, event: MotionEvent): Boolean {
@@ -88,6 +90,7 @@ class RedShopSeach : BaseActivity() {
         head_search_mMenu2.setOnClickListener {
             this.finish()
         }
+        //清除搜索框
         head_search2.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View?, event: MotionEvent?): Boolean {
                 // et.getCompoundDrawables()得到一个长度为4的数组，分别表示左右上下四张图片
@@ -142,8 +145,6 @@ class RedShopSeach : BaseActivity() {
                 }
                 return false
             }
-
-
         })
         //删除按钮
         search_cancel_search.setOnClickListener {
@@ -151,6 +152,7 @@ class RedShopSeach : BaseActivity() {
             shistory.clear()
             setSearchHistory(shistory)
             adapter.notifyDataChanged()
+            search_cancel_search.visibility = View.GONE
         }
 
     }
@@ -263,9 +265,10 @@ class RedShopSeach : BaseActivity() {
         //数据库是否为空
         if (bhistorySearch) {
             //空
+            search_cancel_search.visibility = View.GONE
         } else {
             //有数据
-            //测试数据
+            search_cancel_search.visibility = View.VISIBLE
             historySearchData.reverse()
             for (i in historySearchData.indices) {
                 shistory.add(historySearchData[i].name)

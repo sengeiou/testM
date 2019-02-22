@@ -37,7 +37,6 @@ public interface MessageConstant {
     public final int VIDEO_LOADED_FAILURE = 4;
     public final int VIDEO_LOADING = 5;
 
-
     /**
      * 图片消息的前后常量
      */

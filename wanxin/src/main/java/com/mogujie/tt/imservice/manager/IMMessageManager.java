@@ -2,6 +2,7 @@ package com.mogujie.tt.imservice.manager;
 
 import android.content.Intent;
 import android.text.TextUtils;
+
 import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedInputStream;
 import com.mogujie.tt.config.DBConstant;
@@ -13,6 +14,7 @@ import com.mogujie.tt.db.entity.PeerEntity;
 import com.mogujie.tt.db.entity.SessionEntity;
 import com.mogujie.tt.imservice.callback.Packetlistener;
 import com.mogujie.tt.imservice.entity.AudioMessage;
+import com.mogujie.tt.imservice.entity.BrandMessage;
 import com.mogujie.tt.imservice.entity.ImageMessage;
 import com.mogujie.tt.imservice.entity.TextMessage;
 import com.mogujie.tt.imservice.entity.VideoMessage;
@@ -28,7 +30,6 @@ import com.mogujie.tt.protobuf.helper.Java2ProtoBuf;
 import com.mogujie.tt.protobuf.helper.ProtoBuf2JavaBean;
 import com.mogujie.tt.utils.Logger;
 import com.mogujie.tt.utils.ULogToDevice;
-import de.greenrobot.event.EventBus;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -36,6 +37,8 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import de.greenrobot.event.EventBus;
 
 /**
  * 消息的处理
@@ -305,12 +308,24 @@ public class IMMessageManager extends IMManager {
         sendMessage(audioMessage);
     }
 
-
     public void sendSingleImage(ImageMessage msg) {
         logger.d("ImMessageManager#sendImage ");
         ArrayList<ImageMessage> msgList = new ArrayList<>();
         msgList.add(msg);
         sendImages(msgList);
+    }
+
+    //发送品牌详情
+    public void sendBrand(BrandMessage brandMessage) {
+        if (brandMessage == null) {
+            return;
+        }
+        logger.i("chat#text#brandMessage");
+        brandMessage.setStatus(MessageConstant.MSG_SENDING);
+        brandMessage.setContent(brandMessage.getContent());
+        long pkId = DBInterface.instance().insertOrUpdateMessage(brandMessage);
+        sessionManager.updateSession(brandMessage);
+        sendMessage(brandMessage);
     }
 
     /**

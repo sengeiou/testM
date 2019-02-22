@@ -35,4 +35,10 @@ object MessageExtConst {
 
     //撤回消息
     const val CMD_TIME = "wxTimer"
+
+    //品牌详情
+    const val BRAND_ID = "brandId"
+    const val BRAND_NAME = "brandName"
+    const val BRAND_AMOUNT = "brandAmount"
+    const val BRAND_LOGO = "logo"
 }

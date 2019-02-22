@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.activity
 
+import AppManager
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
@@ -167,7 +168,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
         }
     }
 
-     fun loginCode(code: String) {
+    fun loginCode(code: String) {
         myDialog.showLoadingDialog()
         ApiUtils.getApi().getWeChatToken(IConstants.APPID_WECHAT, IConstants.SECRET_WECHAT, code)
                 .observeOn(AndroidSchedulers.mainThread())

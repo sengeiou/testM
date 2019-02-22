@@ -113,6 +113,12 @@ public class MessageOperatePopup implements View.OnClickListener, View.OnTouchLi
             return;
         }
 
+        if (position == -1) {
+            deleteBtn.setVisibility(View.GONE);
+        } else {
+            deleteBtn.setVisibility(View.VISIBLE);
+        }
+
         //下标赋值
         mPosition = position;
 
@@ -132,12 +138,12 @@ public class MessageOperatePopup implements View.OnClickListener, View.OnTouchLi
 
         // 语音类型
         if (type == DBConstant.SHOW_AUDIO_TYPE) {
-//            speakerBtn.setVisibility(View.VISIBLE);
-//            if (AudioPlayerHandler.getInstance().getAudioMode(context) == AudioManager.MODE_NORMAL) {
-//                speakerBtn.setText(R.string.call_mode);
-//            } else {
-//                speakerBtn.setText(R.string.speaker_mode);
-//            }
+            //            speakerBtn.setVisibility(View.VISIBLE);
+            //            if (AudioPlayerHandler.getInstance().getAudioMode(context) == AudioManager.MODE_NORMAL) {
+            //                speakerBtn.setText(R.string.call_mode);
+            //            } else {
+            //                speakerBtn.setText(R.string.speaker_mode);
+            //            }
             bspeakerShow = true;
         } else {
             speakerBtn.setVisibility(View.GONE);

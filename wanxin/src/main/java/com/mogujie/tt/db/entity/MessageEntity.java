@@ -10,6 +10,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.mogujie.tt.config.DBConstant;
 import com.mogujie.tt.config.MessageConstant;
+import com.mogujie.tt.imservice.entity.BrandMessage;
 import com.mogujie.tt.imservice.entity.ContentEntity;
 import com.mogujie.tt.imservice.entity.ImageMessage;
 import com.mogujie.tt.imservice.entity.TextMessage;
@@ -590,6 +591,8 @@ public class MessageEntity implements Serializable {
                 return ImageMessage.Companion.parseFromNet(this);
             case DBConstant.SHOW_VIDEO_TYPE:
                 return VideoMessage.Companion.parseFromNet(this);
+            case DBConstant.SHOW_BRAND_TYPE:
+                return BrandMessage.Companion.parseFromNet(this);
             default:
                 return TextMessage.Companion.parseFromNet(this);
         }

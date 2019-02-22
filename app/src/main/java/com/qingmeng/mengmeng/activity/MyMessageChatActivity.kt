@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Intent
 import android.media.MediaPlayer
+import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -53,8 +54,10 @@ import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.main.activity_my_message_chat.*
 import kotlinx.android.synthetic.main.layout_head.*
 import kotlinx.android.synthetic.main.view_dialog_sound_volume.*
+import org.jetbrains.anko.startActivity
 import java.io.IOException
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 /**
@@ -83,6 +86,11 @@ class MyMessageChatActivity : BaseActivity() {
 //    private val mTabTitles = arrayOf("", "")                    //tabLayout头部 初始化两个
     private var albumHelper: AlbumHelper? = null                //相册数据
     private var albumList: MutableList<ImageBucket>? = null
+    private var mBundle: Bundle? = null                         //品牌详情内容
+
+    companion object {
+        var mAvatar = ""                                        //默认发送者头像
+    }
 
     /**
      * 消息用到的
@@ -110,6 +118,12 @@ class MyMessageChatActivity : BaseActivity() {
         super.initObject()
 
         setHeadName(intent.getStringExtra("title"))
+        mBundle = intent.getBundleExtra("bundle")
+        if (mBundle != null) {
+            mAvatar = mBundle!!.getString("avatar")
+        } else {
+            mAvatar = intent.getStringExtra("avatar")
+        }
         //实例化键盘工具
         mKeyboardUtil = KeyboardUtil(this, etMyMessageChatContent)
 //        //表情里添加fragment
@@ -390,7 +404,6 @@ class MyMessageChatActivity : BaseActivity() {
             mImService!!.messageManager.sendText(textMessage)
             //输入框置空
             etMyMessageChatContent.setText("")
-            //发送消息
             pushList(textMessage, true)
             etMyMessageChatContent.isFocusable = true
         }
@@ -432,7 +445,6 @@ class MyMessageChatActivity : BaseActivity() {
 
         //撤回删除事件
         mAdapter.setPopCallBack(object : ChatAdapterTwo.PopCallBack {
-
             //撤回
             override fun onRevokeClick(position: Int) {
                 myDialog.showLoadingDialog()
@@ -469,6 +481,24 @@ class MyMessageChatActivity : BaseActivity() {
                             //调用adapter的删除方法
                             mAdapter.removeMsg(messageEntity)
                         })
+            }
+
+            //品牌点击 跳转详情
+            override fun onBrandClick(position: Int) {
+                val id = (mAdapter.msgObjectList[position] as BrandMessage).brandId
+                startActivity<ShopDetailActivity>(IConstants.BRANDID to id)
+            }
+
+            //发送品牌
+            override fun onSendBrandClick(position: Int) {
+                val id = (mAdapter.msgObjectList[position] as BrandMessage).brandId
+                val avatar = (mAdapter.msgObjectList[position] as BrandMessage).logo
+                val name = (mAdapter.msgObjectList[position] as BrandMessage).brandName
+                val capitalName = (mAdapter.msgObjectList[position] as BrandMessage).brandAmount
+                val brandMessage = BrandMessage.buildForSend(id, avatar, name, capitalName, loginUser, currentSessionKey)
+                mImService?.messageManager?.sendBrand(brandMessage)
+                mAdapter.msgObjectList.remove(mAdapter.msgObjectList[position])
+                pushList(brandMessage, true)
             }
         })
 
@@ -620,9 +650,45 @@ class MyMessageChatActivity : BaseActivity() {
     /**
      * 添加list消息
      */
-    private fun pushList(entityList: List<MessageEntity>?, isFirstLoad: Boolean) {
+    private fun pushList(entityList: MutableList<MessageEntity>?, isFirstLoad: Boolean) {
+        //第一次进来发送假消息给用户
         if (isFirstLoad) {
-            mAdapter.loadHistoryList(entityList, mLayoutManager)
+            val textMessage = TextMessage()
+            textMessage.displayType = DBConstant.SHOW_ORIGIN_TEXT_TYPE
+            textMessage.info = getString(R.string.firstToChat_tips)
+            textMessage.content = "{\"extInfo\":\"{\\\"time\\\":${System.currentTimeMillis()}}\",\"info\":\"${getString(R.string.firstToChat_tips)}\",\"infoType\":1,\"nickname\":\"${intent.getStringExtra("title")}\",\"special\":false}"
+            if (mBundle != null) {
+                val id = mBundle?.getInt("id")
+                val logo = mBundle?.getString("logo")
+                val name = mBundle?.getString("name")
+                val capitalName = mBundle?.getString("capitalName")
+                val brandMessage = BrandMessage()
+                brandMessage.brandId = id!!
+                brandMessage.logo = logo!!
+                brandMessage.brandName = name!!
+                brandMessage.brandAmount = capitalName!!
+                brandMessage.displayType = DBConstant.SHOW_BRAND_TYPE
+                brandMessage.created = (System.currentTimeMillis() / 1000).toInt()
+                //里面时根据时间排序的 为了拆分开来
+                textMessage.created = (System.currentTimeMillis() / 1000).toInt() + 1
+                val list: MutableList<MessageEntity>? = if (entityList?.size ?: 0 > 0) {
+                    entityList?.add(brandMessage)
+                    entityList
+                } else {
+                    mutableListOf(brandMessage)
+                }
+                list?.add(textMessage)
+                mAdapter.loadHistoryList(list, mLayoutManager)
+            } else {
+                textMessage.created = (System.currentTimeMillis() / 1000).toInt()
+                val list: MutableList<MessageEntity>? = if (entityList?.size ?: 0 > 0) {
+                    entityList?.add(textMessage)
+                    entityList
+                } else {
+                    mutableListOf(textMessage)
+                }
+                mAdapter.loadHistoryList(list, mLayoutManager)
+            }
         } else {
             mAdapter.loadHistoryList(entityList)
         }

@@ -92,7 +92,6 @@ class LoginRegisterActivity : BaseActivity() {
         mRegisterPhone.addTextChangedListener(RegisterTextWatcher())
         mRegisterCode.addTextChangedListener(RegisterTextWatcher())
         mRegisterPsw.addTextChangedListener(RegisterTextWatcher())
-        mRegisterSurePsw.addTextChangedListener(RegisterTextWatcher())
 
         //用户协议
         mUserProtocol.setOnClickListener {
@@ -122,13 +121,11 @@ class LoginRegisterActivity : BaseActivity() {
             val phone = mRegisterPhone.text.toString()
             val code = mRegisterCode.text.toString()
             val psw = mRegisterPsw.text.toString()
-            val confirmPsw = mRegisterSurePsw.text.toString()
             when {
                 TextUtils.isEmpty(userName) -> ToastUtil.showShort(R.string.user_name_empty)
                 TextUtils.isEmpty(phone) -> ToastUtil.showShort(R.string.phone_empty)
                 TextUtils.isEmpty(code) -> ToastUtil.showShort(R.string.input_code)
                 psw.length < 6 || psw.length > 12 -> ToastUtil.showShort(R.string.psw_hint)
-                psw != confirmPsw -> ToastUtil.showShort(R.string.psw_inconsistent)
                 !mRead -> ToastUtil.showShort(R.string.please_read_accept)
                 else -> if (contentType == 1) register() else bindPhone()
             }
@@ -149,10 +146,11 @@ class LoginRegisterActivity : BaseActivity() {
                 setResult(Activity.RESULT_OK)
                 finish()
             }
-        } else {
-            mRead = false
-            mRegisterAgree.setImageResource(R.drawable.login_icon_not_read_n)
         }
+//        else {
+//            mRead = false
+//            mRegisterAgree.setImageResource(R.drawable.login_icon_not_read_n)
+//        }
     }
 
     //绑定手机
@@ -184,7 +182,7 @@ class LoginRegisterActivity : BaseActivity() {
     //注册
     private fun register() {
         myDialog.showLoadingDialog()
-        ApiUtils.getApi().register(mUserName, mPhone, mCode, mPsw, mSurePsw, 2)
+        ApiUtils.getApi().register(mUserName, mPhone, mCode, mPsw, 2)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -193,6 +191,9 @@ class LoginRegisterActivity : BaseActivity() {
                         bean.data?.let {
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
+                            IConstants.login_name = mUserName
+                            IConstants.login_phone = mPhone
+                            IConstants.login_paw = mPsw
                             it.upDate()
                             //还要登录完信..
                             mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
@@ -297,7 +298,6 @@ class LoginRegisterActivity : BaseActivity() {
             mPhone = mRegisterPhone.text.toString().trim()
             mCode = mRegisterCode.text.toString().trim()
             mPsw = mRegisterPsw.text.toString().trim()
-            mSurePsw = mRegisterSurePsw.text.toString().trim()
             mRegisterSure.enabled = (!TextUtils.isEmpty(mUserName) && !TextUtils.isEmpty(mPhone)
                     && !TextUtils.isEmpty(mCode) && !TextUtils.isEmpty(mPsw) && !TextUtils.isEmpty(mSurePsw))
         }
