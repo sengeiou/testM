@@ -11,11 +11,10 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
 import android.util.DisplayMetrics
 import android.view.*
-import android.widget.*
+import android.widget.PopupWindow
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.request.RequestOptions
@@ -29,10 +28,15 @@ import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.GeetestUtil
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.utils.dp2px
-import com.qingmeng.mengmeng.view.widget.MyItemView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.dialog_join_money.*
+import kotlinx.android.synthetic.main.dialog_join_support.view.*
+import kotlinx.android.synthetic.main.dialog_want_to_join.view.*
+import kotlinx.android.synthetic.main.layout_dialog_imageedtext.view.*
+import kotlinx.android.synthetic.main.layout_dialog_loading.view.*
+import kotlinx.android.synthetic.main.layout_pop_more.view.*
 
 @Suppress("IMPLICIT_BOXING_IN_IDENTITY_EQUALS", "DEPRECATED_IDENTITY_EQUALS", "DEPRECATION",
         "RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
@@ -67,9 +71,8 @@ class DialogCustom(private var mContext: Context?) {
             }
         }
         val view = View.inflate(mContext, R.layout.layout_dialog_loading, null)
-        val imageView = view.findViewById<ImageView>(R.id.load_iv)
-        imageView.setImageResource(R.drawable.loading_small)
-        val drawable = imageView.drawable as AnimationDrawable
+        view.load_iv.setImageResource(R.drawable.loading_small)
+        val drawable = view.load_iv.drawable as AnimationDrawable
         drawable.start()
         loadingDialog = Dialog(mContext!!, R.style.dialog_loading)
         loadingDialog?.apply {
@@ -93,31 +96,26 @@ class DialogCustom(private var mContext: Context?) {
         }
         remindDialog = Dialog(mContext!!, R.style.commondialogstyle)
         val view = View.inflate(mContext, R.layout.layout_dialog_imageedtext, null)
-        val banCancel = view.findViewById<TextView>(R.id.dialog_image_cancel)
-        val btnSure = view.findViewById<TextView>(R.id.dialog_image_confirm)
-        val imageView = view.findViewById<ImageView>(R.id.dialog_image_image)
-        val layout = view.findViewById<LinearLayout>(R.id.dialog_image_layout)
-        val editText = view.findViewById<EditText>(R.id.dialog_image_edtext)
         mContext?.let { it ->
             view.setBackgroundColor(ContextCompat.getColor(it, R.color.white))
             Glide.with(it).load(IConstants.GET_IMAGE_CODE + phone)
                     .apply(RequestOptions().skipMemoryCache(true)
-                            .diskCacheStrategy(DiskCacheStrategy.NONE)).into(imageView)
-            layout.setOnClickListener {
+                            .diskCacheStrategy(DiskCacheStrategy.NONE)).into(view.dialog_image_image)
+            view.dialog_image_layout.setOnClickListener {
                 Glide.with(it).load(IConstants.GET_IMAGE_CODE + phone)
                         .apply(RequestOptions().skipMemoryCache(true)
-                                .diskCacheStrategy(DiskCacheStrategy.NONE)).into(imageView)
+                                .diskCacheStrategy(DiskCacheStrategy.NONE)).into(view.dialog_image_image)
             }
         }
-        banCancel.setOnClickListener { remindDialog?.dismiss() }
-        btnSure.setOnClickListener { _ ->
-            if (editText.text.length !== 4) {
+        view.dialog_image_cancel.setOnClickListener { remindDialog?.dismiss() }
+        view.dialog_image_confirm.setOnClickListener { _ ->
+            if (view.dialog_image_edtext.text.length !== 4) {
                 mContext?.let {
                     ToastUtil.showShort(it.getString(R.string.scuuess_code))
                 }
                 return@setOnClickListener
             }
-            ApiUtils.getApi().sendSms(phone, type, editText.text.toString())
+            ApiUtils.getApi().sendSms(phone, type, view.dialog_image_edtext.text.toString())
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribeOn(Schedulers.io())
                     .subscribe({
@@ -157,11 +155,9 @@ class DialogCustom(private var mContext: Context?) {
         bottomSheetDialog.windowHeight = height * 5 / 6
         bottomSheetDialog.delegate.findViewById<View>(android.support.design.R.id.design_bottom_sheet)
                 ?.setBackgroundColor(mContext!!.resources.getColor(android.R.color.transparent))
-        val content = view.findViewById<RecyclerView>(R.id.join_support_content)
-        val compete = view.findViewById<TextView>(R.id.join_support_compete)
-        compete.setOnClickListener { bottomSheetDialog.cancel() }
-        content.layoutManager = LinearLayoutManager(mContext)
-        content.adapter = JoinSupportAdapter(list)
+        view.join_support_compete.setOnClickListener { bottomSheetDialog.cancel() }
+        view.join_support_content.layoutManager = LinearLayoutManager(mContext)
+        view.join_support_content.adapter = JoinSupportAdapter(list)
         bottomSheetDialog.show()
     }
 
@@ -180,41 +176,36 @@ class DialogCustom(private var mContext: Context?) {
             lp.width = context.resources.displayMetrics.widthPixels // 设置宽度
             window.setGravity(Gravity.BOTTOM)
             window.attributes = lp
-            val compete = findViewById<TextView>(R.id.join_money_compete)
-            compete.setOnClickListener { cancel() }
-            val moneyTitle = findViewById<TextView>(R.id.join_money_title)
-            val moneyTotal = findViewById<MyItemView>(R.id.money_total)
-            val moneyJoin = findViewById<MyItemView>(R.id.money_join)
-            val moneyEnsure = findViewById<MyItemView>(R.id.money_ensure)
-            val moneyEquipment = findViewById<MyItemView>(R.id.money_equipment)
-            val moneyOther = findViewById<MyItemView>(R.id.money_other)
+            join_money_compete.setOnClickListener { cancel() }
             if (any is BrandInitialFee) {
                 any.apply {
-                    moneyTotal.setContent(affiliateFee)
-                    moneyJoin.setContent(joinGoldStr)
-                    moneyEnsure.setContent(marginStr)
-                    moneyEquipment.setContent(equipmentFeeStr)
-                    moneyOther.setContent(otherExpensesStr)
+                    money_total.setContent(affiliateFee)
+                    money_join.setContent(joinGoldStr)
+                    money_ensure.setContent(marginStr)
+                    money_equipment.setContent(equipmentFeeStr)
+                    money_other.setContent(otherExpensesStr)
                 }
+                money_tip.visibility = View.VISIBLE
             } else {
-                moneyTitle.setText(R.string.brand_information)
-                moneyTotal.setTitle(R.string.brand_ownership)
-                moneyJoin.setTitle(R.string.franchise_mode)
-                moneyEnsure.setTitle(R.string.attracting_investment_area)
-                moneyEquipment.setTitle(R.string.regional_authorization)
-                moneyOther.setTitle(R.string.suitable_for_crowd)
+                join_money_title.setText(R.string.brand_information)
+                money_total.setTitle(R.string.brand_ownership)
+                money_join.setTitle(R.string.franchise_mode)
+                money_ensure.setTitle(R.string.attracting_investment_area)
+                money_equipment.setTitle(R.string.regional_authorization)
+                money_other.setTitle(R.string.suitable_for_crowd)
                 val bean = any as BrandInformation
-                moneyTotal.setContent(bean.belongName)
+                money_total.setContent(bean.belongName)
                 var tempStr = ""
                 bean.modeName.indices.forEach { tempStr += if (it == 0) bean.modeName[it] else ",${bean.modeName[it]}" }
-                moneyJoin.setContent(tempStr)
+                money_join.setContent(tempStr)
                 tempStr = ""
                 bean.cityName.indices.forEach { tempStr += if (it == 0) bean.cityName[it] else ",${bean.cityName[it]}" }
-                moneyEnsure.setContent(tempStr)
-                moneyEquipment.setContent(bean.regionWarrantName)
+                money_ensure.setContent(tempStr)
+                money_equipment.setContent(bean.regionWarrantName)
                 tempStr = ""
                 bean.crowdName.indices.forEach { tempStr += if (it == 0) bean.crowdName[it] else ",${bean.crowdName[it]}" }
-                moneyOther.setContent(tempStr)
+                money_other.setContent(tempStr)
+                money_tip.visibility = View.GONE
             }
         }
     }
@@ -230,35 +221,30 @@ class DialogCustom(private var mContext: Context?) {
         bottomSheetDialog.delegate.findViewById<View>(android.support.design.R.id.design_bottom_sheet)
                 ?.setBackgroundColor(mContext!!.resources.getColor(android.R.color.transparent))
         val typeface = getTypeface()
-        val close = view.findViewById<ImageView>(R.id.join_data_close)
-        val submit = view.findViewById<TextView>(R.id.join_data_submit)
-        val title = view.findViewById<TextView>(R.id.join_data_title)
-        val etName = view.findViewById<EditText>(R.id.join_data_name)
-        val etPhone = view.findViewById<EditText>(R.id.join_data_phone)
-        val etMessage = view.findViewById<EditText>(R.id.join_data_message)
-        etMessage.setText(mContext!!.getString(R.string.join_data_message, shopName))
-        submit.typeface = typeface
-        title.typeface = typeface
-        etName.typeface = typeface
-        etPhone.typeface = typeface
-        etMessage.typeface = typeface
+        view.joinDataMessage.setText(mContext!!.getString(R.string.join_data_message, shopName))
+        view.joinDataSubmit.typeface = typeface
+        view.joinDataTitle.typeface = typeface
+        view.joinDataName.typeface = typeface
+        view.joinDataPhone.typeface = typeface
+        view.joinDataMessage.typeface = typeface
         val userPhone = MainApplication.instance.user.userInfo.phone
         if (!TextUtils.isEmpty(userPhone)) {
-            etPhone.setText(userPhone)
+            view.joinDataPhone.setText(userPhone)
         }
-        close.setOnClickListener { bottomSheetDialog.cancel() }
-        etMessage.setOnFocusChangeListener { _, hasFocus ->
+        view.joinDataClose.setOnClickListener { bottomSheetDialog.cancel() }
+        view.joinDataMessage.setOnFocusChangeListener { _, hasFocus ->
             if (hasFocus) {
-                etMessage.setTextColor(R.color.color_333333)
+                view.joinDataMessage.setTextColor(R.color.color_333333)
             }
         }
-        submit.setOnClickListener {
-            val name = etName.text.toString()
-            val phone = etPhone.text.toString()
-            val message = etMessage.text.toString()
+        view.joinDataSubmit.setOnClickListener {
+            val name = view.joinDataName.text.toString()
+            val phone = view.joinDataPhone.text.toString()
+            val message = view.joinDataMessage.text.toString()
             when {
                 TextUtils.isEmpty(name) -> ToastUtil.showShort(R.string.join_data_name)
                 TextUtils.isEmpty(phone) -> ToastUtil.showShort(R.string.join_data_phone)
+                phone.length < 11 -> ToastUtil.showShort(R.string.correct_phone)
                 TextUtils.isEmpty(message) -> ToastUtil.showShort(R.string.join_data_msg)
                 else -> {
                     callback(name, phone, message)
@@ -289,23 +275,19 @@ class DialogCustom(private var mContext: Context?) {
         val window = PopupWindow(contentView, mContext!!.dp2px(105), mContext!!.dp2px(122), true)
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         window.showAsDropDown(view, mContext!!.dp2px(-80), mContext!!.dp2px(5))
-        val message = contentView.findViewById<TextView>(R.id.pop_more_message)
-        val homepage = contentView.findViewById<TextView>(R.id.pop_more_homepage)
-        val feedback = contentView.findViewById<TextView>(R.id.pop_more_feedback)
-        val share = contentView.findViewById<TextView>(R.id.pop_more_share)
-        message.setOnClickListener {
+        contentView.popMoreMessage.setOnClickListener {
             msgClick()
             window.dismiss()
         }
-        homepage.setOnClickListener {
+        contentView.popMoreHomepage.setOnClickListener {
             homepageClick()
             window.dismiss()
         }
-        feedback.setOnClickListener {
+        contentView.popMoreFeedback.setOnClickListener {
             feedbackClick()
             window.dismiss()
         }
-        share.setOnClickListener {
+        contentView.popMoreShare.setOnClickListener {
             shareClick()
             window.dismiss()
         }
