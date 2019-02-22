@@ -36,7 +36,7 @@ import kotlinx.android.synthetic.main.activity_common_pop_window.view.*
 class PopSeachSelect//设置宽高popWindow  动画 背景
 //点击popwindow 外部消失
 //1 为餐饮类型  2为加盟区域 3 为综合排序
-(private var mActivity: Activity, type: Int) : PopupWindow(mActivity) {
+(private var mActivity: Activity, type: Int, mfatherId: Int) : PopupWindow(mActivity) {
 
     private var mMenuView: View
     private lateinit var mLauyoutManger: LinearLayoutManager
@@ -48,11 +48,11 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
     private lateinit var mSelectCallBack: SelectCallBack                 //回调
     private var mRankingList = ArrayList<StaticBean>()                   //综合排序数据
     private lateinit var mRankingAdapter: CommonAdapter<StaticBean>      //综合排序适配
-    private lateinit var mFoodTypeAdapter: CommonAdapter<FoodType>         //餐饮左类型适配
+    private lateinit var mFoodTypeAdapter: CommonAdapter<FoodType>        //餐饮左类型适配
     private lateinit var mFoodAdapter: CommonAdapter<FoodTypeDto>             //餐饮右适配
     private var mFoodTypeList = ArrayList<FoodType>()                      //餐饮左数据
     private var mFoodList = ArrayList<FoodTypeDto>()                           //餐饮右数据
-    private var logoUrl = "http://ossmeng.oss-cn-hangzhou.aliyuncs.com/mengmeng%2Ficon%2Frepast_type%2Fsnack%2F%E9%BA%BB%E8%BE%A3%E7%83%AB.png"
+    private var mFathId = 0
 
     init {
         mMenuView = LayoutInflater.from(mActivity).inflate(R.layout.activity_common_pop_window, null)
@@ -63,6 +63,9 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
         setBackgroundDrawable(ColorDrawable(-0x00000000))
         mMenuView.bottom_view.setOnClickListener {
             dismiss()
+        }
+        if (mfatherId >= 0) {
+            mFathId = mfatherId
         }
         when (type) {
             1 -> getFoodTypeCache()
@@ -94,7 +97,6 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
                 mFoodTypeList[position].checkState = true
                 mFoodTypeAdapter.notifyDataSetChanged()
                 mFoodList.clear()
-                // mFoodList.add(FoodTypeDto(mFoodTypeList[position].id, "", mFoodTypeList[position].id, logoUrl, "全部"))
                 mFoodList.addAll(mFoodTypeList[position].foodTypeDto)
                 mFoodAdapter.notifyDataSetChanged()
             })
@@ -122,6 +124,7 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
             })
             mMenuView.left_recyclerView_pop.adapter = mProvinceAdapter
         } else if (type == 3) {
+            height = ViewGroup.LayoutParams.WRAP_CONTENT
             mRankingAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mRankingList, holderConvert = { holder, data, position, payloads ->
                 holder.apply {
                     getView<LinearLayout>(R.id.seach_ranking_linear).apply {
@@ -150,6 +153,7 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
         if (type == 1) {
             mGridManager = GridLayoutManager(mActivity, 3)
             mMenuView.right_recyclerView_pop.layoutManager = mGridManager
+            mMenuView.right_recyclerView_pop.isNestedScrollingEnabled=false
             mFoodAdapter = CommonAdapter(mActivity, R.layout.seach_food_type_right_in_item, mFoodList, holderConvert = { holder, data, position, payloads ->
                 holder.apply {
                     mMenuView.seach_result_right_text_type.visibility = View.VISIBLE
@@ -166,10 +170,9 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
                                     mFatherName = it.name
                                 }
                             }
-                            mSelectCallBack.onSelectCallBack(data.id, data.fahterId, mFatherName)
+                            mSelectCallBack.onSelectCallBack(data.fahterId, 0, mFatherName)
                             dismiss()
                         }
-
                     }
                     Glide.with(mActivity).load(data.logo).apply(RequestOptions()
                             .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.Seach_food_type_right_inImageView))
@@ -183,6 +186,7 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
         } else if (type == 2) {
             mLauyoutManger = LinearLayoutManager(mActivity)
             mMenuView.right_recyclerView_pop.layoutManager = mLauyoutManger
+            mMenuView.right_recyclerView_pop.isNestedScrollingEnabled=false
             mCityAdapter = CommonAdapter(mActivity, R.layout.seach_result_right_item, mCityList, holderConvert = { holder, data, position, payloads ->
                 holder.apply {
                     setText(R.id.search_result_pop_right_item, data.name)
@@ -288,17 +292,19 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
                                     BoxUtils.removeCache(IConstants.SEACH_RESULT_FOOD)
                                     mFoodTypeList.clear()
                                 }
-                                mFoodTypeList.add(FoodType(ArrayList(), 0, "", 0, logoUrl, "全部", "1"))
+                                mFoodTypeList.add(FoodType(ArrayList(), 0, "", 0, "", "全部", "1"))
                                 mFoodTypeList.addAll(it.foodType)
                                 if (!mFoodTypeList.isEmpty()) {
-                                    mFoodTypeList[1].checkState = true
+                                    //打开直接选中所在分组 mFathId
+                                    mFoodTypeList[mFathId].checkState = true
                                 }
                                 if (!mFoodList.isEmpty()) {
                                     mFoodList.clear()
                                 }
                                 //加入缓存
                                 // mFoodList.add(FoodTypeDto(it.foodType[0].id, "", 0, logoUrl, "全部"))
-                                mFoodList.addAll(it.foodType[0].foodTypeDto)
+                                //打开直接选中所在分组 mFathId
+                                mFoodList.addAll(it.foodType[mFathId-1].foodTypeDto)
                                 BoxUtils.saveCache(it, IConstants.SEACH_RESULT_FOOD)
                                 mFoodTypeAdapter.notifyDataSetChanged()
                                 mFoodAdapter.notifyDataSetChanged()

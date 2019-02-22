@@ -10,19 +10,19 @@
 
     <ImageView
         android:id="@+id/red_shop_right_inImageView"
-        android:layout_width="@dimen/padding_dp_50"
-        android:layout_height="@dimen/padding_dp_60"
-        android:layout_marginTop="@dimen/padding_dp_12" />
+        android:layout_width="@dimen/padding_dp_65"
+        android:layout_height="@dimen/padding_dp_65"
+        android:layout_marginTop="@dimen/padding_dp_12"
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/red_shop_right_inContent"
-        android:layout_width="match_parent"
+        android:layout_width="@dimen/padding_dp_70"
         android:layout_height="match_parent"
         android:layout_marginBottom="@dimen/padding_dp_13"
         android:layout_marginTop="@dimen/padding_dp_10"
-        android:ellipsize="end"
         android:gravity="center"
         android:maxLines="1"
         android:textColor="@color/color_666666"
-        android:textSize="@dimen/text_size_14" />
+        android:textSize="@dimen/text_size_13_3" />
 </LinearLayout>
