@@ -60,8 +60,8 @@ class RedShopFragment : BaseFragment() {
     private fun getCacheData() {
         Observable.create<RedShopBean> {
             val leftList = BoxUtils.getAllRedShop(0, 0)
-            val RightInListType = BoxUtils.getAllRedShop(1, 2)
-            val RightInListHost = BoxUtils.getAllRedShop(1, 1)
+            val rightInListType = BoxUtils.getAllRedShop(1, 2)
+            val rightInListHost = BoxUtils.getAllRedShop(1, 1)
             if (!mLeftList.isEmpty()) {
                 BoxUtils.removeAllRedShop(mLeftList)
                 mLeftList.clear()
@@ -75,8 +75,8 @@ class RedShopFragment : BaseFragment() {
                 mRightInListHost.clear()
             }
             mLeftList.addAll(leftList)
-            mRightInListType.addAll(RightInListType)
-            mRightInListHost.addAll(RightInListHost)
+            mRightInListType.addAll(rightInListType)
+            mRightInListHost.addAll(rightInListHost)
             var mRedShop = RedShopBean(ArrayList())
             if (!mLeftList.isEmpty()) {
                 mRedShop = RedShopBean.fromString(mLeftList[0].id)
@@ -112,16 +112,16 @@ class RedShopFragment : BaseFragment() {
     //点击缓存
     private fun getClickCache(fahterId: Long) {
         Observable.create<RedShopBean> {
-            val RightInListType = BoxUtils.getAllRedShop(fahterId, 2)
-            val RightInListHost = BoxUtils.getAllRedShop(fahterId, 1)
+            val rightInListType = BoxUtils.getAllRedShop(fahterId, 2)
+            val rightInListHost = BoxUtils.getAllRedShop(fahterId, 1)
             if (!mRightInListType.isEmpty()) {
                 mRightInListType.clear()
             }
             if (!mRightInListHost.isEmpty()) {
                 mRightInListHost.clear()
             }
-            mRightInListType.addAll(RightInListType)
-            mRightInListHost.addAll(RightInListHost)
+            mRightInListType.addAll(rightInListType)
+            mRightInListHost.addAll(rightInListHost)
             var mRedShop = RedShopBean(ArrayList())
             if (!mRightInListType.isEmpty()) {
                 mRedShop = RedShopBean.fromString(mRightInListType[0].id)
@@ -148,7 +148,7 @@ class RedShopFragment : BaseFragment() {
     private fun initLeftAdapter() {
         mLauyoutManger = LinearLayoutManager(context)
         red_shop_left_recyclerview.layoutManager = mLauyoutManger
-        mLeftAdapter = CommonAdapter(context!!, R.layout.red_shop_left_item, mLeftList, holderConvert = { holder, data, position, payloads ->
+        mLeftAdapter = CommonAdapter(context!!, R.layout.red_shop_left_item, mLeftList, holderConvert = { holder, data, _, _ ->
             holder.apply {
                 if (data.checkState) {
                     getView<RelativeLayout>(R.id.red_shop_left_lineralayout).backgroundColor = resources.getColor(R.color.white)
@@ -159,8 +159,7 @@ class RedShopFragment : BaseFragment() {
                 }
                 setText(R.id.red_shop_left_textview, data.name)
             }
-
-        }, onItemClick = { view, holder, position ->
+        }, onItemClick = { _, _, position ->
             mLeftList.forEach {
                 it.checkState = false
             }
@@ -178,7 +177,7 @@ class RedShopFragment : BaseFragment() {
         red_shop_right_recyclerview_type.layoutManager = mGridLayoutManager
         //recyclerView禁止滑动
         red_shop_right_recyclerview_type.isNestedScrollingEnabled = false
-        mRightAdapterType = CommonAdapter(context!!, R.layout.red_shop_right_in_item, mRightInListType, holderConvert = { holder, data, position, payloads ->
+        mRightAdapterType = CommonAdapter(context!!, R.layout.red_shop_right_in_item, mRightInListType, holderConvert = { holder, data, _, _ ->
             holder.apply {
                 if (mRightInListType.isNotEmpty()) {
                     red_shop_right_text_type.visibility = View.VISIBLE
@@ -192,7 +191,7 @@ class RedShopFragment : BaseFragment() {
                     startActivity<RedShopSeachResult>(IConstants.firstLevel to data.fahterId.toInt(), IConstants.secondLevel to data.id, IConstants.THREELEVEL to data.name)
                 }
             }
-        }, onItemClick = { view, holder, position ->
+        }, onItemClick = { _, _, _ ->
 
         })
         red_shop_right_recyclerview_type.adapter = mRightAdapterType
@@ -201,7 +200,7 @@ class RedShopFragment : BaseFragment() {
         mGridLayoutManager = GridLayoutManager(context, 3)
         red_shop_right_recyclerview_host.layoutManager = mGridLayoutManager
         red_shop_right_recyclerview_host.isNestedScrollingEnabled = false
-        mRightAdapterHost = CommonAdapter(context!!, R.layout.red_shop_right_in_item, mRightInListHost, holderConvert = { holder, data, position, payloads ->
+        mRightAdapterHost = CommonAdapter(context!!, R.layout.red_shop_right_in_item, mRightInListHost, holderConvert = { holder, data, _, _ ->
             holder.apply {
                 if (mRightInListHost.isNotEmpty()) {
                     red_shop_right_text_host.visibility = View.VISIBLE
@@ -215,7 +214,6 @@ class RedShopFragment : BaseFragment() {
                     startActivity<RedShopSeachResult>(IConstants.firstLevel to data.fahterId.toInt(), IConstants.secondLevel to data.id)
                 }
             }
-        }, onItemClick = { view, holder, position ->
         })
         red_shop_right_recyclerview_host.adapter = mRightAdapterHost
     }
@@ -249,11 +247,6 @@ class RedShopFragment : BaseFragment() {
                 }, {}, { addSubscription(it) })
     }
 
-//    private fun getNewData() {
-//        httpLoad()
-//        httpLoad2()
-//    }
-
     private fun httpLoad2(type: Long, version: String) {
         ApiUtils.getApi()
                 .getRedShopRight(type, version)
@@ -279,8 +272,6 @@ class RedShopFragment : BaseFragment() {
                                 mRightAdapterType.notifyDataSetChanged()
                                 mRightAdapterHost.notifyDataSetChanged()
                             }
-                        } else {
-//                            ToastUtil.showShort(it.msg)
                         }
                     }
                 }, {

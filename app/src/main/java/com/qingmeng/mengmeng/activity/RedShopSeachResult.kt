@@ -68,14 +68,11 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
     private var capitalIds = String()         //投资金额ID
     private var modeIds = String()           //加盟模式ID
     private var integratedSortId = 0      //综合排序（12345）
-
     private var mCanHttpLoad = true                //是否可以请求接口
     private var mHasNextPage = true                //是否有下一页
     private var mTypeId = String()               //餐饮类型返回参数
     private var mRankingId = String()            //综合排序返回参数
     private var mShowTittle: String = ""            //进入选中
-    private var isRefreshing = false
-    private var isLoading = false
     override fun getLayoutId(): Int = R.layout.activity_red_shop_seach_result
 
     override fun initObject() {
@@ -93,7 +90,6 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
             search_food_type.setTextColor(resources.getColor(R.color.color_5ab1e1))
         }
         head_search.setText(keyWord)
-        // head_search.setSelection(head_search.text.toString().length)
         goToSeach()
     }
 
@@ -330,6 +326,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
         }
         swipe_target.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             internal var lastVisibleItemPosition: Int = 0
+            internal var firstVisibleItemPosition: Int = 0
             //滚动状态改变时
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -337,14 +334,25 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition + 1 == mAdapter.itemCount) {
                     seach_result_swipeLayout.isLoadMoreEnabled = true
                 }
-                 //   mSeachToTop.visibility = View.VISIBLE
+            }
+
+            fun selectItem(dy: Int) {
+                if (dy == 0) {
+                    mSeachToTop.visibility = View.GONE
+                } else {
+                    mSeachToTop.visibility = View.VISIBLE
+                }
             }
 
             //滚动时
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 lastVisibleItemPosition = mLauyoutManger.findLastVisibleItemPosition()
-              //  mSeachToTop.visibility = View.GONE
+                firstVisibleItemPosition = mLauyoutManger.findFirstVisibleItemPosition()
+                val view: View = mLauyoutManger.findViewByPosition(firstVisibleItemPosition)!!
+                val firstVisiableChildViewTop = view.top
+                val itemHeight = view.height
+                selectItem((firstVisibleItemPosition) * itemHeight - firstVisiableChildViewTop)
             }
         })
         seach_result_swipeLayout.setOnRefreshListener(this)

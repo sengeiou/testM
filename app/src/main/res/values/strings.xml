@@ -110,6 +110,7 @@
     <string name="seach_add_area">加入区域</string>
     <string name="seach_ranking">综合排序</string>
     <string name="seach_screning_conditon">筛选条件</string>
+    <string name="seach_hint">搜索感兴趣的品牌</string>
     <string name="seach_nothing">嗨呀~没有找到相关内容 o(╥﹏╥)o</string>
 
     <!-- ======================================头报====================================== -->
