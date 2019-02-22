@@ -106,7 +106,10 @@ class LoginChangePswActivity : BaseActivity() {
                     //已注册
                     if (bean.code == 25089) {
                         GeetestUtil.customVerity({ checkCodeType() }, { sendSmsCode(it) })
-                    } else {
+                    } else if (bean.code == 12000) {
+                        //未注册
+                        ToastUtil.showShort(R.string.phone_not_register)
+                    }else{
                         ToastUtil.showShort(bean.msg)
                     }
                 }, {

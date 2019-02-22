@@ -156,7 +156,7 @@
     <string name="cancel_login">登录取消</string>
     <string name="login_error">登录错误</string>
     <string name="please_click">请再次点击</string>
-    <string name="phone_not_register">该手机尚未注册</string>
+    <string name="phone_not_register">该手机号尚未注册</string>
     <string name="get_message_code">请输入4位验证码</string>
 
     <!-- ======================================我的====================================== -->
