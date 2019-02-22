@@ -253,6 +253,7 @@
     <string name="otherLogin_tips">您的账号已在另一台设备上登录，是否重新登录？</string>
     <string name="exit">退出</string>
     <string name="loginAgain">重新登录</string>
+    <string name="firstToChat_tips">您好，欢迎您的咨询！请问您是想了解加盟项目的哪些问题呢？</string>
 
     <!-- 上拉下拉 -->
     <string name="txt_before_refresh">下拉刷新</string>
