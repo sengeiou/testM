@@ -48,6 +48,7 @@ class MyMessageActivity : BaseActivity() {
     private lateinit var mAdapter: CommonAdapter<RecentInfo>
     private var mRecentSessionList = ArrayList<RecentInfo>()             //消息内容
     private var mList = ArrayList<MyMessage>()                           //接口消息内容
+    private var mAvatar = ""                                             //默认发送者头像
 
     /**
      * 消息用到的
@@ -67,8 +68,7 @@ class MyMessageActivity : BaseActivity() {
                 //why ,some reason
                 return
             }
-            //依赖联系人回话、未读消息、用户的信息三者的状态
-            onRecentContactDataReady()
+            httpLoad()
         }
     }
 
@@ -82,7 +82,7 @@ class MyMessageActivity : BaseActivity() {
         setHeadName(R.string.message)
 
         initAdapter()
-        httpLoad()
+        myDialog.showLoadingDialog()
 
         /**
          * 消息用到的
@@ -96,7 +96,7 @@ class MyMessageActivity : BaseActivity() {
 
         //下拉刷新
         srlMyMessage.setOnRefreshListener {
-            onRecentContactDataReady()
+            httpLoad()
         }
 
         //返回
@@ -132,16 +132,16 @@ class MyMessageActivity : BaseActivity() {
                 setText(R.id.tvMyMessageRvTime, DateUtil.getSessionTime(t.updateTime))
                 //消息点击
                 getView<LinearLayout>(R.id.llMyMessageRv).setOnClickListener {
-                    //                                        startActivity(Intent(this@MyMessageActivity, MessageActivity::class.java).apply {
+                    //                    startActivity(Intent(this@MyMessageActivity, MessageActivity::class.java).apply {
 //                        putExtra(IntentConstant.KEY_SESSION_KEY, t.sessionKey)
 //                    })
                     FaceInitData.init(applicationContext)
                     FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
-                    startActivity<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to t.sessionKey, "title" to t.name)
+                    startActivity<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to t.sessionKey, "title" to t.name, "avatar" to mAvatar)
                 }
                 //删除
                 getView<TextView>(R.id.tvMyMessageRvDelete).setOnClickListener {
-                    //                                        startActivity<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to t.sessionKey)
+                    //                     startActivity<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to t.sessionKey)
                     //关闭view
                     getView<SwipeMenuLayout>(R.id.smlMyMessageRv).smoothClose()
                     mImService?.sessionManager?.reqRemoveSession(mRecentSessionList[position])
@@ -154,22 +154,28 @@ class MyMessageActivity : BaseActivity() {
     }
 
     private fun httpLoad() {
-        myDialog.showLoadingDialog()
         ApiUtils.getApi()
                 .getMyMessage()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
                     myDialog.dismissLoadingDialog()
+                    srlMyMessage.isRefreshing = false
+                    //依赖联系人回话、未读消息、用户的信息三者的状态
+                    onRecentContactDataReady()
                     it.apply {
                         if (code == 12000) {
                             setData(data!!.chatInfoList)
                         } else {
                             ToastUtil.showShort(msg)
+                            setNoChatView(mRecentSessionList)
                         }
                     }
                 }, {
                     myDialog.dismissLoadingDialog()
+                    srlMyMessage.isRefreshing = false
+                    onRecentContactDataReady()
+                    setNoChatView(mRecentSessionList)
                 })
     }
 
@@ -177,8 +183,29 @@ class MyMessageActivity : BaseActivity() {
         mList.clear()
         mList.addAll(chatInfoList)
         mList.forEachIndexed { index, myMessage ->
-            mRecentSessionList.add(index, myMessage as RecentInfo)
+            val recentInfo = RecentInfo()
+            recentInfo.avatar = listOf(myMessage.avatar)
+            recentInfo.name = myMessage.name
+            recentInfo.sessionKey = "1_${myMessage.wxUid}"
+            if (myMessage.name == "系统通知") {
+                mRecentSessionList.add(0, recentInfo)
+            } else {
+                if (myMessage.name.contains("盟盟客服")) {
+                    mAvatar = myMessage.avatar
+                }
+                var isRepeat = false
+                mRecentSessionList.forEach {
+                    //过滤重复会话
+                    if (myMessage.wxUid == it.peerId) {
+                        isRepeat = true
+                    }
+                }
+                if (!isRepeat) {
+                    mRecentSessionList.add(index, recentInfo)
+                }
+            }
         }
+        setNoChatView(mRecentSessionList)
         mAdapter.notifyDataSetChanged()
     }
 
@@ -211,7 +238,10 @@ class MyMessageActivity : BaseActivity() {
             }
             SessionEvent.RECENT_SESSION_LIST_SUCCESS -> {
             }
-            SessionEvent.SET_SESSION_TOP -> onRecentContactDataReady()
+            SessionEvent.SET_SESSION_TOP -> {
+                onRecentContactDataReady()
+                httpLoad()
+            }
         }
     }
 
@@ -222,18 +252,21 @@ class MyMessageActivity : BaseActivity() {
             GroupEvent.Event.CHANGE_GROUP_MEMBER_SUCCESS -> {
                 onRecentContactDataReady()
                 searchDataReady()
+                httpLoad()
             }
             GroupEvent.Event.GROUP_INFO_UPDATED -> {
                 onRecentContactDataReady()
                 searchDataReady()
+                httpLoad()
             }
-            GroupEvent.Event.SHIELD_GROUP_OK -> {
-                //更新最下栏的未读计数、更新session
+            GroupEvent.Event.SHIELD_GROUP_OK -> {   //更新最下栏的未读计数、更新session
                 onShieldSuccess(event.groupEntity)
             }
             GroupEvent.Event.SHIELD_GROUP_FAIL -> {
             }
-            GroupEvent.Event.SHIELD_GROUP_TIMEOUT -> onShieldFail()
+            GroupEvent.Event.SHIELD_GROUP_TIMEOUT -> {
+                onShieldFail()
+            }
         }
     }
 
@@ -243,7 +276,10 @@ class MyMessageActivity : BaseActivity() {
             }
             UnreadEvent.Event.UNREAD_MSG_LIST_OK -> {
             }
-            UnreadEvent.Event.SESSION_READED_UNREAD_MSG -> onRecentContactDataReady()
+            UnreadEvent.Event.SESSION_READED_UNREAD_MSG -> {
+                onRecentContactDataReady()
+                httpLoad()
+            }
         }
     }
 
@@ -254,6 +290,7 @@ class MyMessageActivity : BaseActivity() {
             UserInfoEvent.USER_INFO_OK -> {
                 onRecentContactDataReady()
                 searchDataReady()
+                httpLoad()
             }
         }
     }
@@ -310,9 +347,6 @@ class MyMessageActivity : BaseActivity() {
         val recentSessionList = mImService?.sessionManager?.recentListInfo
         mRecentSessionList.clear()
         mRecentSessionList.addAll(recentSessionList!!)
-        setNoChatView(recentSessionList)
-        mAdapter.notifyDataSetChanged()
-        srlMyMessage.isRefreshing = false
     }
 
     /**
