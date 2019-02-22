@@ -44,7 +44,7 @@ interface Api {
     @POST("app/user/phone_register")
     @FormUrlEncoded
     fun register(@Field("userName") userName: String, @Field("phone") phone: String, @Field("smsCode") smsCode: String,
-                 @Field("password") password: String, @Field("verifyPassword") verifyPassword: String,
+                 @Field("password") password: String,
                  @Field("type") type: Int, @Field("isUserProtocol") isUserProtocol: Int = 1): Observable<BaseBean<UserBean>>
 
     /**
