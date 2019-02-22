@@ -4,38 +4,22 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <include layout="@layout/layout_head"
+      />
+
     <WebView
         android:id="@+id/user_agreement_webview"
         android:layout_width="match_parent"
-        android:layout_height="570dp"
-        />
-
-    <LinearLayout
+        android:layout_weight="1"
+        android:layout_height="match_parent">
+    </WebView>
+    <Button
+        android:id="@+id/user_agreement_agree"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/white"
-        android:gravity="center"
-        android:layout_marginBottom="10dp"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/user_agreement_agree_not"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/shape_login_button_pw"
-            android:text="@string/refuse"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_16" />
-
-        <Button
-            android:id="@+id/user_agreement_agree"
-            android:layout_width="100dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="35dp"
-            android:background="@drawable/shape_login_button_pw"
-            android:text="@string/agree"
-            android:textColor="@color/white"
-            android:textSize="@dimen/text_size_16" />
-    </LinearLayout>
-
+        android:layout_height="wrap_content"
+        android:layout_weight="0"
+        android:background="@drawable/shape_login_button_pw"
+        android:text="@string/agree"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_20" />
 </LinearLayout>

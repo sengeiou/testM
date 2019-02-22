@@ -103,7 +103,7 @@
             android:digits="0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
             android:drawableStart="@drawable/login_icon_input_pw_s"
             android:drawablePadding="@dimen/padding_dp_13"
-            android:hint="@string/enter_password"
+            android:hint="@string/please_input_password"
             android:inputType="textPassword"
             android:maxLength="12"
             android:singleLine="true"

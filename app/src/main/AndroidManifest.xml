@@ -140,6 +140,7 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity
             android:name=".activity.RedShopSeach"
+            android:windowSoftInputMode="adjustResize"
             android:launchMode="singleTask"/>
         <!--搜索结果页-->
         <activity
