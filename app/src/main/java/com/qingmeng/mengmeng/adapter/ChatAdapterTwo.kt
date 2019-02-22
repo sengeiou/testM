@@ -37,6 +37,7 @@ import com.mogujie.tt.utils.CommonUtil
 import com.mogujie.tt.utils.DateUtil
 import com.mogujie.tt.utils.FileUtil
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.activity.MyMessageChatActivity
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.utils.setMarginExt
 import java.io.File
@@ -190,7 +191,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 MineVideoViewHolder(view, viewGroup)
             }
             RenderType.MESSAGE_TYPE_MINE_BRAND -> {    //自己品牌详情
-                view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_video, viewGroup, false)
+                view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_brand, viewGroup, false)
                 MineBrandViewHolder(view, viewGroup)
             }
         }
@@ -251,11 +252,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             } else {
                 llMyMessageChatRvAllBrand.setMarginExt(top = 0)
             }
-            //有本地的先加载本地的
-            if (FileUtil.isFileExist(brandMessage.logoPath)) {
-                GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.logoPath, ivMyMessageChatRvLogo, placeholder = R.drawable.default_img_icon)
-            }
-            GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.logoUrl, ivMyMessageChatRvLogo, placeholder = R.drawable.default_img_icon)
+            GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.logo, ivMyMessageChatRvLogo, placeholder = R.drawable.default_img_icon)
             tvMyMessageChatRvBrandName.text = brandMessage.brandName
             if (brandMessage.brandAmount.isNullOrBlank()) {
                 tvMyMessageChatRvInvestmentAmount.text = "面议"
@@ -436,16 +433,20 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     inner class OtherBrandViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
         private val parent = viewGroup
         private val ivMyMessageChatRvOtherBrandHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherBrandHead)
-        private val ivMyMessageChatRvOtherMineLogo = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherMineLogo)
+        private val llMyMessageChatRvOtherBrand = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvOtherBrand)
+        private val ivMyMessageChatRvOtherBrandLogo = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherBrandLogo)
         private val tvMyMessageChatRvOtherBrandName = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvOtherBrandName)
         private val tvMyMessageChatRvOtherBrandAmount = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvOtherBrandAmount)
-        private val llMyMessageChatRvOtherBrand = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvOtherBrand)
         fun bindViewHolder(position: Int) {
-            val brandMessage = msgObjectList[position] as TextMessage
+            val brandMessage = msgObjectList[position] as BrandMessage
             setHeadImage(brandMessage, ivMyMessageChatRvOtherBrandHead)
-//            GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.avatar, ivMyMessageChatRvOtherMineLogo, placeholder = R.drawable.default_img_icon)
-//            tvMyMessageChatRvOtherBrandName.text = brandMessage.""
-//            tvMyMessageChatRvOtherBrandAmount.text = brandMessage.""
+            GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.logo, ivMyMessageChatRvOtherBrandLogo, placeholder = R.drawable.default_img_icon)
+            tvMyMessageChatRvOtherBrandName.text = brandMessage.brandName
+            if (brandMessage.brandAmount.isNullOrBlank()) {
+                tvMyMessageChatRvOtherBrandAmount.text = "面议"
+            } else {
+                tvMyMessageChatRvOtherBrandAmount.text = brandMessage.brandAmount
+            }
             //点击事件
             llMyMessageChatRvOtherBrand.let {
                 it.setOnClickListener {
@@ -739,18 +740,22 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     inner class MineBrandViewHolder(view: View, viewGroup: ViewGroup) : RecyclerView.ViewHolder(view) {
         private val parent = viewGroup
         private val ivMyMessageChatRvMineBrandHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineBrandHead)
-        private val ivMyMessageChatRvOtherMineLogo = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherMineLogo)
+        private val llMyMessageChatRvMineBrand = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvMineBrand)
+        private val ivMyMessageChatRvMineBrandLogo = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineBrandLogo)
         private val tvMyMessageChatRvMineBrandName = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvMineBrandName)
         private val tvMyMessageChatRvMineBrandAmount = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvMineBrandAmount)
-        private val llMyMessageChatRvMineBrand = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvMineBrand)
         private val pbMyMessageChatRvMineBrandProgress = itemView.findViewById<ProgressBar>(R.id.pbMyMessageChatRvMineBrandProgress)
         private val ivMyMessageChatRvMineBrandFail = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineBrandFail)
         fun bindViewHolder(position: Int) {
-            val brandMessage = msgObjectList[position] as TextMessage
+            val brandMessage = msgObjectList[position] as BrandMessage
             setHeadImage(brandMessage, ivMyMessageChatRvMineBrandHead)
-//            GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.avatar, ivMyMessageChatRvOtherMineLogo, placeholder = R.drawable.default_img_icon)
-//            tvMyMessageChatRvMineBrandName.text = brandMessage.""
-//            tvMyMessageChatRvMineBrandAmount.text = brandMessage.""
+            GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.logo, ivMyMessageChatRvMineBrandLogo, placeholder = R.drawable.default_img_icon)
+            tvMyMessageChatRvMineBrandName.text = brandMessage.brandName
+            if (brandMessage.brandAmount.isNullOrBlank()) {
+                tvMyMessageChatRvMineBrandAmount.text = "面议"
+            } else {
+                tvMyMessageChatRvMineBrandAmount.text = brandMessage.brandAmount
+            }
             //点击事件
             llMyMessageChatRvMineBrand.let {
                 it.setOnClickListener {
@@ -1051,7 +1056,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                             RenderType.MESSAGE_TYPE_MINE_GIF
                         else
                             RenderType.MESSAGE_TYPE_OTHER_GIF
-                    } else if (txtMsg.contentEntity.infoType == DBConstant.SHOW_REVOKE_TYPE) {
+                    } else if (txtMsg.contentEntity.infoType == DBConstant.SHOW_REVOKE_TYPE) {  //撤回
                         type = if (isMine)
                             RenderType.MESSAGE_TYPE_MINE_REVOKE
                         else
@@ -1072,15 +1077,24 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                         RenderType.MESSAGE_TYPE_OTHER_VIDEO
                     }
                 }
-                DBConstant.SHOW_REVOKE_TYPE -> {    //撤回
-                    type = if (isMine) {
+                DBConstant.SHOW_REVOKE_TYPE -> {  //撤回
+                    type = if (isMine)
                         RenderType.MESSAGE_TYPE_MINE_REVOKE
-                    } else {
+                    else
                         RenderType.MESSAGE_TYPE_OTHER_REVOKE
-                    }
                 }
-                DBConstant.SHOW_BRAND_TYPE -> { //公共品牌详情
-                    type = RenderType.MESSAGE_TYPE_BRAND
+                DBConstant.SHOW_BRAND_TYPE -> { //品牌详情
+                    val brandMsg = obj as BrandMessage
+                    //没有fromId或toId 则说明是公共的
+                    if (brandMsg.fromId == 0 || brandMsg.toId == 0) {   //公共
+                        type = RenderType.MESSAGE_TYPE_BRAND
+                    } else {    //我的或他人的
+                        type = if (isMine) {
+                            RenderType.MESSAGE_TYPE_MINE_BRAND
+                        } else {
+                            RenderType.MESSAGE_TYPE_OTHER_BRAND
+                        }
+                    }
                 }
                 else -> {
                 }
@@ -1095,7 +1109,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     private fun setHeadImage(message: MessageEntity, imageView: ImageView) {
         //直接加载头像（此消息是假消息）
         if (message.fromId == 0) {
-            GlideLoader.load(AppManager.instance.currentActivity(), "", imageView, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            GlideLoader.load(AppManager.instance.currentActivity(), MyMessageChatActivity.mAvatar, imageView, placeholder = R.drawable.default_img_icon, roundRadius = 15)
         } else {
             val userEntity = getUserEntity(message)
             GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, imageView, placeholder = R.drawable.default_img_icon, roundRadius = 15)

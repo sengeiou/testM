@@ -39,16 +39,16 @@
 
     <LinearLayout
         android:id="@+id/llMyMessageChatRvMineBrand"
-        android:layout_width="200dp"
+        android:layout_width="220dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/padding_dp_10"
-        android:background="@drawable/ripple_bg_white"
+        android:background="@drawable/ripple_bg_white_radius5"
         android:orientation="horizontal"
         android:padding="@dimen/padding_dp_10"
         >
 
         <ImageView
-            android:id="@+id/ivMyMessageChatRvOtherMineLogo"
+            android:id="@+id/ivMyMessageChatRvMineBrandLogo"
             android:layout_width="@dimen/padding_dp_60"
             android:layout_height="@dimen/padding_dp_60"
             android:src="@drawable/default_img_icon"
