@@ -256,6 +256,8 @@ public class MessageEntity implements Serializable {
                 return DBConstant.DISPLAY_FOR_MIX;
             case DBConstant.SHOW_VIDEO_TYPE:
                 return DBConstant.DISPLAY_FOR_VIDEO;
+            case DBConstant.SHOW_BRAND_TYPE:
+                return DBConstant.DISPLAY_FOR_BRAND;
             default:
                 return DBConstant.DISPLAY_FOR_ERROR;
         }

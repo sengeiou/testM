@@ -2,14 +2,18 @@ package com.qingmeng.mengmeng.activity
 
 import android.app.Activity
 import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.RecyclerView
 import android.text.Editable
+import android.text.TextUtils
 import android.text.TextWatcher
+import android.util.DisplayMetrics
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
@@ -84,9 +88,13 @@ class MyMessageChatActivity : BaseActivity() {
     private var mExpressionOrFunction = 0                       //变量 0默认（都不受理） 1表情点击 2工具+点击
     //    private var mFragmentList = ArrayList<Fragment>()           //表情fragment
 //    private val mTabTitles = arrayOf("", "")                    //tabLayout头部 初始化两个
+    private var mRecyclerViewIsBottom = false                   //RecyclerView在底部
     private var albumHelper: AlbumHelper? = null                //相册数据
     private var albumList: MutableList<ImageBucket>? = null
     private var mBundle: Bundle? = null                         //品牌详情内容
+    private var mIsSystemMotification = false                   //是否是系统通知
+    private val mTextMessage = TextMessage()                    //假文字消息
+    private val mBrandMessage = BrandMessage()                  //假详情
 
     companion object {
         var mAvatar = ""                                        //默认发送者头像
@@ -117,12 +125,18 @@ class MyMessageChatActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
-        setHeadName(intent.getStringExtra("title"))
+        val title = intent.getStringExtra("title") ?: ""
+        setHeadName(title)
+        //系统通知隐藏聊天功能
+        if (title == getString(R.string.systemNotification)) {
+            mIsSystemMotification = true
+            llMyMessageChatAll.visibility = View.GONE
+        }
         mBundle = intent.getBundleExtra("bundle")
         if (mBundle != null) {
             mAvatar = mBundle!!.getString("avatar")
         } else {
-            mAvatar = intent.getStringExtra("avatar")
+            mAvatar = intent.getStringExtra("avatar") ?: ""
         }
         //实例化键盘工具
         mKeyboardUtil = KeyboardUtil(this, etMyMessageChatContent)
@@ -190,12 +204,26 @@ class MyMessageChatActivity : BaseActivity() {
 
         //RecyclerView滑动监听
         rvMyMessageChat.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            internal var lastVisibleItemPosition: Int = 0
+
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
                 //滑到顶部了
                 if (!recyclerView.canScrollVertically(-1)) {
                     onPullDownToRefresh()
                 }
+                //没有滑动&&在最后一个item
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition + 1 == mAdapter.itemCount) {
+                    mRecyclerViewIsBottom = true
+                    tvMyMessageChatTips.visibility = View.GONE
+                } else {
+                    mRecyclerViewIsBottom = false
+                }
+            }
+
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                lastVisibleItemPosition = mLayoutManager.findLastVisibleItemPosition()
             }
         })
 
@@ -443,8 +471,13 @@ class MyMessageChatActivity : BaseActivity() {
             }
         }
 
+        //新消息
+        tvMyMessageChatTips.setOnClickListener {
+            scrollToBottomListItem(true)
+        }
+
         //撤回删除事件
-        mAdapter.setPopCallBack(object : ChatAdapterTwo.PopCallBack {
+        mAdapter.setCallBack(object : ChatAdapterTwo.CallBack {
             //撤回
             override fun onRevokeClick(position: Int) {
                 myDialog.showLoadingDialog()
@@ -623,13 +656,49 @@ class MyMessageChatActivity : BaseActivity() {
     }
 
     //列表移到最后一个
-    private fun scrollToBottomListItem() {
-        rvMyMessageChat.scrollToPosition(mAdapter.msgObjectList.lastIndex)
+    private fun scrollToBottomListItem(isAnimation: Boolean = false) {
+        if (isAnimation) {
+//            SmoothScrollLayoutManager(this).smoothScrollToPosition(rvMyMessageChat,1,mAdapter.msgObjectList.lastIndex)
+            rvMyMessageChat.smoothScrollToPosition(mAdapter.msgObjectList.lastIndex)
+            tvMyMessageChatTips.visibility = View.GONE
+        } else {
+            rvMyMessageChat.scrollToPosition(mAdapter.msgObjectList.lastIndex)
+        }
     }
 
     /**
      * -------------------------------------------------------------start-------------------------------------------------------------
      */
+
+    /**
+     * 假文字消息
+     */
+    private fun localTextMessage(): TextMessage {
+        //内容是空的就初始添加&&和必须不是系统通知
+        if ((TextUtils.isEmpty(mTextMessage.info) || mTextMessage.info == "null") && !mIsSystemMotification) {
+            mTextMessage.displayType = DBConstant.SHOW_ORIGIN_TEXT_TYPE
+            mTextMessage.info = getString(R.string.firstToChat_tips)
+            mTextMessage.content = "{\"extInfo\":\"{\\\"time\\\":${System.currentTimeMillis()}}\",\"info\":\"${getString(R.string.firstToChat_tips)}\",\"infoType\":1,\"nickname\":\"${intent.getStringExtra("title")}\",\"special\":false}"
+            //里面时根据时间排序的 为了拆分开来
+            mTextMessage.created = (System.currentTimeMillis() / 1000).toInt() + 1
+        }
+        return mTextMessage
+    }
+
+    /**
+     * 假品牌消息
+     */
+    private fun localBrandMessage(): BrandMessage {
+        if (TextUtils.isEmpty(mBrandMessage.brandName) || mBrandMessage.brandName == "null") {
+            mBrandMessage.brandId = mBundle?.getInt("id")!!
+            mBrandMessage.logo = mBundle?.getString("logo")!!
+            mBrandMessage.brandName = mBundle?.getString("name")!!
+            mBrandMessage.brandAmount = mBundle?.getString("capitalName")!!
+            mBrandMessage.displayType = DBConstant.SHOW_BRAND_TYPE
+            mBrandMessage.created = (System.currentTimeMillis() / 1000).toInt()
+        }
+        return mBrandMessage
+    }
 
     /**
      * 添加单个消息
@@ -651,46 +720,37 @@ class MyMessageChatActivity : BaseActivity() {
      * 添加list消息
      */
     private fun pushList(entityList: MutableList<MessageEntity>?, isFirstLoad: Boolean) {
-        //第一次进来发送假消息给用户
+        //添加假消息给用户
+        val textMessage = localTextMessage()
+        val list: MutableList<MessageEntity>? = if (entityList?.size ?: 0 > 0) {
+            entityList?.add(textMessage)
+            entityList
+        } else {
+            mutableListOf(textMessage)
+        }
+        //添加品牌
+        if (mBundle != null) {
+            val brandMessage = localBrandMessage()
+            list?.add(brandMessage)
+        }
+        //第一次列表到底部
         if (isFirstLoad) {
-            val textMessage = TextMessage()
-            textMessage.displayType = DBConstant.SHOW_ORIGIN_TEXT_TYPE
-            textMessage.info = getString(R.string.firstToChat_tips)
-            textMessage.content = "{\"extInfo\":\"{\\\"time\\\":${System.currentTimeMillis()}}\",\"info\":\"${getString(R.string.firstToChat_tips)}\",\"infoType\":1,\"nickname\":\"${intent.getStringExtra("title")}\",\"special\":false}"
-            if (mBundle != null) {
-                val id = mBundle?.getInt("id")
-                val logo = mBundle?.getString("logo")
-                val name = mBundle?.getString("name")
-                val capitalName = mBundle?.getString("capitalName")
-                val brandMessage = BrandMessage()
-                brandMessage.brandId = id!!
-                brandMessage.logo = logo!!
-                brandMessage.brandName = name!!
-                brandMessage.brandAmount = capitalName!!
-                brandMessage.displayType = DBConstant.SHOW_BRAND_TYPE
-                brandMessage.created = (System.currentTimeMillis() / 1000).toInt()
-                //里面时根据时间排序的 为了拆分开来
-                textMessage.created = (System.currentTimeMillis() / 1000).toInt() + 1
-                val list: MutableList<MessageEntity>? = if (entityList?.size ?: 0 > 0) {
-                    entityList?.add(brandMessage)
-                    entityList
-                } else {
-                    mutableListOf(brandMessage)
-                }
-                list?.add(textMessage)
-                mAdapter.loadHistoryList(list, mLayoutManager)
+            mAdapter.loadHistoryList(list, mLayoutManager)
+        } else {
+            //收到新消息了 且RecyclerView不在底部 弹出新消息提示
+            if (!mRecyclerViewIsBottom) {
+                tvMyMessageChatTips.visibility = View.VISIBLE
+                mAdapter.loadHistoryList(list)
             } else {
-                textMessage.created = (System.currentTimeMillis() / 1000).toInt()
-                val list: MutableList<MessageEntity>? = if (entityList?.size ?: 0 > 0) {
-                    entityList?.add(textMessage)
-                    entityList
-                } else {
-                    mutableListOf(textMessage)
-                }
+                tvMyMessageChatTips.visibility = View.GONE
                 mAdapter.loadHistoryList(list, mLayoutManager)
             }
+        }
+        //无系统通知提示
+        if ((list!!.isEmpty() || list[0].content.isNullOrBlank()) && mIsSystemMotification) {
+            llMyMessageChatTips.visibility = View.VISIBLE
         } else {
-            mAdapter.loadHistoryList(entityList)
+            llMyMessageChatTips.visibility = View.GONE
         }
     }
 
@@ -800,7 +860,7 @@ class MyMessageChatActivity : BaseActivity() {
             MessageEvent.Event.HISTORY_MSG_OBTAIN -> {
                 if (historyTimes == 1) {
                     mAdapter.msgObjectList.clear()
-                    reqHistoryMsg(false)
+                    reqHistoryMsg(true)
                 }
             }
         }
@@ -1041,5 +1101,23 @@ class MyMessageChatActivity : BaseActivity() {
             albumList?.clear()
         }
         super.onDestroy()
+    }
+
+    //RecyclerView平滑滚动到指定位置
+    inner class SmoothScrollLayoutManager(context: Context) : LinearLayoutManager(context) {
+
+        override fun smoothScrollToPosition(recyclerView: RecyclerView,
+                                            state: RecyclerView.State, position: Int) {
+
+            val smoothScroller = object : LinearSmoothScroller(recyclerView.context) {
+                // 返回：滑过1px时经历的时间(ms)。
+                override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
+                    return 150f / displayMetrics.densityDpi
+                }
+            }
+
+            smoothScroller.targetPosition = position
+            startSmoothScroll(smoothScroller)
+        }
     }
 }
