@@ -42,12 +42,11 @@
         android:layout_marginTop="@dimen/padding_dp_67"
         android:layout_marginEnd="@dimen/padding_dp_20"
         android:background="@drawable/shape_login_button_pw"
-        android:gravity="center_vertical">
+        android:gravity="center">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="94dp"
             android:drawableStart="@drawable/login_icon_input_pw_n"
             android:drawablePadding="@dimen/padding_dp_10"
             android:text="@string/use_name_password_login"
@@ -65,12 +64,11 @@
         android:layout_marginTop="10dp"
         android:layout_marginEnd="@dimen/padding_dp_20"
         android:background="@drawable/shape_login_button_sms"
-        android:gravity="center_vertical">
+        android:gravity="center">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="92dp"
             android:drawableStart="@drawable/login_icon_verification_code"
             android:drawablePadding="@dimen/padding_dp_10"
             android:text="@string/sms_verify_login"
