@@ -126,7 +126,7 @@ class JoinFeedbackActivity : BaseActivity() {
                             if (failCount != 0) {
                                 myDialog.dismissLoadingDialog()
                                 adapter.notifyDataSetChanged()
-                                ToastUtil.showShort("图片上传完成，共成功${successCount}张，失败${failCount}张,请再次点击提交")
+                                ToastUtil.showShort("图片上传完成，共成功${successCount}张，失败${failCount}张,请再次选择图片提交")
                             } else {
                                 callUrl.forEach { url += "$it," }
                                 setFeedback(token, brandId, type, content, url)

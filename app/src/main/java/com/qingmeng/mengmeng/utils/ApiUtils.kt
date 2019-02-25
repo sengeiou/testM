@@ -65,7 +65,6 @@ object ApiUtils {
                     }
                 }, {
                     callback("", url)
-                    ToastUtil.showNetError()
                 }, {}, { activity.addSubscription(it) })
     }
 
