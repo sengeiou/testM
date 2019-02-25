@@ -116,7 +116,6 @@
 
     </LinearLayout>
 
-    <include layout="@layout/layout_line_no_padding" />
 
     <TextView
         android:id="@+id/mRegisterSure"
