@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    >
+
+    <RelativeLayout
+        android:layout_width="80dp"
+        android:layout_height="115dp"
+        android:background="@drawable/ripple_bg_drawable_white0_radius3"
+        >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/padding_dp_5"
+            android:layout_marginStart="@dimen/padding_dp_5"
+            android:layout_marginTop="@dimen/padding_dp_5"
+            android:text="@string/last_img_tips"
+            android:textSize="12sp"
+            />
+
+        <ImageView
+            android:id="@+id/ivMyMessageChatSeePopScreenshot"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/padding_dp_5"
+            android:scaleType="centerCrop"
+            android:src="@mipmap/search_nothing"
+            />
+    </RelativeLayout>
+</LinearLayout>

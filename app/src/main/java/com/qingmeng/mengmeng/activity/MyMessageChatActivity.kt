@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
 import android.provider.MediaStore
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.LinearSmoothScroller
@@ -47,13 +48,12 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.ChatAdapterTwo
 import com.qingmeng.mengmeng.constant.IConstants
-import com.qingmeng.mengmeng.utils.KeyboardUtil
-import com.qingmeng.mengmeng.utils.PermissionUtils
-import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.audio.AudioManager
 import com.qingmeng.mengmeng.utils.audio.MediaManager
 import com.qingmeng.mengmeng.utils.photo.PhotoConfig
 import com.qingmeng.mengmeng.utils.photo.SimplePhotoUtil
+import com.qingmeng.mengmeng.view.dialog.PopChatImg
 import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.main.activity_my_message_chat.*
 import kotlinx.android.synthetic.main.layout_head.*
@@ -83,12 +83,13 @@ class MyMessageChatActivity : BaseActivity() {
     private lateinit var mSoundVolumeDialog: Dialog             //语音弹出框
     private lateinit var mSoundVolumeImg: ImageView
     private lateinit var mSoundVolumeLayout: LinearLayout
+    private lateinit var mImgSeePopChat: PopChatImg             //最近图片pop
     private var y1 = 0                                          //手指坐标
     private var y2 = 0
     private var mExpressionOrFunction = 0                       //变量 0默认（都不受理） 1表情点击 2工具+点击
     //    private var mFragmentList = ArrayList<Fragment>()           //表情fragment
 //    private val mTabTitles = arrayOf("", "")                    //tabLayout头部 初始化两个
-    private var mRecyclerViewIsBottom = false                   //RecyclerView在底部
+    private var mRecyclerViewIsBottom = true                    //RecyclerView在底部
     private var albumHelper: AlbumHelper? = null                //相册数据
     private var albumList: MutableList<ImageBucket>? = null
     private var mBundle: Bundle? = null                         //品牌详情内容
@@ -147,7 +148,7 @@ class MyMessageChatActivity : BaseActivity() {
 //        }
         //初始化音量对话框
         initSoundVolumeDlg()
-        //舒适化相册
+        //初始化相册
         initAlbumHelper()
         initAdapter()
         httpLoad()
@@ -337,21 +338,25 @@ class MyMessageChatActivity : BaseActivity() {
 
         //系统工具 +
         ivMyMessageChatFunction.setOnClickListener {
-            //如果键盘没有显示 就直接打开布局
-            if (!mKeyboardUtil.isShowInputKeyboard()) {
-                llMyMessageChatFunction.visibility = View.VISIBLE
-                //表情布局隐藏
-                rlMyMessageChatExpression.visibility = View.GONE
-                //按住说话隐藏
-                tvMyMessageChatClickSay.visibility = View.GONE
-            } else {
-                //改变输入框上面的布局高度
-                changeMiddleLayoutHeight()
-                mExpressionOrFunction = 2
-                //关闭软键盘
-                mKeyboardUtil.hideInputKeyboard()
-            }
-            scrollToBottomListItem()
+            PermissionUtils.readAndWrite(this, {
+                //如果键盘没有显示 就直接打开布局
+                if (!mKeyboardUtil.isShowInputKeyboard()) {
+                    llMyMessageChatFunction.visibility = View.VISIBLE
+                    //表情布局隐藏
+                    rlMyMessageChatExpression.visibility = View.GONE
+                    //按住说话隐藏
+                    tvMyMessageChatClickSay.visibility = View.GONE
+                    //显示最近60秒内的截图或拍照
+                    showLastImg()
+                } else {
+                    //改变输入框上面的布局高度
+                    changeMiddleLayoutHeight()
+                    mExpressionOrFunction = 2
+                    //关闭软键盘
+                    mKeyboardUtil.hideInputKeyboard()
+                }
+                scrollToBottomListItem()
+            })
         }
 
         //输入框点击
@@ -418,6 +423,8 @@ class MyMessageChatActivity : BaseActivity() {
                         rlMyMessageChatExpression.visibility = View.GONE
                         //按住说话隐藏
                         tvMyMessageChatClickSay.visibility = View.GONE
+                        //显示最近60秒内的截图或拍照
+                        showLastImg()
                     }
                 }
                 //恢复默认值 其他都不受理
@@ -655,10 +662,27 @@ class MyMessageChatActivity : BaseActivity() {
         mKeyboardUtil.hideInputKeyboard()
     }
 
+    //显示最近60秒内的截图或拍照
+    private fun showLastImg() {
+        val imgBean = GetImgUtils.getLatestPhoto(this)
+        if (System.currentTimeMillis() / 1000 - imgBean[0].mTime <= 60) {
+            mImgSeePopChat = PopChatImg(this, imgBean[0].imgUrl, true, {
+                //打开一个发送图片的pop
+                PopChatImg(this, it, false, {
+                    handleTakePhotoData(it)
+                }).showAtLocation(llMyMessageRoot, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 0)
+            })
+            if (!mImgSeePopChat.isShowing) {
+                mImgSeePopChat.showAsDropDown(ivMyMessageChatFunction, -(this.dp2px(85) - ivMyMessageChatFunction.width), -(this.dp2px(125) + ivMyMessageChatFunction.height))
+            }
+        }
+    }
+
     //列表移到最后一个
     private fun scrollToBottomListItem(isAnimation: Boolean = false) {
         if (isAnimation) {
 //            SmoothScrollLayoutManager(this).smoothScrollToPosition(rvMyMessageChat,1,mAdapter.msgObjectList.lastIndex)
+            mAdapter.notifyDataSetChanged()
             rvMyMessageChat.smoothScrollToPosition(mAdapter.msgObjectList.lastIndex)
             tvMyMessageChatTips.visibility = View.GONE
         } else {
@@ -678,7 +702,7 @@ class MyMessageChatActivity : BaseActivity() {
         if ((TextUtils.isEmpty(mTextMessage.info) || mTextMessage.info == "null") && !mIsSystemMotification) {
             mTextMessage.displayType = DBConstant.SHOW_ORIGIN_TEXT_TYPE
             mTextMessage.info = getString(R.string.firstToChat_tips)
-            mTextMessage.content = "{\"extInfo\":\"{\\\"time\\\":${System.currentTimeMillis()}}\",\"info\":\"${getString(R.string.firstToChat_tips)}\",\"infoType\":1,\"nickname\":\"${intent.getStringExtra("title")}\",\"special\":false}"
+//            mTextMessage.content = "{\"extInfo\":{\"time\":${System.currentTimeMillis()}},\"info\":\"${getString(R.string.firstToChat_tips)}\",\"infoType\":1,\"nickname\":\"${intent.getStringExtra("title")}\",\"special\":false}"
             //里面时根据时间排序的 为了拆分开来
             mTextMessage.created = (System.currentTimeMillis() / 1000).toInt() + 1
         }
@@ -741,6 +765,7 @@ class MyMessageChatActivity : BaseActivity() {
             if (!mRecyclerViewIsBottom) {
                 tvMyMessageChatTips.visibility = View.VISIBLE
                 mAdapter.loadHistoryList(list)
+                Handler().postDelayed({ tvMyMessageChatTips.visibility = View.GONE }, 3000)
             } else {
                 tvMyMessageChatTips.visibility = View.GONE
                 mAdapter.loadHistoryList(list, mLayoutManager)
@@ -1013,9 +1038,6 @@ class MyMessageChatActivity : BaseActivity() {
 //        }, SysConstant.CAMERA_WITH_DATA)
 
         SimplePhotoUtil.instance.setConfig(PhotoConfig(this, true, onPathCallback = { path ->
-            //            //用ImageView显示出来
-//            val bitmap = getLoacalBitmap(path)
-//            ToastUtil.showShort(path)
             handleTakePhotoData(path)
         }))
     }
@@ -1032,8 +1054,6 @@ class MyMessageChatActivity : BaseActivity() {
         this.overridePendingTransition(com.leimo.wanxin.R.anim.tt_album_enter, com.leimo.wanxin.R.anim.tt_stay)
 
 //        SimplePhotoUtil.instance.setConfig(PhotoConfig(this, false, onPathCallback = { path ->
-////            val bitmap = getLoacalBitmap(path)
-////            ToastUtil.showShort(path)
 //            handleTakePhotoData(path)
 //        }))
     }
@@ -1043,7 +1063,6 @@ class MyMessageChatActivity : BaseActivity() {
         startActivityForResult(Intent(Intent.ACTION_PICK, android.provider.MediaStore.Video.Media.EXTERNAL_CONTENT_URI), SysConstant.VIDEO_WITH_DATA)
 
 //        SimplePhotoUtil.instance.setConfig(this, { path, data ->
-//            //            ToastUtil.showShort(path)
 //            handleTakeVideoData(data)
 //        })
     }
@@ -1106,16 +1125,13 @@ class MyMessageChatActivity : BaseActivity() {
     //RecyclerView平滑滚动到指定位置
     inner class SmoothScrollLayoutManager(context: Context) : LinearLayoutManager(context) {
 
-        override fun smoothScrollToPosition(recyclerView: RecyclerView,
-                                            state: RecyclerView.State, position: Int) {
-
+        override fun smoothScrollToPosition(recyclerView: RecyclerView, state: RecyclerView.State, position: Int) {
             val smoothScroller = object : LinearSmoothScroller(recyclerView.context) {
                 // 返回：滑过1px时经历的时间(ms)。
                 override fun calculateSpeedPerPixel(displayMetrics: DisplayMetrics): Float {
                     return 150f / displayMetrics.densityDpi
                 }
             }
-
             smoothScroller.targetPosition = position
             startSmoothScroll(smoothScroller)
         }
