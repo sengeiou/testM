@@ -82,7 +82,7 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
     private fun initLeftAdapter(type: Int) {
         mLauyoutManger = LinearLayoutManager(mActivity)
         mMenuView.left_recyclerView_pop.layoutManager = mLauyoutManger
-     //   mMenuView.left_recyclerView_pop.scrollToPosition(mFathId)
+        mMenuView.left_recyclerView_pop.scrollToPosition(mFathId)
         if (type == 1) {
             mFoodTypeAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mFoodTypeList, holderConvert = { holder, data, _, _ ->
                 holder.apply {
@@ -335,6 +335,7 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
             if (!mFoodList.isEmpty()) {
                 mFoodList.clear()
             }
+           // mFoodTypeList.add(FoodType(ArrayList(), 0, "", 0, "", "全部", "1"))
             mFoodTypeList.addAll(foodTypeData.foodType)
             mFoodList.addAll(foodTypeData.foodType[0].foodTypeDto)
             it.onNext(foodTypeData)
