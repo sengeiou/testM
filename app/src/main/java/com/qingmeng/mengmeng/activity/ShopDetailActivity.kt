@@ -25,6 +25,7 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.ShopDetailVpAdapter
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.BRANDID
 import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
 import com.qingmeng.mengmeng.constant.IConstants.IMGS
@@ -364,5 +365,11 @@ class ShopDetailActivity : BaseActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mWebSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        startActivity<ShopDetailActivity>(IConstants.BRANDID to intent.getIntExtra(BRANDID, 0))
+        this.finish()
     }
 }

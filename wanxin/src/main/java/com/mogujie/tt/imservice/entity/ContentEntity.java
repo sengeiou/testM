@@ -1,6 +1,7 @@
 package com.mogujie.tt.imservice.entity;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 /**
@@ -26,7 +27,7 @@ public class ContentEntity {
     private String nickname;
     //扩展消息
     @SerializedName("extInfo")
-    private String extInfo;
+    private JsonObject extInfo;
     //透传消息
     @SerializedName("special")
     private boolean special;
@@ -39,11 +40,11 @@ public class ContentEntity {
         this.info = info;
     }
 
-    public String getExtInfo() {
+    public JsonObject getExtInfo() {
         return extInfo;
     }
 
-    public void setExtInfo(String extInfo) {
+    public void setExtInfo(JsonObject extInfo) {
         this.extInfo = extInfo;
     }
 

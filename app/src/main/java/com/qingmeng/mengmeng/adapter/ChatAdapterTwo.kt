@@ -57,7 +57,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     private var loginUser: UserEntity? = null
     private var currentPop: MessageOperatePopup? = null    //弹出气泡
     private val mDefaultTimeDifference = 120               //默认时间差值
-    private var mPopCallBack: PopCallBack? = null
+    private var mCallBack: CallBack? = null
 
     override fun getItemViewType(position: Int): Int {
         return getItemViewType(msgObjectList[position])
@@ -261,11 +261,11 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             }
             //品牌详情
             llMyMessageChatRvBrand.setOnClickListener {
-                mPopCallBack?.onBrandClick(position)
+                mCallBack?.onBrandClick(position)
             }
             //发送品牌
             tvMyMessageChatRvBrandSend.setOnClickListener {
-                mPopCallBack?.onSendBrandClick(position)
+                mCallBack?.onSendBrandClick(position)
             }
         }
     }
@@ -308,8 +308,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 //有本地的先加载本地的
                 if (FileUtil.isFileExist(imageMessage.path)) {
                     GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                } else {
+                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15, placeholder = R.drawable.default_img_icon)
                 }
-                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15, placeholder = R.drawable.default_img_icon)
                 it.setOnClickListener {
                     val i = Intent(context, PreviewMessageImagesActivity::class.java)
                     val bundle = Bundle()
@@ -340,8 +341,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 //有本地的先加载本地的
                 if (FileUtil.isFileExist(imageMessage.path)) {
                     GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                } else {
+                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 }
-                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 it.setOnClickListener {
                     val i = Intent(context, PreviewMessageImagesActivity::class.java)
                     val bundle = Bundle()
@@ -399,8 +401,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             //封面 有本地的先加载本地的
             if (FileUtil.isFileExist(videoMessage.thumbPath)) {
                 GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            } else {
+                GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             }
-            GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             //时间
             tvMyMessageChatRvOtherVideoTime.text = "${videoMessage.videolength}s"
             rlMyMessageChatRvOtherVideo.let {
@@ -450,7 +453,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             //点击事件
             llMyMessageChatRvOtherBrand.let {
                 it.setOnClickListener {
-
+                    mCallBack?.onBrandClick(position)
                 }
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
@@ -521,8 +524,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 //有本地的先加载本地的
                 if (FileUtil.isFileExist(imageMessage.path)) {
                     GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                } else {
+                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 }
-                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 it.setOnClickListener {
                     val i = Intent(context, PreviewMessageImagesActivity::class.java)
                     val bundle = Bundle()
@@ -577,8 +581,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 //有本地的先加载本地的
                 if (FileUtil.isFileExist(imageMessage.path)) {
                     GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                } else {
+                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 }
-                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 it.setOnClickListener {
                     val i = Intent(context, PreviewMessageImagesActivity::class.java)
                     val bundle = Bundle()
@@ -681,8 +686,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             //封面 有本地的加载本地的
             if (FileUtil.isFileExist(videoMessage.thumbPath)) {
                 GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            } else {
+                GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             }
-            GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             //时间
             tvMyMessageChatRvMineVideoTime.text = "${videoMessage.videolength}s"
             rlMyMessageChatRvMineVideo.let {
@@ -759,7 +765,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             //点击事件
             llMyMessageChatRvMineBrand.let {
                 it.setOnClickListener {
-
+                    mCallBack?.onBrandClick(position)
                 }
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
@@ -951,7 +957,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         // 如果是历史消息，从头开始加
         msgObjectList.addAll(0, chatList)
         getImageList()
-        notifyDataSetChanged()
+        if (mLayoutManager != null) {
+            notifyDataSetChanged()
+        }
         if (isPullDownToRefresh) {  //加载历史
             mLayoutManager?.scrollToPositionWithOffset(chatList.lastIndex + 1, 0)
         } else {    //直接添加历史
@@ -1187,12 +1195,12 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
 
         //撤回
         override fun onRevokeClick(position: Int) {
-            mPopCallBack?.onRevokeClick(position)
+            mCallBack?.onRevokeClick(position)
         }
 
         //删除
         override fun onDeleteClick(position: Int) {
-            mPopCallBack?.onDeleteClick(position)
+            mCallBack?.onDeleteClick(position)
         }
     }
 
@@ -1214,11 +1222,11 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         }
     }
 
-    fun setPopCallBack(popCallBack: PopCallBack) {
-        mPopCallBack = popCallBack
+    fun setCallBack(callBack: CallBack) {
+        mCallBack = callBack
     }
 
-    interface PopCallBack {
+    interface CallBack {
         fun onRevokeClick(position: Int)
 
         fun onDeleteClick(position: Int)

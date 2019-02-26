@@ -18,7 +18,7 @@ import java.io.UnsupportedEncodingException
  */
 open class TextMessage : MessageEntity, Serializable {
     val contentEntity: ContentEntity
-        get() = Gson().fromJson(content, ContentEntity::class.java)
+        get() = Gson().fromJson(getContent(), ContentEntity::class.java)
 
     constructor() {
         msgId = SequenceNumberMaker.getInstance().makelocalUniqueMsgId()

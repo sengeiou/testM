@@ -7,6 +7,7 @@ package com.mogujie.tt.db.entity;
 import android.text.TextUtils;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mogujie.tt.config.DBConstant;
 import com.mogujie.tt.config.MessageConstant;
@@ -31,7 +32,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * 这个类不同与其他自动生成代码
@@ -43,10 +43,10 @@ import org.greenrobot.greendao.annotation.Generated;
  * Entity mapped to table Message.
  */
 @Entity(nameInDb = "MessageDao",
-indexes = {
-@Index(value = "msgId"),
-@Index(value = "sessionKey")
-}
+    indexes = {
+        @Index(value = "msgId"),
+        @Index(value = "sessionKey")
+    }
 )
 public class MessageEntity implements Serializable {
     private static final long serialVersionUID = -2719594838594429816L;
@@ -256,6 +256,8 @@ public class MessageEntity implements Serializable {
                 return DBConstant.DISPLAY_FOR_MIX;
             case DBConstant.SHOW_VIDEO_TYPE:
                 return DBConstant.DISPLAY_FOR_VIDEO;
+            case DBConstant.SHOW_BRAND_TYPE:
+                return DBConstant.DISPLAY_FOR_BRAND;
             default:
                 return DBConstant.DISPLAY_FOR_ERROR;
         }
@@ -264,22 +266,22 @@ public class MessageEntity implements Serializable {
     @Override
     public String toString() {
         return "MessageEntity{" +
-        "id=" + id +
-        ", msgId=" + msgId +
-        ", fromId=" + fromId +
-        ", toId=" + toId +
-        ", sessionKey='" + sessionKey + '\'' +
-        ", content='" + content + '\'' +
-        ", msgType=" + msgType +
-        ", displayType=" + displayType +
-        ", status=" + status +
-        ", created=" + created +
-        ", updated=" + updated +
-        ", isGIfEmo=" + isGIfEmo +
-        ", info='" + info + '\'' +
-        ", infoType=" + infoType +
-        ", nickname=" + nickname +
-        '}';
+            "id=" + id +
+            ", msgId=" + msgId +
+            ", fromId=" + fromId +
+            ", toId=" + toId +
+            ", sessionKey='" + sessionKey + '\'' +
+            ", content='" + content + '\'' +
+            ", msgType=" + msgType +
+            ", displayType=" + displayType +
+            ", status=" + status +
+            ", created=" + created +
+            ", updated=" + updated +
+            ", isGIfEmo=" + isGIfEmo +
+            ", info='" + info + '\'' +
+            ", infoType=" + infoType +
+            ", nickname=" + nickname +
+            '}';
     }
 
     @Keep
@@ -408,31 +410,27 @@ public class MessageEntity implements Serializable {
      * @return
      */
     @Keep
-    public String getExtContent() {
-        JSONObject extContent = new JSONObject();
+    public JsonObject getExtContent() {
+        JsonObject extContent = new JsonObject();
         Set<String> keySet = extMap.keySet();
         for (Iterator<String> i = keySet.iterator(); i.hasNext(); ) {
             String key = i.next();
             Object value = extMap.get(key);
-            try {
-                if (value instanceof String) {
-                    extContent.put(key, ObjectTrans.getString(value));
-                } else if (value instanceof Integer) {
-                    extContent.put(key, ObjectTrans.getInt(value));
-                } else if (value instanceof Boolean) {
-                    extContent.put(key, ObjectTrans.getBoolean(value));
-                } else if (value instanceof Long) {
-                    extContent.put(key, ObjectTrans.getLong(value));
-                } else if (value instanceof Double) {
-                    extContent.put(key, ObjectTrans.getDouble(value));
-                } else {
-                    extContent.put(key, value);
-                }
-            } catch (JSONException e) {
-                e.printStackTrace();
+            if (value instanceof String) {
+                extContent.addProperty(key, ObjectTrans.getString(value));
+            } else if (value instanceof Integer) {
+                extContent.addProperty(key, ObjectTrans.getInt(value));
+            } else if (value instanceof Boolean) {
+                extContent.addProperty(key, ObjectTrans.getBoolean(value));
+            } else if (value instanceof Long) {
+                extContent.addProperty(key, ObjectTrans.getLong(value));
+            } else if (value instanceof Double) {
+                extContent.addProperty(key, ObjectTrans.getDouble(value));
+            } else {
+//                extContent.add(key, value);
             }
         }
-        return extContent.toString();
+        return extContent;
     }
 
     /**
@@ -462,7 +460,7 @@ public class MessageEntity implements Serializable {
             infoType = contentEntity.getInfoType();
             nickname = contentEntity.getNickname();
             special = contentEntity.isSpecial();
-            String extInfo = contentEntity.getExtInfo();
+            String extInfo = contentEntity.getExtInfo().toString();
             if (!TextUtils.isEmpty(extInfo)) {
                 try {
                     JSONObject extraContent = new JSONObject(extInfo);

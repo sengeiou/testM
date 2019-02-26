@@ -1,6 +1,5 @@
 package com.qingmeng.mengmeng.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.view.View
@@ -170,6 +169,11 @@ class MyFragment : BaseFragment() {
                 }, {
                     srlMy.isRefreshing = false
                     mLoginSuccess = mMyInformation.userName != ""
+                    if(mLoginSuccess){
+                        tvMyLogin.visibility = View.GONE
+                    }else{
+                        tvMyLogin.visibility = View.VISIBLE
+                    }
                 })
     }
 

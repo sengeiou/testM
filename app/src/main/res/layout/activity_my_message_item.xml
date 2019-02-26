@@ -26,7 +26,7 @@
                 android:layout_height="match_parent"
                 >
 
-                <ImageView
+                <com.qingmeng.mengmeng.view.RoundImageView
                     android:id="@+id/ivMyMessageRvLogo"
                     android:layout_width="@dimen/padding_dp_40"
                     android:layout_height="@dimen/padding_dp_40"
