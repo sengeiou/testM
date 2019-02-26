@@ -149,7 +149,7 @@
         <!--搜索结果页-->
         <activity
             android:name=".activity.RedShopSeachResult"
-            android:windowSoftInputMode="stateHidden"/>
+            android:windowSoftInputMode = "stateAlwaysHidden" />
 
 
     </application>
