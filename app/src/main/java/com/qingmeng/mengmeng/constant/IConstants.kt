@@ -42,7 +42,8 @@ object IConstants {
     val title = "title"                     //标题
     val firstLevel = "firstLevel"         //一级分类id
     val secondLevel = "secondLevel"       //二级分类id
-    val THREELEVEL = "threeLevel"         //展示名称
+    val THREE_LEVEL = "threeLevel"         //展示名称
+    val BACK_SEACH = "backSeach"         //回显关键字
     val LOGIN_BACK = 10010
     var login_name = ""                     //账号密码登录时保存账号
     var login_phone = ""                    //保存手机号

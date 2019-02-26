@@ -25,7 +25,7 @@ import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.SEACH_RESULT
-import com.qingmeng.mengmeng.constant.IConstants.THREELEVEL
+import com.qingmeng.mengmeng.constant.IConstants.THREE_LEVEL
 import com.qingmeng.mengmeng.constant.IConstants.firstLevel
 import com.qingmeng.mengmeng.constant.IConstants.secondLevel
 import com.qingmeng.mengmeng.entity.SearchDto
@@ -71,10 +71,8 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
     private var integratedSortId = 0      //综合排序（12345）
     private var mCanHttpLoad = true                //是否可以请求接口
     private var mHasNextPage = true                //是否有下一页
-//    private var mTypeId = String()               //餐饮类型返回参数
-//    private var mRankingId = String()            //综合排序返回参数
     private var mShowTittle: String = ""            //进入选中
-    private var mSeachType = 1                      //搜索模式 1为 搜索页面进入搜索 2为首页icon 红铺点入搜索
+
     override fun getLayoutId(): Int = R.layout.activity_red_shop_seach_result
 
     override fun initObject() {
@@ -84,7 +82,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
         fatherId = intent.getIntExtra(firstLevel, 0)
         typeId = intent.getIntExtra(secondLevel, 0)
         keyWord = intent.getStringExtra(SEACH_RESULT) ?: ""
-        mShowTittle = intent.getStringExtra(THREELEVEL) ?: ""
+        mShowTittle = intent.getStringExtra(THREE_LEVEL) ?: ""
         if (keyWord.isEmpty()) {
             if (mShowTittle.isEmpty()) {
                 search_food_type.text = "餐饮类型"
@@ -278,7 +276,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
     override fun initListener() {
         head_search.setOnClickListener {
             super.initListener()
-            startActivity<RedShopSeach>()
+            startActivity<RedShopSeach>(IConstants.BACK_SEACH to keyWord)
         }
         head_search_mBack.setOnClickListener {
             //            if (popupMenu1.isShowing) popupMenu1.dismiss()
@@ -301,7 +299,13 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
                     typeId = selectId
                     fatherId = selectFatherId
                     search_food_type.text = selectName
-                    goToSeach()
+                    if (keyWord.isEmpty()) {
+                        goToSeach()
+                    } else {
+                        keyWord = ""
+                        head_search.setText("")
+                        goToSeach()
+                    }
                 }
             })
             mIsInstantiationOne = true
@@ -539,7 +543,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
         } else {
             fatherId = intent!!.getIntExtra(firstLevel, 0)
             typeId = intent!!.getIntExtra(secondLevel, 0)
-            mShowTittle = intent!!.getStringExtra(THREELEVEL) ?: ""
+            mShowTittle = intent!!.getStringExtra(THREE_LEVEL) ?: ""
             if (mShowTittle.isEmpty()) {
                 search_food_type.text = "餐饮类型"
                 search_food_type.setTextColor(resources.getColor(R.color.color_999999))
