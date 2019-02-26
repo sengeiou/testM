@@ -162,7 +162,7 @@ interface Api {
     fun forgetpassword(@Query("phone") phone: String, @Query("smsCode") msmCode: String, @Query("password") password: String, @Query("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
 
     //获取oss令牌
-    @GET("http://oss.ilashou.com/oss/authorization_app?name=mm")
+    @GET("https://oss.ilashou.com/oss/authorization_app?name=mm")
     fun getOssToken(): Observable<BaseBean<OssDataBean>>
 
     //我的反馈
