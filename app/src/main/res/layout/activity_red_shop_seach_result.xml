@@ -154,7 +154,7 @@
             android:id="@+id/search_result_view"
             android:layout_width="match_parent"
             android:layout_height="@dimen/padding_dp_0_5"
-            android:background="@color/color_999999" />
+            android:background="@color/line_color_e5" />
 
         <LinearLayout
             android:id="@+id/seach_result_nothing"

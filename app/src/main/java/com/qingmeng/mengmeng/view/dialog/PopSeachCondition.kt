@@ -55,6 +55,8 @@ class PopSeachCondition : PopupWindow {
         this.height = ViewGroup.LayoutParams.WRAP_CONTENT
         this.animationStyle = R.style.TopPopWindow_animStyle
         this.setBackgroundDrawable(ColorDrawable(-0x00000000))
+        mMenuView.search_result_condition_joinType.visibility = View.VISIBLE
+        mMenuView.search_result_condition_Money.visibility = View.VISIBLE
         mMenuView.bottom_condition_view.setOnClickListener {
             dismiss()
         }
@@ -97,8 +99,6 @@ class PopSeachCondition : PopupWindow {
                     httpMoney()
                     httpJoinModel()
                 }, {}, {})
-
-
     }
 
     @SuppressLint("ResourceAsColor")
@@ -113,7 +113,6 @@ class PopSeachCondition : PopupWindow {
                 it.checkState = false
                 mJoinModelAdapter.notifyDataSetChanged()
             }
-
         }
         //确定  回调接口数据
         mMenuView.search_condition_pop_button_QD.setOnClickListener {
@@ -144,21 +143,16 @@ class PopSeachCondition : PopupWindow {
         mMenuView.search_result_condition_recycler_money.isNestedScrollingEnabled = false
         mMoneyAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextMoneyList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
-                if (!mTextMoneyList.isEmpty()) {
-                    mMenuView.search_result_condition_Money.visibility = View.VISIBLE
-                    getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
-                        if (data.checkState) {
-                            setBackgroundColor(resources.getColor(R.color.colorBlueBright))
-                            getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.color_5ab1e1))
-                            getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.VISIBLE
-                        } else {
-                            setBackgroundResource(R.color.dialog_item_bg)
-                            getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.black))
-                            getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.GONE
-                        }
+                getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
+                    if (data.checkState) {
+                        setBackgroundColor(resources.getColor(R.color.colorBlueBright))
+                        getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.color_5ab1e1))
+                        getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.VISIBLE
+                    } else {
+                        setBackgroundResource(R.color.dialog_item_bg)
+                        getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.black))
+                        getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.GONE
                     }
-                } else {
-                    mMenuView.search_result_condition_Money.visibility = View.GONE
                 }
                 setText(R.id.tvSelectDialogRvMenuG, data.name)
             }
@@ -176,21 +170,16 @@ class PopSeachCondition : PopupWindow {
         mMenuView.search_result_condition_recycler_joinType.isNestedScrollingEnabled = false
         mJoinModelAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextJoinTypeList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
-                if (!mTextJoinTypeList.isEmpty()) {
-                    mMenuView.search_result_condition_joinType.visibility = View.VISIBLE
-                    getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
-                        if (data.checkState) {
-                            setBackgroundColor(resources.getColor(R.color.colorBlueBright))
-                            getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.color_5ab1e1))
-                            getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.VISIBLE
-                        } else {
-                            setBackgroundResource(R.color.dialog_item_bg)
-                            getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.black))
-                            getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.GONE
-                        }
+                getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
+                    if (data.checkState) {
+                        setBackgroundColor(resources.getColor(R.color.colorBlueBright))
+                        getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.color_5ab1e1))
+                        getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.VISIBLE
+                    } else {
+                        setBackgroundResource(R.color.dialog_item_bg)
+                        getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.black))
+                        getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.GONE
                     }
-                } else {
-                    mMenuView.search_result_condition_joinType.visibility = View.GONE
                 }
                 setText(R.id.tvSelectDialogRvMenuG, data.name)
             }
@@ -201,8 +190,6 @@ class PopSeachCondition : PopupWindow {
             mJoinModelAdapter.notifyDataSetChanged()
         })
         mMenuView.search_result_condition_recycler_joinType.adapter = mJoinModelAdapter
-
-
     }
 
     //加盟金额接口

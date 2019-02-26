@@ -16,27 +16,27 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/padding_dp_10"
-            android:src="@drawable/common_btn_back"/>
+            android:src="@drawable/common_btn_back" />
 
         <EditText
             android:id="@+id/head_search2"
             style="@style/SeachDefaultHint"
             android:layout_width="@dimen/padding_dp_313"
             android:layout_height="@dimen/padding_dp_30"
-            android:singleLine="true"
-            android:imeOptions="actionSearch"
             android:layout_marginBottom="@dimen/padding_dp_5"
             android:layout_marginLeft="@dimen/padding_dp_10"
-            android:drawableEnd="@drawable/red_shop_icon_clear_search"
             android:background="@drawable/bg_seach"
+            android:drawableEnd="@drawable/red_shop_icon_clear_search"
             android:drawablePadding="@dimen/padding_dp_5"
-            android:maxLength="25"
-            android:textColor="@color/color_333333"
-            android:textColorHint="@color/color_999999"
             android:gravity="center_vertical"
-            android:hint="请输入你要搜索的"
+            android:hint="@string/seach"
+            android:imeOptions="actionSearch"
+            android:maxLength="25"
+            android:paddingLeft="@dimen/padding_dp_10"
             android:paddingRight="@dimen/padding_dp_10"
-            android:paddingLeft="@dimen/padding_dp_10"/>
+            android:singleLine="true"
+            android:textColor="@color/color_333333"
+            android:textColorHint="@color/color_999999" />
 
         <TextView
             android:id="@+id/head_search_mMenu2"
@@ -47,7 +47,6 @@
             android:text="@string/cancel"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_12"
-            android:visibility="gone"
-           />
+            android:visibility="gone" />
     </LinearLayout>
 </RelativeLayout>

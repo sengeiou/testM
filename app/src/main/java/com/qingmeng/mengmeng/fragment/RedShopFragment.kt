@@ -188,7 +188,7 @@ class RedShopFragment : BaseFragment() {
                 Glide.with(this@RedShopFragment).load(data.logo).apply(RequestOptions().fitCenter()
                         .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.red_shop_right_inImageView))
                 getView<LinearLayout>(R.id.red_shop_all).setOnClickListener {
-                    startActivity<RedShopSeachResult>(IConstants.firstLevel to data.fahterId.toInt(), IConstants.secondLevel to data.id, IConstants.THREELEVEL to data.name)
+                    startActivity<RedShopSeachResult>(IConstants.firstLevel to data.fahterId.toInt(), IConstants.secondLevel to data.id, IConstants.THREE_LEVEL to data.name)
                 }
             }
         })
@@ -209,7 +209,7 @@ class RedShopFragment : BaseFragment() {
                 Glide.with(this@RedShopFragment).load(data.logo).apply(RequestOptions()
                         .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.red_shop_right_inImageView))
                 getView<LinearLayout>(R.id.red_shop_all).setOnClickListener {
-                    startActivity<RedShopSeachResult>(IConstants.firstLevel to data.fahterId.toInt(), IConstants.secondLevel to data.id,IConstants.THREELEVEL to data.name)
+                    startActivity<RedShopSeachResult>(IConstants.firstLevel to data.fahterId.toInt(), IConstants.secondLevel to data.id, IConstants.THREE_LEVEL to data.name)
                 }
             }
         })
