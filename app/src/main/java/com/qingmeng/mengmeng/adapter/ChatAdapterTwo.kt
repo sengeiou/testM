@@ -308,8 +308,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 //有本地的先加载本地的
                 if (FileUtil.isFileExist(imageMessage.path)) {
                     GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                } else {
+                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15, placeholder = R.drawable.default_img_icon)
                 }
-                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, roundRadius = 15, placeholder = R.drawable.default_img_icon)
                 it.setOnClickListener {
                     val i = Intent(context, PreviewMessageImagesActivity::class.java)
                     val bundle = Bundle()
@@ -340,8 +341,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 //有本地的先加载本地的
                 if (FileUtil.isFileExist(imageMessage.path)) {
                     GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                } else {
+                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 }
-                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 it.setOnClickListener {
                     val i = Intent(context, PreviewMessageImagesActivity::class.java)
                     val bundle = Bundle()
@@ -399,8 +401,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             //封面 有本地的先加载本地的
             if (FileUtil.isFileExist(videoMessage.thumbPath)) {
                 GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            } else {
+                GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             }
-            GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             //时间
             tvMyMessageChatRvOtherVideoTime.text = "${videoMessage.videolength}s"
             rlMyMessageChatRvOtherVideo.let {
@@ -521,8 +524,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 //有本地的先加载本地的
                 if (FileUtil.isFileExist(imageMessage.path)) {
                     GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                } else {
+                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 }
-                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 it.setOnClickListener {
                     val i = Intent(context, PreviewMessageImagesActivity::class.java)
                     val bundle = Bundle()
@@ -577,8 +581,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 //有本地的先加载本地的
                 if (FileUtil.isFileExist(imageMessage.path)) {
                     GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                } else {
+                    GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 }
-                GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.url, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 it.setOnClickListener {
                     val i = Intent(context, PreviewMessageImagesActivity::class.java)
                     val bundle = Bundle()
@@ -681,8 +686,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             //封面 有本地的加载本地的
             if (FileUtil.isFileExist(videoMessage.thumbPath)) {
                 GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            } else {
+                GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             }
-            GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
             //时间
             tvMyMessageChatRvMineVideoTime.text = "${videoMessage.videolength}s"
             rlMyMessageChatRvMineVideo.let {
