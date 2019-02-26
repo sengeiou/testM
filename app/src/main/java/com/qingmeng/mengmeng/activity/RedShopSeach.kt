@@ -18,6 +18,7 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
 import com.qingmeng.mengmeng.constant.IConstants
+import com.qingmeng.mengmeng.constant.IConstants.BACK_SEACH
 import com.qingmeng.mengmeng.entity.HotSearchesList
 import com.qingmeng.mengmeng.entity.SearchHistoryList
 import com.qingmeng.mengmeng.utils.ApiUtils
@@ -52,7 +53,7 @@ class RedShopSeach : BaseActivity() {
     var mbackHotSearch = ""
     //选择的历史搜索
     var mbackHistorySearch = ""
-
+    private var keyWord = ""
     override fun getLayoutId(): Int = R.layout.activity_red_shop_seach
 
     override fun initObject() {
@@ -60,6 +61,9 @@ class RedShopSeach : BaseActivity() {
         //头部  返回 隐藏  取消 显示
         head_search_mBack2.visibility = View.GONE
         head_search_mMenu2.visibility = View.VISIBLE
+        keyWord = intent.getStringExtra(BACK_SEACH) ?: ""
+        head_search2.setText(keyWord)
+        head_search2.setSelection(keyWord.length)
         initAdapter()
     }
 
@@ -159,7 +163,7 @@ class RedShopSeach : BaseActivity() {
 
     override fun initData() {
         super.initData()
-        head_search2.setText("")
+        // head_search2.setText("")
         //判断数据库是否为空
         bhotversion = hotidSearchData.isEmpty()
         bhistorySearch = historySearchData.isEmpty()
