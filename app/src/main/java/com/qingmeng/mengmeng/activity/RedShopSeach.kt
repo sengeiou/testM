@@ -228,7 +228,9 @@ class RedShopSeach : BaseActivity() {
                         } else {
                             ToastUtil.showShort(bean.msg)
                         }
-                })
+                },{
+                    ToastUtil.showNetError()
+                }, {}, { addSubscription(it) })
     }
 
     //set热门标签
