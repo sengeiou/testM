@@ -147,7 +147,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
                     }
                 }, {
                     myDialog.dismissLoadingDialog()
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //修改密码接口
@@ -167,7 +167,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
                     }
                 }, {
                     myDialog.dismissLoadingDialog()
-                })
+                }, {}, { addSubscription(it) })
     }
 
     /**

@@ -237,7 +237,7 @@ class MySettingsUserActivity : BaseActivity() {
                     }
                 }, {
                     myDialog.dismissLoadingDialog()
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //静态数据 创业资本接口请求
@@ -261,7 +261,7 @@ class MySettingsUserActivity : BaseActivity() {
                 }, {
                     mCanHttpLoad = true
                     myDialog.dismissLoadingDialog()
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //静态数据 感兴趣行业接口请求
@@ -285,7 +285,7 @@ class MySettingsUserActivity : BaseActivity() {
                 }, {
                     mCanHttpLoad = true
                     myDialog.dismissLoadingDialog()
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //打开创业资本弹框

@@ -2,6 +2,7 @@ package com.qingmeng.mengmeng.activity
 
 import AppManager
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
@@ -202,16 +203,33 @@ class MainActivity : BaseActivity() {
      * 登录失败
      */
     private fun onLoginFailure(event: LoginEvent) {
-        val errorTip = getString(IMUIHelper.getLoginErrorTip(event))
-        ToastUtil.showShort(errorTip)
+        when (event) {
+            LoginEvent.LOGIN_AUTH_FAILED -> {   //账号或密码错误
+                //清除当前缓存账号
+                mImService?.loginManager?.logOut()
+                MainApplication.instance.user = UserBean()
+                MainApplication.instance.TOKEN = ""
+                sharedSingleton.setString(IConstants.USER)
+                ToastUtil.showShort("自动登录失败，请重新登录哦")
+            }
+            LoginEvent.LOGIN_INNER_FAILED -> {  //网络延缓
+                //不管它 会自动重登的
+            }
+            else -> { //
+//                val errorTip = getString(IMUIHelper.getLoginErrorTip(event))
+//                ToastUtil.showShort(errorTip)
+            }
+        }
     }
 
     /**
      * socket失败
      */
     private fun onSocketFailure(event: SocketEvent) {
-        val errorTip = getString(IMUIHelper.getSocketErrorTip(event))
-        ToastUtil.showShort(errorTip)
+        if (IMUIHelper.getSocketErrorTip(event) != -1) {
+            val errorTip = getString(IMUIHelper.getSocketErrorTip(event))
+            ToastUtil.showShort(errorTip)
+        }
     }
 
     /**
@@ -249,7 +267,15 @@ class MainActivity : BaseActivity() {
                             if (NetworkUtil.isNetWorkAvalible(this@MainActivity)) {
                                 it.myDialog.showLoadingDialog()
 //                                IMLoginManager.instance().relogin()
-                                mImService?.loginManager?.login("${MainApplication.instance.user.wxUid}", MainApplication.instance.user.wxToken)
+                                //登录盟盟
+                                //TODO 取本地的账号密码登录，找不到直接跳登录页面
+                                if (false) {
+                                    toLoginAty()
+                                } else {
+                                    loginMengmeng("", "")
+                                }
+//                                //登录完信
+//                                mImService?.loginManager?.login("${MainApplication.instance.user.wxUid}", MainApplication.instance.user.wxToken)
                             } else {
                                 ToastUtil.showShort("网络连接不可用")
                             }
@@ -260,6 +286,41 @@ class MainActivity : BaseActivity() {
 
             }
         }
+    }
+
+    //登录盟盟
+    private fun loginMengmeng(username: String, password: String) {
+        ApiUtils.getApi()
+                .accountLogin(username, password)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ bean ->
+                    myDialog.dismissLoadingDialog()
+                    when (bean.code) {
+                        12000 -> bean.data?.let {
+                            //登录成功
+                            MainApplication.instance.user = it
+                            MainApplication.instance.TOKEN = it.token
+                            //TODO 保存本地
+
+                            it.upDate()
+                            //还要登录完信..
+                            mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
+                        }
+                        else -> {  //TOKEN过期或失败
+                            //跳登录页面
+                            toLoginAty()
+                        }
+                    }
+                }, {
+                    toLoginAty()
+                }, {}, { addSubscription(it) })
+    }
+
+    //跳登录页面
+    private fun toLoginAty() {
+        startActivity(Intent(this, LoginMainActivity::class.java))
+        ToastUtil.showShort("自动登录失败，请手动登录")
     }
 
     //退出登录

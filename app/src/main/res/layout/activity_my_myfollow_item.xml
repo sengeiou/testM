@@ -41,6 +41,8 @@
                     android:id="@+id/tvMyMyFollowRvBrandName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_dp_5"
+                    android:singleLine="true"
                     android:text="品牌名称"
                     android:textColor="@color/color_333333"
                     android:textSize="@dimen/text_size_17"
@@ -49,8 +51,8 @@
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_marginTop="@dimen/padding_dp_8"
+                    android:orientation="horizontal"
                     >
 
                     <TextView
@@ -65,6 +67,8 @@
                         android:id="@+id/tvMyMyFollowRvCateringType"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/padding_dp_5"
+                        android:singleLine="true"
                         android:text="房地产"
                         android:textColor="@color/color_808080"
                         android:textSize="@dimen/text_size_13"
@@ -77,7 +81,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/my_myFollow_investmentAmount"
-                android:textColor="@color/color_808080"
+                android:textColor="@color/red"
                 android:textSize="@dimen/text_size_13"
                 />
 

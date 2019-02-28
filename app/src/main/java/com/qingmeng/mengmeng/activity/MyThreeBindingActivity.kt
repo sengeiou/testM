@@ -101,7 +101,7 @@ class MyThreeBindingActivity : BaseActivity() {
                     myDialog.dismissLoadingDialog()
                     srlMyThreeBinding.isRefreshing = false
                     llMyThreeBindingTips.visibility = View.VISIBLE
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //第三方绑定接口
@@ -131,7 +131,7 @@ class MyThreeBindingActivity : BaseActivity() {
                     }
                 }, {
 
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //取消第三方绑定接口
@@ -163,7 +163,7 @@ class MyThreeBindingActivity : BaseActivity() {
                     }
                 }, {
                     myDialog.dismissLoadingDialog()
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //qq绑定

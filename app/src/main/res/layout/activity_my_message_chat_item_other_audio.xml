@@ -38,7 +38,7 @@
             android:id="@+id/ivMyMessageChatRvOtherAudioImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:src="@mipmap/my_settings"
+            android:background="@anim/tt_voice_play_other"
             />
     </LinearLayout>
 

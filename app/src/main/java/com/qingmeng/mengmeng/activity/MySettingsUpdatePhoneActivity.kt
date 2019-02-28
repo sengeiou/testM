@@ -183,7 +183,7 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
                     }
                 }, {
                     myDialog.dismissLoadingDialog()
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //修改手机号格式 188******88格式

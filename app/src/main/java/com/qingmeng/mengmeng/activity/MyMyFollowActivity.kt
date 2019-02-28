@@ -102,6 +102,7 @@ class MyMyFollowActivity : BaseActivity() {
                 if (!recyclerView.canScrollVertically(-1)) {
                     if (!srlMyMyFollow.isLoadingMore) {
                         srlMyMyFollow.isRefreshEnabled = true
+                        srlMyMyFollow.isLoadMoreEnabled = false
                     }
                 } else if (!recyclerView.canScrollVertically(1)) {  //滑到底部了
                     //如果下拉刷新没有刷新的话
@@ -111,6 +112,7 @@ class MyMyFollowActivity : BaseActivity() {
                             if (mHasNextPage) {
                                 //是否可以请求接口
                                 if (mCanHttpLoad) {
+                                    srlMyMyFollow.isRefreshEnabled = false
                                     srlMyMyFollow.isLoadMoreEnabled = true
                                 }
                             }
@@ -131,7 +133,7 @@ class MyMyFollowActivity : BaseActivity() {
         mAdapter = CommonAdapter(this, R.layout.activity_my_myfollow_item, mList, holderConvert = { holder, t, position, payloads ->
             holder.apply {
                 //glide加载图片
-                GlideLoader.load(this@MyMyFollowActivity, t.logo, getView(R.id.ivMyMyFollowRvLogo), cacheType = CacheType.All, placeholder = R.drawable.default_img_icon)
+                GlideLoader.load(this@MyMyFollowActivity, t.logo, getView(R.id.ivMyMyFollowRvLogo), cacheType = CacheType.All, placeholder = R.mipmap.my_settings)
                 if (mIsMyFollow) {
                     setText(R.id.tvMyMyFollowRvBrandName, t.name)
                 } else {
@@ -215,7 +217,7 @@ class MyMyFollowActivity : BaseActivity() {
                     mCanHttpLoad = true
                     llMyMyFollowTips.visibility = View.VISIBLE
                     srlMyMyFollow.isRefreshEnabled = true
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //取消关注接口 先把下一页的数据查出来传给删除方法
@@ -241,7 +243,7 @@ class MyMyFollowActivity : BaseActivity() {
                     }
                 }, {
                     myDialog.dismissLoadingDialog()
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //真.取消关注接口
@@ -271,7 +273,7 @@ class MyMyFollowActivity : BaseActivity() {
                     }
                 }, {
                     myDialog.dismissLoadingDialog()
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //用到的地方偏多 统一一下
