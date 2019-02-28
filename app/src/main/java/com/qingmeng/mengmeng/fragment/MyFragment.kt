@@ -60,16 +60,14 @@ class MyFragment : BaseFragment() {
 
         //头像
         ivMyHeadPortrait.setOnClickListener {
-            if (mLoginSuccess) {
+            toNextAty {
                 startActivityForResult(Intent(context, MySettingsUserActivity::class.java), REQUEST_MY)
-            } else {
-                startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
             }
         }
 
         //设置
         ivMySettings.setOnClickListener {
-            if (mLoginSuccess) {
+            toNextAty {
                 //跳转aty
                 startActivityForResult(Intent(context, MySettingsActivity::class.java).apply {
                     putExtra("avatar", mMyInformation.avatar)
@@ -77,17 +75,13 @@ class MyFragment : BaseFragment() {
                     putExtra("phone", mMyInformation.phone)
                     putExtra("isUpdatePass", spf.getSharedPreference("isUpdatePass", false) as Boolean)
                 }, REQUEST_MY)
-            } else {
-                startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
             }
         }
 
         //我的关注
         llMyMyFollow.setOnClickListener {
-            if (mLoginSuccess) {
+            toNextAty {
                 startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFollow.text), REQUEST_MY)
-            } else {
-                startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
             }
         }
 
@@ -102,10 +96,8 @@ class MyFragment : BaseFragment() {
 
         //我的足迹
         llMyMyFootprint.setOnClickListener {
-            if (mLoginSuccess) {
+            toNextAty {
                 startActivityForResult(Intent(context, MyMyFollowActivity::class.java).putExtra("title", tvMyMyFootprint.text), REQUEST_MY)
-            } else {
-                startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
             }
         }
 
@@ -153,28 +145,18 @@ class MyFragment : BaseFragment() {
                             mLoginSuccess = true
 //                            ToastUtil.showShort("${MainApplication.instance.user.wxUid} ${MainApplication.instance.user.wxToken}")
                         } else {
-                            llMyNoLogin.visibility = View.GONE
-                            tvMyLogin.visibility = View.VISIBLE
-                            //设置默认名称头像等。
-                            tvMyUserName.text = getString(R.string.my_username)
-                            ivMyHeadPortrait.setImageResource(R.drawable.default_img_icon)
-                            tvMyMyFollowNum.text = getString(R.string.my_defaultNum)
-                            tvMyMyLeavingMessageNum.text = getString(R.string.my_defaultNum)
-                            tvMyMyFootprintNum.text = getString(R.string.my_defaultNum)
-                            mLoginSuccess = false
-                            //数据库删除
-                            BoxUtils.removeMyInformation(mMyInformation)
+                            loginFail()
                         }
                     }
                 }, {
                     srlMy.isRefreshing = false
-                    mLoginSuccess = mMyInformation.userName != ""
-                    if(mLoginSuccess){
+                    mLoginSuccess = (MainApplication.instance.TOKEN != "")
+                    if (mLoginSuccess) {
                         tvMyLogin.visibility = View.GONE
-                    }else{
-                        tvMyLogin.visibility = View.VISIBLE
+                    } else {
+                        loginFail()
                     }
-                })
+                }, {}, { addSubscription(it) })
     }
 
     private fun httpSelect() {
@@ -206,7 +188,7 @@ class MyFragment : BaseFragment() {
                     httpLoad()
                 }, {
                     srlMy.isRefreshing = false
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //获取缓存数据
@@ -238,6 +220,30 @@ class MyFragment : BaseFragment() {
         tvMyMyFollowNum.text = "${myInformation.myAttention}"
         tvMyMyLeavingMessageNum.text = "${myInformation.myComment}"
         tvMyMyFootprintNum.text = "${myInformation.myFootprint}"
+    }
+
+    //该往哪个页面跳
+    private fun toNextAty(toNext: () -> Unit) {
+        if (mLoginSuccess) {
+            toNext()
+        } else {
+            startActivityForResult(Intent(context, LoginMainActivity::class.java), IConstants.LOGIN_BACK)
+        }
+    }
+
+    //登录失败默认ui设置
+    private fun loginFail() {
+        llMyNoLogin.visibility = View.GONE
+        tvMyLogin.visibility = View.VISIBLE
+        //设置默认名称头像等。
+        tvMyUserName.text = getString(R.string.my_username)
+        ivMyHeadPortrait.setImageResource(R.drawable.default_img_icon)
+        tvMyMyFollowNum.text = getString(R.string.my_defaultNum)
+        tvMyMyLeavingMessageNum.text = getString(R.string.my_defaultNum)
+        tvMyMyFootprintNum.text = getString(R.string.my_defaultNum)
+        mLoginSuccess = false
+        //数据库删除
+        BoxUtils.removeMyInformation(mMyInformation)
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

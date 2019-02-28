@@ -18,7 +18,15 @@ import java.io.UnsupportedEncodingException
  */
 open class TextMessage : MessageEntity, Serializable {
     val contentEntity: ContentEntity
-        get() = Gson().fromJson(getContent(), ContentEntity::class.java)
+        get(){
+            val contentEntity = ContentEntity()
+            contentEntity.info = getInfo()
+            contentEntity.extInfo = extContent
+            contentEntity.infoType = getDisplayType()
+            contentEntity.nickname = getNickname()
+            contentEntity.isSpecial = getSpecial()
+            return contentEntity
+        }
 
     constructor() {
         msgId = SequenceNumberMaker.getInstance().makelocalUniqueMsgId()
@@ -29,12 +37,6 @@ open class TextMessage : MessageEntity, Serializable {
     }
 
     override fun getContent(): String {
-        val contentEntity = ContentEntity()
-        contentEntity.info = getInfo()
-        contentEntity.extInfo = extContent
-        contentEntity.infoType = getDisplayType()
-        contentEntity.nickname = getNickname()
-        contentEntity.isSpecial = getSpecial()
         return Gson().toJson(contentEntity)
     }
 

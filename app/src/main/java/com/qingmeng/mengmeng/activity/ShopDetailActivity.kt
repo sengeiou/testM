@@ -167,7 +167,6 @@ class ShopDetailActivity : BaseActivity() {
         mDetailBack.setOnClickListener { onBackPressed() }
         mDetailMore.setOnClickListener {
             myDialog.showMorePop(it, {
-                //todo 跳消息列表
                 toNext<MyMessageActivity>()
             }, {
                 startActivity(intentFor<MainActivity>().newTask().clearTask())

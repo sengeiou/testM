@@ -38,6 +38,7 @@
                 android:id="@+id/tvMyMessageChatRvBrandName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:text="品牌名称"
                 android:textColor="@color/color_333333"
                 android:textSize="@dimen/text_size_15"
@@ -49,8 +50,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:text="@string/my_myFollow_investmentAmount"
-                android:textColor="@color/color_999999"
-                android:textSize="@dimen/text_size_12"
+                android:textColor="@color/red"
+                android:textSize="@dimen/text_size_18"
                 />
 
             <TextView
@@ -59,6 +60,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"
                 android:layout_toEndOf="@+id/myMessageChatRvInvestmentAmount"
+                android:singleLine="true"
                 android:text="5个"
                 android:textColor="@color/red"
                 android:textSize="@dimen/text_size_18"

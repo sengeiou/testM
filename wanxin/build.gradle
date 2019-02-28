@@ -162,7 +162,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     //kotlin工具
-//    implementation 'org.jetbrains.anko:anko-commons:0.10.0'
+
+    //    implementation 'org.jetbrains.anko:anko-commons:0.10.0'
 
     //数据解析
     implementation 'com.google.protobuf:protobuf-java:2.6.1'

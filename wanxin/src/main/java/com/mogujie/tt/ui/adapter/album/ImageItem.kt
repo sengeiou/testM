@@ -10,7 +10,7 @@ import java.io.Serializable
  */
 class ImageItem : Serializable {
     var imageId: String? = null
-    var thumbnailPath: String=""
+    var thumbnailPath: String?=""
     var imagePath: String=""
     var isSelected = false
 }

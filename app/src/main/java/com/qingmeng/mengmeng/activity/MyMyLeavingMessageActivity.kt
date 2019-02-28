@@ -83,6 +83,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                 if (!recyclerView.canScrollVertically(-1)) {
                     if (!srlMyMyLeavingMessage.isLoadingMore) {
                         srlMyMyLeavingMessage.isRefreshEnabled = true
+                        srlMyMyLeavingMessage.isLoadMoreEnabled = false
                     }
                 } else if (!recyclerView.canScrollVertically(1)) {  //滑到底部了
                     //如果下拉刷新没有刷新的话
@@ -92,6 +93,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                             if (mHasNextPage) {
                                 //是否可以请求接口
                                 if (mCanHttpLoad) {
+                                    srlMyMyLeavingMessage.isRefreshEnabled = false
                                     srlMyMyLeavingMessage.isLoadMoreEnabled = true
                                 }
                             }
@@ -188,7 +190,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                     mCanHttpLoad = true
                     llMyMyLeavingMessageTips.visibility = View.VISIBLE
                     srlMyMyLeavingMessage.isRefreshEnabled = true
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //删除留言接口 先把下一页的数据查出来传给删除方法
@@ -209,7 +211,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                     }
                 }, {
                     myDialog.dismissLoadingDialog()
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //真.删除留言接口
@@ -236,7 +238,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                     }
                 }, {
                     myDialog.dismissLoadingDialog()
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //关闭刷新状态

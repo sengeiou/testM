@@ -247,16 +247,33 @@ class MainActivity : BaseActivity() {
      * 登录失败
      */
     private fun onLoginFailure(event: LoginEvent) {
-        val errorTip = getString(IMUIHelper.getLoginErrorTip(event))
-        ToastUtil.showShort(errorTip)
+        when (event) {
+            LoginEvent.LOGIN_AUTH_FAILED -> {   //账号或密码错误
+                //清除当前缓存账号
+                mImService?.loginManager?.logOut()
+                MainApplication.instance.user = UserBean()
+                MainApplication.instance.TOKEN = ""
+                sharedSingleton.setString(IConstants.USER)
+                ToastUtil.showShort("自动登录失败，请重新登录哦")
+            }
+            LoginEvent.LOGIN_INNER_FAILED -> {  //网络延缓
+                //不管它 会自动重登的
+            }
+            else -> { //
+//                val errorTip = getString(IMUIHelper.getLoginErrorTip(event))
+//                ToastUtil.showShort(errorTip)
+            }
+        }
     }
 
     /**
      * socket失败
      */
     private fun onSocketFailure(event: SocketEvent) {
-        val errorTip = getString(IMUIHelper.getSocketErrorTip(event))
-        ToastUtil.showShort(errorTip)
+        if (IMUIHelper.getSocketErrorTip(event) != -1) {
+            val errorTip = getString(IMUIHelper.getSocketErrorTip(event))
+            ToastUtil.showShort(errorTip)
+        }
     }
 
     /**
@@ -293,9 +310,23 @@ class MainActivity : BaseActivity() {
                         override fun onRightClick(view: View) {
                             if (NetworkUtil.isNetWorkAvalible(this@MainActivity)) {
                                 it.myDialog.showLoadingDialog()
+                                val userName = if (TextUtils.isEmpty(sharedSingleton.getString(IConstants.login_name))) {
+                                    sharedSingleton.getString(IConstants.login_pwd)
+                                } else {
+                                    sharedSingleton.getString(IConstants.login_name)
+                                }
+                                val userPass = sharedSingleton.getString(IConstants.login_pwd)
+                                //取本地的账号密码登录，找不到直接跳登录页面
+                                if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(userPass)) {
+                                    loginMengmeng(userName, userPass)
+                                } else {
+                                    toLoginAty()
+                                }
 //                                IMLoginManager.instance().relogin()
-                                mImService?.loginManager?.login("${MainApplication.instance.user.wxUid}", MainApplication.instance.user.wxToken)
+//                                //登录完信
+//                                mImService?.loginManager?.login("${MainApplication.instance.user.wxUid}", MainApplication.instance.user.wxToken)
                             } else {
+                                deleteUser()
                                 ToastUtil.showShort("网络连接不可用")
                             }
                         }
@@ -307,12 +338,55 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    //退出登录
-    private fun logOut() {
+    //登录盟盟
+    private fun loginMengmeng(username: String, password: String) {
+        ApiUtils.getApi()
+                .accountLogin(username, password)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ bean ->
+                    when (bean.code) {
+                        12000 -> bean.data?.let {
+                            //登录成功
+                            MainApplication.instance.user = it
+                            MainApplication.instance.TOKEN = it.token
+                            sharedSingleton.setString(IConstants.login_name, username)
+                            sharedSingleton.setString(IConstants.login_pwd, password)
+                            it.upDate()
+                            //还要登录完信..
+                            mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
+                        }
+                        else -> {  //TOKEN过期或失败
+                            //跳登录页面
+                            toLoginAty()
+                        }
+                    }
+                }, {
+                    toLoginAty()
+                }, {}, { addSubscription(it) })
+    }
+
+    //清空本地信息
+    private fun deleteUser() {
         mImService?.loginManager?.logOut()
         MainApplication.instance.user = UserBean()
         MainApplication.instance.TOKEN = ""
         sharedSingleton.setString(IConstants.USER)
+    }
+
+    //跳登录页面
+    private fun toLoginAty() {
+        (AppManager.instance.currentActivity() as BaseActivity).let {
+            it.myDialog.dismissLoadingDialog()
+        }
+        deleteUser()
+        startActivity(Intent(this, LoginMainActivity::class.java))
+        ToastUtil.showShort("自动登录失败，请手动登录")
+    }
+
+    //退出登录
+    private fun logOut() {
+        deleteUser()
         startActivity(intentFor<MainActivity>().newTask().clearTask())
     }
 

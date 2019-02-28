@@ -267,7 +267,7 @@ class PopCitySelect : PopupWindow {
                     }
                 }, {
 
-                })
+                }, {}, {})
     }
 
     //获取缓存数据

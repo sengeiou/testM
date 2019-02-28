@@ -55,13 +55,13 @@ public class AlbumHelper {
      */
     private void getThumbnail() {
         String[] projection = {
-                Thumbnails._ID, Thumbnails.IMAGE_ID,
-                Thumbnails.DATA
+            Thumbnails._ID, Thumbnails.IMAGE_ID,
+            Thumbnails.DATA
         };
         Cursor cursor = null;
         try {
             cursor = contentResolver.query(Thumbnails.EXTERNAL_CONTENT_URI,
-                    projection, null, null, null);
+                projection, null, null, null);
             getThumbnailColumnData(cursor);
         } catch (Exception e) {
             logger.e(e.getMessage());
@@ -74,7 +74,7 @@ public class AlbumHelper {
 
     /**
      * 从数据库中得到缩略图
-     * 
+     *
      * @param cur
      */
     private void getThumbnailColumnData(Cursor cur) {
@@ -108,13 +108,13 @@ public class AlbumHelper {
     @SuppressWarnings("unused")
     private void getAlbum() {
         String[] projection = {
-                Albums._ID, Albums.ALBUM, Albums.ALBUM_ART,
-                Albums.ALBUM_KEY, Albums.ARTIST, Albums.NUMBER_OF_SONGS
+            Albums._ID, Albums.ALBUM, Albums.ALBUM_ART,
+            Albums.ALBUM_KEY, Albums.ARTIST, Albums.NUMBER_OF_SONGS
         };
         Cursor cursor = null;
         try {
             cursor = contentResolver.query(Albums.EXTERNAL_CONTENT_URI,
-                    projection, null, null, null);
+                projection, null, null, null);
             getAlbumColumnData(cursor);
         } catch (Exception e) {
             logger.e(e.getMessage());
@@ -128,7 +128,7 @@ public class AlbumHelper {
 
     /**
      * 从数据库中得到原图
-     * 
+     *
      * @param cur
      */
     private void getAlbumColumnData(Cursor cur) {
@@ -178,7 +178,7 @@ public class AlbumHelper {
      * @Description 获取图片集
      */
     private void buildImagesBucketList() {
-    	bucketList.clear();
+        bucketList.clear();
         Cursor cur = null;
         // long startTime = System.currentTimeMillis();
         try {
@@ -187,14 +187,14 @@ public class AlbumHelper {
 
             // 构造相册索引
             String columns[] = new String[] {
-                    Media._ID, Media.BUCKET_ID,
-                    Media.PICASA_ID, Media.DATA, Media.DISPLAY_NAME, Media.TITLE,
-                    Media.SIZE, Media.BUCKET_DISPLAY_NAME
+                Media._ID, Media.BUCKET_ID,
+                Media.PICASA_ID, Media.DATA, Media.DISPLAY_NAME, Media.TITLE,
+                Media.SIZE, Media.BUCKET_DISPLAY_NAME
             };
 
             // 得到一个游标
             cur = contentResolver.query(Media.EXTERNAL_CONTENT_URI, columns,
-                    null, null, null);
+                null, null, null);
             if (null == cur)
                 return;
 
@@ -207,7 +207,7 @@ public class AlbumHelper {
                 // int photoTitleIndex = cur.getColumnIndexOrThrow(Media.TITLE);
                 // int photoSizeIndex = cur.getColumnIndexOrThrow(Media.SIZE);
                 int bucketDisplayNameIndex = cur
-                        .getColumnIndexOrThrow(Media.BUCKET_DISPLAY_NAME);
+                    .getColumnIndexOrThrow(Media.BUCKET_DISPLAY_NAME);
                 int bucketIdIndex = cur.getColumnIndexOrThrow(Media.BUCKET_ID);
                 // int picasaIdIndex =
                 // cur.getColumnIndexOrThrow(Media.PICASA_ID);
@@ -249,10 +249,10 @@ public class AlbumHelper {
 
         try {
             Iterator<Entry<String, ImageBucket>> itr = bucketList.entrySet()
-                    .iterator();
+                .iterator();
             while (itr.hasNext()) {
                 Map.Entry<String, ImageBucket> entry = (Map.Entry<String, ImageBucket>) itr
-                        .next();
+                    .next();
                 ImageBucket bucket = entry.getValue();
                 for (int i = 0; i < bucket.imageList.size(); ++i) {
                     @SuppressWarnings("unused")
@@ -278,42 +278,42 @@ public class AlbumHelper {
             List<ImageBucket> imageList = new ArrayList<ImageBucket>(bucketList.values());
             Collections.sort(imageList, new Comparator<ImageBucket>() {
 
-				@Override
-				public int compare(ImageBucket lhs, ImageBucket rhs) {
-//					logger.d("pic#photo set name:%s", lhs.bucketName);
-					boolean lhsDefaultCameraSet = probablyDefaultCameraPhotoSet(lhs.bucketName);
-					boolean rhsDefaultCameraSet = probablyDefaultCameraPhotoSet(rhs.bucketName);
-					
-					logger.d("pic#name:%s, lhsDefaultCameraSet:%s", lhs.bucketName, lhsDefaultCameraSet);
-					logger.d("pic#name:%s, rhsDefaultCameraSet:%s", rhs.bucketName, rhsDefaultCameraSet);
-					
-					if (lhsDefaultCameraSet && !rhsDefaultCameraSet) {
-						return -1;
-					} 
-					
-					if (rhsDefaultCameraSet && !lhsDefaultCameraSet) {
-						return 1;
-					}
-					
-					return Integer.valueOf(rhs.count).compareTo(Integer.valueOf(lhs.count));
-				}
-			});
-            
+                @Override
+                public int compare(ImageBucket lhs, ImageBucket rhs) {
+                    //					logger.d("pic#photo set name:%s", lhs.bucketName);
+                    boolean lhsDefaultCameraSet = probablyDefaultCameraPhotoSet(lhs.bucketName);
+                    boolean rhsDefaultCameraSet = probablyDefaultCameraPhotoSet(rhs.bucketName);
+
+                    logger.d("pic#name:%s, lhsDefaultCameraSet:%s", lhs.bucketName, lhsDefaultCameraSet);
+                    logger.d("pic#name:%s, rhsDefaultCameraSet:%s", rhs.bucketName, rhsDefaultCameraSet);
+
+                    if (lhsDefaultCameraSet && !rhsDefaultCameraSet) {
+                        return -1;
+                    }
+
+                    if (rhsDefaultCameraSet && !lhsDefaultCameraSet) {
+                        return 1;
+                    }
+
+                    return Integer.valueOf(rhs.count).compareTo(Integer.valueOf(lhs.count));
+                }
+            });
+
             return imageList;
-//            List<ImageBucket> tmpList = new ArrayList<ImageBucket>();
-//            Iterator<Entry<String, ImageBucket>> itr = bucketList.entrySet()
-//                    .iterator();
-//            while (itr.hasNext()) {
-//                Map.Entry<String, ImageBucket> entry = (Map.Entry<String, ImageBucket>) itr
-//                        .next();
-//                ImageBucket bucket = entry.getValue();
-//                if (bucket.bucketName.equals("Camera")) {
-//                    tmpList.onAddMsg(0, bucket);
-//                } else {
-//                    tmpList.onAddMsg(bucket);
-//                }
-//            }
-//            return tmpList;
+            //            List<ImageBucket> tmpList = new ArrayList<ImageBucket>();
+            //            Iterator<Entry<String, ImageBucket>> itr = bucketList.entrySet()
+            //                    .iterator();
+            //            while (itr.hasNext()) {
+            //                Map.Entry<String, ImageBucket> entry = (Map.Entry<String, ImageBucket>) itr
+            //                        .next();
+            //                ImageBucket bucket = entry.getValue();
+            //                if (bucket.bucketName.equals("Camera")) {
+            //                    tmpList.onAddMsg(0, bucket);
+            //                } else {
+            //                    tmpList.onAddMsg(bucket);
+            //                }
+            //            }
+            //            return tmpList;
         } catch (Exception e) {
             logger.e(e.getMessage());
             return null;
@@ -321,21 +321,21 @@ public class AlbumHelper {
     }
 
     boolean probablyDefaultCameraPhotoSet(String photoSetName) {
-    	//from my test result, different phones use different names to represent 
-    	//default photo set
-    	if (photoSetName == null || photoSetName.isEmpty()) {
-    		return false;
-    	}
-    	
-    	String lowerCaseName = photoSetName.toLowerCase();
-    	
-    	//todo eric i18n
-    	return lowerCaseName.contains("camera") || lowerCaseName.contains("相机");
+        //from my test result, different phones use different names to represent
+        //default photo set
+        if (photoSetName == null || photoSetName.isEmpty()) {
+            return false;
+        }
+
+        String lowerCaseName = photoSetName.toLowerCase();
+
+        //todo eric i18n
+        return lowerCaseName.contains("camera") || lowerCaseName.contains("相机");
     }
-    
+
     /**
      * 得到原始图像路径
-     * 
+     *
      * @param image_id
      * @return
      */
@@ -344,10 +344,10 @@ public class AlbumHelper {
         try {
             String path = null;
             String[] projection = {
-                    Media._ID, Media.DATA
+                Media._ID, Media.DATA
             };
             Cursor cursor = contentResolver.query(Media.EXTERNAL_CONTENT_URI,
-                    projection, Media._ID + "=" + image_id, null, null);
+                projection, Media._ID + "=" + image_id, null, null);
             if (cursor != null) {
                 try {
                     cursor.moveToFirst();

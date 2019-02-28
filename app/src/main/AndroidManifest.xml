@@ -101,6 +101,7 @@
             android:name=".activity.MyMessageChatActivity"
             android:launchMode="singleTask"
             />
+        <activity android:name=".activity.CameraActivity"/>
         <activity android:name=".activity.WebViewActivity"/>
         <!-- 登录注册 -->
         <activity android:name=".activity.LoginMainActivity"/>

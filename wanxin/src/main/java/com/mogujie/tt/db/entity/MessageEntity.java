@@ -428,7 +428,7 @@ public class MessageEntity implements Serializable {
             } else if (value instanceof Double) {
                 extContent.addProperty(key, ObjectTrans.getDouble(value));
             } else {
-//                extContent.add(key, value);
+                //                extContent.add(key, value);
             }
         }
         return extContent;
@@ -461,7 +461,7 @@ public class MessageEntity implements Serializable {
             infoType = contentEntity.getInfoType();
             nickname = contentEntity.getNickname();
             special = contentEntity.isSpecial();
-            String extInfo = contentEntity.getExtInfo().toString();
+            String extInfo = (contentEntity.getExtInfo() != null ? contentEntity.getExtInfo() : "").toString();
             if (!TextUtils.isEmpty(extInfo)) {
                 try {
                     JSONObject extraContent = new JSONObject(extInfo);

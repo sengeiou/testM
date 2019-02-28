@@ -19,8 +19,9 @@ package com.qingmeng.mengmeng.view;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
+import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 
@@ -214,10 +215,45 @@ public class RoundImageView extends android.support.v7.widget.AppCompatImageView
     /**
      * drawable 转化 bitmap
      *
-     * @param d
+     * @param drawable
      * @return
      */
-    private static Bitmap drawableToBitmap(Drawable d) {
-        return d == null ? null : ((BitmapDrawable) d).getBitmap();
+    private static Bitmap drawableToBitmap(Drawable drawable) {
+        if(drawable != null){
+            // 取 drawable 的长宽
+            int w = drawable.getIntrinsicWidth();
+            int h = drawable.getIntrinsicHeight();
+            // 取 drawable 的颜色格式
+            Bitmap.Config config = drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+                : Bitmap.Config.RGB_565;
+            // 建立对应 bitmap
+            Bitmap bitmap = Bitmap.createBitmap(w, h, config);
+            // 建立对应 bitmap 的画布
+            Canvas canvas = new Canvas(bitmap);
+            drawable.setBounds(0, 0, w, h);
+            // 把 drawable 内容画到画布中
+            drawable.draw(canvas);
+            return bitmap;
+        }else{
+            return null;
+        }
+
+//        if (drawable instanceof BitmapDrawable) {
+//            return ((BitmapDrawable) drawable).getBitmap();
+//        } else if (drawable instanceof NinePatchDrawable) {
+//            Bitmap bitmap = Bitmap
+//                .createBitmap(
+//                    drawable.getIntrinsicWidth(),
+//                    drawable.getIntrinsicHeight(),
+//                    drawable.getOpacity() != PixelFormat.OPAQUE ? Bitmap.Config.ARGB_8888
+//                        : Bitmap.Config.RGB_565);
+//            Canvas canvas = new Canvas(bitmap);
+//            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(),
+//                drawable.getIntrinsicHeight());
+//            drawable.draw(canvas);
+//            return bitmap;
+//        } else {
+//            return null;
+//        }
     }
 }

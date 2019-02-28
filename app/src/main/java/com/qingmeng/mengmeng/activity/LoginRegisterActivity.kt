@@ -193,7 +193,7 @@ class LoginRegisterActivity : BaseActivity() {
                             MainApplication.instance.TOKEN = it.token
                             sharedSingleton.setString(IConstants.login_name,mUserName)
                             sharedSingleton.setString(IConstants.login_phone,mPhone)
-                            sharedSingleton.setString(IConstants.login_paw,mPsw)
+                            sharedSingleton.setString(IConstants.login_pwd,mPsw)
                             it.upDate()
                             //还要登录完信..
                             mImService?.loginManager?.login("${it.wxUid}", it.wxToken)

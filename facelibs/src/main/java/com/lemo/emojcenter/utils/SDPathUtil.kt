@@ -365,7 +365,7 @@ object SDPathUtil {
         try {
             bis = BufferedInputStream(FileInputStream(File(fileDir)))
             val buffer = ByteArray(8 * 1024)
-            var c: Int=0
+            var c: Int = 0
             while ({ c = bis!!.read(buffer);c }() != null) {
                 baos.write(buffer, 0, c)
                 baos.flush()
@@ -469,7 +469,7 @@ object SDPathUtil {
 
 
     //保存文件通知系统更新，在图库显示图片
-    fun updateImageSysStatu(context: Context?, path: String) {
+    fun updateImageSysStatu(context: Context?, path: String?) {
         if (!TextUtils.isEmpty(path)) {
             val file = File(path)
             if (context != null && file != null && file.exists()) {
@@ -498,7 +498,7 @@ object SDPathUtil {
                 val intent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
                 val uri: Uri
                 if (Build.VERSION.SDK_INT >= 24) {
-                    uri = FileProvider.getUriForFile(context, "com.zsdudu.dudu.fileprovider", file)
+                    uri = FileProvider.getUriForFile(context, "com.qingmeng.mengmeng.fileprovider", file)
                 } else {
                     uri = Uri.fromFile(file)
                 }

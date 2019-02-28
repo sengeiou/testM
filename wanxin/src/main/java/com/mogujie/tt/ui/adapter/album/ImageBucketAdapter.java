@@ -33,7 +33,7 @@ public class ImageBucketAdapter extends BaseAdapter {
     ImageCallback callback = new ImageCallback() {
         @Override
         public void imageLoad(ImageView imageView, Bitmap bitmap,
-                Object... params) {
+                              Object... params) {
             try {
                 if (null != imageView && null != bitmap) {
                     String url = (String) params[0];
@@ -91,7 +91,7 @@ public class ImageBucketAdapter extends BaseAdapter {
                 holder.name = (TextView) convertView.findViewById(R.id.name);
                 holder.count = (TextView) convertView.findViewById(R.id.count);
                 holder.albumArrow = (ImageView) convertView
-                        .findViewById(R.id.im_album_arrow);
+                    .findViewById(R.id.im_album_arrow);
                 convertView.setTag(holder);
             } else {
                 holder = (Holder) convertView.getTag();
