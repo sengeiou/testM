@@ -23,14 +23,13 @@ import com.qingmeng.mengmeng.adapter.GridImageAdapter
 import com.qingmeng.mengmeng.constant.IConstants.BRANDID
 import com.qingmeng.mengmeng.entity.SelectBean
 import com.qingmeng.mengmeng.utils.ApiUtils
+import com.qingmeng.mengmeng.utils.PermissionUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.view.dialog.SelectDialog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_join_feedback.*
 import kotlinx.android.synthetic.main.layout_head.*
-
-
 
 
 /**
@@ -46,7 +45,7 @@ class JoinFeedbackActivity : BaseActivity() {
     private val selectList = ArrayList<LocalMedia>()
     private var callUrl = ArrayList<String>()
     private lateinit var adapter: GridImageAdapter
-    private var pop: PopupWindow ? = null
+    private var pop: PopupWindow? = null
     lateinit var token: String
     //品牌ID
     private var brandId = 0
@@ -167,6 +166,7 @@ class JoinFeedbackActivity : BaseActivity() {
     }
 
     private fun initWidget() {
+        //    PermissionUtils.readAndWrite(this, {})
         val manager = GridLayoutManager(this, 4)
         adapter = GridImageAdapter(this, onAddPicClickListener)
         recy_join_feedback.layoutManager = manager
@@ -186,19 +186,21 @@ class JoinFeedbackActivity : BaseActivity() {
                             // 预览音频
                             PictureSelector.create(this@JoinFeedbackActivity).externalPictureAudio(media.path)
                     }
-                    }
+                }
             }
         })
         adapter.setList(selectList)
         adapter.setSelectMax(maxSelectNum)
         recy_join_feedback.adapter = adapter
     }
+
     var onAddPicClickListener = object : GridImageAdapter.onAddPicClickListener {
 
         override fun onAddPicClick() {
             showPop()
         }
     }
+
     private fun showPop() {
         val mInputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         mInputMethodManager.hideSoftInputFromWindow(recy_join_feedback.windowToken, 0)
@@ -235,11 +237,14 @@ class JoinFeedbackActivity : BaseActivity() {
                             .forResult(PictureConfig.CHOOSE_REQUEST)
                 R.id.tv_camera ->
                     //拍照
-                    PictureSelector.create(this@JoinFeedbackActivity)
-                            .openCamera(PictureMimeType.ofImage())
-                            .forResult(PictureConfig.CHOOSE_REQUEST)
+                    PermissionUtils.readAndWrite(this) {
+                        PictureSelector.create(this@JoinFeedbackActivity)
+                                .openCamera(PictureMimeType.ofImage())
+                                .forResult(PictureConfig.CHOOSE_REQUEST)
+                    }
+
             }
-            if (pop != null ) {
+            if (pop != null) {
                 pop?.dismiss()
                 pop = null
             }
@@ -248,6 +253,7 @@ class JoinFeedbackActivity : BaseActivity() {
         mCamera.setOnClickListener(clickListener)
         mCancel.setOnClickListener(clickListener)
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         val images: List<LocalMedia>
@@ -268,5 +274,10 @@ class JoinFeedbackActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        PermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 }

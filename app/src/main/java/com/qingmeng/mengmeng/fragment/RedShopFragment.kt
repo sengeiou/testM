@@ -80,7 +80,7 @@ class RedShopFragment : BaseFragment() {
             var mRedShop = RedShopBean(ArrayList())
             if (!mLeftList.isEmpty()) {
                 mRedShop = RedShopBean.fromString(mLeftList[0].id)
-                mLeftList[0].checkState = true
+                // mLeftList[0].checkState = true
             }
             if (!mRightInListType.isEmpty()) {
                 mRedShop = RedShopBean.fromString(mRightInListType[0].id)
@@ -233,8 +233,10 @@ class RedShopFragment : BaseFragment() {
                                 it.setVersion()
                                 BoxUtils.saveAllRedShop(mLeftList)
                                 mLeftList.addAll(it.type.typeList)//1级分类
-                                if (!mLeftList.isEmpty()) {
-                                    mLeftList[0].checkState = true
+                                mLeftList.forEach {
+                                    if (it.id == 1) {
+                                        it.checkState = true
+                                    }
                                 }
                                 mLeftAdapter.notifyDataSetChanged()
                             }
@@ -291,11 +293,11 @@ class RedShopFragment : BaseFragment() {
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden) {
-            mLeftList.indices.forEach {
-                mLeftList[it].checkState = it == 0
-            }
-            if (!mLeftList.isEmpty()) {
-                getClickCache(mLeftList[0].id.toLong())
+            mLeftList.forEach {
+                if (it.id == 1) {
+                    it.checkState = true
+                    getClickCache(it.id.toLong())
+                }
             }
             mLeftAdapter.notifyDataSetChanged()
         }

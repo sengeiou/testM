@@ -258,7 +258,6 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
             }
             mProvinceList.addAll(joinAreaData.fatherDtos)
             mCityList.addAll(joinAreaData.fatherDtos[0].cityFilter)
-
             it.onNext(joinAreaData)
         }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -308,7 +307,6 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
                                         }
                                     }
                                 }
-
                                 //加入缓存
                                 // mFoodList.add(FoodTypeDto(it.foodType[0].id, "", 0, logoUrl, "全部"))
                                 BoxUtils.saveCache(it, IConstants.SEACH_RESULT_FOOD)
@@ -344,7 +342,6 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
                     mMenuView.left_recyclerView_pop.scrollToPosition(index)
                 }
             }
-//            mFoodList.addAll(foodTypeData.foodType[0].foodTypeDto)
             it.onNext(foodTypeData)
         }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

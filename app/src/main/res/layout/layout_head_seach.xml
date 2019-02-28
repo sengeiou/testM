@@ -30,7 +30,7 @@
             android:drawablePadding="@dimen/padding_dp_5"
             android:gravity="center_vertical"
             android:hint="@string/seach_hint"
-            android:paddingLeft="@dimen/padding_dp_5"
+            android:paddingLeft="@dimen/padding_dp_10"
             android:singleLine="true" />
 
     </LinearLayout>
