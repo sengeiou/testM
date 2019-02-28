@@ -23,14 +23,13 @@ import com.qingmeng.mengmeng.adapter.GridImageAdapter
 import com.qingmeng.mengmeng.constant.IConstants.BRANDID
 import com.qingmeng.mengmeng.entity.SelectBean
 import com.qingmeng.mengmeng.utils.ApiUtils
+import com.qingmeng.mengmeng.utils.PermissionUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.view.dialog.SelectDialog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_join_feedback.*
 import kotlinx.android.synthetic.main.layout_head.*
-
-
 
 
 /**
@@ -79,7 +78,7 @@ class JoinFeedbackActivity : BaseActivity() {
     //初始化Listener
     override fun initListener() {
         super.initListener()
-        //点击页面其他地方取消EditText的焦点并且隐藏软键盘
+         //点击页面其他地方取消EditText的焦点并且隐藏软键盘
         mjoinLinear.setOnTouchListener(View.OnTouchListener { _, _ ->
             this@JoinFeedbackActivity.currentFocus?.let {
                 //点击取消EditText的焦点
@@ -167,6 +166,7 @@ class JoinFeedbackActivity : BaseActivity() {
     }
 
     private fun initWidget() {
+        PermissionUtils.readAndWrite(this, {})
         val manager = GridLayoutManager(this, 4)
         adapter = GridImageAdapter(this, onAddPicClickListener)
         recy_join_feedback.layoutManager = manager

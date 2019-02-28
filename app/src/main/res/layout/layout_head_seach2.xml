@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/padding_dp_10"
+            android:layout_weight="1"
             android:src="@drawable/common_btn_back" />
 
         <EditText
@@ -26,6 +27,7 @@
             android:layout_marginBottom="@dimen/padding_dp_5"
             android:layout_marginLeft="@dimen/padding_dp_10"
             android:background="@drawable/bg_seach"
+            android:layout_weight="2"
             android:drawableEnd="@drawable/red_shop_icon_clear_search"
             android:drawablePadding="@dimen/padding_dp_5"
             android:gravity="center_vertical"
@@ -45,6 +47,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/padding_dp_5"
             android:text="@string/cancel"
+            android:layout_weight="1"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_12"
             android:visibility="gone" />
