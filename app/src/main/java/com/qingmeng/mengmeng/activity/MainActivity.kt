@@ -118,7 +118,7 @@ class MainActivity : BaseActivity() {
             e.printStackTrace()
         }
         val versionCode = info!!.versionCode
-        ApiUtils.getApi().getVersionInfo(getAndroidID(), versionCode)
+        ApiUtils.getApi().getVersionInfo(getAndroidID(), "$versionCode")
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
