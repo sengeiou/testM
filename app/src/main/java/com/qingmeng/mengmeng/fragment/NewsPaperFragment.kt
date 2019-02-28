@@ -143,13 +143,13 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
     }
 
     override fun onLoadMore() {
-      //  isLoadMore = false
-        news_swipeLayout.isRefreshing=false
+        //  isLoadMore = false
+        news_swipeLayout.isRefreshing = false
         httpLoad(mPageNum)
     }
 
     override fun onRefresh() {
-        httpLoad(mPageNum)
+        getNewData()
     }
 
     private fun endLoadingMore() {
@@ -165,7 +165,14 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
         isLoadMore = true
         isRefeshing = true
         httpLoad(1)
-        httpBannerLoad("")
+        httpBannerLoad(getVision(1))
+    }
+
+    private fun getVision(type: Int): String {
+        return when {
+            type == 1 && !mImgList.isEmpty() -> mImgList[0].version
+            else -> ""
+        }
     }
 
     //头报列表文章
@@ -248,8 +255,6 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
                                 mNewsPagerAdapter.notifyDataSetChanged()
                             }
                         }
-                    } else if (bean.code != 12000) {
-                        ToastUtil.showShort(bean.msg)
                     }
                 }, {
                     ToastUtil.showNetError()
@@ -258,4 +263,10 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
                 })
     }
 
+    override fun onHiddenChanged(hidden: Boolean) {
+        super.onHiddenChanged(hidden)
+        if (!hidden) {
+            getNewData()
+        }
+    }
 }

@@ -37,7 +37,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
                     android:layout_marginEnd="@dimen/padding_dp_10"
-                    android:layout_marginStart="@dimen/padding_dp_20"
                     android:layout_weight="1"
                     android:ellipsize="end"
                     android:gravity="center"
@@ -50,8 +49,8 @@
                     android:id="@+id/search_food_type_bottom"
                     android:layout_width="@dimen/padding_dp_55"
                     android:layout_height="@dimen/padding_dp_2"
-                    android:layout_marginStart="@dimen/padding_dp_23"
                     android:background="@color/color_5ab1e1"
+                    android:layout_marginStart="@dimen/padding_dp_14"
                     android:gravity="center"
                     android:visibility="gone" />
             </LinearLayout>
