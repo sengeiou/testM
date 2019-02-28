@@ -283,7 +283,7 @@ public class CameraActivity extends AppCompatActivity implements MediaRecorder.O
                         mLlSelectPhotoOrVideo.setVisibility(View.GONE);
                         mIvTakePhoto.setVisibility(View.GONE);
                         mCamera.takePicture(null, null, mPicture);
-                        ToastUtil.Companion.showShort("正在处理图片，请稍后...");
+                        ToastUtil.INSTANCE.showShort("正在处理图片，请稍后...");
                         mIsPreview = false;
 
                     } else {
@@ -614,7 +614,7 @@ public class CameraActivity extends AppCompatActivity implements MediaRecorder.O
         switch (what) {
             case MediaRecorder.MEDIA_RECORDER_INFO_MAX_DURATION_REACHED:
             case MediaRecorder.MEDIA_RECORDER_INFO_MAX_FILESIZE_REACHED://最大文件长度限制10M，播放器会结束，此时不一定已经结束了
-                ToastUtil.Companion.showShort(getString(R.string.max_video_stop));
+                ToastUtil.INSTANCE.showShort(getString(R.string.max_video_stop));
                 mChronometer.stop();
                 stopMediaRecorder();
                 processStopRecorder();

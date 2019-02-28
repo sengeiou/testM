@@ -9,6 +9,7 @@ import android.widget.EditText
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.InputCheckUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -137,6 +138,8 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
                 .subscribe({
                     myDialog.dismissLoadingDialog()
                     if (it.code == 12000) {
+                        //保存本地
+                        sharedSingleton.setString(IConstants.login_pwd,pass)
                         ToastUtil.showShort(getString(R.string.setPass_success))
                         setResult(Activity.RESULT_OK, Intent().apply {
                             putExtra("isSetPass", true)
@@ -160,6 +163,7 @@ class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
                 .subscribe({
                     myDialog.dismissLoadingDialog()
                     if (it.code == 12000) {
+                        sharedSingleton.setString(IConstants.login_pwd,newPass)
                         ToastUtil.showShort(getString(R.string.updatePass_success))
                         onBackPressed()
                     } else {

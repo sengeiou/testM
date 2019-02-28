@@ -310,17 +310,23 @@ class MainActivity : BaseActivity() {
                         override fun onRightClick(view: View) {
                             if (NetworkUtil.isNetWorkAvalible(this@MainActivity)) {
                                 it.myDialog.showLoadingDialog()
-//                                IMLoginManager.instance().relogin()
-                                //登录盟盟
-                                //TODO 取本地的账号密码登录，找不到直接跳登录页面
-                                if (false) {
-                                    toLoginAty()
+                                val userName = if (TextUtils.isEmpty(sharedSingleton.getString(IConstants.login_name))) {
+                                    sharedSingleton.getString(IConstants.login_pwd)
                                 } else {
-                                    loginMengmeng("", "")
+                                    sharedSingleton.getString(IConstants.login_name)
                                 }
+                                val userPass = sharedSingleton.getString(IConstants.login_pwd)
+                                //取本地的账号密码登录，找不到直接跳登录页面
+                                if (!TextUtils.isEmpty(userName) && !TextUtils.isEmpty(userPass)) {
+                                    loginMengmeng(userName, userPass)
+                                } else {
+                                    toLoginAty()
+                                }
+//                                IMLoginManager.instance().relogin()
 //                                //登录完信
 //                                mImService?.loginManager?.login("${MainApplication.instance.user.wxUid}", MainApplication.instance.user.wxToken)
                             } else {
+                                deleteUser()
                                 ToastUtil.showShort("网络连接不可用")
                             }
                         }
@@ -339,14 +345,13 @@ class MainActivity : BaseActivity() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
-                    myDialog.dismissLoadingDialog()
                     when (bean.code) {
                         12000 -> bean.data?.let {
                             //登录成功
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
-                            //TODO 保存本地
-
+                            sharedSingleton.setString(IConstants.login_name, username)
+                            sharedSingleton.setString(IConstants.login_pwd, password)
                             it.upDate()
                             //还要登录完信..
                             mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
@@ -361,18 +366,27 @@ class MainActivity : BaseActivity() {
                 }, {}, { addSubscription(it) })
     }
 
+    //清空本地信息
+    private fun deleteUser() {
+        mImService?.loginManager?.logOut()
+        MainApplication.instance.user = UserBean()
+        MainApplication.instance.TOKEN = ""
+        sharedSingleton.setString(IConstants.USER)
+    }
+
     //跳登录页面
     private fun toLoginAty() {
+        (AppManager.instance.currentActivity() as BaseActivity).let {
+            it.myDialog.dismissLoadingDialog()
+        }
+        deleteUser()
         startActivity(Intent(this, LoginMainActivity::class.java))
         ToastUtil.showShort("自动登录失败，请手动登录")
     }
 
     //退出登录
     private fun logOut() {
-        mImService?.loginManager?.logOut()
-        MainApplication.instance.user = UserBean()
-        MainApplication.instance.TOKEN = ""
-        sharedSingleton.setString(IConstants.USER)
+        deleteUser()
         startActivity(intentFor<MainActivity>().newTask().clearTask())
     }
 
