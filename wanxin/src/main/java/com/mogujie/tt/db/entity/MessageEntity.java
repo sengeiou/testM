@@ -32,6 +32,7 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * 这个类不同与其他自动生成代码
