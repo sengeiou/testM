@@ -137,4 +137,13 @@
         <item name="android:textColor">@drawable/seach_result_botton_text</item>
     </style>
 
+    <style name="WaveProgressViewDefault">
+        <item name="radius">55dp</item>
+        <item name="progress_text_color">#fff</item>
+        <item name="progress_text_size">15sp</item>
+        <item name="progress_color">@color/color_5ab1e1</item>
+        <item name="radius_color">#FF734B58</item>
+        <item name="progress">0</item>
+        <item name="maxProgress">100</item>
+    </style>
 </resources>

@@ -227,7 +227,7 @@
         android:alpha="0"
         android:background="@drawable/bg_join_search"
         android:gravity="center_horizontal"
-        android:paddingTop="@dimen/padding_dp_25"
+        android:paddingTop="@dimen/join_search_bar_top"
         android:text="@string/head_detail"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_20"/>
@@ -237,14 +237,14 @@
         android:layout_width="@dimen/padding_dp_26"
         android:layout_height="@dimen/padding_dp_26"
         android:layout_marginStart="@dimen/padding_dp_5"
-        android:layout_marginTop="@dimen/padding_dp_29"
+        android:layout_marginTop="@dimen/detail_back_mask_top"
         android:src="@drawable/detail_icon_back_mask"/>
 
     <ImageView
         android:id="@+id/mDetailBack"
         android:layout_width="@dimen/padding_dp_36"
         android:layout_height="@dimen/padding_dp_36"
-        android:layout_marginTop="@dimen/padding_dp_24"
+        android:layout_marginTop="@dimen/detail_back_top"
         android:alpha="0"
         android:padding="@dimen/padding_dp_10"
         android:src="@drawable/detail_icon_back"/>
@@ -254,7 +254,7 @@
         android:layout_width="@dimen/padding_dp_26"
         android:layout_height="@dimen/padding_dp_26"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/padding_dp_29"
+        android:layout_marginTop="@dimen/detail_back_mask_top"
         android:layout_marginEnd="@dimen/padding_dp_5"
         android:src="@drawable/detail_icon_more_mask"/>
 
@@ -263,7 +263,7 @@
         android:layout_width="@dimen/padding_dp_26"
         android:layout_height="@dimen/padding_dp_26"
         android:layout_alignParentEnd="true"
-        android:layout_marginTop="@dimen/padding_dp_29"
+        android:layout_marginTop="@dimen/detail_back_mask_top"
         android:layout_marginEnd="@dimen/padding_dp_5"
         android:alpha="0"
         android:padding="@dimen/padding_dp_5"
