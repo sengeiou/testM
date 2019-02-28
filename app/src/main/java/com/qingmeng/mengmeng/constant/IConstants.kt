@@ -38,16 +38,16 @@ object IConstants {
     val POSITION = "position"
     val articleUrl = "articleUrl"
     val IMGS = "imgs"
-    val detailUrl = "detailUrl"            //详情链接
-    val title = "title"                     //标题
+    val detailUrl = "detailUrl"           //详情链接
+    val title = "title"                   //标题
     val firstLevel = "firstLevel"         //一级分类id
     val secondLevel = "secondLevel"       //二级分类id
-    val THREE_LEVEL = "threeLevel"         //展示名称
-    val BACK_SEACH = "backSeach"         //回显关键字
+    val THREE_LEVEL = "threeLevel"        //展示名称
+    val BACK_SEACH = "backSeach"          //回显关键字
     val LOGIN_BACK = 10010
-    var login_name = ""                     //账号密码登录时保存账号
-    var login_phone = ""                    //保存手机号
-    var login_paw = ""                    //账号密码登录时保存密码
+    var login_name = "mengUser"           //账号密码登录时保存账号
+    var login_phone = "mengPhone"         //保存手机号
+    var login_pwd = "mengPass"            //账号密码登录时保存密码
     //图片验证码
     val GET_IMAGE_CODE = BASE_URL + "api/captcha_app/image_app?account="
 

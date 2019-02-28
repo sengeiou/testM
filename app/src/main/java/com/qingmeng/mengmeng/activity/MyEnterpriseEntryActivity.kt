@@ -61,7 +61,7 @@ class MyEnterpriseEntryActivity : BaseActivity() {
                     }
                 }, {
                     myDialog.dismissLoadingDialog()
-                })
+                }, {}, { addSubscription(it) })
     }
 
     private fun initWebView() {

@@ -82,7 +82,8 @@ public class IMUIHelper {
             case LOGIN_INNER_FAILED:
                 return R.string.login_error_unexpected;
             default:
-                return R.string.login_error_unexpected;
+//                return R.string.login_error_unexpected;
+                return -1;
         }
     }
 
@@ -93,7 +94,8 @@ public class IMUIHelper {
             case REQ_MSG_SERVER_ADDRS_FAILED:
                 return R.string.req_msg_server_addrs_failed;
             default:
-                return R.string.login_error_unexpected;
+//                return R.string.login_error_unexpected;
+                return -1;
         }
     }
 

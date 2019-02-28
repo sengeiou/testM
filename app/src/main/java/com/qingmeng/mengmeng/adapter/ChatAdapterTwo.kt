@@ -7,7 +7,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -18,6 +17,7 @@ import android.view.ViewGroup
 import android.widget.*
 import com.lemo.emojcenter.utils.EmotionUtils
 import com.lemo.emojcenter.utils.SpanStringUtils
+import com.luck.picture.lib.PictureSelector
 import com.mogujie.tt.config.DBConstant
 import com.mogujie.tt.config.IntentConstant
 import com.mogujie.tt.config.MessageConstant
@@ -38,6 +38,7 @@ import com.mogujie.tt.utils.DateUtil
 import com.mogujie.tt.utils.FileUtil
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.MyMessageChatActivity
+import com.qingmeng.mengmeng.utils.GlideCacheUtils
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.utils.setMarginExt
 import java.io.File
@@ -52,7 +53,7 @@ import java.util.*
 
  *  Date: 2019/2/14
  */
-class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<Any>, val audioClick: (audioMessage: AudioMessage) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<Any>, val audioClick: (audioMessage: AudioMessage, imageView: ImageView) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mImService: IMService? = null
     private var loginUser: UserEntity? = null
     private var currentPop: MessageOperatePopup? = null    //弹出气泡
@@ -78,13 +79,13 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             /**
              * 别人消息
              */
-                RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF_IMAGE -> {    //文本(表情)
+                RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF -> {    //别人文本(emoji表情)
                     (it as OtherTextViewHolder).bindViewHolder(position)
                 }
                 RenderType.MESSAGE_TYPE_OTHER_IMAGE -> { //别人图片
                     (it as OtherImageViewHolder).bindViewHolder(position)
                 }
-                RenderType.MESSAGE_TYPE_OTHER_GIF -> { //别人gif
+                RenderType.MESSAGE_TYPE_OTHER_GIF_IMAGE -> { //别人gif
                     (it as OtherGifViewHolder).bindViewHolder(position)
                 }
                 RenderType.MESSAGE_TYPE_OTHER_AUDIO -> {    //别人语音
@@ -99,13 +100,13 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             /**
              * 自己消息
              */
-                RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF_IMAGE -> {  //自己文本(表情)
+                RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF -> {  //自己文本(emoji表情)
                     (it as MineTextViewHolder).bindViewHolder(position)
                 }
                 RenderType.MESSAGE_TYPE_MINE_IMAGE -> {   //自己图片
                     (it as MineImageViewHolder).bindViewHolder(position)
                 }
-                RenderType.MESSAGE_TYPE_MINE_GIF -> {   //自己gif
+                RenderType.MESSAGE_TYPE_MINE_GIF_IMAGE -> {   //自己gif
                     (it as MineGifViewHolder).bindViewHolder(position)
                 }
                 RenderType.MESSAGE_TYPE_MINE_AUDIO -> { //自己语音
@@ -143,7 +144,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         /**
          * 别人消息
          */
-            RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF_IMAGE -> {    //别人文本(表情)
+            RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF -> {    //别人文本(emoji表情)
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_text, viewGroup, false)
                 OtherTextViewHolder(view, viewGroup)
             }
@@ -151,7 +152,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_image, viewGroup, false)
                 OtherImageViewHolder(view, viewGroup)
             }
-            RenderType.MESSAGE_TYPE_OTHER_GIF -> { //别人gif
+            RenderType.MESSAGE_TYPE_OTHER_GIF_IMAGE -> { //别人gif
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_gif, viewGroup, false)
                 OtherGifViewHolder(view, viewGroup)
             }
@@ -170,7 +171,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         /**
          * 自己消息
          */
-            RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF_IMAGE -> {  //自己文本(表情)
+            RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF -> {  //自己文本(emoji表情)
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_text, viewGroup, false)
                 MineTextViewHolder(view, viewGroup)
             }
@@ -178,7 +179,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_image, viewGroup, false)
                 MineImageViewHolder(view, viewGroup)
             }
-            RenderType.MESSAGE_TYPE_MINE_GIF -> {   //自己gif
+            RenderType.MESSAGE_TYPE_MINE_GIF_IMAGE -> {   //自己gif
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_gif, viewGroup, false)
                 MineGifViewHolder(view, viewGroup)
             }
@@ -368,13 +369,14 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val ivMyMessageChatRvOtherAudioHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherAudioHead)
         private val tvMyMessageChatRvOtherAudioTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvOtherAudioTime)
         private val llMyMessageChatRvOtherAudio = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvOtherAudio)
+        private val ivMyMessageChatRvOtherAudioImage = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherAudioImage)
         fun bindViewHolder(position: Int) {
             val audioMessage = msgObjectList[position] as AudioMessage
             setHeadImage(audioMessage, ivMyMessageChatRvOtherAudioHead)
             tvMyMessageChatRvOtherAudioTime.text = "${audioMessage.audiolength}\""
             llMyMessageChatRvOtherAudio.let {
                 it.setOnClickListener {
-                    audioClick(audioMessage)
+                    audioClick(audioMessage, ivMyMessageChatRvOtherAudioImage)
                     audioMessage.readStatus = MessageConstant.AUDIO_READED
                     mImService!!.dbInterface.insertOrUpdateMessage(audioMessage)
                 }
@@ -398,29 +400,34 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         fun bindViewHolder(position: Int) {
             val videoMessage = msgObjectList[position] as VideoMessage
             setHeadImage(videoMessage, ivMyMessageChatRvOtherVideoHead)
-            //封面 有本地的先加载本地的
-            if (FileUtil.isFileExist(videoMessage.thumbPath)) {
-                GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            //视频地址 有本地的用本地的
+            val videoUrl = if (!TextUtils.isEmpty(videoMessage.path) && File(videoMessage.path).exists()) {
+                videoMessage.path
             } else {
-                GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                videoMessage.url
+            }
+            //设置封面
+            if (TextUtils.isEmpty(videoMessage.thumbPath) && TextUtils.isEmpty(videoMessage.thumbUrl)) {    //没有封面  取视频第一帧
+                GlideCacheUtils.loadVideoScreenshot(context, videoUrl, ivMyMessageChatRvOtherVideoCover, 1000)
+            } else {    //有地址 就直接加载就行了
+                if (FileUtil.isFileExist(videoMessage.thumbPath)) {
+                    GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                } else {
+                    GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                }
             }
             //时间
             tvMyMessageChatRvOtherVideoTime.text = "${videoMessage.videolength}s"
             rlMyMessageChatRvOtherVideo.let {
                 it.setOnClickListener {
-                    //视频地址 有本地的用本地的
-                    val videoUrl = if (!TextUtils.isEmpty(videoMessage.path) && File(videoMessage.path).exists()) {
-                        videoMessage.path
-                    } else {
-                        videoMessage.url
-                    }
-                    val videoUri = Uri.parse(videoUrl)
-                    videoUri?.let {
-                        //调用系统自带的播放器
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.setDataAndType(it, "video/mp4")
-                        context.startActivity(intent)
-                    }
+                    PictureSelector.create(context as Activity).externalPictureVideo(videoUrl)
+//                    val videoUri = Uri.parse(videoUrl)
+//                    videoUri?.let {
+//                        //调用系统自带的播放器
+//                        val intent = Intent(Intent.ACTION_VIEW)
+//                        intent.setDataAndType(it, "video/mp4")
+//                        context.startActivity(intent)
+//                    }
                 }
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
@@ -630,6 +637,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val ivMyMessageChatRvMineAudioHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineAudioHead)
         private val tvMyMessageChatRvMineAudioTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvMineAudioTime)
         private val llMyMessageChatRvMineAudio = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvMineAudio)
+        private val ivMyMessageChatRvMineAudioImage = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineAudioImage)
         private val pbMyMessageChatRvMineAudioProgress = itemView.findViewById<ProgressBar>(R.id.pbMyMessageChatRvMineAudioProgress)
         private val ivMyMessageChatRvMineAudioFail = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineAudioFail)
         fun bindViewHolder(position: Int) {
@@ -638,7 +646,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             tvMyMessageChatRvMineAudioTime.text = "${audioMessage.audiolength}\""
             llMyMessageChatRvMineAudio.let {
                 it.setOnClickListener {
-                    audioClick(audioMessage)
+                    audioClick(audioMessage, ivMyMessageChatRvMineAudioImage)
                     audioMessage.readStatus = MessageConstant.AUDIO_READED
                     mImService!!.dbInterface.insertOrUpdateMessage(audioMessage)
                 }
@@ -683,29 +691,34 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         fun bindViewHolder(position: Int) {
             val videoMessage = msgObjectList[position] as VideoMessage
             setHeadImage(videoMessage, ivMyMessageChatRvMineVideoHead)
-            //封面 有本地的加载本地的
-            if (FileUtil.isFileExist(videoMessage.thumbPath)) {
-                GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            //视频地址 有本地的用本地的
+            val videoUrl = if (!TextUtils.isEmpty(videoMessage.path) && File(videoMessage.path).exists()) {
+                videoMessage.path
             } else {
-                GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                videoMessage.url
+            }
+            //设置封面
+            if (TextUtils.isEmpty(videoMessage.thumbPath) && TextUtils.isEmpty(videoMessage.thumbUrl)) {    //没有封面  取视频第一帧
+                GlideCacheUtils.loadVideoScreenshot(context, videoUrl, ivMyMessageChatRvMineVideoCover, 1000)
+            } else {    //有地址 就直接加载就行了
+                if (FileUtil.isFileExist(videoMessage.thumbPath)) {
+                    GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                } else {
+                    GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                }
             }
             //时间
             tvMyMessageChatRvMineVideoTime.text = "${videoMessage.videolength}s"
             rlMyMessageChatRvMineVideo.let {
                 it.setOnClickListener {
-                    //视频地址 有本地的用本地的
-                    val videoUrl = if (!TextUtils.isEmpty(videoMessage.path) && File(videoMessage.path).exists()) {
-                        videoMessage.path
-                    } else {
-                        videoMessage.url
-                    }
-                    val videoUri = Uri.parse(videoUrl)
-                    videoUri?.let {
-                        //调用系统自带的播放器
-                        val intent = Intent(Intent.ACTION_VIEW)
-                        intent.setDataAndType(it, "video/mp4")
-                        context.startActivity(intent)
-                    }
+                    PictureSelector.create(context as Activity).externalPictureVideo(videoUrl)
+//                    val videoUri = Uri.parse(videoUrl)
+//                    videoUri?.let {
+//                        //调用系统自带的播放器
+//                        val intent = Intent(Intent.ACTION_VIEW)
+//                        intent.setDataAndType(it, "video/mp4")
+//                        context.startActivity(intent)
+//                    }
                 }
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
@@ -960,6 +973,10 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         if (mLayoutManager != null) {
             notifyDataSetChanged()
         }
+//        else {
+//            //更新单个item（不更新滑动时会数据不对 崩溃）
+//            notifyItemChanged(msgObjectList.lastIndex, "yang")
+//        }
         if (isPullDownToRefresh) {  //加载历史
             mLayoutManager?.scrollToPositionWithOffset(chatList.lastIndex + 1, 0)
         } else {    //直接添加历史

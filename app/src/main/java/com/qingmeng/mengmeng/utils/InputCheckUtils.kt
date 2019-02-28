@@ -67,13 +67,15 @@ object InputCheckUtils {
     }
 
     /**
-     * 固定电话
+     * 固定电话（只做20位限制）
      */
     fun checkTel(tel: String): Boolean {
 //        val pattern = Pattern.compile("^0(10|2[0-5789]-|//d{3})-?//d{7,8}$")
-        val pattern = Pattern.compile("^1\\d{10}\$|^(0\\d{2,3}-?|\\(0\\d{2,3}\\))?[1-9]\\d{4,7}(-\\d{1,8})?$")
-        val matcher = pattern.matcher(tel)
-        return matcher.matches()
+//        val pattern = Pattern.compile("^1\\d{10}\$|^(0\\d{2,3}-?|\\(0\\d{2,3}\\))?[1-9]\\d{4,7}(-\\d{1,8})?$")
+//        val matcher = pattern.matcher(tel)
+//        return matcher.matches()
+
+        return tel.length in 0..20
     }
 
     /**

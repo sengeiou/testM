@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:camera="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/black">
+
+    <SurfaceView
+        android:id="@+id/sv_surfaceview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@color/transparent"/>
+
+    <com.qingmeng.mengmeng.view.camera.FocusImageView
+        android:id="@+id/focusImageView"
+        android:layout_width="75dip"
+        android:layout_height="75dip"
+        android:layout_centerInParent="true"
+        camera:focus_fail_id="@drawable/focus_focus_failed"
+        camera:focus_focusing_id="@drawable/focus_focusing"
+        camera:focus_success_id="@drawable/focus_focused"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#3f000000"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/llSelectPhotoOrVideo"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center_horizontal">
+
+
+            <TextView
+                android:id="@+id/tvPhoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:paddingTop="10dp"
+                android:text="照片"
+                android:textColor="@drawable/selector_camera_text"
+                android:textSize="14sp"/>
+
+            <TextView
+                android:id="@+id/tvVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:paddingTop="6dp"
+                android:text="视频"
+                android:textColor="@drawable/selector_camera_text"
+                android:textSize="14sp"/>
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/rl_operate"
+            android:layout_width="match_parent"
+            android:layout_height="96dp">
+
+            <TextView
+                android:id="@+id/tv_take_again"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/padding_dp_20"
+                android:paddingBottom="@dimen/padding_dp_5"
+                android:paddingTop="@dimen/padding_dp_5"
+                android:layout_marginStart="@dimen/padding_dp_20"
+                android:text="重拍"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/ivTakephoto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/camera_photo"/>
+
+            <ImageView
+                android:id="@+id/iv_recorder_stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:src="@drawable/camera_video_after"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/iv_recorder_play"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:gravity="center"
+                android:src="@drawable/camera_play"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/ivTakeVideo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/camera_video_befor"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/iv_camera_direction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="15dp"
+                android:background="@drawable/camera_switch"
+                android:gravity="center"
+                android:padding="@dimen/padding_dp_10"/>
+
+            <TextView
+                android:id="@+id/tv_confirm"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="20dp"
+                android:paddingBottom="@dimen/padding_dp_5"
+                android:paddingTop="@dimen/padding_dp_5"
+                android:text="使用照片"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:visibility="gone"/>
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="44dp"
+        android:layout_alignParentTop="true"
+        android:background="#3f000000">
+
+        <RelativeLayout
+            android:id="@+id/rl_flashlight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true">
+
+            <ImageView
+                android:id="@+id/iv_flashlight_open"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="13dp"
+                android:gravity="center"
+                android:padding="@dimen/padding_dp_10"
+                android:src="@drawable/camera_flash_open"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/iv_flashlight_close"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="13dp"
+                android:gravity="center"
+                android:padding="@dimen/padding_dp_10"
+                android:src="@drawable/camera_flash_close"
+                android:visibility="gone"/>
+
+            <ImageView
+                android:id="@+id/iv_flashlight_auto"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="13dp"
+                android:gravity="center"
+                android:padding="@dimen/padding_dp_10"
+                android:src="@drawable/camera_flash_auto"
+                android:visibility="visible"/>
+
+        </RelativeLayout>
+
+        <Chronometer
+            android:id="@+id/chronometer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="@dimen/padding_dp_5"
+            android:background="@color/transparent"
+            android:gravity="center_horizontal"
+            android:textColor="#FFF"
+            android:textSize="@dimen/text_size_16"
+            android:visibility="gone"/>
+    </RelativeLayout>
+</RelativeLayout>

@@ -41,6 +41,8 @@ public class UnreadMsgUtils {
                 msgView.setText("99+");
             }
             msgView.setLayoutParams(lp);
+        } else {
+            msgView.setVisibility(View.GONE);
         }
     }
 

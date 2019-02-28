@@ -109,7 +109,7 @@ class ImageMessage() : TextMessage(), Serializable {
                     path = item.imagePath
                 } else {
                     if (File(item.thumbnailPath).exists()) {
-                        path = item.thumbnailPath
+                        path = item.thumbnailPath!!
                     } else {
                         // 找不到图片路径时使用加载失败的图片展示
                         path = ""

@@ -49,6 +49,11 @@ object MediaManager {
         }
     }
 
+    //是否正在播放
+    fun isPlaying(): Boolean {
+        return mPlayer?.isPlaying ?: false
+    }
+
     //暂停播放
     fun pause() {
         if (mPlayer != null && mPlayer?.isPlaying!!) {

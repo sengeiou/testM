@@ -168,7 +168,7 @@ class LoginPwdActivity : BaseActivity() {
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
                             sharedSingleton.setString(IConstants.login_name,username)
-                            sharedSingleton.setString(IConstants.login_paw,password)
+                            sharedSingleton.setString(IConstants.login_pwd,password)
                             it.upDate()
                             //还要登录完信..
                             mImService?.loginManager?.login("${it.wxUid}", it.wxToken)

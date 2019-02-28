@@ -178,7 +178,7 @@ class MyMessageActivity : BaseActivity() {
                     srlMyMessage.isRefreshing = false
                     onRecentContactDataReady()
                     setNoChatView(mRecentSessionList)
-                })
+                }, {}, { addSubscription(it) })
     }
 
     private fun setData(chatInfoList: List<MyMessage>) {
@@ -275,7 +275,8 @@ class MyMessageActivity : BaseActivity() {
 
     fun onEventMainThread(event: UnreadEvent) {
         when (event.event) {
-            UnreadEvent.Event.UNREAD_MSG_RECEIVED -> {
+            UnreadEvent.Event.UNREAD_MSG_RECEIVED -> {  //新消息接收
+                httpLoad()
             }
             UnreadEvent.Event.UNREAD_MSG_LIST_OK -> {
             }
@@ -324,7 +325,7 @@ class MyMessageActivity : BaseActivity() {
     private fun searchDataReady() {
         if (mImService?.contactManager?.isUserDataReady!! && mImService?.groupManager?.isGroupReady!!) {
 //            showSearchFrameLayout()
-            ToastUtil.showShort("searchDataReady()\n搜索数据OK")
+//            ToastUtil.showShort("searchDataReady()\n搜索数据OK")
         }
     }
 
@@ -360,10 +361,6 @@ class MyMessageActivity : BaseActivity() {
             llMyMessageTips.visibility = View.GONE
         }
     }
-
-    /**
-     * -------------------------------------------------------------end-------------------------------------------------------------
-     */
 
     override fun onDestroy() {
         if (EventBus.getDefault().isRegistered(this)) {

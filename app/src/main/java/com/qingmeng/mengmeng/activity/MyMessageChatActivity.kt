@@ -4,10 +4,10 @@ import android.app.Activity
 import android.app.Dialog
 import android.content.Context
 import android.content.Intent
+import android.graphics.drawable.AnimationDrawable
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.os.Handler
-import android.provider.MediaStore
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.LinearSmoothScroller
 import android.support.v7.widget.RecyclerView
@@ -22,6 +22,9 @@ import com.app.common.api.subscribeExtApi
 import com.lemo.emojcenter.constant.FaceLocalConstant
 import com.lemo.emojcenter.utils.EmotionUtils
 import com.lemo.emojcenter.utils.SpanStringUtils
+import com.luck.picture.lib.PictureSelector
+import com.luck.picture.lib.config.PictureConfig
+import com.luck.picture.lib.config.PictureMimeType
 import com.mogujie.tt.api.RequestManager
 import com.mogujie.tt.api.composeDefault
 import com.mogujie.tt.config.DBConstant
@@ -40,9 +43,6 @@ import com.mogujie.tt.imservice.event.UnreadEvent
 import com.mogujie.tt.imservice.manager.IMUnreadMsgManager
 import com.mogujie.tt.imservice.service.IMService
 import com.mogujie.tt.imservice.support.IMServiceConnector
-import com.mogujie.tt.ui.activity.PickPhotoActivity
-import com.mogujie.tt.ui.adapter.album.AlbumHelper
-import com.mogujie.tt.ui.adapter.album.ImageBucket
 import com.mogujie.tt.ui.adapter.album.ImageItem
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
@@ -51,8 +51,6 @@ import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.audio.AudioManager
 import com.qingmeng.mengmeng.utils.audio.MediaManager
-import com.qingmeng.mengmeng.utils.photo.PhotoConfig
-import com.qingmeng.mengmeng.utils.photo.SimplePhotoUtil
 import com.qingmeng.mengmeng.view.dialog.PopChatImg
 import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.main.activity_my_message_chat.*
@@ -90,8 +88,8 @@ class MyMessageChatActivity : BaseActivity() {
     //    private var mFragmentList = ArrayList<Fragment>()           //表情fragment
 //    private val mTabTitles = arrayOf("", "")                    //tabLayout头部 初始化两个
     private var mRecyclerViewIsBottom = true                    //RecyclerView在底部
-    private var albumHelper: AlbumHelper? = null                //相册数据
-    private var albumList: MutableList<ImageBucket>? = null
+    //    private var albumHelper: AlbumHelper? = null                //相册数据
+//    private var albumList: MutableList<ImageBucket>? = null
     private var mBundle: Bundle? = null                         //品牌详情内容
     private var mIsSystemMotification = false                   //是否是系统通知
     private val mTextMessage = TextMessage()                    //假文字消息
@@ -148,8 +146,8 @@ class MyMessageChatActivity : BaseActivity() {
 //        }
         //初始化音量对话框
         initSoundVolumeDlg()
-        //初始化相册
-        initAlbumHelper()
+//        //初始化相册
+//        initAlbumHelper()
         initAdapter()
         httpLoad()
 
@@ -180,13 +178,13 @@ class MyMessageChatActivity : BaseActivity() {
         mImService?.notificationManager?.cancelSessionNotifications(currentSessionKey)
     }
 
-    /**
-     * 初始化数据（相册,表情,数据库相关）
-     */
-    private fun initAlbumHelper() {
-        albumHelper = AlbumHelper.getHelper(this)
-        albumList = albumHelper!!.getImagesBucketList(false)
-    }
+//    /**
+//     * 初始化数据（相册,表情,数据库相关）
+//     */
+//    private fun initAlbumHelper() {
+//        albumHelper = AlbumHelper.getHelper(this)
+//        albumList = albumHelper!!.getImagesBucketList(false)
+//    }
 
 
     override fun initListener() {
@@ -289,7 +287,6 @@ class MyMessageChatActivity : BaseActivity() {
                             mSoundVolumeDialog.dismiss()
                             //释放录音
                             mAudioManager.releaseAudio({ path, recordTime ->
-                                //                                ToastUtil.showShort(path)
                                 //发送语音
                                 onRecordVoiceEnd(path, recordTime)
                             })
@@ -444,7 +441,7 @@ class MyMessageChatActivity : BaseActivity() {
         }
 
         //拍照
-        llMyMessageChatFunctionCamera.setOnClickListener {
+        ivMyMessageChatFunctionCamera.setOnClickListener {
             PermissionUtils.camera(this, {
                 //打开相机
                 openCamera()
@@ -452,7 +449,7 @@ class MyMessageChatActivity : BaseActivity() {
         }
 
         //照片
-        llMyMessageChatFunctionPhoto.setOnClickListener {
+        ivMyMessageChatFunctionPhoto.setOnClickListener {
             PermissionUtils.readAndWrite(this, {
                 //打开相册
                 openAlbum()
@@ -460,7 +457,7 @@ class MyMessageChatActivity : BaseActivity() {
         }
 
         //视频
-        llMyMessageChatFunctionVideo.setOnClickListener {
+        ivMyMessageChatFunctionVideo.setOnClickListener {
             PermissionUtils.readAndWrite(this, {
                 //打开视频
                 openVideo()
@@ -468,13 +465,17 @@ class MyMessageChatActivity : BaseActivity() {
         }
 
         //语音听筒扬声器切换
-        ivMyMessageChatSwitchAudio.setOnClickListener {
+        cdMyMessageChatSwitchAudio.setOnClickListener {
             if (mMediaManager.mIsCall) {
                 mMediaManager.switchPlay(false)
-                ToastUtil.showShort(getString(R.string.play_audio_music))
+                ToastUtil.showShort(getString(R.string.play_audio_music_tips))
+                ivMyMessageChatSwitchAudio.setImageResource(R.mipmap.chat_speaker)
+                tvMyMessageChatSwitchAudio.text = getString(R.string.play_audio_music)
             } else {
                 mMediaManager.switchPlay(true)
-                ToastUtil.showShort(getString(R.string.play_audio_call))
+                ToastUtil.showShort(getString(R.string.play_audio_call_tips))
+                ivMyMessageChatSwitchAudio.setImageResource(R.mipmap.chat_receiver)
+                tvMyMessageChatSwitchAudio.text = getString(R.string.play_audio_call)
             }
         }
 
@@ -575,15 +576,23 @@ class MyMessageChatActivity : BaseActivity() {
         //消息适配器
         mLayoutManager = LinearLayoutManager(this)
         rvMyMessageChat.layoutManager = mLayoutManager
-        mAdapter = ChatAdapterTwo(this, msgObjectList, {
-            //音频点击事件
-            mMediaManager.play(this, it.audioPath, {
-                //刚开始播放
-                ivMyMessageChatSwitchAudio.visibility = View.VISIBLE
-            }, {
-                //播放结束
-                ivMyMessageChatSwitchAudio.visibility = View.GONE
-            })
+        mAdapter = ChatAdapterTwo(this, msgObjectList, { audioMessage, imageView ->
+            if (mMediaManager.isPlaying()) {    //正在播放点击就结束播放
+                cdMyMessageChatSwitchAudio.visibility = View.GONE
+                mMediaManager.release()
+                stopAudioAnimation(imageView)
+            } else {
+                //音频点击事件
+                mMediaManager.play(this, audioMessage.audioPath, {
+                    //刚开始播放
+                    cdMyMessageChatSwitchAudio.visibility = View.VISIBLE
+                    startAudioAnimation(imageView)
+                }, {
+                    //播放结束
+                    cdMyMessageChatSwitchAudio.visibility = View.GONE
+                    stopAudioAnimation(imageView)
+                })
+            }
         })
         rvMyMessageChat.adapter = mAdapter
 
@@ -638,6 +647,21 @@ class MyMessageChatActivity : BaseActivity() {
         }
     }
 
+    //播放语音动画
+    private fun startAudioAnimation(imageView: ImageView) {
+        val animationDrawable = imageView.background as AnimationDrawable
+        animationDrawable.start()
+    }
+
+    //结束语音动画
+    private fun stopAudioAnimation(imageView: ImageView) {
+        val animationDrawable = imageView.background as AnimationDrawable
+        if (animationDrawable.isRunning) {
+            animationDrawable.stop()
+            animationDrawable.selectDrawable(0)
+        }
+    }
+
     //改变输入框上面布局(中间布局)的高度，临时改变下（为了引起视觉误差 让用户感觉上面的布局在等键盘弹起，会感觉很流畅）
     private fun changeMiddleLayoutHeight() {
         val fragmentParams = flMyMessageChat.layoutParams as LinearLayout.LayoutParams
@@ -683,8 +707,9 @@ class MyMessageChatActivity : BaseActivity() {
         if (isAnimation) {
 //            SmoothScrollLayoutManager(this).smoothScrollToPosition(rvMyMessageChat,1,mAdapter.msgObjectList.lastIndex)
             mAdapter.notifyDataSetChanged()
-            rvMyMessageChat.smoothScrollToPosition(mAdapter.msgObjectList.lastIndex)
+            rvMyMessageChat.smoothScrollToPosition(mAdapter.msgObjectList.lastIndex - 1)
             tvMyMessageChatTips.visibility = View.GONE
+            mRecyclerViewIsBottom = true
         } else {
             rvMyMessageChat.scrollToPosition(mAdapter.msgObjectList.lastIndex)
         }
@@ -772,7 +797,7 @@ class MyMessageChatActivity : BaseActivity() {
             }
         }
         //无系统通知提示
-        if ((list!!.isEmpty() || list[0].content.isNullOrBlank()) && mIsSystemMotification) {
+        if (list!![0].fromId == 0 && mIsSystemMotification) {
             llMyMessageChatTips.visibility = View.VISIBLE
         } else {
             llMyMessageChatTips.visibility = View.GONE
@@ -961,14 +986,14 @@ class MyMessageChatActivity : BaseActivity() {
     /**
      * 选择视频后的数据处理
      */
-    private fun handleTakeVideoData(data: Intent) {
-        val selectedVideo = data.data
-        val filePathColumn = arrayOf(MediaStore.Video.Media.DATA)
-        val cursor = contentResolver.query(selectedVideo!!, filePathColumn, null, null, null)
-        cursor?.moveToFirst()
-        val columnIndex = cursor?.getColumnIndex(filePathColumn[0]) ?: 0
-        val videoPath = cursor?.getString(columnIndex)
-        cursor?.close()
+    private fun handleTakeVideoData(videoPath: String) {
+//        val selectedVideo = data.data
+//        val filePathColumn = arrayOf(MediaStore.Video.Media.DATA)
+//        val cursor = contentResolver.query(selectedVideo!!, filePathColumn, null, null, null)
+//        cursor?.moveToFirst()
+//        val columnIndex = cursor?.getColumnIndex(filePathColumn[0]) ?: 0
+//        val videoPath = cursor?.getString(columnIndex)
+//        cursor?.close()
         val mediaPlayer = MediaPlayer()
         try {
             mediaPlayer.setDataSource(videoPath)
@@ -1037,21 +1062,30 @@ class MyMessageChatActivity : BaseActivity() {
 //            putExtra(MediaStore.EXTRA_OUTPUT, UriUtil.getUri(applicationContext, File(takePhotoSavePath!!)))
 //        }, SysConstant.CAMERA_WITH_DATA)
 
-        SimplePhotoUtil.instance.setConfig(PhotoConfig(this, true, onPathCallback = { path ->
-            handleTakePhotoData(path)
-        }))
+//        SimplePhotoUtil.instance.setConfig(PhotoConfig(this, true, onPathCallback = { path ->
+//            handleTakePhotoData(path)
+//        }))
+
+        startActivityForResult(Intent(this, CameraActivity::class.java), SysConstant.CAMERA_WITH_DATA)
+        this.overridePendingTransition(com.leimo.wanxin.R.anim.tt_album_enter, com.leimo.wanxin.R.anim.tt_stay)
     }
 
     //打开相册读取文件返回路径
     private fun openAlbum() {
-        if (albumList != null && albumList!!.size < 1) {
-            ToastUtil.showShort(resources.getString(com.leimo.wanxin.R.string.not_found_album))
-            return
-        }
-        startActivityForResult(Intent(this, PickPhotoActivity::class.java).apply {
-            putExtra(IntentConstant.KEY_SESSION_KEY, currentSessionKey)
-        }, SysConstant.ALBUM_BACK_DATA)
-        this.overridePendingTransition(com.leimo.wanxin.R.anim.tt_album_enter, com.leimo.wanxin.R.anim.tt_stay)
+        //用PictureSelector工具
+        PictureSelector.create(this)
+                .openGallery(PictureMimeType.ofAll())   //视频和相册都显示
+                .selectionMode(PictureConfig.SINGLE)    //单选，也可选多选模式MULTIPLE
+                .forResult(SysConstant.ALBUM_BACK_DATA)
+
+//        if (albumList != null && albumList!!.size < 1) {
+//            ToastUtil.showShort(resources.getString(com.leimo.wanxin.R.string.not_found_album))
+//            return
+//        }
+//        startActivityForResult(Intent(this, PickPhotoActivity::class.java).apply {
+//            putExtra(IntentConstant.KEY_SESSION_KEY, currentSessionKey)
+//        }, SysConstant.ALBUM_BACK_DATA)
+//        this.overridePendingTransition(com.leimo.wanxin.R.anim.tt_album_enter, com.leimo.wanxin.R.anim.tt_stay)
 
 //        SimplePhotoUtil.instance.setConfig(PhotoConfig(this, false, onPathCallback = { path ->
 //            handleTakePhotoData(path)
@@ -1069,23 +1103,52 @@ class MyMessageChatActivity : BaseActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
+//        //选择照片（图库，拍照）
+//        SimplePhotoUtil.instance.onPhotoResult(requestCode, resultCode, data)
         if (Activity.RESULT_OK != resultCode) {
             return
         }
         when (requestCode) {
-//            SysConstant.CAMERA_WITH_DATA -> {   //拍照
-//                SDPathUtil.updateImageSysStatu(applicationContext, takePhotoSavePath)
-//                handleTakePhotoData()
-//            }
-            SysConstant.VIDEO_WITH_DATA -> {    //视频
-                handleTakeVideoData(data!!)
+            SysConstant.CAMERA_WITH_DATA -> {   //拍照返回
+                val type = data?.getIntExtra("type", -1)
+                val mImagePath = data?.getStringExtra("mImagePath")
+                val mVideoPath = data?.getStringExtra("mVideoPath")
+                when (type) {
+                    1 -> {  //照片
+                        mImagePath?.let {
+                            handleTakePhotoData(it)
+                        }
+                    }
+                    2 -> {  //视频
+                        mVideoPath?.let {
+                            handleTakeVideoData(it)
+                        }
+                    }
+                    else -> {
+
+                    }
+                }
+//            SDPathUtil.updateImageSysStatu(applicationContext, takePhotoSavePath)
             }
             SysConstant.ALBUM_BACK_DATA -> {    //相册
-                intent = data
+                val selectList = PictureSelector.obtainMultipleResult(data)
+                selectList[0].apply {
+                    when(pictureType){
+                        "image/jpeg" -> {   //图片
+                            handleTakePhotoData(path)
+                        }
+                        "video/mp4" -> {    //视频
+                            handleTakeVideoData(path)
+                        }
+                    }
+                }
+
+//                intent = data
             }
+//            SysConstant.VIDEO_WITH_DATA -> {    //视频
+//                handleTakeVideoData(data!!)
+//            }
         }
-        //选择照片（图库，拍照）
-        SimplePhotoUtil.instance.onPhotoResult(requestCode, resultCode, data)
     }
 
     override fun onBackPressed() {
@@ -1116,9 +1179,9 @@ class MyMessageChatActivity : BaseActivity() {
         imServiceConnector.disconnect(this)
         EventBus.getDefault().unregister(this)
 
-        if (albumList != null) {
-            albumList?.clear()
-        }
+//        if (albumList != null) {
+//            albumList?.clear()
+//        }
         super.onDestroy()
     }
 

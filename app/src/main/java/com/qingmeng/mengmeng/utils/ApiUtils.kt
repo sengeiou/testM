@@ -2,6 +2,9 @@ package com.qingmeng.mengmeng.utils
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.net.Uri
+import android.os.Build
+import android.support.v4.content.FileProvider
 import com.alibaba.sdk.android.oss.ClientException
 import com.alibaba.sdk.android.oss.OSSClient
 import com.alibaba.sdk.android.oss.ServiceException
@@ -22,6 +25,7 @@ import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -96,5 +100,15 @@ object ApiUtils {
                         clientExcepion?.printStackTrace()
                     }
                 })
+    }
+
+    fun getFileUri(context: Context, dir: File): Uri {
+        val uri: Uri
+        if (Build.VERSION.SDK_INT >= 24) {
+            uri = FileProvider.getUriForFile(context, "com.qingmeng.mengmeng.fileprovider", dir)
+        } else {
+            uri = Uri.fromFile(dir)
+        }
+        return uri
     }
 }
