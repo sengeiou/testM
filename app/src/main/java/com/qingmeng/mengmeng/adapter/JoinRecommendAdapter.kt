@@ -51,7 +51,11 @@ class JoinRecommendAdapter(val context: Context, val onItemClick: (JoinRecommend
         @SuppressLint("SetTextI18n")
         fun bindViewHolder(joinBean: JoinRecommendBean.JoinBean) {
             recommendName.text = joinBean.name
-            recommendMoney.text = "￥${joinBean.capitalName}"
+            if (TextUtils.isEmpty(joinBean.capitalName)) {
+                recommendMoney.text = "面议"
+            } else{
+                recommendMoney.text = "￥${joinBean.capitalName}"
+            }
             itemView.setOnClickListener { onItemClick(joinBean) }
             if (!TextUtils.isEmpty(joinBean.logo)) {
                 Glide.with(context).load(joinBean.logo).apply(RequestOptions()

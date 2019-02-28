@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="join_action_bar_size">72dp</dimen>
+    <dimen name="join_search_bar_top">30dp</dimen>
+    <dimen name="join_search_bar_bottom">11dp</dimen>
+    <dimen name="detail_back_top">27dp</dimen>
+    <dimen name="detail_back_title">32dp</dimen>
+    <dimen name="detail_back_mask_top">32dp</dimen>
+</resources>
+

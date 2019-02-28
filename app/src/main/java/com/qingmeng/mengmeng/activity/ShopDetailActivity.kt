@@ -81,6 +81,8 @@ class ShopDetailActivity : BaseActivity() {
         }
         mDetailVp.adapter = vpAdapter
         mDetailVp.offscreenPageLimit = 6
+        val lp = mDetailVp.layoutParams
+        lp.height = resources.displayMetrics.widthPixels
         initWebView()
     }
 
