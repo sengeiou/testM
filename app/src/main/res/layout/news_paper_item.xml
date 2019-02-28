@@ -8,9 +8,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/padding_dp_10"
         android:layout_marginEnd="@dimen/padding_dp_12"
         android:layout_marginStart="@dimen/padding_dp_10"
-        android:layout_marginBottom="@dimen/padding_dp_10"
         android:layout_marginTop="@dimen/padding_dp_10"
         android:orientation="horizontal">
 
@@ -18,8 +18,8 @@
             android:id="@+id/news_pager_icon"
             android:layout_width="@dimen/padding_dp_107"
             android:layout_height="@dimen/padding_dp_82"
-            android:layout_marginEnd="@dimen/padding_dp_10" />
-
+            android:layout_marginEnd="@dimen/padding_dp_10"
+            android:background="@drawable/img_solid_0_5_bg" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -39,8 +39,8 @@
                 android:id="@+id/news_pager_content"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:maxLines="2"
                 android:layout_weight="1"
+                android:maxLines="2"
                 android:textColor="@color/color_666666"
                 android:textSize="@dimen/text_size_15" />
 
@@ -48,6 +48,7 @@
                 android:id="@+id/news_pager_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:singleLine="true"
                 android:textColor="@color/color_808080"
                 android:textSize="@dimen/text_size_12" />
         </LinearLayout>

@@ -265,7 +265,7 @@ interface Api {
 
     //筛选栏加盟区域
     @GET("api/get_municipality")
-    fun getSeachJoinArea(@Header("VERSION") version: String = ""): Observable<BaseBean<SeachJoinAreaBean>>
+    fun getSeachJoinArea(@Header("VERSION") version: String): Observable<BaseBean<SeachJoinAreaBean>>
 
     //筛选栏餐饮类型
     @GET("api/get_food_filter")

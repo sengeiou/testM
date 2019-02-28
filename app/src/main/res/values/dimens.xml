@@ -31,7 +31,7 @@
     <dimen name="padding_dp_20">20dp</dimen>
     <dimen name="padding_dp_21">21dp</dimen>
     <dimen name="padding_dp_22">22dp</dimen>
-    <dimen name="padding_dp_22.5">22.5dp</dimen>
+    <dimen name="padding_dp_22_5">22.5dp</dimen>
     <dimen name="padding_dp_23">23dp</dimen>
     <dimen name="padding_dp_24">24dp</dimen>
     <dimen name="padding_dp_25">25dp</dimen>
