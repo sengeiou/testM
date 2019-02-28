@@ -23,6 +23,7 @@ data class BrandBean(var name: String,
 data class AffiliateSupport(var trainContent: Array<String>? = null,
                             var operateSupport: Array<String>? = null,
                             var operationalSupervision: Array<String>? = null,
+                            var locationName: String,
                             var decorationName: String,
                             var trainingMethodName: String)
 

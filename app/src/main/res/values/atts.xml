@@ -64,6 +64,16 @@
         <attr name="my_item_content" format="string"/>
     </declare-styleable>
 
+    <declare-styleable name="WaveProgressView">
+        <attr name="radius" format="dimension|reference" />
+        <attr name="radius_color" format="color|reference" />
+        <attr name="progress_text_color" format="color|reference" />
+        <attr name="progress_text_size" format="dimension|reference" />
+        <attr name="progress_color" format="color|reference" />
+        <attr name="progress" format="integer" />
+        <attr name="maxProgress" format="float" />
+    </declare-styleable>
+
     //相机
     <declare-styleable name="FocusImageView">
         <attr name="focus_focusing_id" format="integer"/>

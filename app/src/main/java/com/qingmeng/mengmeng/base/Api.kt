@@ -47,6 +47,11 @@ interface Api {
                  @Field("password") password: String,
                  @Field("type") type: Int, @Field("isUserProtocol") isUserProtocol: Int = 1): Observable<BaseBean<UserBean>>
 
+    //获取版本信息
+    @GET("api/version/get_version_info")
+    fun getVersionInfo(@Query("phoneLogo") phoneLogo: String, @Query("version") version: String,
+                       @Query("type") type: Int = 1): Observable<BaseBean<UpdateBean>>
+
     /**
      * 获取静态数据
      * @param type 类型：1.首页banner8个icon 2.首页列表模块 3.列表筛选标题 4.综合排序 5.反馈类型
