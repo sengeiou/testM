@@ -128,6 +128,7 @@ class ShopDetailActivity : BaseActivity() {
             trainContent?.let { mJoinSupport.addAll(it) }
             operateSupport?.let { mJoinSupport.addAll(it) }
             operationalSupervision?.let { mJoinSupport.addAll(it) }
+            if (!TextUtils.isEmpty(locationName)) mJoinSupport.add(locationName)
             if (!TextUtils.isEmpty(decorationName)) mJoinSupport.add(decorationName)
             if (!TextUtils.isEmpty(trainingMethodName)) mJoinSupport.add(trainingMethodName)
         }

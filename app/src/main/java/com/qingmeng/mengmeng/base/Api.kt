@@ -49,7 +49,7 @@ interface Api {
 
     //获取版本信息
     @GET("api/version/get_version_info")
-    fun getVersionInfo(@Query("phoneLogo") phoneLogo: String, @Query("versionNum") versionNum: Int,
+    fun getVersionInfo(@Query("phoneLogo") phoneLogo: String, @Query("version") version: String,
                        @Query("type") type: Int = 1): Observable<BaseBean<UpdateBean>>
 
     /**
