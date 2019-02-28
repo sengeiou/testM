@@ -42,6 +42,7 @@ android {
     buildTypes {
         release {
             minifyEnabled false
+            shrinkResources false
             signingConfig signingConfigs.mengmeng
             //请求地址
             buildConfigField("String", "SERVER_IP", "\"http://apptest.ejiameng.cn/\"")
@@ -53,6 +54,7 @@ android {
         }
         debug {
             minifyEnabled false
+            shrinkResources false
             signingConfig signingConfigs.mengmeng
             //请求地址
             buildConfigField("String", "SERVER_IP", "\"http://apptest.ejiameng.cn/\"")

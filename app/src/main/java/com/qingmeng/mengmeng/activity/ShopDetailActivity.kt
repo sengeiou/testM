@@ -25,6 +25,7 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.ShopDetailVpAdapter
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.BRANDID
 import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
 import com.qingmeng.mengmeng.constant.IConstants.IMGS
@@ -80,6 +81,8 @@ class ShopDetailActivity : BaseActivity() {
         }
         mDetailVp.adapter = vpAdapter
         mDetailVp.offscreenPageLimit = 6
+        val lp = mDetailVp.layoutParams
+        lp.height = resources.displayMetrics.widthPixels
         initWebView()
     }
 
@@ -125,6 +128,7 @@ class ShopDetailActivity : BaseActivity() {
             trainContent?.let { mJoinSupport.addAll(it) }
             operateSupport?.let { mJoinSupport.addAll(it) }
             operationalSupervision?.let { mJoinSupport.addAll(it) }
+            if (!TextUtils.isEmpty(locationName)) mJoinSupport.add(locationName)
             if (!TextUtils.isEmpty(decorationName)) mJoinSupport.add(decorationName)
             if (!TextUtils.isEmpty(trainingMethodName)) mJoinSupport.add(trainingMethodName)
         }
@@ -364,5 +368,11 @@ class ShopDetailActivity : BaseActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mWebSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        startActivity<ShopDetailActivity>(IConstants.BRANDID to intent.getIntExtra(BRANDID, 0))
+        this.finish()
     }
 }

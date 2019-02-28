@@ -33,7 +33,7 @@
                         android:layout_width="325dp"
                         android:layout_height="@dimen/padding_dp_29"
                         android:layout_centerHorizontal="true"
-                        android:layout_marginTop="@dimen/padding_dp_25"
+                        android:layout_marginTop="@dimen/join_search_bar_top"
                         android:background="@drawable/bg_search"
                         android:gravity="center">
 
@@ -52,6 +52,7 @@
                 <com.qingmeng.mengmeng.view.MyGridView
                     android:id="@+id/mJoinMenu"
                     android:layout_width="match_parent"
+                    android:listSelector="@color/transparent"
                     android:layout_height="wrap_content"
                     android:numColumns="4"
                     android:paddingStart="@dimen/padding_dp_25"
@@ -97,10 +98,9 @@
         <LinearLayout
             android:id="@+id/topSearch"
             android:layout_width="325dp"
-            android:layout_height="match_parent"
+            android:layout_height="@dimen/padding_dp_29"
             android:layout_centerHorizontal="true"
-            android:layout_marginTop="@dimen/padding_dp_25"
-            android:layout_marginBottom="@dimen/padding_dp_10"
+            android:layout_marginTop="@dimen/join_search_bar_top"
             android:background="@drawable/bg_search"
             android:gravity="center">
 

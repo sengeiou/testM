@@ -2,6 +2,9 @@ package com.qingmeng.mengmeng.activity
 
 import AppManager
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
@@ -30,11 +33,14 @@ import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.base.MainTab
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.MainTabBean
+import com.qingmeng.mengmeng.entity.ProgressBean
 import com.qingmeng.mengmeng.entity.UserBean
+import com.qingmeng.mengmeng.service.UpdateService
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.PermissionUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.view.dialog.DialogCommon
+import com.qingmeng.mengmeng.view.dialog.DialogCustom
 import de.greenrobot.event.EventBus
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -49,6 +55,7 @@ class MainActivity : BaseActivity() {
     private var firstTime = 0L
     private var mMyLocationListener: MyLocationListener? = null
     private var mLocationClient: LocationClient? = null
+    private var updateDialog: DialogCustom.UpdateDialog? = null
 
     //完信相关
     private var mImService: IMService? = null
@@ -100,6 +107,41 @@ class MainActivity : BaseActivity() {
         imServiceConnector.connect(this)
     }
 
+    override fun initData() {
+        if (TextUtils.isEmpty(getAndroidID())) {
+            return
+        }
+        var info: PackageInfo? = null
+        try {
+            info = packageManager.getPackageInfo(this.packageName, 0)
+        } catch (e: PackageManager.NameNotFoundException) {
+            e.printStackTrace()
+        }
+        val versionCode = info!!.versionCode
+        ApiUtils.getApi().getVersionInfo(getAndroidID(), "$versionCode")
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ bean ->
+                    if (bean.code == 12000) {
+                        bean.data?.let {
+                            myDialog.showVersionUpdateDialog(it) { dialog, view ->
+                                PermissionUtils.readAndWrite(this) {
+                                    startService(Intent(this@MainActivity, UpdateService::class.java).putExtra("downloadPath", it.link))
+                                    if (it.forceUpdate == 0) {
+                                        dialog.cancel()
+                                    } else {
+                                        view.isClickable = false
+                                        updateDialog = dialog
+                                        dialog.showProgress()
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }, {
+                }, {}, { addSubscription(it) })
+    }
+
     private fun initLocation() {
         try {
             mLocationClient = LocationClient(this)
@@ -134,14 +176,17 @@ class MainActivity : BaseActivity() {
         }
     }
 
-    /**
-     * -------------------------------------------------------------start-------------------------------------------------------------
-     * EventBus事件/完信掉线逻辑
-     */
     fun onEvent(mainTabBean: MainTabBean) {
         tabhost.tabWidget.getChildTabViewAt(mainTabBean.tabIndex).performClick()
     }
 
+    fun onEvent(progressBean: ProgressBean) {
+        updateDialog?.setProgress(progressBean.progress)
+    }
+
+    /**
+     * EventBus事件/完信掉线逻辑
+     */
     fun onEventMainThread(loginEvent: LoginEvent) {
         when (loginEvent) {
             LoginEvent.LOCAL_LOGIN_SUCCESS, LoginEvent.LOGIN_OK -> { //登录成功

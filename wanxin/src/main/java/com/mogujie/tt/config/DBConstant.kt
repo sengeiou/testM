@@ -52,6 +52,7 @@ object DBConstant {
     const val DISPLAY_FOR_MIX = "[图文消息]"
     const val DISPLAY_FOR_AUDIO = "[语音]"
     const val DISPLAY_FOR_VIDEO = "[视频]"
+    const val DISPLAY_FOR_BRAND = "[品牌详情]"
     const val DISPLAY_FOR_ERROR = "[未知消息]"
 
 

@@ -24,6 +24,7 @@ import com.qingmeng.mengmeng.adapter.JoinSupportAdapter
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.BrandInformation
 import com.qingmeng.mengmeng.entity.BrandInitialFee
+import com.qingmeng.mengmeng.entity.UpdateBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.GeetestUtil
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -36,6 +37,7 @@ import kotlinx.android.synthetic.main.dialog_join_support.view.*
 import kotlinx.android.synthetic.main.dialog_want_to_join.view.*
 import kotlinx.android.synthetic.main.layout_dialog_imageedtext.view.*
 import kotlinx.android.synthetic.main.layout_dialog_loading.view.*
+import kotlinx.android.synthetic.main.layout_dialog_update.*
 import kotlinx.android.synthetic.main.layout_pop_more.view.*
 
 @Suppress("IMPLICIT_BOXING_IN_IDENTITY_EQUALS", "DEPRECATED_IDENTITY_EQUALS", "DEPRECATION",
@@ -206,6 +208,45 @@ class DialogCustom(private var mContext: Context?) {
                 bean.crowdName.indices.forEach { tempStr += if (it == 0) bean.crowdName[it] else ",${bean.crowdName[it]}" }
                 money_other.setContent(tempStr)
                 money_tip.visibility = View.GONE
+            }
+        }
+    }
+
+    /**
+     * 版本更新提示框
+     */
+    fun showVersionUpdateDialog(updateBean: UpdateBean, update: (UpdateDialog, View) -> Unit) {
+        mContext?.let { UpdateDialog(it, updateBean, update).show() }
+    }
+
+    class UpdateDialog(context: Context, updateBean: UpdateBean, var update: (UpdateDialog, View) -> Unit) : Dialog(context, R.style.commondialogstyle) {
+        init {
+            setContentView(R.layout.layout_dialog_update)
+            updateClose.visibility = if (updateBean.forceUpdate == 0) View.VISIBLE else View.GONE
+            updateContent.text = updateBean.versionDoc
+            setCanceledOnTouchOutside(updateBean.forceUpdate == 0)
+            setCancelable(updateBean.forceUpdate == 0)
+            updateClose.setOnClickListener { cancel() }
+            updateImmediately.setOnClickListener {
+                update(this, it)
+            }
+        }
+
+        fun showProgress() {
+            waveProgress.visibility = View.VISIBLE
+        }
+
+        fun setProgress(progress: Int) {
+            if (progress == -1) {
+                waveProgress.setProgress(0)
+                waveProgress.visibility = View.GONE
+                updateImmediately.isClickable = true
+            } else {
+                waveProgress.setProgress(progress)
+                if (progress == 100) {
+                    waveProgress.visibility = View.GONE
+                    updateImmediately.isClickable = true
+                }
             }
         }
     }

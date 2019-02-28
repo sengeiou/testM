@@ -34,9 +34,10 @@
             android:layout_height="195dp"
             android:background="@null"
             android:gravity="left"
+            android:maxLength="200"
             android:hint="@string/join_feedback_description"
             android:padding="10dp"
-            android:textColor="@color/color_999999"
+            android:textColor="@color/color_333333"
             android:textSize="@dimen/text_size_14"/>
 
         <android.support.v7.widget.RecyclerView

@@ -58,6 +58,11 @@
     <string name="feedback">反馈</string>
     <string name="share">分享</string>
     <string name="no_net">嗨呀~没有网络链接o(┬﹏┬)o</string>
+    <string name="new_version_update">新版本升级</string>
+    <string name="mengmeng_version_updating">盟盟版本更新下载</string>
+    <string name="update_content">更新内容</string>
+    <string name="content_update">1.更新内容\n2.更新内容\n3.更新内容\n4.更新内容</string>
+    <string name="update_immediately">马上更新</string>
     <string name="join_feedback">我要反馈</string>
     <string name="join_feedback_success">反馈成功</string>
     <string name="want_to_join">我要咨询</string>
@@ -180,6 +185,7 @@
     <string name="my_myLeavingMessage">我的留言</string>
     <string name="my_myLeavingMessage_null_tips">暂 无 留 言 哦</string>
     <string name="my_message_null_tips">暂 无 消 息 哦</string>
+    <string name="my_message_notification_null_tips">暂 无 通 知 哦</string>
     <string name="my_myLeavingMessage_reply">已回复</string>
     <string name="my_myLeavingMessage_noReply">待回复</string>
     <string name="my_myLeavingMessage_StoreNum">门店数：</string>
@@ -253,7 +259,10 @@
     <string name="otherLogin_tips">您的账号已在另一台设备上登录，是否重新登录？</string>
     <string name="exit">退出</string>
     <string name="loginAgain">重新登录</string>
+    <string name="systemNotification">系统通知</string>
+    <string name="systemNotification_id">60834</string>
     <string name="firstToChat_tips">您好，欢迎您的咨询！请问您是想了解加盟项目的哪些问题呢？</string>
+    <string name="last_img_tips">你可能要发送的照片：</string>
 
     <!-- 上拉下拉 -->
     <string name="txt_before_refresh">下拉刷新</string>

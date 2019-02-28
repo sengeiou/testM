@@ -2,6 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/llMyMessageRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/page_background_f5"
@@ -9,6 +10,30 @@
     >
 
     <include layout="@layout/layout_head"/>
+
+    <LinearLayout
+        android:id="@+id/llMyMessageChatTips"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        >
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/search_nothing"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/padding_dp_21"
+            android:layout_marginTop="@dimen/padding_dp_10"
+            android:text="@string/my_message_notification_null_tips"
+            />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/flMyMessageChat"
@@ -34,7 +59,7 @@
             android:layout_marginBottom="@dimen/padding_dp_10"
             android:background="@color/white"
             android:gravity="center"
-            android:text="回到底部"
+            android:text="新消息"
             android:visibility="gone"
             />
 
@@ -48,15 +73,6 @@
             android:src="@mipmap/my_settings_aboutus_icon"
             android:visibility="gone"
             />
-
-        <ImageView
-            android:id="@+id/ivMyMessageChatScreenshot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|bottom"
-            android:src="@mipmap/ic_launcher"
-            android:visibility="gone"
-            />
     </FrameLayout>
 
     <View
@@ -66,6 +82,7 @@
         />
 
     <LinearLayout
+        android:id="@+id/llMyMessageChatAll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -176,33 +193,33 @@
                     />
 
                 <!--<android.support.v4.view.ViewPager-->
-                    <!--android:id="@+id/vpMyMessageChat"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="match_parent"-->
-                    <!--android:layout_above="@+id/llMyMessageChatExpressionBottom"-->
-                    <!--/>-->
+                <!--android:id="@+id/vpMyMessageChat"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:layout_above="@+id/llMyMessageChatExpressionBottom"-->
+                <!--/>-->
 
                 <!--<LinearLayout-->
-                    <!--android:id="@+id/llMyMessageChatExpressionBottom"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="@dimen/padding_dp_40"-->
-                    <!--android:layout_alignParentBottom="true"-->
-                    <!--android:background="@color/white"-->
-                    <!--&gt;-->
+                <!--android:id="@+id/llMyMessageChatExpressionBottom"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="@dimen/padding_dp_40"-->
+                <!--android:layout_alignParentBottom="true"-->
+                <!--android:background="@color/white"-->
+                <!--&gt;-->
 
-                    <!--<android.support.design.widget.TabLayout-->
-                        <!--android:id="@+id/tlMyMessageChat"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="match_parent"-->
-                        <!--android:background="@color/white"-->
-                        <!--app:tabIndicatorHeight="0dp"-->
-                        <!--app:tabMaxWidth="@dimen/padding_dp_40"-->
-                        <!--app:tabMode="scrollable"-->
-                        <!--app:tabPaddingBottom="-1dp"-->
-                        <!--app:tabPaddingEnd="-1dp"-->
-                        <!--app:tabPaddingStart="-1dp"-->
-                        <!--app:tabPaddingTop="-1dp"-->
-                        <!--/>-->
+                <!--<android.support.design.widget.TabLayout-->
+                <!--android:id="@+id/tlMyMessageChat"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="match_parent"-->
+                <!--android:background="@color/white"-->
+                <!--app:tabIndicatorHeight="0dp"-->
+                <!--app:tabMaxWidth="@dimen/padding_dp_40"-->
+                <!--app:tabMode="scrollable"-->
+                <!--app:tabPaddingBottom="-1dp"-->
+                <!--app:tabPaddingEnd="-1dp"-->
+                <!--app:tabPaddingStart="-1dp"-->
+                <!--app:tabPaddingTop="-1dp"-->
+                <!--/>-->
                 <!--</LinearLayout>-->
             </RelativeLayout>
 

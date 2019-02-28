@@ -23,12 +23,14 @@ import com.qingmeng.mengmeng.adapter.GridImageAdapter
 import com.qingmeng.mengmeng.constant.IConstants.BRANDID
 import com.qingmeng.mengmeng.entity.SelectBean
 import com.qingmeng.mengmeng.utils.ApiUtils
+import com.qingmeng.mengmeng.utils.PermissionUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.view.dialog.SelectDialog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_join_feedback.*
 import kotlinx.android.synthetic.main.layout_head.*
+
 
 /**
  * Created by mingyue
@@ -164,22 +166,25 @@ class JoinFeedbackActivity : BaseActivity() {
     }
 
     private fun initWidget() {
+        //    PermissionUtils.readAndWrite(this, {})
         val manager = GridLayoutManager(this, 4)
+        adapter = GridImageAdapter(this, onAddPicClickListener)
         recy_join_feedback.layoutManager = manager
-        adapter = GridImageAdapter(this, { showPop() }, {
-            if (selectList.size > 0) {
-                selectList[it].apply {
-                    when (PictureMimeType.pictureToVideo(pictureType)) {
+        adapter.setOnItemClickListener(object : GridImageAdapter.OnItemClickListener {
+            override fun onItemClick(position: Int, v: View) {
+                if (selectList.size > 0) {
+                    val media = selectList[position]
+                    when (PictureMimeType.pictureToVideo(media.pictureType)) {
                         1 ->
                             // 预览图片 可自定长按保存路径
                             //PictureSelector.create(MainActivity.this).externalPicturePreview(position, "/custom_file", selectList);
                             PictureSelector.create(this@JoinFeedbackActivity).externalPicturePreview(position, selectList)
                         2 ->
                             // 预览视频
-                            PictureSelector.create(this@JoinFeedbackActivity).externalPictureVideo(path)
+                            PictureSelector.create(this@JoinFeedbackActivity).externalPictureVideo(media.path)
                         3 ->
                             // 预览音频
-                            PictureSelector.create(this@JoinFeedbackActivity).externalPictureAudio(path)
+                            PictureSelector.create(this@JoinFeedbackActivity).externalPictureAudio(media.path)
                     }
                 }
             }
@@ -187,6 +192,13 @@ class JoinFeedbackActivity : BaseActivity() {
         adapter.setList(selectList)
         adapter.setSelectMax(maxSelectNum)
         recy_join_feedback.adapter = adapter
+    }
+
+    var onAddPicClickListener = object : GridImageAdapter.onAddPicClickListener {
+
+        override fun onAddPicClick() {
+            showPop()
+        }
     }
 
     private fun showPop() {
@@ -225,14 +237,18 @@ class JoinFeedbackActivity : BaseActivity() {
                             .forResult(PictureConfig.CHOOSE_REQUEST)
                 R.id.tv_camera ->
                     //拍照
-                    PictureSelector.create(this@JoinFeedbackActivity)
-                            .openCamera(PictureMimeType.ofImage())
-                            .forResult(PictureConfig.CHOOSE_REQUEST)
-            }
-            pop?.dismiss()
-            pop = null
-        }
+                    PermissionUtils.readAndWrite(this) {
+                        PictureSelector.create(this@JoinFeedbackActivity)
+                                .openCamera(PictureMimeType.ofImage())
+                                .forResult(PictureConfig.CHOOSE_REQUEST)
+                    }
 
+            }
+            if (pop != null) {
+                pop?.dismiss()
+                pop = null
+            }
+        }
         mAlbum.setOnClickListener(clickListener)
         mCamera.setOnClickListener(clickListener)
         mCancel.setOnClickListener(clickListener)
@@ -245,11 +261,8 @@ class JoinFeedbackActivity : BaseActivity() {
             when (requestCode) {
                 PictureConfig.CHOOSE_REQUEST -> {
                     // 图片选择结果回调
-
                     images = PictureSelector.obtainMultipleResult(data)
-
                     selectList.addAll(images)
-
                     //                    selectList = PictureSelector.obtainMultipleResult(data);
                     // 例如 LocalMedia 里面返回三种path
                     // 1.media.getPath(); 为原图path
@@ -261,5 +274,10 @@ class JoinFeedbackActivity : BaseActivity() {
                 }
             }
         }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        PermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 }

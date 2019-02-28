@@ -167,8 +167,8 @@ class LoginPwdActivity : BaseActivity() {
                         12000 -> bean.data?.let {
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
-                            IConstants.login_name = username
-                            IConstants.login_paw = password
+                            sharedSingleton.setString(IConstants.login_name,username)
+                            sharedSingleton.setString(IConstants.login_paw,password)
                             it.upDate()
                             //还要登录完信..
                             mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
