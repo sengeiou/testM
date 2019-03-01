@@ -341,7 +341,7 @@ class MainActivity : BaseActivity() {
     //登录盟盟
     private fun loginMengmeng(username: String, password: String) {
         ApiUtils.getApi()
-                .accountLogin(username, password)
+                .accountLogin(username, password,1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
