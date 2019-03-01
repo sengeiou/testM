@@ -294,6 +294,7 @@ class RedShopFragment : BaseFragment() {
         super.onHiddenChanged(hidden)
         if (!hidden) {
             mLeftList.forEach {
+                it.checkState = false
                 if (it.id == 1) {
                     it.checkState = true
                     getClickCache(it.id.toLong())
