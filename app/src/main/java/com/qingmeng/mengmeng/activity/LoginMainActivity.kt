@@ -204,7 +204,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     }
 
     private fun threeLogin(infoBean: WxInfoBean, token: String, type: Int) {
-        ApiUtils.getApi().loginThree(infoBean.openid, type)
+        ApiUtils.getApi().loginThree(infoBean.openid, type,1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ response ->
