@@ -3,8 +3,11 @@ package com.qingmeng.mengmeng.utils
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
+import android.media.ThumbnailUtils
 import android.os.Looper
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.widget.ImageView
 import com.bumptech.glide.Glide
@@ -14,9 +17,11 @@ import com.bumptech.glide.load.engine.cache.InternalCacheDiskCacheFactory
 import com.bumptech.glide.load.resource.bitmap.BitmapTransformation
 import com.bumptech.glide.load.resource.bitmap.VideoBitmapDecoder
 import com.bumptech.glide.request.RequestOptions
+import com.qingmeng.mengmeng.R
 import java.io.File
 import java.math.BigDecimal
 import java.security.MessageDigest
+import java.util.*
 
 
 /**Glide缓存工具类
@@ -206,5 +211,57 @@ object GlideCacheUtils {
             }
         })
         Glide.with(context).load(uri).apply(requestOptions).into(imageView)
+    }
+
+    //获取视频第一帧
+    fun createVideoThumbnail(context: Context, filePath: String, kind: Int): Bitmap {
+        var bitmap: Bitmap? = null
+        val retriever = MediaMetadataRetriever()
+        try {
+            if (filePath.startsWith("http://")
+                    || filePath.startsWith("https://")
+                    || filePath.startsWith("widevine://")) {
+                retriever.setDataSource(filePath, Hashtable<String, String>())
+            } else {
+                retriever.setDataSource(filePath)
+            }
+            bitmap = retriever.getFrameAtTime(0, MediaMetadataRetriever.OPTION_CLOSEST_SYNC); //retriever.getFrameAtTime(-1);
+        } catch (ex: IllegalArgumentException) {
+            // Assume this is a corrupt video file
+            ex.printStackTrace()
+        } catch (ex: RuntimeException) {
+            // Assume this is a corrupt video file.
+            ex.printStackTrace()
+        } finally {
+            try {
+                retriever.release()
+            } catch (ex: RuntimeException) {
+                // Ignore failures while cleaning up.
+                ex.printStackTrace()
+            }
+        }
+
+        if (bitmap == null) {
+            return BitmapFactory.decodeResource(context.getResources(), R.drawable.default_img_icon)
+        }
+
+        if (kind == MediaStore.Images.Thumbnails.MINI_KIND) {//压缩图片 开始处
+            // Scale down the bitmap if it's too large.
+            val width = bitmap.width
+            val height = bitmap.height
+            val max = Math.max(width, height)
+            if (max > 512) {
+                val scale = 512f / max
+                val w = Math.round(scale * width)
+                val h = Math.round(scale * height)
+                bitmap = Bitmap.createScaledBitmap(bitmap, w, h, true)
+            }//压缩图片 结束处
+        } else if (kind == MediaStore.Images.Thumbnails.MICRO_KIND) {
+            bitmap = ThumbnailUtils.extractThumbnail(bitmap,
+                    96,
+                    96,
+                    ThumbnailUtils.OPTIONS_RECYCLE_INPUT);
+        }
+        return bitmap!!
     }
 }
