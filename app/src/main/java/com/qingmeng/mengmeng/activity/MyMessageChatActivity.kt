@@ -753,10 +753,10 @@ class MyMessageChatActivity : BaseActivity() {
      */
     private fun localBrandMessage(): BrandMessage {
         if (TextUtils.isEmpty(mBrandMessage.brandName) || mBrandMessage.brandName == "null") {
-            mBrandMessage.brandId = mBundle?.getInt("id")!!
-            mBrandMessage.brandLogo = mBundle?.getString("logo")!!
-            mBrandMessage.brandName = mBundle?.getString("name")!!
-            mBrandMessage.brandValue = mBundle?.getString("capitalName")!!
+            mBrandMessage.brandId = mBundle?.getInt("id")?:0
+            mBrandMessage.brandLogo = mBundle?.getString("logo")?:""
+            mBrandMessage.brandName = mBundle?.getString("name")?:""
+            mBrandMessage.brandValue = mBundle?.getString("capitalName")?:""
             mBrandMessage.displayType = DBConstant.SHOW_BRAND_TYPE
             mBrandMessage.created = (System.currentTimeMillis() / 1000).toInt()
         }
