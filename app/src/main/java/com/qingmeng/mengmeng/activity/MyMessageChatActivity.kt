@@ -27,10 +27,7 @@ import com.luck.picture.lib.config.PictureConfig
 import com.luck.picture.lib.config.PictureMimeType
 import com.mogujie.tt.api.RequestManager
 import com.mogujie.tt.api.composeDefault
-import com.mogujie.tt.config.DBConstant
-import com.mogujie.tt.config.IntentConstant
-import com.mogujie.tt.config.MessageExtConst
-import com.mogujie.tt.config.SysConstant
+import com.mogujie.tt.config.*
 import com.mogujie.tt.db.entity.GroupEntity
 import com.mogujie.tt.db.entity.MessageEntity
 import com.mogujie.tt.db.entity.PeerEntity
@@ -72,7 +69,7 @@ import kotlin.collections.ArrayList
  *  Date: 2019/1/3
  */
 class MyMessageChatActivity : BaseActivity() {
-    private lateinit var mKeyboardUtil: KeyboardUtil            //系统键盘工具
+    private lateinit var mKeyBoardUtil: KeyBoardUtil            //系统键盘工具
     private lateinit var mLayoutManager: LinearLayoutManager
     private lateinit var mAdapter: ChatAdapterTwo
     //    private lateinit var mPageAdapter: PagerAdapter
@@ -94,6 +91,7 @@ class MyMessageChatActivity : BaseActivity() {
     private var mIsSystemMotification = false                   //是否是系统通知
     private val mTextMessage = TextMessage()                    //假文字消息
     private val mBrandMessage = BrandMessage()                  //假详情
+    private var mImageView: ImageView? = null                   //当前正在播放的语音动画
 
     companion object {
         var mAvatar = ""                                        //默认发送者头像
@@ -138,7 +136,7 @@ class MyMessageChatActivity : BaseActivity() {
             mAvatar = intent.getStringExtra("avatar") ?: ""
         }
         //实例化键盘工具
-        mKeyboardUtil = KeyboardUtil(this, etMyMessageChatContent)
+        mKeyBoardUtil = KeyBoardUtil(this, etMyMessageChatContent)
 //        //表情里添加fragment
 //        mTabTitles.forEachIndexed { index, _ ->
 //            mFragmentList.add(MyMessageChatExpressionTabLayoutFragment())
@@ -234,7 +232,7 @@ class MyMessageChatActivity : BaseActivity() {
                     //表情和工具布局隐藏 关闭软键盘
                     hiddenViewAndInputKeyboard()
                     //按住说话不显示就显示 反之隐藏
-                    tvMyMessageChatClickSay.visibility = if (tvMyMessageChatClickSay.visibility == View.GONE) {
+                    llMyMessageChatClickSay.visibility = if (llMyMessageChatClickSay.visibility == View.GONE) {
                         View.VISIBLE
                     } else {
                         View.GONE
@@ -244,7 +242,7 @@ class MyMessageChatActivity : BaseActivity() {
         }
 
         //按住说话
-        tvMyMessageChatClickSay.setOnTouchListener { v, event ->
+        llMyMessageChatClickSay.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {    //按下
                     y1 = event.y.toInt()
@@ -317,18 +315,18 @@ class MyMessageChatActivity : BaseActivity() {
         //表情
         ivMyMessageChatExpression.setOnClickListener {
             //如果键盘没有显示 就直接打开布局
-            if (!mKeyboardUtil.isShowInputKeyboard()) {
+            if (!mKeyBoardUtil.isShowInputKeyboard()) {
                 rlMyMessageChatExpression.visibility = View.VISIBLE
                 //工具布局隐藏
                 llMyMessageChatFunction.visibility = View.GONE
                 //按住说话隐藏
-                tvMyMessageChatClickSay.visibility = View.GONE
+                llMyMessageChatClickSay.visibility = View.GONE
             } else {
                 //改变输入框上面的布局高度
                 changeMiddleLayoutHeight()
                 mExpressionOrFunction = 1
                 //关闭软键盘
-                mKeyboardUtil.hideInputKeyboard()
+                mKeyBoardUtil.hideInputKeyboard()
             }
             scrollToBottomListItem()
         }
@@ -337,12 +335,12 @@ class MyMessageChatActivity : BaseActivity() {
         ivMyMessageChatFunction.setOnClickListener {
             PermissionUtils.readAndWrite(this, {
                 //如果键盘没有显示 就直接打开布局
-                if (!mKeyboardUtil.isShowInputKeyboard()) {
+                if (!mKeyBoardUtil.isShowInputKeyboard()) {
                     llMyMessageChatFunction.visibility = View.VISIBLE
                     //表情布局隐藏
                     rlMyMessageChatExpression.visibility = View.GONE
                     //按住说话隐藏
-                    tvMyMessageChatClickSay.visibility = View.GONE
+                    llMyMessageChatClickSay.visibility = View.GONE
                     //显示最近60秒内的截图或拍照
                     showLastImg()
                 } else {
@@ -350,7 +348,7 @@ class MyMessageChatActivity : BaseActivity() {
                     changeMiddleLayoutHeight()
                     mExpressionOrFunction = 2
                     //关闭软键盘
-                    mKeyboardUtil.hideInputKeyboard()
+                    mKeyBoardUtil.hideInputKeyboard()
                 }
                 scrollToBottomListItem()
             })
@@ -364,7 +362,7 @@ class MyMessageChatActivity : BaseActivity() {
             llMyMessageChatFunction.visibility = View.GONE
             rlMyMessageChatExpression.visibility = View.GONE
             //打开软键盘
-            mKeyboardUtil.showInputKeyboard()
+            mKeyBoardUtil.showInputKeyboard()
         }
 
         //输入框内容改变监听
@@ -394,7 +392,7 @@ class MyMessageChatActivity : BaseActivity() {
         })
 
         //系统键盘监听
-        mKeyboardUtil.setListener(object : KeyboardUtil.OnKeyboardListener {
+        mKeyBoardUtil.setListener(object : KeyBoardUtil.OnKeyboardListener {
             override fun onKeyboardShow(i: Int) {
                 //恢复输入框上面的布局高度
                 recoveryMiddleLayoutHeight()
@@ -412,14 +410,14 @@ class MyMessageChatActivity : BaseActivity() {
                         //工具布局隐藏
                         llMyMessageChatFunction.visibility = View.GONE
                         //按住说话隐藏
-                        tvMyMessageChatClickSay.visibility = View.GONE
+                        llMyMessageChatClickSay.visibility = View.GONE
                     }
                     2 -> {
                         llMyMessageChatFunction.visibility = View.VISIBLE
                         //表情布局隐藏
                         rlMyMessageChatExpression.visibility = View.GONE
                         //按住说话隐藏
-                        tvMyMessageChatClickSay.visibility = View.GONE
+                        llMyMessageChatClickSay.visibility = View.GONE
                         //显示最近60秒内的截图或拍照
                         showLastImg()
                     }
@@ -489,8 +487,7 @@ class MyMessageChatActivity : BaseActivity() {
             //撤回
             override fun onRevokeClick(position: Int) {
                 myDialog.showLoadingDialog()
-                val objectArrayList = mAdapter.msgObjectList
-                val messageEntity = objectArrayList[position] as MessageEntity
+                val messageEntity = mAdapter.msgObjectList[position] as MessageEntity
                 //网络请求
                 RequestManager.instanceApi
                         .msgRevoke(messageEntity.fromId, messageEntity.toId, messageEntity.msgId)
@@ -510,18 +507,22 @@ class MyMessageChatActivity : BaseActivity() {
 
             //删除
             override fun onDeleteClick(position: Int) {
-                myDialog.showLoadingDialog()
-                val objectArrayList = mAdapter.msgObjectList
-                val messageEntity = objectArrayList[position] as MessageEntity
-                //网络请求
-                RequestManager.instanceApi
-                        .msgDelete(messageEntity.fromId, messageEntity.toId, messageEntity.msgId)
-                        .compose(composeDefault())
-                        .subscribeExtApi({
-                            myDialog.dismissLoadingDialog()
-                            //调用adapter的删除方法
-                            mAdapter.removeMsg(messageEntity)
-                        })
+                val messageEntity = mAdapter.msgObjectList[position] as MessageEntity
+                //发送中和发送失败就直接删就行了
+                if (messageEntity.status == MessageConstant.MSG_SENDING || messageEntity.status == MessageConstant.MSG_FAILURE) {
+                    mAdapter.removeMsg(messageEntity)
+                } else {
+                    myDialog.showLoadingDialog()
+                    //网络请求
+                    RequestManager.instanceApi
+                            .msgDelete(messageEntity.fromId, messageEntity.toId, messageEntity.msgId)
+                            .compose(composeDefault())
+                            .subscribeExtApi({
+                                myDialog.dismissLoadingDialog()
+                                //调用adapter的删除方法
+                                mAdapter.removeMsg(messageEntity)
+                            })
+                }
             }
 
             //品牌点击 跳转详情
@@ -533,9 +534,9 @@ class MyMessageChatActivity : BaseActivity() {
             //发送品牌
             override fun onSendBrandClick(position: Int) {
                 val id = (mAdapter.msgObjectList[position] as BrandMessage).brandId
-                val avatar = (mAdapter.msgObjectList[position] as BrandMessage).logo
+                val avatar = (mAdapter.msgObjectList[position] as BrandMessage).brandLogo
                 val name = (mAdapter.msgObjectList[position] as BrandMessage).brandName
-                val capitalName = (mAdapter.msgObjectList[position] as BrandMessage).brandAmount
+                val capitalName = (mAdapter.msgObjectList[position] as BrandMessage).brandValue
                 val brandMessage = BrandMessage.buildForSend(id, avatar, name, capitalName, loginUser, currentSessionKey)
                 mImService?.messageManager?.sendBrand(brandMessage)
                 mAdapter.msgObjectList.remove(mAdapter.msgObjectList[position])
@@ -577,14 +578,27 @@ class MyMessageChatActivity : BaseActivity() {
         mLayoutManager = LinearLayoutManager(this)
         rvMyMessageChat.layoutManager = mLayoutManager
         mAdapter = ChatAdapterTwo(this, msgObjectList, { audioMessage, imageView ->
+            //音频点击事件
             if (mMediaManager.isPlaying()) {    //正在播放点击就结束播放
                 cdMyMessageChatSwitchAudio.visibility = View.GONE
                 mMediaManager.release()
-                stopAudioAnimation(imageView)
+                if (mImageView == imageView) {
+                    stopAudioAnimation(imageView)
+                } else {
+                    stopAudioAnimation(mImageView!!)
+                    mMediaManager.play(this, audioMessage.audioPath, {
+                        mImageView = imageView
+                        cdMyMessageChatSwitchAudio.visibility = View.VISIBLE
+                        startAudioAnimation(imageView)
+                    }, {
+                        cdMyMessageChatSwitchAudio.visibility = View.GONE
+                        stopAudioAnimation(imageView)
+                    })
+                }
             } else {
-                //音频点击事件
                 mMediaManager.play(this, audioMessage.audioPath, {
                     //刚开始播放
+                    mImageView = imageView
                     cdMyMessageChatSwitchAudio.visibility = View.VISIBLE
                     startAudioAnimation(imageView)
                 }, {
@@ -683,7 +697,7 @@ class MyMessageChatActivity : BaseActivity() {
         llMyMessageChatFunction.visibility = View.GONE
         rlMyMessageChatExpression.visibility = View.GONE
         //关闭软键盘
-        mKeyboardUtil.hideInputKeyboard()
+        mKeyBoardUtil.hideInputKeyboard()
     }
 
     //显示最近60秒内的截图或拍照
@@ -740,9 +754,9 @@ class MyMessageChatActivity : BaseActivity() {
     private fun localBrandMessage(): BrandMessage {
         if (TextUtils.isEmpty(mBrandMessage.brandName) || mBrandMessage.brandName == "null") {
             mBrandMessage.brandId = mBundle?.getInt("id")!!
-            mBrandMessage.logo = mBundle?.getString("logo")!!
+            mBrandMessage.brandLogo = mBundle?.getString("logo")!!
             mBrandMessage.brandName = mBundle?.getString("name")!!
-            mBrandMessage.brandAmount = mBundle?.getString("capitalName")!!
+            mBrandMessage.brandValue = mBundle?.getString("capitalName")!!
             mBrandMessage.displayType = DBConstant.SHOW_BRAND_TYPE
             mBrandMessage.created = (System.currentTimeMillis() / 1000).toInt()
         }
@@ -979,7 +993,8 @@ class MyMessageChatActivity : BaseActivity() {
             mImService?.messageManager?.sendImages(sendList)
             // 格式有些问题
             pushList(imageMessage, true)
-            etMyMessageChatContent.clearFocus()//消除焦点
+            //消除焦点
+            etMyMessageChatContent.clearFocus()
         }
     }
 
@@ -1013,7 +1028,7 @@ class MyMessageChatActivity : BaseActivity() {
             //格式有些问题
             pushList(it, true)
             //消除焦点
-            etMyMessageChatContent?.clearFocus()
+            etMyMessageChatContent.clearFocus()
         }
     }
 
@@ -1133,7 +1148,7 @@ class MyMessageChatActivity : BaseActivity() {
             SysConstant.ALBUM_BACK_DATA -> {    //相册
                 val selectList = PictureSelector.obtainMultipleResult(data)
                 selectList[0].apply {
-                    when(pictureType){
+                    when (pictureType) {
                         "image/jpeg" -> {   //图片
                             handleTakePhotoData(path)
                         }

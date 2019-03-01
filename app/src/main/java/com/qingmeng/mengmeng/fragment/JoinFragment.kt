@@ -126,6 +126,12 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 if (!tabList.isEmpty()) {
                     val id = tabList[position].id
                     val adapter = getView(id).adapter as JoinRecommendAdapter
+                    getView(tabList[position].id).layoutManager?.let {
+                        if ((it as LinearLayoutManager).findFirstCompletelyVisibleItemPosition() != 0) {
+                            it.scrollToPosition(0)
+                        }
+                    }
+                    swipeLayout.isLoadMoreEnabled = false
                     if (adapter.isEmpty()) {
                         val recommendBean = JoinRecommendBean.fromString(id)
                         adapter.updateItems(recommendBean.data)

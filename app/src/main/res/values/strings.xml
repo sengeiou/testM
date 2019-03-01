@@ -96,10 +96,10 @@
     <string name="suitable_for_crowd">适合人群</string>
     <string name="join_money_tip">以上费用为预估，具体费用请咨询企业</string>
     <string name="join_data_message" formatted="false">我想了解%s项目的加入详情和方案</string>
-    <string name="join_count" formatted="false">加入店数量：%s</string>
-    <string name="join_count_normal">加入店数量：</string>
-    <string name="direct_count" formatted="false">直营店数量：%s</string>
-    <string name="direct_count_normal">直营店数量：</string>
+    <string name="join_count" formatted="false">加入店数:%s</string>
+    <string name="join_count_normal">加入店数:</string>
+    <string name="direct_count" formatted="false">直营店数:%s</string>
+    <string name="direct_count_normal">直营店数:</string>
 
     <string name="join_feedback_type1">品牌信息有误</string>
     <string name="join_feedback_type2">品牌不存在</string>

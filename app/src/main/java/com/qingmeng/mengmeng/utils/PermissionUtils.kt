@@ -63,7 +63,13 @@ object PermissionUtils {
      * 权限申请结果
      */
     fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        val cameraAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED
+        val cameraAccepted = grantResults.let {
+            if (it.isNotEmpty()) {
+                it[0] == PackageManager.PERMISSION_GRANTED
+            } else {
+                return
+            }
+        }
         when (requestCode) {
             RESULT_CODE_TAKE_CAMERA -> {    //拍照
                 if (cameraAccepted) {
@@ -87,7 +93,7 @@ object PermissionUtils {
                     ToastUtil.showShort("请开启应用录音权限")
                 }
             }
-            RESULT_CODE_LOCATION ->{
+            RESULT_CODE_LOCATION -> {
                 if (cameraAccepted) {
                     locationCallback?.let { it() }
                 }

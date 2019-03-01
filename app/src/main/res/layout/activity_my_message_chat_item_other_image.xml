@@ -31,6 +31,7 @@
         android:layout_marginBottom="@dimen/padding_dp_1"
         android:layout_marginStart="@dimen/padding_dp_10"
         android:layout_marginTop="@dimen/padding_dp_1"
+        android:layout_marginEnd="@dimen/padding_dp_1"
         app:cardCornerRadius="5dp"
         app:cardElevation="1dp"
         >
