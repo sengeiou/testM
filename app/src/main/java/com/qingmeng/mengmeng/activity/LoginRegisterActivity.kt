@@ -182,7 +182,7 @@ class LoginRegisterActivity : BaseActivity() {
     //注册
     private fun register() {
         myDialog.showLoadingDialog()
-        ApiUtils.getApi().register(mUserName, mPhone, mCode, mPsw, 2)
+        ApiUtils.getApi().register(mUserName, mPhone, mCode, mPsw, 2,1,1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->

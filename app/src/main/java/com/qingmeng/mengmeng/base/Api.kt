@@ -45,7 +45,7 @@ interface Api {
     @FormUrlEncoded
     fun register(@Field("userName") userName: String, @Field("phone") phone: String, @Field("smsCode") smsCode: String,
                  @Field("password") password: String,
-                 @Field("type") type: Int, @Field("isUserProtocol") isUserProtocol: Int = 1): Observable<BaseBean<UserBean>>
+                 @Field("type") type: Int, @Field("isUserProtocol") isUserProtocol: Int = 1,@Field("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
 
     //获取版本信息
     @GET("api/version/get_version_info")
@@ -87,11 +87,11 @@ interface Api {
 
     //账号登录
     @POST("app/user/account_login")
-    fun accountLogin(@Query("account") account: String, @Query("password") password: String): Observable<BaseBean<UserBean>>
+    fun accountLogin(@Query("account") account: String, @Query("password") password: String,@Query("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
 
     //短信登录
     @POST("app/user/msm_login")
-    fun smslogin(@Query("phone") phone: String, @Query("smsCode") smsCode: String): Observable<BaseBean<UserBean>>
+    fun smslogin(@Query("phone") phone: String, @Query("smsCode") smsCode: String,@Query("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
 
     /**
      * =========================================我的板块=========================================
@@ -281,5 +281,5 @@ interface Api {
 
     //第三方登录   type 1.QQ 2.微信
     @POST("app/user/third_party_login")
-    fun loginThree(@Query("openId") openId: String, @Query("type") type: Int): Observable<BaseBean<UserBean>>
+    fun loginThree(@Query("openId") openId: String, @Query("type") type: Int,@Query("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
 }

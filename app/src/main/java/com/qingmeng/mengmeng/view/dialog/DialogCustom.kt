@@ -12,8 +12,10 @@ import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.LinearLayoutManager
 import android.text.TextUtils
-import android.util.DisplayMetrics
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.PopupWindow
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -153,8 +155,7 @@ class DialogCustom(private var mContext: Context?) {
         bottomSheetDialog = MyBottomDialog(mContext!!)
         val view = LayoutInflater.from(mContext!!).inflate(R.layout.dialog_join_support, null)
         bottomSheetDialog.setContentView(view)
-        val height = getWindowHeight()
-        bottomSheetDialog.windowHeight = height * 5 / 6
+        bottomSheetDialog.windowHeight = mContext!!.dp2px(500)
         bottomSheetDialog.delegate.findViewById<View>(android.support.design.R.id.design_bottom_sheet)
                 ?.setBackgroundColor(mContext!!.resources.getColor(android.R.color.transparent))
         view.join_support_compete.setOnClickListener { bottomSheetDialog.cancel() }
@@ -294,13 +295,6 @@ class DialogCustom(private var mContext: Context?) {
             }
         }
         bottomSheetDialog.show()
-    }
-
-    private fun getWindowHeight(): Int {
-        val wm = mContext!!.getSystemService(Context.WINDOW_SERVICE) as WindowManager
-        val dm = DisplayMetrics()
-        wm.defaultDisplay.getMetrics(dm)
-        return dm.heightPixels
     }
 
     private fun getTypeface(): Typeface {
