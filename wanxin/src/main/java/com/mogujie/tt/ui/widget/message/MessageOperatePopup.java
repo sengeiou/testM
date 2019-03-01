@@ -155,7 +155,7 @@ public class MessageOperatePopup implements View.OnClickListener, View.OnTouchLi
         // 非自己的消息
         // 图片语音
         // 文本
-        if (bResend && bSelf) {     //自己的没有发出去的
+        if (bResend && bSelf) {     //自己的没有发出去和发送中的
             resendBtn.setVisibility(View.VISIBLE);
             revokeBtn.setVisibility(View.GONE);
             bresendShow = true;

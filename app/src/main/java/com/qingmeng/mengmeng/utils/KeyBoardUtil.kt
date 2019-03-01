@@ -16,7 +16,7 @@ import android.widget.EditText
 
  *  Date: 2019/1/14
  */
-class KeyboardUtil(private val activity: Activity, private val editText: EditText) {
+class KeyBoardUtil(private val activity: Activity, private val editText: EditText) {
     private var mInputManager: InputMethodManager = activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     private var mOnKeyboardListener: OnKeyboardListener? = null
     private var lastheight = 0
