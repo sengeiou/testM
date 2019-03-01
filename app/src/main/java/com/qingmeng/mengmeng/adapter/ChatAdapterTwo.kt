@@ -7,7 +7,9 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
+import android.media.MediaMetadataRetriever
 import android.os.Bundle
+import android.provider.MediaStore
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.text.TextUtils
@@ -36,6 +38,7 @@ import com.mogujie.tt.ui.widget.message.RenderType
 import com.mogujie.tt.utils.CommonUtil
 import com.mogujie.tt.utils.DateUtil
 import com.mogujie.tt.utils.FileUtil
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.MyMessageChatActivity
 import com.qingmeng.mengmeng.utils.GlideCacheUtils
@@ -253,12 +256,12 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             } else {
                 llMyMessageChatRvAllBrand.setMarginExt(top = 0)
             }
-            GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.logo, ivMyMessageChatRvLogo, placeholder = R.drawable.default_img_icon)
+            GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.brandLogo, ivMyMessageChatRvLogo, placeholder = R.drawable.default_img_icon)
             tvMyMessageChatRvBrandName.text = brandMessage.brandName
-            if (brandMessage.brandAmount.isNullOrBlank()) {
+            if (brandMessage.brandValue.isNullOrBlank()) {
                 tvMyMessageChatRvInvestmentAmount.text = "面议"
             } else {
-                tvMyMessageChatRvInvestmentAmount.text = brandMessage.brandAmount
+                tvMyMessageChatRvInvestmentAmount.text = brandMessage.brandValue
             }
             //品牌详情
             llMyMessageChatRvBrand.setOnClickListener {
@@ -408,7 +411,8 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             }
             //设置封面
             if (TextUtils.isEmpty(videoMessage.thumbPath) && TextUtils.isEmpty(videoMessage.thumbUrl)) {    //没有封面  取视频第一帧
-                GlideCacheUtils.loadVideoScreenshot(context, videoUrl, ivMyMessageChatRvOtherVideoCover, 1000)
+                val bitmap = GlideCacheUtils.createVideoThumbnail(context, videoUrl, MediaStore.Images.Thumbnails.MINI_KIND)
+                ivMyMessageChatRvOtherVideoCover.setImageBitmap(bitmap)
             } else {    //有地址 就直接加载就行了
                 if (FileUtil.isFileExist(videoMessage.thumbPath)) {
                     GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
@@ -450,12 +454,12 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         fun bindViewHolder(position: Int) {
             val brandMessage = msgObjectList[position] as BrandMessage
             setHeadImage(brandMessage, ivMyMessageChatRvOtherBrandHead)
-            GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.logo, ivMyMessageChatRvOtherBrandLogo, placeholder = R.drawable.default_img_icon)
+            GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.brandLogo, ivMyMessageChatRvOtherBrandLogo, placeholder = R.drawable.default_img_icon)
             tvMyMessageChatRvOtherBrandName.text = brandMessage.brandName
-            if (brandMessage.brandAmount.isNullOrBlank()) {
+            if (brandMessage.brandValue.isNullOrBlank()) {
                 tvMyMessageChatRvOtherBrandAmount.text = "面议"
             } else {
-                tvMyMessageChatRvOtherBrandAmount.text = brandMessage.brandAmount
+                tvMyMessageChatRvOtherBrandAmount.text = brandMessage.brandValue
             }
             //点击事件
             llMyMessageChatRvOtherBrand.let {
@@ -699,7 +703,12 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             }
             //设置封面
             if (TextUtils.isEmpty(videoMessage.thumbPath) && TextUtils.isEmpty(videoMessage.thumbUrl)) {    //没有封面  取视频第一帧
-                GlideCacheUtils.loadVideoScreenshot(context, videoUrl, ivMyMessageChatRvMineVideoCover, 1000)
+                val retr = MediaMetadataRetriever()
+                retr.setDataSource(videoUrl,HashMap<String, String>())
+                val bitmap =  retr.frameAtTime
+
+//                val bitmap = GlideCacheUtils.createVideoThumbnail(context, videoUrl, MediaStore.Images.Thumbnails.MINI_KIND)
+                ivMyMessageChatRvMineVideoCover.setImageBitmap(bitmap)
             } else {    //有地址 就直接加载就行了
                 if (FileUtil.isFileExist(videoMessage.thumbPath)) {
                     GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
@@ -768,12 +777,12 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         fun bindViewHolder(position: Int) {
             val brandMessage = msgObjectList[position] as BrandMessage
             setHeadImage(brandMessage, ivMyMessageChatRvMineBrandHead)
-            GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.logo, ivMyMessageChatRvMineBrandLogo, placeholder = R.drawable.default_img_icon)
+            GlideLoader.load(AppManager.instance.currentActivity(), brandMessage.brandLogo, ivMyMessageChatRvMineBrandLogo, placeholder = R.drawable.default_img_icon)
             tvMyMessageChatRvMineBrandName.text = brandMessage.brandName
-            if (brandMessage.brandAmount.isNullOrBlank()) {
+            if (brandMessage.brandValue.isNullOrBlank()) {
                 tvMyMessageChatRvMineBrandAmount.text = "面议"
             } else {
-                tvMyMessageChatRvMineBrandAmount.text = brandMessage.brandAmount
+                tvMyMessageChatRvMineBrandAmount.text = brandMessage.brandValue
             }
             //点击事件
             llMyMessageChatRvMineBrand.let {
@@ -1136,8 +1145,13 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         if (message.fromId == 0) {
             GlideLoader.load(AppManager.instance.currentActivity(), MyMessageChatActivity.mAvatar, imageView, placeholder = R.drawable.default_img_icon, roundRadius = 15)
         } else {
+            val isMine = message.fromId == loginUser?.peerId
             val userEntity = getUserEntity(message)
-            GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, imageView, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            var avatarUrl = userEntity.avatar
+            if (isMine && TextUtils.isEmpty(avatarUrl)) {
+                avatarUrl = MainApplication.instance.user.userInfo.avatar
+            }
+            GlideLoader.load(AppManager.instance.currentActivity(), avatarUrl, imageView, placeholder = R.drawable.default_img_icon, roundRadius = 15)
         }
     }
 
@@ -1229,7 +1243,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         // 创建一个pop对象，然后 分支判断状态，然后显示需要的内容
         val isMine = message.fromId == loginUser?.peerId
         val popup = getPopMenu(parent, OperateItemClickListener(message, position))
-        val bResend = message.status == MessageConstant.MSG_FAILURE
+        val bResend = message.status == MessageConstant.MSG_FAILURE || message.status == MessageConstant.MSG_SENDING
         //消息是否在2分钟之内创建的
         val bRevoke = (System.currentTimeMillis() / 1000) - message.created < mDefaultTimeDifference
         if (message.fromId == 0) {
