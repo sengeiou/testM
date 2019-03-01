@@ -62,8 +62,9 @@
 
                 <LinearLayout
                     android:id="@+id/search_result_joinStoreNum_linear"
-                    android:layout_width="@dimen/padding_dp_80"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/padding_dp_10"
                     android:orientation="horizontal">
 
                     <TextView

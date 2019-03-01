@@ -132,7 +132,12 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
                     setText(R.id.search_result_capitalName, "¥\t${data.capitalName}")
                 }
                 if (data.joinStoreNum > 0) {
-                    setText(R.id.search_result_joinStoreNum, data.joinStoreNum.toString())
+                    if (data.joinStoreNum >= 10000) {
+                        val formart = java.text.DecimalFormat("0.0")
+                        setText(R.id.search_result_joinStoreNum, "${formart.format(data.joinStoreNum / 10000.0)}万")
+                    } else {
+                        setText(R.id.search_result_joinStoreNum, data.joinStoreNum.toString())
+                    }
                 } else {
                     getView<LinearLayout>(R.id.search_result_joinStoreNum_linear).visibility = View.GONE
                 }
@@ -236,7 +241,6 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
     }
 
     override fun onLoadMore() {
-        //getdata 数据
         seach_result_swipeLayout.isRefreshing = false
         httpSeach(keyWord, fatherId, typeId, cityIds, capitalIds, modeIds, integratedSortId, mPageNum)
     }

@@ -33,10 +33,7 @@ import kotlinx.android.synthetic.main.activity_common_pop_window.view.*
  * 搜索结果筛选菜单PopWindow
  */
 @SuppressLint("CheckResult")
-class PopSeachSelect//设置宽高popWindow  动画 背景
-//点击popwindow 外部消失
-//1 为餐饮类型  2为加盟区域 3 为综合排序
-(private var mActivity: Activity, type: Int, mfatherId: Int) : PopupWindow(mActivity) {
+class PopSeachSelect(private var mActivity: Activity, type: Int, mfatherId: Int) : PopupWindow(mActivity) {
 
     private var mMenuView: View
     private lateinit var mLauyoutManger: LinearLayoutManager
@@ -55,12 +52,14 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
     private var mFathId = 0
 
     init {
+        //设置宽高popWindow  动画 背景
         mMenuView = LayoutInflater.from(mActivity).inflate(R.layout.activity_common_pop_window, null)
         contentView = mMenuView
         width = ViewGroup.LayoutParams.MATCH_PARENT
         height = ViewGroup.LayoutParams.WRAP_CONTENT
         animationStyle = R.style.TopPopWindow_animStyle
         setBackgroundDrawable(ColorDrawable(-0x00000000))
+        //点击popwindow 外部消失
         mMenuView.bottom_view.setOnClickListener {
             dismiss()
         }
@@ -69,6 +68,7 @@ class PopSeachSelect//设置宽高popWindow  动画 背景
         } else {
             mFathId = 1
         }
+        //1 为餐饮类型  2为加盟区域 3 为综合排序
         when (type) {
             1 -> getFoodTypeCache()
             2 -> getJoinAreaCache()
