@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_height="@dimen/padding_dp_40"
     android:background="@color/colorPrimary">
 
     <LinearLayout
         android:id="@+id/head_search_topView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/padding_dp_5"
         android:orientation="horizontal">
 
         <ImageView
@@ -26,8 +27,8 @@
             android:layout_height="@dimen/padding_dp_30"
             android:layout_marginBottom="@dimen/padding_dp_5"
             android:layout_marginLeft="@dimen/padding_dp_10"
-            android:background="@drawable/bg_seach"
             android:layout_weight="2"
+            android:background="@drawable/bg_seach"
             android:drawableEnd="@drawable/red_shop_icon_clear_search"
             android:drawablePadding="@dimen/padding_dp_5"
             android:gravity="center_vertical"
@@ -46,8 +47,8 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="@dimen/padding_dp_5"
-            android:text="@string/cancel"
             android:layout_weight="1"
+            android:text="@string/cancel"
             android:textColor="@color/white"
             android:textSize="@dimen/text_size_12"
             android:visibility="gone" />
