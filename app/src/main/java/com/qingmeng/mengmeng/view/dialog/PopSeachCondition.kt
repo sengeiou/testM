@@ -135,8 +135,8 @@ class PopSeachCondition : PopupWindow {
 
     @SuppressLint("ResourceAsColor")
     private fun initAdapter() {
-        mGridManager = GridLayoutManager(mActivity, 3)
         //投资金额
+        mGridManager = GridLayoutManager(mActivity, 3)
         mMenuView.search_result_condition_recycler_money.layoutManager = mGridManager
         mMenuView.search_result_condition_recycler_money.isNestedScrollingEnabled = false
         mMoneyAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextMoneyList, holderConvert = { holder, data, _, _ ->
@@ -163,6 +163,7 @@ class PopSeachCondition : PopupWindow {
         mMenuView.search_result_condition_recycler_money.adapter = mMoneyAdapter
 
         //投资模式
+        mGridManager = GridLayoutManager(mActivity, 3)
         mMenuView.search_result_condition_recycler_joinType.layoutManager = mGridManager
         mMenuView.search_result_condition_recycler_joinType.isNestedScrollingEnabled = false
         mJoinModelAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextJoinTypeList, holderConvert = { holder, data, _, _ ->
