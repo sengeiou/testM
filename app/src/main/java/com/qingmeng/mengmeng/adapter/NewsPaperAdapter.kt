@@ -13,14 +13,15 @@ import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.entity.Banner
 import com.qingmeng.mengmeng.entity.NewsPagerList
+import com.youke.yingba.base.utils.TimeConversion.getDateToString
 
 /**
  * Created by fyf on 2019/1/2
  * 头报适配器
  */
 open class NewsPaperAdapter(val context: Context, var mImgsList: ArrayList<Banner>,
-                       val onItemClickListener: (newsPagerList: NewsPagerList) -> Unit,
-                       private val onBannerClick: (Banner) -> Unit) :
+                            val onItemClickListener: (newsPagerList: NewsPagerList) -> Unit,
+                            private val onBannerClick: (Banner) -> Unit) :
         RecyclerView.Adapter<RecyclerView.ViewHolder>(), BGABanner.Delegate<ImageView, Banner>, BGABanner.Adapter<ImageView, Banner> {
     val mList = ArrayList<NewsPagerList>()
     private val ITEM_BANNER = 0
@@ -94,7 +95,7 @@ open class NewsPaperAdapter(val context: Context, var mImgsList: ArrayList<Banne
         fun bindViewHolder(newsPagerList: NewsPagerList) {
             mTittle.text = newsPagerList.title
             mContext.text = newsPagerList.content
-            mDate.text = newsPagerList.createTime
+            mDate.text = getDateToString(newsPagerList.formatTime.toLong())
             url = newsPagerList.articleUrl
             Glide.with(context).load(newsPagerList.banner).apply(RequestOptions()
                     .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(mImgView)

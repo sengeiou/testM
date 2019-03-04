@@ -47,9 +47,6 @@ class PopSeachCondition : PopupWindow {
     constructor(mActivity: Activity) : super(mActivity) {
         this.mActivity = mActivity
         mMenuView = LayoutInflater.from(mActivity).inflate(R.layout.activity_condition_pop_window, null)
-        initListener()
-        initAdapter()
-        getCacheData()
         this.contentView = mMenuView
         this.width = ViewGroup.LayoutParams.MATCH_PARENT
         this.height = ViewGroup.LayoutParams.WRAP_CONTENT
@@ -60,6 +57,9 @@ class PopSeachCondition : PopupWindow {
         mMenuView.bottom_condition_view.setOnClickListener {
             dismiss()
         }
+        getCacheData()
+        initAdapter()
+        initListener()
     }
 
     private fun getCacheData() {
@@ -67,11 +67,9 @@ class PopSeachCondition : PopupWindow {
             val mMoneyList = BoxUtils.getMoneyType()
             val mJoinTypeList = BoxUtils.getJoinType()
             if (!mTextMoneyList.isEmpty()) {
-                BoxUtils.removeMoneyType(mTextMoneyList)
                 mTextMoneyList.clear()
             }
             if (!mTextJoinTypeList.isEmpty()) {
-                BoxUtils.removeJoinType(mTextJoinTypeList)
                 mTextJoinTypeList.clear()
             }
             mTextMoneyList.addAll(mMoneyList)
@@ -90,8 +88,8 @@ class PopSeachCondition : PopupWindow {
                     if (!mTextMoneyList.isEmpty()) {
                         mMoneyAdapter.notifyDataSetChanged()
                     }
-                    if (!mTextMoneyList.isEmpty()) {
-                        mMoneyAdapter.notifyDataSetChanged()
+                    if (!mTextJoinTypeList.isEmpty()) {
+                        mJoinModelAdapter.notifyDataSetChanged()
                     }
                     httpMoney()
                     httpJoinModel()
@@ -141,7 +139,7 @@ class PopSeachCondition : PopupWindow {
         mGridManager = GridLayoutManager(mActivity, 3)
         mMenuView.search_result_condition_recycler_money.layoutManager = mGridManager
         mMenuView.search_result_condition_recycler_money.isNestedScrollingEnabled = false
-        mMoneyAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextMoneyList, holderConvert = { holder, data, position, payloads ->
+        mMoneyAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextMoneyList, holderConvert = { holder, data, _, _ ->
             holder.apply {
                 getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
                     if (data.checkState) {
@@ -156,7 +154,7 @@ class PopSeachCondition : PopupWindow {
                 }
                 setText(R.id.tvSelectDialogRvMenuG, data.name)
             }
-        }, onItemClick = { view, holder, position ->
+        }, onItemClick = { _, _, position ->
             mTextMoneyList[position].let {
                 it.checkState = !it.checkState
             }
@@ -168,7 +166,7 @@ class PopSeachCondition : PopupWindow {
         mGridManager = GridLayoutManager(mActivity, 3)
         mMenuView.search_result_condition_recycler_joinType.layoutManager = mGridManager
         mMenuView.search_result_condition_recycler_joinType.isNestedScrollingEnabled = false
-        mJoinModelAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextJoinTypeList, holderConvert = { holder, data, position, payloads ->
+        mJoinModelAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextJoinTypeList, holderConvert = { holder, data, _, _ ->
             holder.apply {
                 getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
                     if (data.checkState) {
@@ -183,7 +181,7 @@ class PopSeachCondition : PopupWindow {
                 }
                 setText(R.id.tvSelectDialogRvMenuG, data.name)
             }
-        }, onItemClick = { view, holder, position ->
+        }, onItemClick = { _, _, position ->
             mTextJoinTypeList[position].let {
                 it.checkState = !it.checkState
             }
@@ -246,7 +244,6 @@ class PopSeachCondition : PopupWindow {
                 }, {}, {})
     }
 
-
     override fun showAsDropDown(anchor: View, xoff: Int, yoff: Int, gravity: Int) {
 //        backgroundAlphaExt(0.5f)
         mMenuView.bottom_condition_view.visibility = View.VISIBLE
@@ -258,7 +255,6 @@ class PopSeachCondition : PopupWindow {
             height = h
         }
         super.showAsDropDown(anchor, xoff, yoff, gravity)
-
     }
 
     //回调方法

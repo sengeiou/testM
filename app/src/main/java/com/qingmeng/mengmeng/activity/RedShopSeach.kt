@@ -64,17 +64,10 @@ class RedShopSeach : BaseActivity() {
         keyWord = intent.getStringExtra(BACK_SEACH) ?: ""
         head_search2.setText(keyWord)
         head_search2.setSelection(keyWord.length)
-        initAdapter()
-    }
-
-    private fun initAdapter() {
-
     }
 
     override fun initListener() {
         super.initListener()
-
-
         //点击页面其他地方取消EditText的焦点并且隐藏软键盘
         ll_red_shop_seach.setOnTouchListener(object : View.OnTouchListener {
             override fun onTouch(v: View, event: MotionEvent): Boolean {
@@ -228,7 +221,7 @@ class RedShopSeach : BaseActivity() {
                         } else {
                             ToastUtil.showShort(bean.msg)
                         }
-                },{
+                }, {
                     ToastUtil.showNetError()
                 }, {}, { addSubscription(it) })
     }

@@ -108,11 +108,9 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
             val newsList = BoxUtils.getNewsPager()
             val bannerList = BoxUtils.getBannersByType(3)
             if (!mImgList.isEmpty()) {
-                BoxUtils.removeBanners(mImgList)
                 mImgList.clear()
             }
             if (!mNewsList.isEmpty()) {
-                BoxUtils.removeNewsPager(mNewsList)
                 mNewsList.clear()
             }
             mImgList.addAll(bannerList)
