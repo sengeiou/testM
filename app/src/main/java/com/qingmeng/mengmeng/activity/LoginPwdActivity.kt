@@ -126,7 +126,7 @@ class LoginPwdActivity : BaseActivity() {
     private fun codeLogin(phone: String, code: String) {
         myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .smslogin(phone, code)
+                .smslogin(phone, code,1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -157,7 +157,7 @@ class LoginPwdActivity : BaseActivity() {
     private fun accountLogin(username: String, password: String) {
         myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .accountLogin(username, password)
+                .accountLogin(username, password,1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
