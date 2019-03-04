@@ -15,9 +15,13 @@ import java.util.List;
  */
 public class RecorderVideoUtils {
     public static List<Size> getResolutionList(Camera camera) {
-        Parameters parameters = camera.getParameters();
-        List<Size> previewSizes = parameters.getSupportedPreviewSizes();
-        return previewSizes;
+        try {
+            Parameters parameters = camera.getParameters();
+            List<Size> previewSizes = parameters.getSupportedPreviewSizes();
+            return previewSizes;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     public static class ResolutionComparator implements Comparator<Size> {

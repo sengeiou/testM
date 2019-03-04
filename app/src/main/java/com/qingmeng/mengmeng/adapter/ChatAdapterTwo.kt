@@ -7,7 +7,6 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
-import android.media.MediaMetadataRetriever
 import android.os.Bundle
 import android.provider.MediaStore
 import android.support.v7.widget.LinearLayoutManager
@@ -17,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.bumptech.glide.Glide
 import com.lemo.emojcenter.utils.EmotionUtils
 import com.lemo.emojcenter.utils.SpanStringUtils
 import com.luck.picture.lib.PictureSelector
@@ -410,14 +410,16 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 videoMessage.url
             }
             //设置封面
-            if (TextUtils.isEmpty(videoMessage.thumbPath) && TextUtils.isEmpty(videoMessage.thumbUrl)) {    //没有封面  取视频第一帧
+            if (videoMessage.thumbPath == "null" && videoMessage.thumbUrl == "null") {    //没有封面  取视频第一帧
                 val bitmap = GlideCacheUtils.createVideoThumbnail(context, videoUrl, MediaStore.Images.Thumbnails.MINI_KIND)
                 ivMyMessageChatRvOtherVideoCover.setImageBitmap(bitmap)
             } else {    //有地址 就直接加载就行了
                 if (FileUtil.isFileExist(videoMessage.thumbPath)) {
-                    GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                    Glide.with(AppManager.instance.currentActivity()).load(videoMessage.thumbPath).into(ivMyMessageChatRvOtherVideoCover)
+//                    GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 } else {
-                    GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                    Glide.with(AppManager.instance.currentActivity()).load(videoMessage.thumbPath).into(ivMyMessageChatRvOtherVideoCover)
+//                    GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvOtherVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 }
             }
             //时间
@@ -702,18 +704,16 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 videoMessage.url
             }
             //设置封面
-            if (TextUtils.isEmpty(videoMessage.thumbPath) && TextUtils.isEmpty(videoMessage.thumbUrl)) {    //没有封面  取视频第一帧
-                val retr = MediaMetadataRetriever()
-                retr.setDataSource(videoUrl,HashMap<String, String>())
-                val bitmap =  retr.frameAtTime
-
-//                val bitmap = GlideCacheUtils.createVideoThumbnail(context, videoUrl, MediaStore.Images.Thumbnails.MINI_KIND)
+            if (videoMessage.thumbPath == "null" && videoMessage.thumbUrl == "null") {    //没有封面  取视频第一帧
+                val bitmap = GlideCacheUtils.createVideoThumbnail(context, videoUrl, MediaStore.Images.Thumbnails.MINI_KIND)
                 ivMyMessageChatRvMineVideoCover.setImageBitmap(bitmap)
             } else {    //有地址 就直接加载就行了
                 if (FileUtil.isFileExist(videoMessage.thumbPath)) {
-                    GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                    Glide.with(AppManager.instance.currentActivity()).load(videoMessage.thumbPath).into(ivMyMessageChatRvMineVideoCover)
+//                    GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbPath, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 } else {
-                    GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+                    Glide.with(AppManager.instance.currentActivity()).load(videoMessage.thumbUrl).into(ivMyMessageChatRvMineVideoCover)
+//                    GlideLoader.load(AppManager.instance.currentActivity(), videoMessage.thumbUrl, ivMyMessageChatRvMineVideoCover, placeholder = R.drawable.default_img_icon, roundRadius = 15)
                 }
             }
             //时间

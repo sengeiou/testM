@@ -18,6 +18,7 @@ import android.util.DisplayMetrics
 import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
+import android.widget.TextView
 import com.app.common.api.subscribeExtApi
 import com.lemo.emojcenter.constant.FaceLocalConstant
 import com.lemo.emojcenter.utils.EmotionUtils
@@ -48,6 +49,7 @@ import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.audio.AudioManager
 import com.qingmeng.mengmeng.utils.audio.MediaManager
+import com.qingmeng.mengmeng.view.dialog.DialogCommon
 import com.qingmeng.mengmeng.view.dialog.PopChatImg
 import de.greenrobot.event.EventBus
 import kotlinx.android.synthetic.main.activity_my_message_chat.*
@@ -78,6 +80,7 @@ class MyMessageChatActivity : BaseActivity() {
     private lateinit var mSoundVolumeDialog: Dialog             //语音弹出框
     private lateinit var mSoundVolumeImg: ImageView
     private lateinit var mSoundVolumeLayout: LinearLayout
+    private var mCanSendRadius = false                          //是否可以发送语音
     private lateinit var mImgSeePopChat: PopChatImg             //最近图片pop
     private var y1 = 0                                          //手指坐标
     private var y2 = 0
@@ -226,13 +229,14 @@ class MyMessageChatActivity : BaseActivity() {
 
         //音频
         ivMyMessageChatAudio.setOnClickListener {
+            mAdapter.notifyDataSetChanged()
             //判断是否有权限
             PermissionUtils.audio(this, {
                 PermissionUtils.readAndWrite(this, {
                     //表情和工具布局隐藏 关闭软键盘
                     hiddenViewAndInputKeyboard()
                     //按住说话不显示就显示 反之隐藏
-                    llMyMessageChatClickSay.visibility = if (llMyMessageChatClickSay.visibility == View.GONE) {
+                    tvMyMessageChatClickSay.visibility = if (tvMyMessageChatClickSay.visibility == View.GONE) {
                         View.VISIBLE
                     } else {
                         View.GONE
@@ -242,18 +246,18 @@ class MyMessageChatActivity : BaseActivity() {
         }
 
         //按住说话
-        llMyMessageChatClickSay.setOnTouchListener { v, event ->
+        tvMyMessageChatClickSay.setOnTouchListener { v, event ->
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {    //按下
                     y1 = event.y.toInt()
                     //设置点击背景
                     v.setBackgroundResource(R.drawable.ripple_bg_drawable_graydark_radius18)
-                    tvMyMessageChatClickSay.text = getString(R.string.release_to_over)
+                    (v as TextView).text = getString(R.string.release_to_over)
                     mSoundVolumeImg.visibility = View.VISIBLE
                     mSoundVolumeImg.setBackgroundResource(R.drawable.view_dialog_sound_volume_01)
                     mSoundVolumeLayout.setBackgroundResource(R.drawable.view_dialog_sound_volume_default_bg)
                     //录音
-                    mAudioManager.readyAudio({
+                    mAudioManager.readyAudio(this, {
                         onReceiveMaxVolume(it)
                     })
                     //显示弹框
@@ -264,29 +268,32 @@ class MyMessageChatActivity : BaseActivity() {
                     y2 = event.y.toInt()
                     //向上移动180就改变提示
                     if (y1 - y2 > 180) {
-                        tvMyMessageChatClickSay.text = getString(R.string.cancel_to_send)
+                        mCanSendRadius = false
+                        (v as TextView).text = getString(R.string.cancel_to_send)
                         mSoundVolumeImg.visibility = View.GONE
                         mSoundVolumeLayout.setBackgroundResource(R.drawable.view_dialog_sound_volume_cancel_bg)
                     } else {
-                        tvMyMessageChatClickSay.text = getString(R.string.release_to_over)
+                        mCanSendRadius = true
+                        (v as TextView).text = getString(R.string.release_to_over)
                         mSoundVolumeImg.visibility = View.VISIBLE
                         mSoundVolumeLayout.setBackgroundResource(R.drawable.view_dialog_sound_volume_default_bg)
                     }
                     true
                 }
-                MotionEvent.ACTION_UP -> {  //松开
-                    y2 = event.y.toInt()
+                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {  //松开
                     v.setBackgroundResource(R.drawable.ripple_bg_drawable_gray_radius18)
-                    tvMyMessageChatClickSay.text = getString(R.string.hold_to_talk)
+                    (v as TextView).text = getString(R.string.hold_to_talk)
                     //发送语音
-                    if (y1 - y2 <= 180) {
+                    if (mCanSendRadius) {
                         //如果语音时间够的话就发送语音
                         if (mAudioManager.getRecordTime() > 1) { //真.发送
                             mSoundVolumeDialog.dismiss()
                             //释放录音
                             mAudioManager.releaseAudio({ path, recordTime ->
-                                //发送语音
-                                onRecordVoiceEnd(path, recordTime)
+                                if (mAudioManager.canSendAudio) {
+                                    //发送语音
+                                    onRecordVoiceEnd(path, recordTime)
+                                }
                             })
                         } else {  //发送条件未满足
                             mSoundVolumeImg.visibility = View.GONE
@@ -320,7 +327,7 @@ class MyMessageChatActivity : BaseActivity() {
                 //工具布局隐藏
                 llMyMessageChatFunction.visibility = View.GONE
                 //按住说话隐藏
-                llMyMessageChatClickSay.visibility = View.GONE
+                tvMyMessageChatClickSay.visibility = View.GONE
             } else {
                 //改变输入框上面的布局高度
                 changeMiddleLayoutHeight()
@@ -340,7 +347,7 @@ class MyMessageChatActivity : BaseActivity() {
                     //表情布局隐藏
                     rlMyMessageChatExpression.visibility = View.GONE
                     //按住说话隐藏
-                    llMyMessageChatClickSay.visibility = View.GONE
+                    tvMyMessageChatClickSay.visibility = View.GONE
                     //显示最近60秒内的截图或拍照
                     showLastImg()
                 } else {
@@ -410,14 +417,14 @@ class MyMessageChatActivity : BaseActivity() {
                         //工具布局隐藏
                         llMyMessageChatFunction.visibility = View.GONE
                         //按住说话隐藏
-                        llMyMessageChatClickSay.visibility = View.GONE
+                        tvMyMessageChatClickSay.visibility = View.GONE
                     }
                     2 -> {
                         llMyMessageChatFunction.visibility = View.VISIBLE
                         //表情布局隐藏
                         rlMyMessageChatExpression.visibility = View.GONE
                         //按住说话隐藏
-                        llMyMessageChatClickSay.visibility = View.GONE
+                        tvMyMessageChatClickSay.visibility = View.GONE
                         //显示最近60秒内的截图或拍照
                         showLastImg()
                     }
@@ -720,8 +727,8 @@ class MyMessageChatActivity : BaseActivity() {
     private fun scrollToBottomListItem(isAnimation: Boolean = false) {
         if (isAnimation) {
 //            SmoothScrollLayoutManager(this).smoothScrollToPosition(rvMyMessageChat,1,mAdapter.msgObjectList.lastIndex)
+            rvMyMessageChat.smoothScrollToPosition(mAdapter.msgObjectList.lastIndex)
             mAdapter.notifyDataSetChanged()
-            rvMyMessageChat.smoothScrollToPosition(mAdapter.msgObjectList.lastIndex - 1)
             tvMyMessageChatTips.visibility = View.GONE
             mRecyclerViewIsBottom = true
         } else {
@@ -753,10 +760,10 @@ class MyMessageChatActivity : BaseActivity() {
      */
     private fun localBrandMessage(): BrandMessage {
         if (TextUtils.isEmpty(mBrandMessage.brandName) || mBrandMessage.brandName == "null") {
-            mBrandMessage.brandId = mBundle?.getInt("id")!!
-            mBrandMessage.brandLogo = mBundle?.getString("logo")!!
-            mBrandMessage.brandName = mBundle?.getString("name")!!
-            mBrandMessage.brandValue = mBundle?.getString("capitalName")!!
+            mBrandMessage.brandId = mBundle?.getInt("id") ?: 0
+            mBrandMessage.brandLogo = mBundle?.getString("logo") ?: ""
+            mBrandMessage.brandName = mBundle?.getString("name") ?: ""
+            mBrandMessage.brandValue = mBundle?.getString("capitalName") ?: ""
             mBrandMessage.displayType = DBConstant.SHOW_BRAND_TYPE
             mBrandMessage.created = (System.currentTimeMillis() / 1000).toInt()
         }
@@ -1125,9 +1132,18 @@ class MyMessageChatActivity : BaseActivity() {
         }
         when (requestCode) {
             SysConstant.CAMERA_WITH_DATA -> {   //拍照返回
+                val noPermission = data?.getBooleanExtra("noPermission", false)
                 val type = data?.getIntExtra("type", -1)
                 val mImagePath = data?.getStringExtra("mImagePath")
                 val mVideoPath = data?.getStringExtra("mVideoPath")
+                if (noPermission!!) {
+                    //提示用户去设置里设置相应权限
+                    DialogCommon(this, "提示", "使用该功能需要相机权限，请前往系统设置开启权限", rightText = "去设置",
+                            onRightClick = {
+                                toSelfSetting(this)
+                            }).show()
+                    return
+                }
                 when (type) {
                     1 -> {  //照片
                         mImagePath?.let {
