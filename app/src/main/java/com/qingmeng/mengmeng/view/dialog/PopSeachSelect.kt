@@ -126,7 +126,7 @@ class PopSeachSelect(private var mActivity: Activity, type: Int, mfatherId: Int)
             })
             mMenuView.left_recyclerView_pop.adapter = mProvinceAdapter
         } else if (type == 3) {
-            height = ViewGroup.LayoutParams.WRAP_CONTENT
+            mMenuView.seach_pop_ranking.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             mRankingAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mRankingList, holderConvert = { holder, data, _, _ ->
                 holder.apply {
                     getView<LinearLayout>(R.id.seach_ranking_linear).apply {
@@ -240,6 +240,8 @@ class PopSeachSelect(private var mActivity: Activity, type: Int, mfatherId: Int)
                                 mCityAdapter.notifyDataSetChanged()
                             }
                         }
+                    } else {
+                        ToastUtil.showNetError()
                     }
                 }, {
                     ToastUtil.showNetError()
@@ -394,7 +396,6 @@ class PopSeachSelect(private var mActivity: Activity, type: Int, mfatherId: Int)
         Observable.create<SeachResultBean> {
             val rankData = BoxUtils.getStaticByType(4)
             if (!mRankingList.isEmpty()) {
-                BoxUtils.removeStatic(mRankingList)
                 mRankingList.clear()
             }
             mRankingList.addAll(rankData)

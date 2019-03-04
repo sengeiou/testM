@@ -46,7 +46,6 @@ class RedShopFragment : BaseFragment() {
         mRedNewsHead.layoutParams.height = mRedNewsHead.layoutParams.height + getBarHeight(context!!)
         mRedNewsTitle.setMarginExt(top = statusBarHeight + context!!.dp2px(60))
         mRedNewsBack.visibility = View.GONE
-
         initLeftAdapter()
         initRightAdapter()
     }
@@ -54,7 +53,6 @@ class RedShopFragment : BaseFragment() {
     override fun initData() {
         super.initData()
         getCacheData()
-
     }
 
     private fun getCacheData() {
@@ -63,15 +61,12 @@ class RedShopFragment : BaseFragment() {
             val rightInListType = BoxUtils.getAllRedShop(1, 2)
             val rightInListHost = BoxUtils.getAllRedShop(1, 1)
             if (!mLeftList.isEmpty()) {
-                BoxUtils.removeAllRedShop(mLeftList)
                 mLeftList.clear()
             }
             if (!mRightInListType.isEmpty()) {
-                BoxUtils.removeAllRedShop(mRightInListType)
                 mRightInListType.clear()
             }
             if (!mRightInListHost.isEmpty()) {
-                BoxUtils.removeAllRedShop(mRightInListHost)
                 mRightInListHost.clear()
             }
             mLeftList.addAll(leftList)
