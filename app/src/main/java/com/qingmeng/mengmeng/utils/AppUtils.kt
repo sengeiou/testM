@@ -1,8 +1,11 @@
 package com.qingmeng.mengmeng.utils
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.net.Uri
+import android.os.Build
 import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.View
@@ -72,4 +75,21 @@ fun getLoacalBitmap(url: String): Bitmap? {
         e.printStackTrace()
         return null
     }
+}
+
+/**
+ * 跳转到自己应用的设置页面
+ */
+fun toSelfSetting(context: Context) {
+    val mIntent = Intent()
+    mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+    if (Build.VERSION.SDK_INT >= 9) {
+        mIntent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
+        mIntent.data = Uri.fromParts("package", context.packageName,null)
+    } else if (Build.VERSION.SDK_INT <= 8) {
+        mIntent.action = Intent.ACTION_VIEW
+        mIntent.setClassName("com.android.settings", "com.android.setting.InstalledAppDetails")
+        mIntent.putExtra("com.android.settings.ApplicationPkgName", context.packageName)
+    }
+    context.startActivity(mIntent)
 }

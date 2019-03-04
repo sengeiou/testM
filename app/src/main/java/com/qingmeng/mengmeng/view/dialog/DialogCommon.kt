@@ -18,7 +18,8 @@ import com.qingmeng.mengmeng.R
  */
 class DialogCommon constructor(context: Context, val titleText: String = "", val contentText: String = "",
                                val leftText: String = "", val rightText: String = "",
-                               val onLeftClick: (view: View) -> Unit = { }, val onRightClick: (view: View) -> Unit = { },
+                               val onLeftClick: (view: View) -> Unit = { },
+                               val onRightClick: (view: View) -> Unit = { },
                                private val canBackCancel: Boolean = true,
                                theme: Int = R.style.dialog_common) : AlertDialog(context, theme), DialogInterface {
     private lateinit var mDialogView: View

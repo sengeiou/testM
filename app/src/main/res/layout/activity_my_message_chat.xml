@@ -163,26 +163,17 @@
                     android:src="@mipmap/my_message_chat_expression"
                     />
 
-                <LinearLayout
-                    android:id="@+id/llMyMessageChatClickSay"
+                <TextView
+                    android:id="@+id/tvMyMessageChatClickSay"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:layout_centerInParent="true"
                     android:background="@drawable/ripple_bg_drawable_gray_radius18"
                     android:gravity="center"
+                    android:text="@string/hold_to_talk"
+                    android:textColor="@color/color_333333"
                     android:visibility="gone"
-                    >
-
-                    <TextView
-                        android:id="@+id/tvMyMessageChatClickSay"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/hold_to_talk"
-                        android:textColor="@color/color_333333"
-                        android:focusable="false"
-                        android:clickable="false"
-                        />
-                </LinearLayout>
+                    />
             </RelativeLayout>
 
             <ImageView

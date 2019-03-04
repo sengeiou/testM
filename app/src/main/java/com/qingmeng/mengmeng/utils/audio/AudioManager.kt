@@ -1,8 +1,11 @@
 package com.qingmeng.mengmeng.utils.audio
 
+import android.content.Context
 import android.media.MediaRecorder
 import android.os.Handler
 import android.util.Log
+import com.qingmeng.mengmeng.utils.toSelfSetting
+import com.qingmeng.mengmeng.view.dialog.DialogCommon
 import java.io.File
 import java.util.*
 
@@ -16,6 +19,7 @@ class AudioManager(private val mDir: String) {
     private var recordTime = 0F                                         //音频时间
     private var currentFilePath: String? = null                         //音频路径
     private val MAX_LENGTH = 1000 * 60 * 10                             //录制最长时间
+    var canSendAudio = false                                            //是否可以发送语音（防止个别手机权限提醒不一样）
     private val mHandler = Handler()                                    //子线程查询当前分贝
     private val mUpdateMicStatusTimer = Runnable {
         updateMicStatus()
@@ -24,37 +28,49 @@ class AudioManager(private val mDir: String) {
     /**
      * 准备录音
      */
-    fun readyAudio(onAccentuation: (voiceValue: Int) -> Unit = {}) {
-        this.onAccentuation = onAccentuation
-        val dir = File(mDir)
-        if (!dir.exists()) {
-            dir.mkdirs()
-        } else {
-            if (!dir.isDirectory) {
-                dir.delete()
+    fun readyAudio(context: Context, onAccentuation: (voiceValue: Int) -> Unit = {}) {
+        try {
+            this.onAccentuation = onAccentuation
+            val dir = File(mDir)
+            if (!dir.exists()) {
                 dir.mkdirs()
+            } else {
+                if (!dir.isDirectory) {
+                    dir.delete()
+                    dir.mkdirs()
+                }
+            }
+            val fileName = generateFileName()
+            val file = File(dir, fileName)
+            currentFilePath = file.absolutePath
+            mMediaRecorder = MediaRecorder()
+            //设置MediaRecorder的音频源为麦克风
+            mMediaRecorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
+            //设置音频格式
+            mMediaRecorder?.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB)
+            //设置音频编码
+            mMediaRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
+            //设置输出文件
+            mMediaRecorder?.setOutputFile(file.absolutePath)
+            //最长录制时间
+            mMediaRecorder?.setMaxDuration(MAX_LENGTH)
+            //准备录音
+            mMediaRecorder?.prepare()
+            //开始
+            mMediaRecorder?.start()
+            startTime = System.currentTimeMillis()
+            updateMicStatus()
+            canSendAudio = true
+        } catch (e: Exception) {
+            if (e.toString() == "java.io.IOException: Permission deny!") {
+                canSendAudio = false
+                //提示用户去设置里设置相应权限
+                DialogCommon(context, "提示", "使用该功能需要麦克风权限，请前往系统设置开启权限", rightText = "去设置",
+                        onRightClick = {
+                            toSelfSetting(context)
+                        }).show()
             }
         }
-        val fileName = generateFileName()
-        val file = File(dir, fileName)
-        currentFilePath = file.absolutePath
-        mMediaRecorder = MediaRecorder()
-        //设置MediaRecorder的音频源为麦克风
-        mMediaRecorder?.setAudioSource(MediaRecorder.AudioSource.MIC)
-        //设置音频格式
-        mMediaRecorder?.setOutputFormat(MediaRecorder.OutputFormat.AMR_NB)
-        //设置音频编码
-        mMediaRecorder?.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
-        //设置输出文件
-        mMediaRecorder?.setOutputFile(file.absolutePath)
-        //最长录制时间
-        mMediaRecorder?.setMaxDuration(MAX_LENGTH)
-        //准备录音
-        mMediaRecorder?.prepare()
-        //开始
-        mMediaRecorder?.start()
-        startTime = System.currentTimeMillis()
-        updateMicStatus()
     }
 
     //根据分贝改变动画回调
@@ -83,6 +99,12 @@ class AudioManager(private val mDir: String) {
             recordTime = getRecordTime()
             audioPathCallBack(currentFilePath!!, recordTime)
         }
+//        try {
+//        } catch (e: Exception) {
+//            if (e.toString() == "java.lang.NullPointerException: Attempt to get length of null array") {
+//
+//            }
+//        }
     }
 
     fun getRecordTime(): Float {
