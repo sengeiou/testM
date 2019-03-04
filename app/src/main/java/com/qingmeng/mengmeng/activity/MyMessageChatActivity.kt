@@ -944,7 +944,10 @@ class MyMessageChatActivity : BaseActivity() {
         when (event.event) {
             UnreadEvent.Event.UNREAD_MSG_RECEIVED, UnreadEvent.Event.UNREAD_MSG_LIST_OK, UnreadEvent.Event.SESSION_READED_UNREAD_MSG -> if (IMUnreadMsgManager.instance().totalUnreadCount > 0) {
                 historyTimes = 0
-                mAdapter.msgObjectList.clear()
+                //只有在最底下再清空消息
+                if (mRecyclerViewIsBottom) {
+                    mAdapter.msgObjectList.clear()
+                }
                 reqHistoryMsg(false)
             }
         }
