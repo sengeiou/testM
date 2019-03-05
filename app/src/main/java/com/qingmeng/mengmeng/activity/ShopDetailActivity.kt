@@ -27,6 +27,7 @@ import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.ShopDetailVpAdapter
 import com.qingmeng.mengmeng.constant.IConstants.BRANDID
 import com.qingmeng.mengmeng.constant.IConstants.BRAND_TO_MESSAGE
+import com.qingmeng.mengmeng.constant.IConstants.ENTER_BRAND_NUM
 import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
 import com.qingmeng.mengmeng.constant.IConstants.IMGS
 import com.qingmeng.mengmeng.constant.IConstants.MESSAGE_BACK_BRAND_ID
@@ -65,6 +66,8 @@ class ShopDetailActivity : BaseActivity() {
     override fun getLayoutId(): Int = R.layout.activity_shop_detail
 
     override fun initObject() {
+        //进一次详情就加一次
+        ENTER_BRAND_NUM += 1
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -168,7 +171,9 @@ class ShopDetailActivity : BaseActivity() {
         mDetailBack.setOnClickListener { onBackPressed() }
         mDetailMore.setOnClickListener {
             myDialog.showMorePop(it, {
-                toNext<MyMessageActivity>()
+                toNextResult<MyMessageActivity>(BRAND_TO_MESSAGE)
+                //如果聊天列表页面存在了 就销毁它
+                finishAty(MyMessageActivity::class.java)
             }, {
                 startActivity(intentFor<MainActivity>().newTask().clearTask())
             }, {
@@ -191,6 +196,8 @@ class ShopDetailActivity : BaseActivity() {
                     putString("capitalName", it.capitalName)
                     putString("avatar", it.avatar)
                 })
+                //如果聊天页面存在了 就销毁它
+                finishAty(MyMessageChatActivity::class.java)
             }
         }
         mCollection.setOnClickListener {
@@ -213,6 +220,8 @@ class ShopDetailActivity : BaseActivity() {
                     putString("avatar", it.avatar)
                 })
             }
+            //如果聊天页面存在了 就销毁它
+            finishAty(MyMessageChatActivity::class.java)
         }
         mGetJoinData.setOnClickListener { myDialog.showJoinDataDialog(name) { name, phone, message -> join(name, phone, message) } }
         mDetailScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->
@@ -333,7 +342,29 @@ class ShopDetailActivity : BaseActivity() {
             ToastUtil.showShort(getString(R.string.pls_login))
             return
         }
+        //判断下当前id在不在BRAND_TO_MESSAGE内，如果在 就删掉它（防止返回会直接finish掉）
+        if (MESSAGE_BACK_BRAND_ID.contains("$id")) {
+            MESSAGE_BACK_BRAND_ID = MESSAGE_BACK_BRAND_ID.replace("$id", "")
+        }
         AnkoInternals.internalStartActivityForResult(this, T::class.java, requestCode, params)
+    }
+
+    //如果页面存在了 就销毁它
+    private fun finishAty(activity: Class<*>) {
+        when (activity) {
+            MyMessageActivity::class.java -> {
+                if (MyMessageActivity.instance != null) {
+                    MyMessageActivity.instance!!.setResult(Activity.RESULT_OK)
+                    MyMessageActivity.instance!!.finish()
+                }
+            }
+            MyMessageChatActivity::class.java -> {
+                if (MyMessageChatActivity.instance != null) {
+                    MyMessageChatActivity.instance!!.setResult(Activity.RESULT_OK)
+                    MyMessageChatActivity.instance!!.finish()
+                }
+            }
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -341,22 +372,26 @@ class ShopDetailActivity : BaseActivity() {
         data?.let { mDetailVp.currentItem = it.getIntExtra(POSITION, 0) }
         if (resultCode == Activity.RESULT_OK && requestCode == BRAND_TO_MESSAGE) {
             //通过MESSAGE_BACK_BRAND_ID判断，如果当前id存在了，就直接finish掉
-            val arrayList = MESSAGE_BACK_BRAND_ID.split(",")
-            arrayList.forEach {
-                if (!TextUtils.isEmpty(it) && it.toInt() == id) {
-                    finish()
-                }
-            }
-            if (TextUtils.isEmpty(MESSAGE_BACK_BRAND_ID)) {
-                MESSAGE_BACK_BRAND_ID = "$id"
+            if (MESSAGE_BACK_BRAND_ID.contains("$id")) {
+                onBackPressed()
             } else {
-                MESSAGE_BACK_BRAND_ID += ",$id"
+                if (TextUtils.isEmpty(MESSAGE_BACK_BRAND_ID)) {
+                    MESSAGE_BACK_BRAND_ID = "$id"
+                } else {
+                    MESSAGE_BACK_BRAND_ID += ",$id"
+                }
             }
         }
     }
 
     override fun onBackPressed() {
-        setResult(Activity.RESULT_OK)
+        //如果是第一个进来的页面，就让MESSAGE_BACK_BRAND_ID置空
+        if (ENTER_BRAND_NUM == 1) {
+            ENTER_BRAND_NUM = 0
+            MESSAGE_BACK_BRAND_ID = ""
+        } else {
+            ENTER_BRAND_NUM -= 1
+        }
         if (Jzvd.backPress()) return
         super.onBackPressed()
     }

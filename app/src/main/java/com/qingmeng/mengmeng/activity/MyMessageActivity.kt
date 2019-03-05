@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.activity
 
+import android.app.Activity
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MotionEvent
 import android.view.View
@@ -51,6 +52,10 @@ class MyMessageActivity : BaseActivity() {
     private var mList = ArrayList<MyMessage>()                           //接口消息内容
     private var mAvatar = ""                                             //默认发送者头像
 
+    companion object {
+        var instance: MyMessageActivity? = null                          //当前aty
+    }
+
     /**
      * 消息用到的
      */
@@ -80,6 +85,7 @@ class MyMessageActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
+        instance = this
         setHeadName(R.string.message)
 
         initAdapter()
@@ -141,6 +147,11 @@ class MyMessageActivity : BaseActivity() {
                     FaceInitData.init(applicationContext)
                     FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
                     startActivity<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to t.sessionKey, "title" to t.name, "avatar" to mAvatar)
+                    //如果聊天页面存在了 就销毁它
+                    if (MyMessageChatActivity.instance != null) {
+                        MyMessageChatActivity.instance!!.setResult(Activity.RESULT_OK)
+                        MyMessageChatActivity.instance!!.finish()
+                    }
                 }
                 //删除
                 getView<TextView>(R.id.tvMyMessageRvDelete).setOnClickListener {
@@ -361,6 +372,11 @@ class MyMessageActivity : BaseActivity() {
         } else {
             llMyMessageTips.visibility = View.GONE
         }
+    }
+
+    override fun onBackPressed() {
+        setResult(Activity.RESULT_OK)
+        super.onBackPressed()
     }
 
     override fun onDestroy() {
