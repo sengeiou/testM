@@ -342,17 +342,15 @@ class ShopDetailActivity : BaseActivity() {
         if (resultCode == Activity.RESULT_OK && requestCode == BRAND_TO_MESSAGE) {
             //通过MESSAGE_BACK_BRAND_ID判断，如果当前id存在了，就直接finish掉
             val arrayList = MESSAGE_BACK_BRAND_ID.split(",")
-            if (arrayList.isNotEmpty()) {
-                arrayList.forEach {
-                    if (it.toInt() == id) {
-                        finish()
-                    }
+            arrayList.forEach {
+                if (!TextUtils.isEmpty(it) && it.toInt() == id) {
+                    finish()
                 }
             }
             if (TextUtils.isEmpty(MESSAGE_BACK_BRAND_ID)) {
-                MESSAGE_BACK_BRAND_ID = "${id}"
+                MESSAGE_BACK_BRAND_ID = "$id"
             } else {
-                MESSAGE_BACK_BRAND_ID = MESSAGE_BACK_BRAND_ID + ",${id}"
+                MESSAGE_BACK_BRAND_ID += ",$id"
             }
         }
     }
