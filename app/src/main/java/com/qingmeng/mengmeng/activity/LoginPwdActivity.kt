@@ -126,7 +126,7 @@ class LoginPwdActivity : BaseActivity() {
     private fun codeLogin(phone: String, code: String) {
         myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .smslogin(phone, code,1)
+                .smslogin(phone, code, 1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -157,26 +157,26 @@ class LoginPwdActivity : BaseActivity() {
     private fun accountLogin(username: String, password: String) {
         myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .accountLogin(username, password,1)
+                .accountLogin(username, password, 1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
                     myDialog.dismissLoadingDialog()
                     when (bean.code) {
-                        //登录成功
+                    //登录成功
                         12000 -> bean.data?.let {
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
-                            sharedSingleton.setString(IConstants.login_name,username)
-                            sharedSingleton.setString(IConstants.login_pwd,password)
+                            sharedSingleton.setString(IConstants.login_name, username)
+                            sharedSingleton.setString(IConstants.login_pwd, password)
                             it.upDate()
                             //还要登录完信..
                             mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
                             loginOver()
                         }
-                        //错误次数
+                    //错误次数
                         15001 -> ToastUtil.showShort("${bean.msg},还有${bean.data}次机会")
-                        //密码错误三次以上
+                    //密码错误三次以上
                         25094 -> {
                             //找回密码弹窗
                             mDialog = DialogCommon(this, bean.msg, leftText = getString(R.string.cancel),
@@ -185,7 +185,8 @@ class LoginPwdActivity : BaseActivity() {
                             })
                             mDialog.show()
                         }
-                        //手机号不存在
+                        25058 -> ToastUtil.showShort(getString(R.string.login_fail_company))
+                    //手机号不存在
                         25091 -> {
                             //提示“该手机号尚未注册，是否前去注册？” “注册”和“取消”两个按钮
                             mDialog = DialogCommon(this, bean.msg, leftText = getString(R.string.cancel),
@@ -297,7 +298,7 @@ class LoginPwdActivity : BaseActivity() {
             mPasswordPhone.setHint(R.string.please_input_phone_num)
             //arrayOf(InputFilter.LengthFilter(11))
             mPasswordPhone.filters = arrayOf<InputFilter>(InputFilter.LengthFilter(11))
-      //      mPasswordPhone.filters(arrayOf<InputFilter>(InputFilter.LengthFilter(10)))
+            //      mPasswordPhone.filters(arrayOf<InputFilter>(InputFilter.LengthFilter(10)))
             mPasswordSmsLogin.setText(R.string.use_name_login)
         }
     }

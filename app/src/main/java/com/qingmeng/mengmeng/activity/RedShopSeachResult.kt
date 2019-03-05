@@ -109,30 +109,33 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
         swipe_target.layoutManager = mLauyoutManger
         mAdapter = CommonAdapter(this, R.layout.red_shop_search_result_item, mSeachResultList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
-                Glide.with(this@RedShopSeachResult).load(data.logo).apply(RequestOptions.bitmapTransform(RoundedCorners(10))
-                        .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.search_result_bigLogo))
-                val spanString = SpannableString("证\t\t\t${data.name}")
-                val drawable = resources.getDrawable(R.drawable.detail_icon_certification)
-                val imageSpan = ImageSpan(drawable, ImageSpan.ALIGN_BASELINE)
-                spanString.setSpan(imageSpan, 0, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                val density = resources.displayMetrics.density
-                drawable.setBounds(0, (7 * density).toInt(), (14 * density).toInt(), (21 * density).toInt())
-                setSpannableStringText(R.id.search_result_name, spanString)
+                if (data.status == 1) {
+                    Glide.with(this@RedShopSeachResult).load(data.logo).apply(RequestOptions.bitmapTransform(RoundedCorners(20))
+                            .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.search_result_bigLogo))
+                    val spanString = SpannableString("证\t\t\t${data.name}")
+                    val drawable = resources.getDrawable(R.drawable.detail_icon_certification)
+                    val imageSpan = ImageSpan(drawable, ImageSpan.ALIGN_BASELINE)
+                    spanString.setSpan(imageSpan, 0, 2, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    val density = resources.displayMetrics.density
+                    drawable.setBounds(0, (7 * density).toInt(), (14 * density).toInt(), (21 * density).toInt())
+                    setSpannableStringText(R.id.search_result_name, spanString)
+                } else {
+                    setText(R.id.search_result_name, data.name)
+                }
                 if (data.capitalName.isNullOrEmpty()) {
                     setText(R.id.search_result_capitalName, "¥\t面议")
                 } else {
                     setText(R.id.search_result_capitalName, "¥\t${data.capitalName}")
                 }
-                if (data.joinStoreNum > 0) {
-                    if (data.joinStoreNum >= 10000) {
-                        val formart = java.text.DecimalFormat("0.0")
-                        setText(R.id.search_result_joinStoreNum, "${formart.format(data.joinStoreNum / 10000.0)}万")
-                    } else {
-                        setText(R.id.search_result_joinStoreNum, data.joinStoreNum.toString())
-                    }
-                } else {
-                    getView<LinearLayout>(R.id.search_result_joinStoreNum_linear).visibility = View.GONE
-                }
+                val storeNum = data.joinStoreNum + data.directStoreNum
+                getView<LinearLayout>(R.id.search_result_joinStoreNum_linear).visibility =
+                        if (storeNum > 0) {
+                            if (storeNum >= 10000) {
+                                val formart = java.text.DecimalFormat("0.0")
+                                setText(R.id.search_result_joinStoreNum, "${formart.format(storeNum / 10000.0)}万")
+                            } else setText(R.id.search_result_joinStoreNum, "$storeNum")
+                            View.VISIBLE
+                        } else View.GONE
                 setTagFlowLayout(getView(R.id.seach_result_tagFliwLayout), data.affiliateSupport as ArrayList<String>)
                 getView<LinearLayout>(R.id.search_linearlayout).setOnClickListener {
                     startActivity<ShopDetailActivity>(IConstants.BRANDID to data.id)
@@ -229,7 +232,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
     }
 
     override fun onRefresh() {
-        goToSeach()
+        httpSeach(keyWord, fatherId, typeId, cityIds, capitalIds, modeIds, integratedSortId, 1)
     }
 
     override fun onLoadMore() {
