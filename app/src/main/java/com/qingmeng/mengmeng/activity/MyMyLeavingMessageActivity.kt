@@ -4,9 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.text.TextUtils
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.RelativeLayout
+import android.widget.TextView
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
@@ -130,7 +132,15 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                 } else {
                     setText(R.id.tvMyMyLeavingMessageRvInvestmentAmount, t.capitalName)
                 }
-                setText(R.id.tvMyMyLeavingMessageRvStoreNum, t.storesNum)
+                getView<TextView>(R.id.tvMyMyLeavingMessageRvStoreNumStatic).let {
+                    if (TextUtils.isEmpty(t.storesNum)) {
+                        it.visibility = View.GONE
+                        setText(R.id.tvMyMyLeavingMessageRvStoreNum, "")
+                    } else {
+                        it.visibility = View.VISIBLE
+                        setText(R.id.tvMyMyLeavingMessageRvStoreNum, t.storesNum)
+                    }
+                }
                 //删除点击
                 getView<LinearLayout>(R.id.llMyMyLeavingMessageRvDelete).setOnClickListener {
                     httpDelLoadOne(mPageNum, t)

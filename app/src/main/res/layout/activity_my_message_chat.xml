@@ -9,7 +9,9 @@
     android:orientation="vertical"
     >
 
-    <include layout="@layout/layout_head"/>
+    <include
+        android:id="@+id/llMyMessageChatHead"
+        layout="@layout/layout_head"/>
 
     <LinearLayout
         android:id="@+id/llMyMessageChatTips"

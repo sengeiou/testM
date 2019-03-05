@@ -9,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import cn.bingoogolapple.bgabanner.BGABanner
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.entity.Banner
@@ -94,7 +95,7 @@ open class NewsPaperAdapter(val context: Context, var mImgsList: ArrayList<Banne
             mContext.text = newsPagerList.content
             mDate.text = getDateToString(newsPagerList.formatTime.toLong())
             url = newsPagerList.articleUrl
-            Glide.with(context).load(newsPagerList.banner).apply(RequestOptions()
+            Glide.with(context).load(newsPagerList.banner).apply(RequestOptions.bitmapTransform(RoundedCorners(10))
                     .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(mImgView)
             itemView.setOnClickListener { onItemClickListener(newsPagerList) }
         }
