@@ -139,7 +139,7 @@ class PopSeachCondition : PopupWindow {
         mGridManager = GridLayoutManager(mActivity, 3)
         mMenuView.search_result_condition_recycler_money.layoutManager = mGridManager
         mMenuView.search_result_condition_recycler_money.isNestedScrollingEnabled = false
-        mMoneyAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextMoneyList, holderConvert = { holder, data, _, _ ->
+        mMoneyAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextMoneyList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
                 getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
                     if (data.checkState) {
@@ -154,7 +154,7 @@ class PopSeachCondition : PopupWindow {
                 }
                 setText(R.id.tvSelectDialogRvMenuG, data.name)
             }
-        }, onItemClick = { _, _, position ->
+        }, onItemClick = { view, holder, position ->
             mTextMoneyList[position].let {
                 it.checkState = !it.checkState
             }
@@ -166,7 +166,7 @@ class PopSeachCondition : PopupWindow {
         mGridManager = GridLayoutManager(mActivity, 3)
         mMenuView.search_result_condition_recycler_joinType.layoutManager = mGridManager
         mMenuView.search_result_condition_recycler_joinType.isNestedScrollingEnabled = false
-        mJoinModelAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextJoinTypeList, holderConvert = { holder, data, _, _ ->
+        mJoinModelAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextJoinTypeList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
                 getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
                     if (data.checkState) {
@@ -181,7 +181,7 @@ class PopSeachCondition : PopupWindow {
                 }
                 setText(R.id.tvSelectDialogRvMenuG, data.name)
             }
-        }, onItemClick = { _, _, position ->
+        }, onItemClick = { view, holder, position ->
             mTextJoinTypeList[position].let {
                 it.checkState = !it.checkState
             }
