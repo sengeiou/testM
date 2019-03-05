@@ -106,7 +106,7 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
     private fun getCacheData() {
         Observable.create<NewsPagerBean> {
             val newsList = BoxUtils.getNewsPager()
-            val bannerList = BoxUtils.getBannersByType(3)
+            val bannerList = BoxUtils.getBannersByType(8)
             if (!mImgList.isEmpty()) {
                 mImgList.clear()
             }
@@ -234,7 +234,7 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
     }
 
     private fun httpBannerLoad(version: String) {
-        ApiUtils.getApi().getbanner(version, 3)
+        ApiUtils.getApi().getBanners(version, 8)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
