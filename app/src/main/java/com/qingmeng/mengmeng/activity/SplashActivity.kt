@@ -87,7 +87,7 @@ class SplashActivity : BaseActivity() {
 
     @SuppressLint("ObsoleteSdkInt", "CheckResult")
     private fun getAdv() {
-        ApiUtils.getApi().getBanners("", 7)
+        ApiUtils.getApi().getBanners("", 9)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({ bean ->

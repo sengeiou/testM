@@ -79,11 +79,8 @@ open class NewsPaperAdapter(val context: Context, var mImgsList: ArrayList<Banne
             bgaBanner.setAdapter(this@NewsPaperAdapter) //必须设置此适配器，否则方法不会调用接口来填充图片
             bgaBanner.setDelegate(this@NewsPaperAdapter) //设置点击事件，重写点击回调方法
             bgaBanner.setData(mImgsList, null)
-            if (mImgsList.size > 1) {
-                bgaBanner.setAutoPlayAble(true)
-            } else {
-                bgaBanner.setAutoPlayAble(false)
-            }
+            bgaBanner.setAutoPlayAble(mImgsList.size > 1)
+            bgaBanner.setData(mImgsList, null)
         }
     }
 
