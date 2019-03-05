@@ -265,7 +265,7 @@
     <string name="loginAgain">重新登录</string>
     <string name="systemNotification">系统通知</string>
     <string name="systemNotification_id">60834</string>
-    <string name="firstToChat_tips">您好，欢迎您的咨询！请问您是想了解加盟项目的哪些问题呢？</string>
+    <string name="firstToChat_tips">您好，欢迎您的咨询！请问您是想了解品牌项目的哪些问题呢？</string>
     <string name="last_img_tips">你可能要发送的照片：</string>
 
     <!-- ======================================相机====================================== -->
