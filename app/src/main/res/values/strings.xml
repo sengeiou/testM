@@ -154,6 +154,7 @@
     <string name="login_success">登录成功</string>
     <string name="phone_not_registered">手机号没有注册</string>
     <string name="login_fail_recover_password">温馨提示”密码错误次数过多，是否找回密码！</string>
+    <string name="login_fail_company">该账号为企业账号，请前往网页版登录</string>
     <string name="scuuess_code">请输入正确格式的验证码</string>
     <string name="picture_neirong">请输入图片中的内容</string>
     <string name="read_accept">我已经认真阅读并接受</string>
