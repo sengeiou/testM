@@ -25,10 +25,11 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.ShopDetailVpAdapter
-import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.BRANDID
+import com.qingmeng.mengmeng.constant.IConstants.BRAND_TO_MESSAGE
 import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
 import com.qingmeng.mengmeng.constant.IConstants.IMGS
+import com.qingmeng.mengmeng.constant.IConstants.MESSAGE_BACK_BRAND_ID
 import com.qingmeng.mengmeng.constant.IConstants.POSITION
 import com.qingmeng.mengmeng.entity.BrandBean
 import com.qingmeng.mengmeng.entity.BrandInformation
@@ -183,7 +184,7 @@ class ShopDetailActivity : BaseActivity() {
             brandBean?.let {
                 FaceInitData.init(applicationContext)
                 FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
-                toNext<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to "1_${it.wxServiceId}", "title" to it.nickname, "bundle" to Bundle().apply {
+                toNextResult<MyMessageChatActivity>(BRAND_TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to "1_${it.wxServiceId}", "title" to it.nickname, "bundle" to Bundle().apply {
                     putInt("id", id)
                     putString("logo", it.logo)
                     putString("name", it.name)
@@ -204,7 +205,7 @@ class ShopDetailActivity : BaseActivity() {
             brandBean?.let {
                 FaceInitData.init(applicationContext)
                 FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
-                toNext<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to "1_${it.wxServiceId}", "title" to it.nickname, "bundle" to Bundle().apply {
+                toNextResult<MyMessageChatActivity>(BRAND_TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to "1_${it.wxServiceId}", "title" to it.nickname, "bundle" to Bundle().apply {
                     putInt("id", id)
                     putString("logo", it.logo)
                     putString("name", it.name)
@@ -326,12 +327,38 @@ class ShopDetailActivity : BaseActivity() {
         AnkoInternals.internalStartActivity(this, T::class.java, params)
     }
 
+    private inline fun <reified T : Activity> toNextResult(requestCode: Int, vararg params: Pair<String, Any>) {
+        if (TextUtils.isEmpty(MainApplication.instance.TOKEN)) {
+            startActivity<LoginMainActivity>(FROM_TYPE to 1)
+            ToastUtil.showShort(getString(R.string.pls_login))
+            return
+        }
+        AnkoInternals.internalStartActivityForResult(this, T::class.java, requestCode, params)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         data?.let { mDetailVp.currentItem = it.getIntExtra(POSITION, 0) }
+        if (resultCode == Activity.RESULT_OK && requestCode == BRAND_TO_MESSAGE) {
+            //通过MESSAGE_BACK_BRAND_ID判断，如果当前id存在了，就直接finish掉
+            val arrayList = MESSAGE_BACK_BRAND_ID.split(",")
+            if (arrayList.isNotEmpty()) {
+                arrayList.forEach {
+                    if (it.toInt() == id) {
+                        finish()
+                    }
+                }
+            }
+            if (TextUtils.isEmpty(MESSAGE_BACK_BRAND_ID)) {
+                MESSAGE_BACK_BRAND_ID = "${id}"
+            } else {
+                MESSAGE_BACK_BRAND_ID = MESSAGE_BACK_BRAND_ID + ",${id}"
+            }
+        }
     }
 
     override fun onBackPressed() {
+        setResult(Activity.RESULT_OK)
         if (Jzvd.backPress()) return
         super.onBackPressed()
     }
@@ -369,9 +396,9 @@ class ShopDetailActivity : BaseActivity() {
         }
     }
 
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        startActivity<ShopDetailActivity>(IConstants.BRANDID to intent.getIntExtra(BRANDID, 0))
-        this.finish()
-    }
+//    override fun onNewIntent(intent: Intent) {
+//        super.onNewIntent(intent)
+//        startActivity<ShopDetailActivity>(IConstants.BRANDID to intent.getIntExtra(BRANDID, 0))
+//        this.finish()
+//    }
 }
