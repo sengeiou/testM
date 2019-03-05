@@ -50,6 +50,7 @@ object IConstants {
     var login_pwd = "mengPass"            //账号密码登录时保存密码
     val BRAND_TO_MESSAGE = 10055          //品牌详情进聊天
     var MESSAGE_BACK_BRAND_ID = ""        //聊天界面返回的品牌详情id
+    var ENTER_BRAND_NUM = 0               //第几次进详情
     //图片验证码
     val GET_IMAGE_CODE = BASE_URL + "api/captcha_app/image_app?account="
 

@@ -99,6 +99,7 @@ class MyMessageChatActivity : BaseActivity() {
 
     companion object {
         var mAvatar = ""                                        //默认发送者头像
+        var instance: MyMessageChatActivity? = null             //当前aty
     }
 
     /**
@@ -126,6 +127,7 @@ class MyMessageChatActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
+        instance = this
         val title = intent.getStringExtra("title") ?: ""
         setHeadName(title)
         //系统通知隐藏聊天功能
