@@ -28,7 +28,7 @@ object BoxUtils {
     /**
      * 根据类型获取banner信息
      *
-     * @param type 1、首页；3、头报 5.登录banner 6.引导页
+     * @param type 7、首页banner；8、头报banner；9、广告页 10、登录
      */
     fun getBannersByType(type: Long): MutableList<Banner> {
         return bannerBox.query().equal(Banner_.type, type).build().find()

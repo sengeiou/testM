@@ -45,7 +45,7 @@ interface Api {
     @FormUrlEncoded
     fun register(@Field("userName") userName: String, @Field("phone") phone: String, @Field("smsCode") smsCode: String,
                  @Field("password") password: String,
-                 @Field("type") type: Int, @Field("isUserProtocol") isUserProtocol: Int = 1,@Field("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
+                 @Field("type") type: Int, @Field("isUserProtocol") isUserProtocol: Int = 1, @Field("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
 
     //获取版本信息
     @GET("api/version/get_version_info")
@@ -63,9 +63,15 @@ interface Api {
     @GET("api/join/get_setting_brands")
     fun getRecommend(@Query("sysStaticId") sysStaticId: Int, @Query("pageNum") pageNum: Int): Observable<BaseBean<JoinRecommendBean>>
 
-    //获取Banner图
+
+    /**
+     * 获取Banner图
+     * @param type 类型 7、首页banner；8、头报banner；9、广告页 10、登录
+     * @param mobilePhoneType 手机类型 1.全部、2.ios、3.安卓、4.iPhoneX
+     **/
     @GET("api/banner/get_banner")
-    fun getBanners(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
+    fun getBanners(@Header("VERSION") version: String, @Query("type") type: Int,
+                   @Query("mobilePhoneType") mobilePhoneType: Int = 3): Observable<BaseBean<BannerData>>
 
     //添加定位信息
     @POST("api/location/add")
@@ -87,11 +93,11 @@ interface Api {
 
     //账号登录
     @POST("app/user/account_login")
-    fun accountLogin(@Query("account") account: String, @Query("password") password: String,@Query("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
+    fun accountLogin(@Query("account") account: String, @Query("password") password: String, @Query("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
 
     //短信登录
     @POST("app/user/msm_login")
-    fun smslogin(@Query("phone") phone: String, @Query("smsCode") smsCode: String,@Query("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
+    fun smslogin(@Query("phone") phone: String, @Query("smsCode") smsCode: String, @Query("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
 
     /**
      * =========================================我的板块=========================================
@@ -154,13 +160,6 @@ interface Api {
     //换绑手机
     @GET("app/user/exchange_Phone")
     fun updatePhone(@Query("newPhone") newPhone: String, @Query("smsCode") smsCode: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
-
-    /**
-     * 获取banner图信息
-     * @param  type 1、首页；3、头报 5.登录banner 6.引导页
-     **/
-    @GET("api/banner/get_banner")
-    fun getbanner(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
 
     //忘记密码
     @POST("app/user/forget_password")
@@ -281,5 +280,5 @@ interface Api {
 
     //第三方登录   type 1.QQ 2.微信
     @POST("app/user/third_party_login")
-    fun loginThree(@Query("openId") openId: String, @Query("type") type: Int,@Query("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
+    fun loginThree(@Query("openId") openId: String, @Query("type") type: Int, @Query("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
 }

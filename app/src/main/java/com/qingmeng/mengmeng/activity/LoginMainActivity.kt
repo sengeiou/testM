@@ -101,7 +101,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     }
 
     override fun initData() {
-        val bannerData = BoxUtils.getBannersByType(5)
+        val bannerData = BoxUtils.getBannersByType(10)
         mImgList.addAll(bannerData)
         if (!mImgList.isEmpty()) {
             mVersion = mImgList[0].version
@@ -241,7 +241,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
 
     //设置登录页面BGABanner
     private fun setBGABannerLogin() {
-        ApiUtils.getApi().getBanners(mVersion, 5)
+        ApiUtils.getApi().getBanners(mVersion, 10)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -269,11 +269,8 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
         banner_login_main.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
         banner_login_main.setDelegate(this)//设置点击事件，重写点击回调方法
         banner_login_main.setData(mImgList, null)
-        if (mImgList.size > 1) {
-            banner_login_main.setAutoPlayAble(true)
-        } else {
-            banner_login_main.setAutoPlayAble(false)
-        }
+        banner_login_main.setAutoPlayAble(mImgList.size > 1)
+        banner_login_main.setData(mImgList, null)
         banner_login_main.setPageTransformer(AlphaPageTransformer())
         banner_login_main.setAllowUserScrollable(false)
         banner_login_main.viewPager.setPageChangeDuration(10000)
