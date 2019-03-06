@@ -1,7 +1,6 @@
 package com.qingmeng.mengmeng.base
 
 import com.qingmeng.mengmeng.entity.*
-import io.objectbox.annotation.Id
 import io.reactivex.Observable
 import retrofit2.http.*
 
@@ -64,9 +63,15 @@ interface Api {
     @GET("api/join/get_setting_brands")
     fun getRecommend(@Query("sysStaticId") sysStaticId: Int, @Query("pageNum") pageNum: Int): Observable<BaseBean<JoinRecommendBean>>
 
-    //获取Banner图
+
+    /**
+     * 获取Banner图
+     * @param type 类型 7、首页banner；8、头报banner；9、广告页 10、登录
+     * @param mobilePhoneType 手机类型 1.全部、2.ios、3.安卓、4.iPhoneX
+     **/
     @GET("api/banner/get_banner")
-    fun getBanners(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
+    fun getBanners(@Header("VERSION") version: String, @Query("type") type: Int,
+                   @Query("mobilePhoneType") mobilePhoneType: Int = 3): Observable<BaseBean<BannerData>>
 
     //添加定位信息
     @POST("api/location/add")

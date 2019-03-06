@@ -28,6 +28,7 @@ import com.luck.picture.lib.config.PictureConfig
 import com.luck.picture.lib.config.PictureMimeType
 import com.mogujie.tt.api.RequestManager
 import com.mogujie.tt.api.composeDefault
+import com.mogujie.tt.app.IMApplication
 import com.mogujie.tt.config.*
 import com.mogujie.tt.db.entity.GroupEntity
 import com.mogujie.tt.db.entity.MessageEntity
@@ -98,6 +99,7 @@ class MyMessageChatActivity : BaseActivity() {
 
     companion object {
         var mAvatar = ""                                        //默认发送者头像
+        var instance: MyMessageChatActivity? = null             //当前aty
     }
 
     /**
@@ -125,6 +127,7 @@ class MyMessageChatActivity : BaseActivity() {
     override fun initObject() {
         super.initObject()
 
+        instance = this
         val title = intent.getStringExtra("title") ?: ""
         setHeadName(title)
         //系统通知隐藏聊天功能
@@ -172,9 +175,9 @@ class MyMessageChatActivity : BaseActivity() {
         if (peerEntity == null) {
             peerEntity = mImService!!.sessionManager.findPeerEntity(currentSessionKey)
         }
-        // 头像、历史消息加载、取消通知
+        //头像、历史消息加载、取消通知
         setTitleByUser()
-        reqHistoryMsg(true)
+        reqHistoryMsg()
         mImService?.unReadMsgManager?.readUnreadSession(currentSessionKey)
         mImService?.notificationManager?.cancelSessionNotifications(currentSessionKey)
     }
@@ -229,7 +232,6 @@ class MyMessageChatActivity : BaseActivity() {
 
         //音频
         ivMyMessageChatAudio.setOnClickListener {
-            mAdapter.notifyDataSetChanged()
             //判断是否有权限
             PermissionUtils.audio(this, {
                 PermissionUtils.readAndWrite(this, {
@@ -728,12 +730,11 @@ class MyMessageChatActivity : BaseActivity() {
         if (isAnimation) {
 //            SmoothScrollLayoutManager(this).smoothScrollToPosition(rvMyMessageChat,1,mAdapter.msgObjectList.lastIndex)
             rvMyMessageChat.smoothScrollToPosition(mAdapter.msgObjectList.lastIndex)
-            mAdapter.notifyDataSetChanged()
-            tvMyMessageChatTips.visibility = View.GONE
             mRecyclerViewIsBottom = true
         } else {
             rvMyMessageChat.scrollToPosition(mAdapter.msgObjectList.lastIndex)
         }
+        tvMyMessageChatTips.visibility = View.GONE
     }
 
     /**
@@ -773,7 +774,7 @@ class MyMessageChatActivity : BaseActivity() {
     /**
      * 添加单个消息
      */
-    private fun pushList(msg: MessageEntity?, isMinePhone: Boolean = false) {
+    private fun pushList(msg: MessageEntity?, isMinePhone: Boolean) {
         //撤回的消息
         if (msg?.infoType == DBConstant.SHOW_REVOKE_TYPE) {
             mAdapter.updateRevokeMsg(msg)
@@ -789,7 +790,7 @@ class MyMessageChatActivity : BaseActivity() {
     /**
      * 添加list消息
      */
-    private fun pushList(entityList: MutableList<MessageEntity>?, isFirstLoad: Boolean) {
+    private fun pushList(entityList: MutableList<MessageEntity>?) {
         //添加假消息给用户
         val textMessage = localTextMessage()
         val list: MutableList<MessageEntity>? = if (entityList?.size ?: 0 > 0) {
@@ -803,20 +804,8 @@ class MyMessageChatActivity : BaseActivity() {
             val brandMessage = localBrandMessage()
             list?.add(brandMessage)
         }
-        //第一次列表到底部
-        if (isFirstLoad) {
-            mAdapter.loadHistoryList(list, mLayoutManager)
-        } else {
-            //收到新消息了 且RecyclerView不在底部 弹出新消息提示
-            if (!mRecyclerViewIsBottom) {
-                tvMyMessageChatTips.visibility = View.VISIBLE
-                mAdapter.loadHistoryList(list)
-                Handler().postDelayed({ tvMyMessageChatTips.visibility = View.GONE }, 3000)
-            } else {
-                tvMyMessageChatTips.visibility = View.GONE
-                mAdapter.loadHistoryList(list, mLayoutManager)
-            }
-        }
+        mAdapter.msgObjectList.clear()
+        mAdapter.loadHistoryList(list)
         //无系统通知提示
         if (list!![0].fromId == 0 && mIsSystemMotification) {
             llMyMessageChatTips.visibility = View.VISIBLE
@@ -930,8 +919,7 @@ class MyMessageChatActivity : BaseActivity() {
             }
             MessageEvent.Event.HISTORY_MSG_OBTAIN -> {
                 if (historyTimes == 1) {
-                    mAdapter.msgObjectList.clear()
-                    reqHistoryMsg(true)
+                    reqHistoryMsg()
                 }
             }
         }
@@ -944,11 +932,17 @@ class MyMessageChatActivity : BaseActivity() {
         when (event.event) {
             UnreadEvent.Event.UNREAD_MSG_RECEIVED, UnreadEvent.Event.UNREAD_MSG_LIST_OK, UnreadEvent.Event.SESSION_READED_UNREAD_MSG -> if (IMUnreadMsgManager.instance().totalUnreadCount > 0) {
                 historyTimes = 0
-                //只有在最底下再清空消息
+                //收到新消息了 RecyclerView在底部
                 if (mRecyclerViewIsBottom) {
-                    mAdapter.msgObjectList.clear()
+                    tvMyMessageChatTips.visibility = View.GONE
+                    mAdapter.notifyDataSetChanged()
+                    mLayoutManager.scrollToPosition(mAdapter.msgObjectList.lastIndex)
+                } else {
+                    tvMyMessageChatTips.visibility = View.VISIBLE
+                    Handler().postDelayed({ tvMyMessageChatTips?.visibility = View.GONE }, 3000)
+                    mAdapter.notifyDataSetChanged()
                 }
-                reqHistoryMsg(false)
+//                reqHistoryMsg()
             }
         }
     }
@@ -969,7 +963,7 @@ class MyMessageChatActivity : BaseActivity() {
      */
     private fun onMsgRecv(entity: MessageEntity) {
         mImService?.unReadMsgManager?.ackReadMsg(entity)
-        pushList(entity)
+        pushList(entity, false)
     }
 
     /**
@@ -984,11 +978,12 @@ class MyMessageChatActivity : BaseActivity() {
      * 1.初始化请求历史消息
      * 2.本地消息不全，也会触发
      */
-    private fun reqHistoryMsg(isFirstLoad: Boolean) {
+    private fun reqHistoryMsg() {
         if (peerEntity != null) {
             historyTimes++
             val msgList = mImService?.messageManager?.loadHistoryMsg(historyTimes, currentSessionKey, peerEntity)
-            pushList(msgList, isFirstLoad)
+            pushList(msgList)
+            scrollToBottomListItem()
         }
     }
 
@@ -1061,7 +1056,7 @@ class MyMessageChatActivity : BaseActivity() {
             val historyMsgInfo = mImService?.messageManager?.loadHistoryMsg(messageEntity, historyTimes)
             if (historyMsgInfo?.size ?: 0 > 0) {
                 historyTimes++
-                mAdapter.loadHistoryList(historyMsgInfo, mLayoutManager, true)
+                mAdapter.loadHistoryList(historyMsgInfo, mLayoutManager)
             }
         }
     }
@@ -1191,14 +1186,16 @@ class MyMessageChatActivity : BaseActivity() {
             llMyMessageChatFunction.visibility = View.GONE
             rlMyMessageChatExpression.visibility = View.GONE
         } else {
+            mImService?.unReadMsgManager?.readUnreadSession(currentSessionKey)
+            setResult(Activity.RESULT_OK)
             super.onBackPressed()
         }
     }
 
     override fun onResume() {
-        historyTimes = 0
-
         super.onResume()
+        IMApplication.gifRunning = true
+        historyTimes = 0
     }
 
     override fun onStop() {

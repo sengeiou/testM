@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">盟盟</string>
     <string name="exit_app">再按一次退出盟盟</string>
-    <string name="tab_name_love_to_join">爱加盟</string>
+    <string name="tab_name_love_to_join">爱盟盟</string>
     <string name="tab_name_red_shop">红铺</string>
     <string name="tab_name_head_newspaper">头报</string>
     <string name="tab_name_my">我的</string>
@@ -58,6 +58,7 @@
     <string name="feedback">反馈</string>
     <string name="share">分享</string>
     <string name="no_net">嗨呀~没有网络链接o(┬﹏┬)o</string>
+    <string name="goods_undercarriage">商品已下架o(┬﹏┬)o</string>
     <string name="new_version_update">新版本升级</string>
     <string name="mengmeng_version_updating">盟盟版本更新下载</string>
     <string name="update_content">更新内容</string>
@@ -264,7 +265,7 @@
     <string name="loginAgain">重新登录</string>
     <string name="systemNotification">系统通知</string>
     <string name="systemNotification_id">60834</string>
-    <string name="firstToChat_tips">您好，欢迎您的咨询！请问您是想了解加盟项目的哪些问题呢？</string>
+    <string name="firstToChat_tips">您好，欢迎您的咨询！请问您是想了解品牌项目的哪些问题呢？</string>
     <string name="last_img_tips">你可能要发送的照片：</string>
 
     <!-- ======================================相机====================================== -->

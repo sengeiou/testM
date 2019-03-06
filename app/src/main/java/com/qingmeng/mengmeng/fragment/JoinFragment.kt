@@ -62,7 +62,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     //获取缓存数据
     private fun getCacheData() {
         Observable.create<JoinRecommendBean> {
-            val bannerData = BoxUtils.getBannersByType(1)
+            val bannerData = BoxUtils.getBannersByType(7)
             val menuData = BoxUtils.getStaticByType(1)
             val tabData = BoxUtils.getStaticByType(2)
             mImgList.addAll(bannerData)
@@ -247,8 +247,14 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         val recyclerView = RecyclerView(context!!)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        val adapter = JoinRecommendAdapter(context!!) {
-            startActivity<ShopDetailActivity>(BRANDID to it.id)
+        val adapter = JoinRecommendAdapter(context!!) { it ->
+            if (it.isFakeBrand == 1) {
+                myDialog.showJoinDataDialog(it.name) { name, phone, message ->
+                    ApiUtils.join(it.id, name, phone, message, myDialog) { addSubscription(it) }
+                }
+            } else {
+                startActivity<ShopDetailActivity>(BRANDID to it.id)
+            }
         }
         recyclerView.adapter = adapter
         viewSparseArray.put(tagId, recyclerView)
@@ -350,7 +356,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 
     //获取banner图
     private fun getBanners(version: String) {
-        ApiUtils.getApi().getBanners(version, 1)
+        ApiUtils.getApi().getBanners(version, 7)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -432,11 +438,8 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         mJoinBanner.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
         mJoinBanner.setDelegate(this)//设置点击事件，重写点击回调方法
         mJoinBanner.setData(mImgList, null)
-        if (mImgList.size > 1) {
-            mJoinBanner.setAutoPlayAble(true)
-        } else {
-            mJoinBanner.setAutoPlayAble(false)
-        }
+        mJoinBanner.setAutoPlayAble(mImgList.size > 1)
+        mJoinBanner.setData(mImgList, null)
     }
 
     /**

@@ -852,7 +852,10 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         if (msg is ImageMessage) {
             ImageMessage.addToImageMessageList(msg)
         }
-        mLayoutManager?.scrollToPosition(msgObjectList.lastIndex)
+        mLayoutManager?.let {
+            notifyDataSetChanged()
+            it.scrollToPosition(msgObjectList.lastIndex)
+        }
     }
 
     /**
@@ -890,6 +893,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 }
             }
         }
+        notifyDataSetChanged()
     }
 
     /**
@@ -946,7 +950,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     /**
      * 下拉载入历史消息,从最上面开始添加
      */
-    fun loadHistoryList(historyList: List<MessageEntity>?, mLayoutManager: LinearLayoutManager? = null, isPullDownToRefresh: Boolean = false) {
+    fun loadHistoryList(historyList: List<MessageEntity>?, mLayoutManager: LinearLayoutManager? = null) {
         if (null == historyList || historyList.isEmpty()) {
             return
         }
@@ -979,18 +983,8 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         // 如果是历史消息，从头开始加
         msgObjectList.addAll(0, chatList)
         getImageList()
-        if (mLayoutManager != null) {
-            notifyDataSetChanged()
-        }
-//        else {
-//            //更新单个item（不更新滑动时会数据不对 崩溃）
-//            notifyItemChanged(msgObjectList.lastIndex, "yang")
-//        }
-        if (isPullDownToRefresh) {  //加载历史
-            mLayoutManager?.scrollToPositionWithOffset(chatList.lastIndex + 1, 0)
-        } else {    //直接添加历史
-            mLayoutManager?.scrollToPosition(msgObjectList.lastIndex)
-        }
+        notifyDataSetChanged()
+        mLayoutManager?.scrollToPositionWithOffset(chatList.lastIndex + 1, 0)
     }
 
     /**

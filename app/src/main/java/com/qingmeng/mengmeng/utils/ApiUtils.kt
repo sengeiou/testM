@@ -14,11 +14,14 @@ import com.alibaba.sdk.android.oss.common.auth.OSSFederationToken
 import com.alibaba.sdk.android.oss.model.PutObjectRequest
 import com.alibaba.sdk.android.oss.model.PutObjectResult
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.base.Api
 import com.qingmeng.mengmeng.base.SealAccountInterceptor
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.OssDataBean
+import com.qingmeng.mengmeng.view.dialog.DialogCustom
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -50,6 +53,25 @@ object ApiUtils {
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .build()
                 .create(Api::class.java)
+    }
+
+    //加盟
+    fun join(id: Int, name: String, phone: String, message: String, myDialog: DialogCustom, addSubscription: (Disposable) -> Unit) {
+        myDialog.showLoadingDialog()
+        getApi().join(id, name, phone, message)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ bean ->
+                    myDialog.dismissLoadingDialog()
+                    if (bean.code == 12000) {
+                        ToastUtil.showShort(R.string.submit_success)
+                    } else {
+                        ToastUtil.showShort(bean.msg)
+                    }
+                }, {
+                    myDialog.dismissLoadingDialog()
+                    ToastUtil.showNetError()
+                }, {}, { addSubscription(it) })
     }
 
     /**
