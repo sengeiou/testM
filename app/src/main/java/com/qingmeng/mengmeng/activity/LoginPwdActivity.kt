@@ -185,7 +185,6 @@ class LoginPwdActivity : BaseActivity() {
                             })
                             mDialog.show()
                         }
-                        25058 -> ToastUtil.showShort(getString(R.string.login_fail_company))
                     //手机号不存在
                         25091 -> {
                             //提示“该手机号尚未注册，是否前去注册？” “注册”和“取消”两个按钮
