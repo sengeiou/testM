@@ -133,54 +133,6 @@
       "relations": []
     },
     {
-      "id": "5:8947628775591659427",
-      "lastPropertyId": "4:2180508600968148689",
-      "name": "ConditionBean",
-      "properties": [
-        {
-          "id": "1:5904091168272559587",
-          "name": "cacheId"
-        },
-        {
-          "id": "2:7517622712609872694",
-          "name": "id"
-        },
-        {
-          "id": "3:6863945813700739575",
-          "name": "name"
-        },
-        {
-          "id": "4:2180508600968148689",
-          "name": "checkState"
-        }
-      ],
-      "relations": []
-    },
-    {
-      "id": "6:9097165740997573731",
-      "lastPropertyId": "4:8889518745739018909",
-      "name": "ConditionMoneyBean",
-      "properties": [
-        {
-          "id": "1:1347470796465151781",
-          "name": "cacheId"
-        },
-        {
-          "id": "2:2160831025423392483",
-          "name": "id"
-        },
-        {
-          "id": "3:8857572403842995441",
-          "name": "name"
-        },
-        {
-          "id": "4:8889518745739018909",
-          "name": "checkState"
-        }
-      ],
-      "relations": []
-    },
-    {
       "id": "7:7858575221499533964",
       "lastPropertyId": "4:3816063486345558588",
       "name": "HotSearchesList",
@@ -407,17 +359,77 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "13:1118573773076510053",
+      "lastPropertyId": "4:1565706356475079057",
+      "name": "CapitalList",
+      "properties": [
+        {
+          "id": "1:5190538244324311783",
+          "name": "cacheId"
+        },
+        {
+          "id": "2:3291222691141927729",
+          "name": "id"
+        },
+        {
+          "id": "3:1406276030390992393",
+          "name": "name"
+        },
+        {
+          "id": "4:1565706356475079057",
+          "name": "checkState"
+        }
+      ],
+      "relations": []
+    },
+    {
+      "id": "14:361559305557304564",
+      "lastPropertyId": "4:6817431038066746903",
+      "name": "JoinModes",
+      "properties": [
+        {
+          "id": "1:5164514118068727843",
+          "name": "cacheId"
+        },
+        {
+          "id": "2:3100172394894382015",
+          "name": "id"
+        },
+        {
+          "id": "3:3811933330994647558",
+          "name": "name"
+        },
+        {
+          "id": "4:6817431038066746903",
+          "name": "checkState"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "12:5493049499433178018",
+  "lastEntityId": "14:361559305557304564",
   "lastIndexId": "0:0",
   "lastRelationId": "1:7289592437722790732",
   "lastSequenceId": "0:0",
   "modelVersion": 4,
   "modelVersionParserMinimum": 4,
-  "retiredEntityUids": [],
+  "retiredEntityUids": [
+    9097165740997573731,
+    8947628775591659427
+  ],
   "retiredIndexUids": [],
-  "retiredPropertyUids": [],
+  "retiredPropertyUids": [
+    1347470796465151781,
+    2160831025423392483,
+    8857572403842995441,
+    8889518745739018909,
+    5904091168272559587,
+    7517622712609872694,
+    6863945813700739575,
+    2180508600968148689
+  ],
   "retiredRelationUids": [],
   "version": 1
 }

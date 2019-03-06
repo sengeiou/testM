@@ -19,8 +19,8 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
-import com.qingmeng.mengmeng.entity.ConditionBean
-import com.qingmeng.mengmeng.entity.ConditionMoneyBean
+import com.qingmeng.mengmeng.entity.CapitalList
+import com.qingmeng.mengmeng.entity.JoinModes
 import com.qingmeng.mengmeng.entity.SeachResultBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.BoxUtils
@@ -33,13 +33,13 @@ import kotlinx.android.synthetic.main.activity_condition_pop_window.view.*
 @SuppressLint("CheckResult")
 class PopSeachCondition : PopupWindow {
 
-    private var mTextMoneyList = ArrayList<ConditionMoneyBean>()
-    private var mTextJoinTypeList = ArrayList<ConditionBean>()
+    private var mTextMoneyList = ArrayList<CapitalList>()
+    private var mTextJoinTypeList = ArrayList<JoinModes>()
     private var mActivity: Activity
     private var mMenuView: View
     private lateinit var mGridManager: GridLayoutManager
-    private lateinit var mMoneyAdapter: CommonAdapter<ConditionMoneyBean>
-    private lateinit var mJoinModelAdapter: CommonAdapter<ConditionBean>
+    private lateinit var mMoneyAdapter: CommonAdapter<CapitalList>
+    private lateinit var mJoinModelAdapter: CommonAdapter<JoinModes>
     private lateinit var mSelectCallBack: SelectCallBack                 //回调
     private var checkedMoneyData = StringBuffer()
     private var checkedTypeData = StringBuffer()
@@ -120,13 +120,13 @@ class PopSeachCondition : PopupWindow {
                 if (it.checkState) {
                     checkedMoneyData.append("${it.id},")
                 }
-                mMoneyAdapter.notifyDataSetChanged()
+                // mMoneyAdapter.notifyDataSetChanged()
             }
             mTextJoinTypeList.forEach {
                 if (it.checkState) {
                     checkedTypeData.append("${it.id},")
                 }
-                mJoinModelAdapter.notifyDataSetChanged()
+                //  mJoinModelAdapter.notifyDataSetChanged()
             }
             mSelectCallBack.onSelectCallBack(checkedMoneyData, checkedTypeData)
             dismiss()
