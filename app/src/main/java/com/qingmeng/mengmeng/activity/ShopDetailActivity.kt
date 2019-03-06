@@ -5,6 +5,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Handler
 import android.support.annotation.RequiresApi
 import android.support.v4.content.ContextCompat
 import android.support.v4.view.ViewPager
@@ -108,62 +109,70 @@ class ShopDetailActivity : BaseActivity() {
     }
 
     private fun setData(bean: BrandBean) {
-        brandBean = bean
-        name = bean.name
-        if (bean.status == 1) {
-            val spanString = SpannableString("证 $name")
-            val drawable = resources.getDrawable(R.drawable.detail_icon_certification)
-            val imageSpan = ImageSpan(drawable, ImageSpan.ALIGN_BASELINE)
-            spanString.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-            val density = resources.displayMetrics.density
-            drawable.setBounds(0, (7 * density).toInt(), (14 * density).toInt(), (21 * density).toInt())
-            mDetailName.text = spanString
+        if (bean.isStand) {
+            mGoodsUndercarriage.visibility = View.VISIBLE
+            mGoodsUndercarriageText.visibility = View.VISIBLE
+            Handler().postDelayed({ finish() }, 2000)
         } else {
-            mDetailName.text = name
+            mGoodsUndercarriage.visibility = View.GONE
+            mGoodsUndercarriageText.visibility = View.GONE
+            brandBean = bean
+            name = bean.name
+            if (bean.status == 1) {
+                val spanString = SpannableString("证 $name")
+                val drawable = resources.getDrawable(R.drawable.detail_icon_certification)
+                val imageSpan = ImageSpan(drawable, ImageSpan.ALIGN_BASELINE)
+                spanString.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
+                val density = resources.displayMetrics.density
+                drawable.setBounds(0, (7 * density).toInt(), (14 * density).toInt(), (21 * density).toInt())
+                mDetailName.text = spanString
+            } else {
+                mDetailName.text = name
+            }
+            mDetailType.text = bean.foodName
+            mDetailMoney.text = bean.capitalName
+            mDetailJoinCount.text = getString(R.string.join_count, bean.joinStoreNumStr)
+            mDetailDirectCount.text = getString(R.string.direct_count, bean.directStoreNumStr)
+            if (!mJoinSupport.isEmpty()) {
+                mJoinSupport.clear()
+            }
+            bean.affiliateSupport.apply {
+                trainContent?.let { mJoinSupport.addAll(it) }
+                operateSupport?.let { mJoinSupport.addAll(it) }
+                operationalSupervision?.let { mJoinSupport.addAll(it) }
+                if (!TextUtils.isEmpty(locationName)) mJoinSupport.add(locationName)
+                if (!TextUtils.isEmpty(decorationName)) mJoinSupport.add(decorationName)
+                if (!TextUtils.isEmpty(trainingMethodName)) mJoinSupport.add(trainingMethodName)
+            }
+            brandInformation = bean.brandInformation
+            brandInitialFee = bean.brandInitialFee
+            isAttention = bean.isAttention
+            if (bean.isAttention == 0) {
+                mCollection.setDrawableTop(R.drawable.detail_icon_collection)
+                mCollection.setText(R.string.attention)
+            } else {
+                mCollection.setDrawableTop(R.drawable.detail_icon_collected)
+                mCollection.setText(R.string.already_attention)
+            }
+            if (!mImgList.isEmpty()) {
+                mImgList.clear()
+            }
+            if (!TextUtils.isEmpty(bean.video)) {
+                mImgList.add(ShopDetailImg(bean.video, true))
+            }
+            hasVideo = !TextUtils.isEmpty(bean.video)
+            bean.planImage.forEach { mImgList.add(ShopDetailImg(it, false)) }
+            totalImg = bean.planImage.size
+            if (hasVideo) {
+                mImgCount.visibility = View.GONE
+                mImgCount.text = "0/$totalImg"
+            } else {
+                mImgCount.visibility = View.VISIBLE
+                mImgCount.text = "1/$totalImg"
+            }
+            vpAdapter.notifyDataSetChanged()
+            mDetailWeb.loadUrl(bean.brandHtmlUrl)
         }
-        mDetailType.text = bean.foodName
-        mDetailMoney.text = bean.capitalName
-        mDetailJoinCount.text = getString(R.string.join_count, bean.joinStoreNumStr)
-        mDetailDirectCount.text = getString(R.string.direct_count, bean.directStoreNumStr)
-        if (!mJoinSupport.isEmpty()) {
-            mJoinSupport.clear()
-        }
-        bean.affiliateSupport.apply {
-            trainContent?.let { mJoinSupport.addAll(it) }
-            operateSupport?.let { mJoinSupport.addAll(it) }
-            operationalSupervision?.let { mJoinSupport.addAll(it) }
-            if (!TextUtils.isEmpty(locationName)) mJoinSupport.add(locationName)
-            if (!TextUtils.isEmpty(decorationName)) mJoinSupport.add(decorationName)
-            if (!TextUtils.isEmpty(trainingMethodName)) mJoinSupport.add(trainingMethodName)
-        }
-        brandInformation = bean.brandInformation
-        brandInitialFee = bean.brandInitialFee
-        isAttention = bean.isAttention
-        if (bean.isAttention == 0) {
-            mCollection.setDrawableTop(R.drawable.detail_icon_collection)
-            mCollection.setText(R.string.attention)
-        } else {
-            mCollection.setDrawableTop(R.drawable.detail_icon_collected)
-            mCollection.setText(R.string.already_attention)
-        }
-        if (!mImgList.isEmpty()) {
-            mImgList.clear()
-        }
-        if (!TextUtils.isEmpty(bean.video)) {
-            mImgList.add(ShopDetailImg(bean.video, true))
-        }
-        hasVideo = !TextUtils.isEmpty(bean.video)
-        bean.planImage.forEach { mImgList.add(ShopDetailImg(it, false)) }
-        totalImg = bean.planImage.size
-        if (hasVideo) {
-            mImgCount.visibility = View.GONE
-            mImgCount.text = "0/$totalImg"
-        } else {
-            mImgCount.visibility = View.VISIBLE
-            mImgCount.text = "1/$totalImg"
-        }
-        vpAdapter.notifyDataSetChanged()
-        mDetailWeb.loadUrl(bean.brandHtmlUrl)
     }
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -185,7 +194,7 @@ class ShopDetailActivity : BaseActivity() {
         mDetailJoinSupport.setOnClickListener { myDialog.showBrandDialog(mJoinSupport) }
         mDetailBrandInformation.setOnClickListener { _ -> brandInformation?.let { myDialog.showBrandDialog(it) } }
         mDetailJoinMoney.setOnClickListener { _ -> brandInitialFee?.let { myDialog.showBrandDialog(it) } }
-        mCustomerService.setOnClickListener {
+        mCustomerService.setOnClickListener { _ ->
             brandBean?.let {
                 FaceInitData.init(applicationContext)
                 FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
@@ -208,7 +217,7 @@ class ShopDetailActivity : BaseActivity() {
             }
             if (isAttention == 0) addAttention() else unAttention()
         }
-        mDetailJoin.setOnClickListener {
+        mDetailJoin.setOnClickListener { _ ->
             brandBean?.let {
                 FaceInitData.init(applicationContext)
                 FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
@@ -223,7 +232,11 @@ class ShopDetailActivity : BaseActivity() {
             //如果聊天页面存在了 就销毁它
             finishAty(MyMessageChatActivity::class.java)
         }
-        mGetJoinData.setOnClickListener { myDialog.showJoinDataDialog(name) { name, phone, message -> join(name, phone, message) } }
+        mGetJoinData.setOnClickListener { _ ->
+            myDialog.showJoinDataDialog(name) { name, phone, message ->
+                ApiUtils.join(id, name, phone, message, myDialog) { addSubscription(it) }
+            }
+        }
         mDetailScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->
             val totalScroll = mDetailVp.height
             val maskAlpha = 1 - scrollY * 2f / totalScroll
@@ -264,25 +277,6 @@ class ShopDetailActivity : BaseActivity() {
             }
 
         })
-    }
-
-    //加盟
-    private fun join(name: String, phone: String, message: String) {
-        myDialog.showLoadingDialog()
-        ApiUtils.getApi().join(id, name, phone, message)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeOn(Schedulers.io())
-                .subscribe({ bean ->
-                    myDialog.dismissLoadingDialog()
-                    if (bean.code == 12000) {
-                        ToastUtil.showShort(R.string.submit_success)
-                    } else {
-                        ToastUtil.showShort(bean.msg)
-                    }
-                }, {
-                    myDialog.dismissLoadingDialog()
-                    ToastUtil.showNetError()
-                }, {}, { addSubscription(it) })
     }
 
     //收藏
