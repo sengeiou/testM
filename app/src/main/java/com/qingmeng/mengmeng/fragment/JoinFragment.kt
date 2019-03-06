@@ -247,8 +247,14 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         val recyclerView = RecyclerView(context!!)
         recyclerView.layoutManager = LinearLayoutManager(context)
 
-        val adapter = JoinRecommendAdapter(context!!) {
-            startActivity<ShopDetailActivity>(BRANDID to it.id)
+        val adapter = JoinRecommendAdapter(context!!) { it ->
+            if (it.isFakeBrand == 1) {
+                myDialog.showJoinDataDialog(it.name) { name, phone, message ->
+                    ApiUtils.join(it.id, name, phone, message, myDialog) { addSubscription(it) }
+                }
+            } else {
+                startActivity<ShopDetailActivity>(BRANDID to it.id)
+            }
         }
         recyclerView.adapter = adapter
         viewSparseArray.put(tagId, recyclerView)
