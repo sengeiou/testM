@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.Transformation
 import android.widget.ImageView
 import android.widget.TextView
 import cn.bingoogolapple.bgabanner.BGABanner
@@ -14,7 +15,9 @@ import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.entity.Banner
 import com.qingmeng.mengmeng.entity.NewsPagerList
+import com.qingmeng.mengmeng.view.GlideRoundTransformCenterCrop
 import com.youke.yingba.base.utils.TimeConversion.getDateToString
+import kotlinx.android.synthetic.main.tt_fragment_my.view.*
 
 /**
  * Created by fyf on 2019/1/2
@@ -95,8 +98,10 @@ open class NewsPaperAdapter(val context: Context, var mImgsList: ArrayList<Banne
             mContext.text = newsPagerList.content
             mDate.text = getDateToString(newsPagerList.formatTime.toLong())
             url = newsPagerList.articleUrl
-            Glide.with(context).load(newsPagerList.banner).apply(RequestOptions.bitmapTransform(RoundedCorners(10))
-                    .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(mImgView)
+            Glide.with(context).load(newsPagerList.banner).apply(RequestOptions()
+                    .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)
+                    .transform(GlideRoundTransformCenterCrop()))
+                    .into(mImgView)
             itemView.setOnClickListener { onItemClickListener(newsPagerList) }
         }
     }

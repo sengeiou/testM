@@ -48,8 +48,8 @@
                     android:id="@+id/search_food_type_bottom"
                     android:layout_width="@dimen/padding_dp_55"
                     android:layout_height="@dimen/padding_dp_2"
-                    android:background="@color/color_5ab1e1"
                     android:layout_marginStart="@dimen/padding_dp_20"
+                    android:background="@color/color_5ab1e1"
                     android:gravity="center"
                     android:visibility="gone" />
             </LinearLayout>
@@ -127,7 +127,7 @@
                     android:ellipsize="end"
                     android:gravity="center"
                     android:maxLines="1"
-                    android:text="@string/seach_screning_conditon"
+                    android:text="@string/seach_join_type"
                     android:textColor="@color/color_999999"
                     android:textSize="@dimen/text_size_14" />
 

@@ -5,14 +5,14 @@ import io.objectbox.annotation.Id
 
 data class SeachConditionBean(
         //加盟模式
-        var joinModes: List<ConditionBean>
-        )
+        val joinModes: List<JoinModes>
+)
 
 @Entity
-data class ConditionBean(
+data class JoinModes(
         @Id
         var cacheId: Long = 0,
-        val id: Int,
-        val name: String,
+        var id: Int,
+        var name: String,
         var checkState: Boolean = false
 )

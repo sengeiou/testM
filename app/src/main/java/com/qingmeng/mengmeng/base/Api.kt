@@ -161,6 +161,13 @@ interface Api {
     @GET("app/user/exchange_Phone")
     fun updatePhone(@Query("newPhone") newPhone: String, @Query("smsCode") smsCode: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
 
+    /**
+     * 获取banner图信息
+     * @param  type 1、首页；3、头报 5.登录banner 6.引导页
+     **/
+    @GET("api/banner/get_banner")
+    fun getbanner(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
+
     //忘记密码
     @POST("app/user/forget_password")
     fun forgetpassword(@Query("phone") phone: String, @Query("smsCode") msmCode: String, @Query("password") password: String, @Query("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
@@ -281,4 +288,8 @@ interface Api {
     //第三方登录   type 1.QQ 2.微信
     @POST("app/user/third_party_login")
     fun loginThree(@Query("openId") openId: String, @Query("type") type: Int, @Query("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
+
+    //分享获取信息
+    @GET("api/share/third_party_share")
+    fun getShareMessage(@Query("ACCESS-TOKEN") access_token: String, @Query("type") type: Int, @Query("id") id: Int): Observable<BaseBean<ShareBean>>
 }

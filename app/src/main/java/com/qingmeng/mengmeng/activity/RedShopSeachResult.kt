@@ -31,6 +31,7 @@ import com.qingmeng.mengmeng.constant.IConstants.secondLevel
 import com.qingmeng.mengmeng.entity.SearchDto
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.view.GlideRoundTransformCenterCrop
 import com.qingmeng.mengmeng.view.dialog.PopSeachCondition
 import com.qingmeng.mengmeng.view.dialog.PopSeachSelect
 import com.qingmeng.mengmeng.view.flowlayout.FlowLayout
@@ -110,7 +111,9 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
         mAdapter = CommonAdapter(this, R.layout.red_shop_search_result_item, mSeachResultList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
                 if (data.status == 1) {
-                    Glide.with(this@RedShopSeachResult).load(data.logo).apply(RequestOptions.bitmapTransform(RoundedCorners(20))
+                    Glide.with(this@RedShopSeachResult)
+                            .load(data.logo).apply(RequestOptions()
+                            .transform(GlideRoundTransformCenterCrop())
                             .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.search_result_bigLogo))
                     val spanString = SpannableString("证\t\t\t${data.name}")
                     val drawable = resources.getDrawable(R.drawable.detail_icon_certification)

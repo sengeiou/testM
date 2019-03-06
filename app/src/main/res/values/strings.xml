@@ -114,13 +114,12 @@
     <string name="seach_button_sure">确定</string>
     <string name="seach_button_exit">重置</string>
     <string name="seach_money">投资金额</string>
-    <string name="seach_join_type">加入模式</string>
+    <string name="seach_join_type">招商模式</string>
     <string name="seach_shop_count">门店数：</string>
     <string name="seach_visit_count">浏览量：</string>
     <string name="seach_food_type">餐饮类型</string>
-    <string name="seach_add_area">加入区域</string>
+    <string name="seach_add_area">招商区域</string>
     <string name="seach_ranking">综合排序</string>
-    <string name="seach_screning_conditon">筛选条件</string>
     <string name="seach_hint">搜索感兴趣的品牌</string>
     <string name="seach_nothing">嗨呀~没有找到相关内容 o(╥﹏╥)o</string>
 
