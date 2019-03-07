@@ -37,6 +37,7 @@ object IConstants {
     val REDSHOPFATHERID = "red_shop_fatherId"            //红铺名称
     val POSITION = "position"
     val articleUrl = "articleUrl"
+    val articleId = "articleId"          //头报文章id
     val IMGS = "imgs"
     val detailUrl = "detailUrl"           //详情链接
     val title = "title"                   //标题

@@ -5,13 +5,22 @@ package com.qingmeng.mengmeng.activity
  * 头报详情页
  */
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.constant.IConstants.articleId
+import com.qingmeng.mengmeng.entity.MicroBlog
+import com.qingmeng.mengmeng.entity.Qq
+import com.qingmeng.mengmeng.entity.WeChat
+import com.qingmeng.mengmeng.entity.WeChatCircle
+import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.view.dialog.ShareDialog
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_head_details.*
 import kotlinx.android.synthetic.main.activity_shop_detail.*
 import kotlinx.android.synthetic.main.layout_head.*
@@ -20,6 +29,11 @@ import kotlinx.android.synthetic.main.layout_head.*
 class HeadDetailsActivity : BaseActivity() {
     private lateinit var mBottomDialog: ShareDialog
     private var url = String()
+    private var id = 0
+    private lateinit var wxList: ArrayList<WeChat>
+    private lateinit var monentsList: ArrayList<WeChatCircle>
+    private lateinit var qqList: ArrayList<Qq>
+    private lateinit var sinaList: ArrayList<MicroBlog>
     override fun getLayoutId(): Int = R.layout.activity_head_details
     override fun initObject() {
         super.initObject()
@@ -33,6 +47,7 @@ class HeadDetailsActivity : BaseActivity() {
         mMenu.width = 50
         mMenu.height = 50
         url = intent.getStringExtra("URL")
+        id = intent.getIntExtra(articleId, 1)
         initWebView()
         NewsWebView.loadUrl(url)
     }
@@ -47,10 +62,52 @@ class HeadDetailsActivity : BaseActivity() {
             onBackPressed()
         }
         mMenu.setOnClickListener {
+            //httpShareMessage("", 2,id)
             mBottomDialog = ShareDialog(this)
             mBottomDialog.show()
         }
 
+    }
+
+    @SuppressLint("CheckResult")
+    private fun httpShareMessage(accessToken: String, type: Int, id: Int) {
+        ApiUtils.getApi()
+                .getShareMessage(accessToken, type, id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ bean ->
+                    if (bean.code == 12000) {
+                        bean.data?.let {
+                            if (!it.WeChat.isEmpty()) {
+                                if (!wxList.isEmpty()) {
+                                    wxList.clear()
+                                }
+                                wxList.addAll(it.WeChat)
+                            }
+                            if (!it.WeChatCircle.isEmpty()) {
+                                if (!monentsList.isEmpty()) {
+                                    monentsList.clear()
+                                }
+                                monentsList.addAll(it.WeChatCircle)
+                            }
+                            if (!it.qq.isEmpty()) {
+                                if (!qqList.isEmpty()) {
+                                    qqList.clear()
+                                }
+                                qqList.addAll(it.qq)
+                            }
+                            if (!it.microBlog.isEmpty()) {
+                                if (!sinaList.isEmpty()) {
+                                    sinaList.clear()
+                                }
+                                sinaList.addAll(it.microBlog)
+                            }
+                        }
+                        //分享数据未传入
+                        mBottomDialog = ShareDialog(this)
+                        mBottomDialog.show()
+                    }
+                })
     }
 
     private fun initWebView() {

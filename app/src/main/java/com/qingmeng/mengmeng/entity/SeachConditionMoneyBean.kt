@@ -5,14 +5,14 @@ import io.objectbox.annotation.Id
 
 data class SeachConditionMoneyBean(
         //投资金额
-        var capitalList: List<ConditionMoneyBean>
+        val capitalList: List<CapitalList>
 )
 
 @Entity
-data class ConditionMoneyBean(
+data class CapitalList(
         @Id
         var cacheId: Long = 0,
-        val id: Int,
-        val name: String,
+        var id: Int,
+        var name: String,
         var checkState: Boolean = false
 )

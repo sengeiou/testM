@@ -78,12 +78,12 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
         mLauyoutManger = LinearLayoutManager(context)
         swipe_target.layoutManager = mLauyoutManger
         mNewsPagerAdapter = NewsPaperAdapter(context!!, mImgList, {
-            startActivityForResult(Intent(context, HeadDetailsActivity::class.java).putExtra("URL", it.articleUrl), REQUEST_NEWS)
+            startActivity<HeadDetailsActivity>("URL" to it.articleUrl, IConstants.articleId to it.id)
         }, {
             it.apply {
                 when (skipType) {
                     2 -> startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
-                    3 -> startActivity<HeadDetailsActivity>("URL" to url)
+                    3 -> startActivity<HeadDetailsActivity>("URL" to url, IConstants.articleId to id)
                     4 -> startActivity<ShopDetailActivity>(IConstants.BRANDID to interiorDetailsId)
                     5 -> {
                         try {

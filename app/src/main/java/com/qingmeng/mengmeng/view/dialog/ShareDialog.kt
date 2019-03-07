@@ -1,12 +1,20 @@
 package com.qingmeng.mengmeng.view.dialog
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
 import android.view.Gravity
 import android.widget.LinearLayout
 import android.widget.TextView
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.entity.MicroBlog
+import com.qingmeng.mengmeng.entity.Qq
+import com.qingmeng.mengmeng.entity.WeChat
+import com.qingmeng.mengmeng.entity.WeChatCircle
+import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 /**
  * Created by fyf on 2019/1/7

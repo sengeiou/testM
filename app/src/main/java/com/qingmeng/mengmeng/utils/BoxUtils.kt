@@ -17,8 +17,8 @@ object BoxUtils {
     private val allCityBox = boxStore.boxFor(AllCityBean::class.java)           //所有城市
     private val redShopBox = boxStore.boxFor(RedShopLeftBean::class.java)       //红铺数据
     private val newsPagerBox = boxStore.boxFor(NewsPagerList::class.java)       //头报数据
-    private val joinTypeBox = boxStore.boxFor(ConditionBean::class.java)        //加盟模式
-    private val joinMoneyBox = boxStore.boxFor(ConditionMoneyBean::class.java)        //投资金额
+    private val joinTypeBox = boxStore.boxFor(JoinModes::class.java)        //加盟模式
+    private val joinMoneyBox = boxStore.boxFor(CapitalList::class.java)        //投资金额
 
     //保存banner到数据库
     fun saveBanners(banners: MutableList<Banner>) {
@@ -189,32 +189,32 @@ object BoxUtils {
     }
 
     //保存所有加盟数据
-    fun saveJoinType(joinTypeList: MutableList<ConditionBean>) {
+    fun saveJoinType(joinTypeList: MutableList<JoinModes>) {
         boxStore.runInTxAsync({ joinTypeBox.put(joinTypeList) }, { _, _ -> })
     }
 
     //删除所有加盟数据
-    fun removeJoinType(joinTypeList: MutableList<ConditionBean>) {
+    fun removeJoinType(joinTypeList: MutableList<JoinModes>) {
         boxStore.runInTxAsync({ joinTypeBox.remove(joinTypeList) }, { _, _ -> })
     }
 
     //   获取所有加盟方式数据
-    fun getJoinType(): MutableList<ConditionBean> {
+    fun getJoinType(): MutableList<JoinModes> {
         return joinTypeBox.query().build().find()
     }
 
     //保存所有投资金额
-    fun saveMoneyType(joinTypeList: MutableList<ConditionMoneyBean>) {
+    fun saveMoneyType(joinTypeList: MutableList<CapitalList>) {
         boxStore.runInTxAsync({ joinMoneyBox.put(joinTypeList) }, { _, _ -> })
     }
 
     //删除所有投资金额
-    fun removeMoneyType(joinTypeList: MutableList<ConditionMoneyBean>) {
+    fun removeMoneyType(joinTypeList: MutableList<CapitalList>) {
         boxStore.runInTxAsync({ joinMoneyBox.remove(joinTypeList) }, { _, _ -> })
     }
 
     //   获取所有投资金额数据
-    fun getMoneyType(): MutableList<ConditionMoneyBean> {
+    fun getMoneyType(): MutableList<CapitalList> {
         return joinMoneyBox.query().build().find()
     }
     //保存所有搜索页面城市列表数据
