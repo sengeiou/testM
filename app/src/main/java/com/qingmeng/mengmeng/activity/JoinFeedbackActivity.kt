@@ -30,6 +30,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_join_feedback.*
 import kotlinx.android.synthetic.main.layout_head.*
+import org.jetbrains.anko.textColor
 
 
 /**
@@ -71,6 +72,7 @@ class JoinFeedbackActivity : BaseActivity() {
         menuList.add(SelectBean(getString(R.string.join_feedback_type4), 4))
         mBottomDialog = SelectDialog(this, menuList, onItemClick = { id ->
             btn_join_feedback.text = menuList[id].name
+            btn_join_feedback.textColor=resources.getColor(R.color.face_text_color_black)
             type = id
         })
     }

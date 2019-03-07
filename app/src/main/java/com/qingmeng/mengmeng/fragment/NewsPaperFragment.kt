@@ -36,7 +36,6 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
     private var isRefeshing = false                             //下拉刷新
     private var mImgList = ArrayList<Banner>()
     private var mNewsList = ArrayList<NewsPagerList>()       //接口请求数据
-    private var REQUEST_NEWS = 123
     override fun getLayoutId(): Int = R.layout.fragment_head_newspaper
 
     override fun initObject() {

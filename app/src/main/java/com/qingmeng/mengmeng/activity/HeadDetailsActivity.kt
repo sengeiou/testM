@@ -11,6 +11,7 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.constant.IConstants.articleId
 import com.qingmeng.mengmeng.entity.MicroBlog
@@ -22,7 +23,6 @@ import com.qingmeng.mengmeng.view.dialog.ShareDialog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_head_details.*
-import kotlinx.android.synthetic.main.activity_shop_detail.*
 import kotlinx.android.synthetic.main.layout_head.*
 
 
@@ -52,17 +52,14 @@ class HeadDetailsActivity : BaseActivity() {
         NewsWebView.loadUrl(url)
     }
 
-    override fun initData() {
-        super.initData()
-    }
-
     override fun initListener() {
         super.initListener()
         mBack.setOnClickListener {
             onBackPressed()
         }
         mMenu.setOnClickListener {
-            //httpShareMessage("", 2,id)
+            //  httpShareMessage(2, id)
+            //   mBottomDialog = ShareDialog(this,wxList,monentsList,qqList,sinaList)
             mBottomDialog = ShareDialog(this)
             mBottomDialog.show()
         }
@@ -70,9 +67,9 @@ class HeadDetailsActivity : BaseActivity() {
     }
 
     @SuppressLint("CheckResult")
-    private fun httpShareMessage(accessToken: String, type: Int, id: Int) {
+    private fun httpShareMessage(type: Int, id: Int) {
         ApiUtils.getApi()
-                .getShareMessage(accessToken, type, id)
+                .getShareMessage(MainApplication.instance.TOKEN, type, id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -104,7 +101,8 @@ class HeadDetailsActivity : BaseActivity() {
                             }
                         }
                         //分享数据未传入
-                        mBottomDialog = ShareDialog(this)
+                      //  mBottomDialog = ShareDialog(this, wxList, monentsList, qqList, sinaList)
+                      //  mBottomDialog = ShareDialog(this, wxList)
                         mBottomDialog.show()
                     }
                 })
