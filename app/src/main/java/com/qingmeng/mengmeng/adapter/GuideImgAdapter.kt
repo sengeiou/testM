@@ -19,7 +19,7 @@ class GuideImgAdapter : PagerAdapter() {
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val image = ImageView(container.context)
-        image.scaleType = ImageView.ScaleType.FIT_XY
+        image.scaleType = ImageView.ScaleType.CENTER_CROP
         image.setImageResource(imgIds[position])
         container.addView(image)
         return image
