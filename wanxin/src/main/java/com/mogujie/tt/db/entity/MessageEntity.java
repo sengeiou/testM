@@ -259,6 +259,8 @@ public class MessageEntity implements Serializable {
                 return DBConstant.DISPLAY_FOR_VIDEO;
             case DBConstant.SHOW_BRAND_TYPE:
                 return DBConstant.DISPLAY_FOR_BRAND;
+            case DBConstant.SHOW_REVOKE_TYPE:
+                return DBConstant.DISPLAY_FOR_REVOKE;
             default:
                 return DBConstant.DISPLAY_FOR_ERROR;
         }
@@ -585,7 +587,8 @@ public class MessageEntity implements Serializable {
 
     @Keep
     public MessageEntity parseFromNets() {
-        switch (getDisplayType()) {
+        int type = getDisplayType() != 0 ? getDisplayType() : getInfoType();
+        switch (type) {
             case DBConstant.SHOW_IMAGE_TYPE:
                 return ImageMessage.Companion.parseFromNet(this);
             case DBConstant.SHOW_VIDEO_TYPE:

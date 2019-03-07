@@ -47,6 +47,7 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.ChatAdapterTwo
 import com.qingmeng.mengmeng.constant.IConstants
+import com.qingmeng.mengmeng.constant.IConstants.MESSAGE_TO_CHAT
 import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.audio.AudioManager
 import com.qingmeng.mengmeng.utils.audio.MediaManager
@@ -503,14 +504,14 @@ class MyMessageChatActivity : BaseActivity() {
                         .compose(composeDefault())
                         .subscribeExtApi({
                             myDialog.dismissLoadingDialog()
-                            CmdMessage.buildForSend("撤回了一条消息", loginUser, currentSessionKey)?.apply {
+                            val newMsg = CmdMessage.buildForSend("撤回了一条消息", loginUser, currentSessionKey)?.apply {
                                 displayType = DBConstant.SHOW_REVOKE_TYPE
                                 setAttribute(MessageExtConst.MSGID, messageEntity.msgId)
                                 setAttribute(MessageExtConst.CMD_TIME, System.currentTimeMillis())
                                 mImService?.messageManager?.sendCMD(this)
                             }
                             //调用adapter的撤回方法
-                            mAdapter.revokeMsg(messageEntity)
+                            mAdapter.revokeMsg(messageEntity, newMsg!!, position)
                         })
             }
 
@@ -538,6 +539,7 @@ class MyMessageChatActivity : BaseActivity() {
             override fun onBrandClick(position: Int) {
                 val id = (mAdapter.msgObjectList[position] as BrandMessage).brandId
                 startActivity<ShopDetailActivity>(IConstants.BRANDID to id)
+                MESSAGE_TO_CHAT = false
             }
 
             //发送品牌
@@ -587,35 +589,37 @@ class MyMessageChatActivity : BaseActivity() {
         mLayoutManager = LinearLayoutManager(this)
         rvMyMessageChat.layoutManager = mLayoutManager
         mAdapter = ChatAdapterTwo(this, msgObjectList, { audioMessage, imageView ->
-            //音频点击事件
-            if (mMediaManager.isPlaying()) {    //正在播放点击就结束播放
-                cdMyMessageChatSwitchAudio.visibility = View.GONE
-                mMediaManager.release()
-                if (mImageView == imageView) {
-                    stopAudioAnimation(imageView)
+            PermissionUtils.readAndWrite(this, {
+                //音频点击事件
+                if (mMediaManager.isPlaying()) {    //正在播放点击就结束播放
+                    cdMyMessageChatSwitchAudio.visibility = View.GONE
+                    mMediaManager.release()
+                    if (mImageView == imageView) {
+                        stopAudioAnimation(imageView)
+                    } else {
+                        stopAudioAnimation(mImageView!!)
+                        mMediaManager.play(this, audioMessage.audioPath, {
+                            mImageView = imageView
+                            cdMyMessageChatSwitchAudio.visibility = View.VISIBLE
+                            startAudioAnimation(imageView)
+                        }, {
+                            cdMyMessageChatSwitchAudio.visibility = View.GONE
+                            stopAudioAnimation(imageView)
+                        })
+                    }
                 } else {
-                    stopAudioAnimation(mImageView!!)
                     mMediaManager.play(this, audioMessage.audioPath, {
+                        //刚开始播放
                         mImageView = imageView
                         cdMyMessageChatSwitchAudio.visibility = View.VISIBLE
                         startAudioAnimation(imageView)
                     }, {
+                        //播放结束
                         cdMyMessageChatSwitchAudio.visibility = View.GONE
                         stopAudioAnimation(imageView)
                     })
                 }
-            } else {
-                mMediaManager.play(this, audioMessage.audioPath, {
-                    //刚开始播放
-                    mImageView = imageView
-                    cdMyMessageChatSwitchAudio.visibility = View.VISIBLE
-                    startAudioAnimation(imageView)
-                }, {
-                    //播放结束
-                    cdMyMessageChatSwitchAudio.visibility = View.GONE
-                    stopAudioAnimation(imageView)
-                })
-            }
+            })
         })
         rvMyMessageChat.adapter = mAdapter
 
@@ -775,15 +779,10 @@ class MyMessageChatActivity : BaseActivity() {
      * 添加单个消息
      */
     private fun pushList(msg: MessageEntity?, isMinePhone: Boolean) {
-        //撤回的消息
-        if (msg?.infoType == DBConstant.SHOW_REVOKE_TYPE) {
-            mAdapter.updateRevokeMsg(msg)
+        if (isMinePhone) {
+            mAdapter.addItem(msg!!, mLayoutManager)
         } else {
-            if (isMinePhone) {
-                mAdapter.addItem(msg!!, mLayoutManager)
-            } else {
-                mAdapter.addItem(msg!!)
-            }
+            mAdapter.addItem(msg!!)
         }
     }
 
@@ -1162,11 +1161,11 @@ class MyMessageChatActivity : BaseActivity() {
             SysConstant.ALBUM_BACK_DATA -> {    //相册
                 val selectList = PictureSelector.obtainMultipleResult(data)
                 selectList[0].apply {
-                    when (pictureType) {
-                        "image/jpeg" -> {   //图片
+                    when {
+                        pictureType.contains("image") -> {   //图片
                             handleTakePhotoData(path)
                         }
-                        "video/mp4" -> {    //视频
+                        pictureType.contains("video") -> {    //视频
                             handleTakeVideoData(path)
                         }
                     }

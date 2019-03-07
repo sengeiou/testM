@@ -128,6 +128,7 @@ class ImageMessage() : TextMessage(), Serializable {
         //接受到网络包，解析成本地的数据
         fun parseFromNet(entity: MessageEntity): ImageMessage {
             val imageMessage = ImageMessage(entity)
+            imageMessage.setDisplayType(DBConstant.SHOW_IMAGE_TYPE)
             imageMessage.loadStatus = MessageConstant.IMAGE_UNLOAD
             imageMessage.setStatus(MessageConstant.MSG_SUCCESS)
             return imageMessage

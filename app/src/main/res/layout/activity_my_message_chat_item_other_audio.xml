@@ -40,6 +40,12 @@
             android:layout_height="wrap_content"
             android:background="@anim/tt_voice_play_other"
             />
+
+        <View
+            android:id="@+id/viewMyMessageChatRvOtherAudio"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            />
     </LinearLayout>
 
     <TextView

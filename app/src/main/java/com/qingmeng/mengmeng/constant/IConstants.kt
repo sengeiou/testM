@@ -48,9 +48,12 @@ object IConstants {
     var login_name = "mengUser"           //账号密码登录时保存账号
     var login_phone = "mengPhone"         //保存手机号
     var login_pwd = "mengPass"            //账号密码登录时保存密码
-    val BRAND_TO_MESSAGE = 10055          //品牌详情进聊天
+    val TO_MESSAGE = 10055                //页面进聊天
     var MESSAGE_BACK_BRAND_ID = ""        //聊天界面返回的品牌详情id
     var ENTER_BRAND_NUM = 0               //第几次进详情
+    var MY_TO_MESSAGE = "myToMessage"     //是从我的板块进的消息列表->消息的
+    var MYFRAGMENT_TO_MESSAGE = false     //我的板块->消息列表
+    var MESSAGE_TO_CHAT = false           //消息列表->聊天
     //图片验证码
     val GET_IMAGE_CODE = BASE_URL + "api/captcha_app/image_app?account="
 

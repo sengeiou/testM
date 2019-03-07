@@ -215,9 +215,9 @@ class MySettingsUserActivity : BaseActivity() {
 
     //修改个人信息接口
     private fun updateUserHttp() {
-        myDialog.showLoadingDialog()
         ApiUtils.getApi()
-                .updateMySettingsUser(mAvatar, mName, mSex, mPhone, mTelephone, mWx, mQQ, mEmail, mDistrictId, mCapitalId, mIndustryOfInterest, MainApplication.instance.user.wxUid, token = MainApplication.instance.TOKEN)
+                .updateMySettingsUser(mAvatar, mName, mSex, mTelephone, mWx, mQQ, mEmail, mDistrictId, mCapitalId, mIndustryOfInterest,
+                        MainApplication.instance.user.wxUid, MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -230,7 +230,7 @@ class MySettingsUserActivity : BaseActivity() {
                                 putExtra("mLocalPath", mLocalPath)
                                 putExtra("mPhoneChange", true)
                             })
-                            onBackPressed()
+                            finish()
                         } else {
                             ToastUtil.showShort(msg)
                         }
@@ -369,7 +369,10 @@ class MySettingsUserActivity : BaseActivity() {
                     updateUserHttp()
                 })
             }
-            else -> updateUserHttp()
+            else -> {
+                myDialog.showLoadingDialog()
+                updateUserHttp()
+            }
         }
     }
 

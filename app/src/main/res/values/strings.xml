@@ -267,6 +267,7 @@
     <string name="systemNotification_id">60834</string>
     <string name="firstToChat_tips">您好，欢迎您的咨询！请问您是想了解品牌项目的哪些问题呢？</string>
     <string name="last_img_tips">你可能要发送的照片：</string>
+    <string name="invalid_brand_tips">该品牌暂无详情</string>
 
     <!-- ======================================相机====================================== -->
     <string name="topic_camera_flashlight_off">关闭</string>

@@ -26,11 +26,12 @@ import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.ShopDetailVpAdapter
 import com.qingmeng.mengmeng.constant.IConstants.BRANDID
-import com.qingmeng.mengmeng.constant.IConstants.BRAND_TO_MESSAGE
+import com.qingmeng.mengmeng.constant.IConstants.TO_MESSAGE
 import com.qingmeng.mengmeng.constant.IConstants.ENTER_BRAND_NUM
 import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
 import com.qingmeng.mengmeng.constant.IConstants.IMGS
 import com.qingmeng.mengmeng.constant.IConstants.MESSAGE_BACK_BRAND_ID
+import com.qingmeng.mengmeng.constant.IConstants.MYFRAGMENT_TO_MESSAGE
 import com.qingmeng.mengmeng.constant.IConstants.POSITION
 import com.qingmeng.mengmeng.entity.BrandBean
 import com.qingmeng.mengmeng.entity.BrandInformation
@@ -171,9 +172,11 @@ class ShopDetailActivity : BaseActivity() {
         mDetailBack.setOnClickListener { onBackPressed() }
         mDetailMore.setOnClickListener {
             myDialog.showMorePop(it, {
-                toNextResult<MyMessageActivity>(BRAND_TO_MESSAGE)
-                //如果聊天列表页面存在了 就销毁它
-                finishAty(MyMessageActivity::class.java)
+                toNextResult<MyMessageActivity>(TO_MESSAGE)
+                if(!MYFRAGMENT_TO_MESSAGE){
+                    //如果聊天列表页面存在了 就销毁它
+                    finishAty(MyMessageActivity::class.java)
+                }
             }, {
                 startActivity(intentFor<MainActivity>().newTask().clearTask())
             }, {
@@ -189,7 +192,7 @@ class ShopDetailActivity : BaseActivity() {
             brandBean?.let {
                 FaceInitData.init(applicationContext)
                 FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
-                toNextResult<MyMessageChatActivity>(BRAND_TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to "1_${it.wxServiceId}", "title" to it.nickname, "bundle" to Bundle().apply {
+                toNextResult<MyMessageChatActivity>(TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to "1_${it.wxServiceId}", "title" to it.nickname, "bundle" to Bundle().apply {
                     putInt("id", id)
                     putString("logo", it.logo)
                     putString("name", it.name)
@@ -198,6 +201,10 @@ class ShopDetailActivity : BaseActivity() {
                 })
                 //如果聊天页面存在了 就销毁它
                 finishAty(MyMessageChatActivity::class.java)
+                //如果是从我的板块进去的，就直接关闭此页面
+                if (MYFRAGMENT_TO_MESSAGE) {
+                    onBackPressed()
+                }
             }
         }
         mCollection.setOnClickListener {
@@ -212,7 +219,7 @@ class ShopDetailActivity : BaseActivity() {
             brandBean?.let {
                 FaceInitData.init(applicationContext)
                 FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
-                toNextResult<MyMessageChatActivity>(BRAND_TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to "1_${it.wxServiceId}", "title" to it.nickname, "bundle" to Bundle().apply {
+                toNextResult<MyMessageChatActivity>(TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to "1_${it.wxServiceId}", "title" to it.nickname, "bundle" to Bundle().apply {
                     putInt("id", id)
                     putString("logo", it.logo)
                     putString("name", it.name)
@@ -222,6 +229,10 @@ class ShopDetailActivity : BaseActivity() {
             }
             //如果聊天页面存在了 就销毁它
             finishAty(MyMessageChatActivity::class.java)
+            //如果是从我的板块进去的，就直接关闭此页面
+            if (MYFRAGMENT_TO_MESSAGE) {
+                onBackPressed()
+            }
         }
         mGetJoinData.setOnClickListener { myDialog.showJoinDataDialog(name) { name, phone, message -> join(name, phone, message) } }
         mDetailScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->
@@ -370,7 +381,7 @@ class ShopDetailActivity : BaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         data?.let { mDetailVp.currentItem = it.getIntExtra(POSITION, 0) }
-        if (resultCode == Activity.RESULT_OK && requestCode == BRAND_TO_MESSAGE) {
+        if (resultCode == Activity.RESULT_OK && requestCode == TO_MESSAGE) {
             //通过MESSAGE_BACK_BRAND_ID判断，如果当前id存在了，就直接finish掉
             if (MESSAGE_BACK_BRAND_ID.contains("$id")) {
                 onBackPressed()

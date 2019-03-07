@@ -67,7 +67,7 @@
                 android:layout_alignParentBottom="true"
                 android:text="@string/my_myFollow_investmentAmount"
                 android:textColor="@color/red"
-                android:textSize="@dimen/text_size_18"
+                android:textSize="@dimen/text_size_15"
                 />
 
             <TextView
@@ -79,7 +79,7 @@
                 android:text="5个"
                 android:singleLine="true"
                 android:textColor="@color/red"
-                android:textSize="@dimen/text_size_18"
+                android:textSize="@dimen/text_size_15"
                 />
         </RelativeLayout>
     </LinearLayout>
