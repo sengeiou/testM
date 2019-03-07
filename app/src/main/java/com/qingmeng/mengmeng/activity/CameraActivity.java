@@ -725,7 +725,7 @@ public class CameraActivity extends AppCompatActivity implements MediaRecorder.O
                 mCamera.release();
                 mCamera = null;
             }
-            setResult(RESULT_OK, new Intent().putExtra("noPermission",true));
+            setResult(RESULT_OK, new Intent().putExtra("noPermission", true));
             finish();
             e.printStackTrace();
         }
@@ -774,8 +774,8 @@ public class CameraActivity extends AppCompatActivity implements MediaRecorder.O
                 previewHeight = previewSize.height;
             }
             ULogToDevice.d("test", TAG, "摄像头支持 宽:" + previewWidth + " #高=" + previewHeight);
-        }else{
-            setResult(RESULT_OK, new Intent().putExtra("noPermission",true));
+        } else {
+            setResult(RESULT_OK, new Intent().putExtra("noPermission", true));
             this.finish();
         }
     }
@@ -1538,5 +1538,36 @@ public class CameraActivity extends AppCompatActivity implements MediaRecorder.O
 
     public interface SwitchCameraCallBack {
         void switchCamera(boolean isSwitchFromFront);
+    }
+
+    public int coundOdd() {
+        int count = 0;
+
+        for (int a = 0; a <= 5; a++) {
+            if (a % 2 != 0) {
+                count++;
+            }
+            for (int b = 0; b <= 5 && b != a; b++) {
+                if (b % 2 != 0) {
+                    count++;
+                }
+                for (int c = 0; c <= 5 && c != a && c != b; c++) {
+                    if (c % 2 != 0) {
+                        count++;
+                    }
+                    for (int d = 0; d <= 5 && d != a && d != b && d != c; d++) {
+                        if (d % 2 != 0) {
+                            count++;
+                        }
+                        for (int e = 0; e <= 5 && e != a && e != b && e != c && e != d; e++) {
+                            if (e % 2 != 0) {
+                                count++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return count;
     }
 }

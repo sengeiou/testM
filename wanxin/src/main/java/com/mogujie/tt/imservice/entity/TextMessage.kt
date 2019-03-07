@@ -57,6 +57,7 @@ open class TextMessage : MessageEntity, Serializable {
          * 接受到网络包，解析成本地的数据
          */
         fun parseFromNet(entity: MessageEntity): TextMessage = TextMessage(entity).apply {
+            setDisplayType(DBConstant.SHOW_ORIGIN_TEXT_TYPE)
             setStatus(MessageConstant.MSG_SUCCESS)
             setDisplayType(entity.infoType)
         }

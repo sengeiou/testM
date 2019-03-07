@@ -35,7 +35,7 @@ object SpanStringUtils {
             val imgRes = EmotionUtils.getImgByName(emotion_map_type, key)
             if (imgRes != -1) {
                 // 压缩表情图片
-                val size = (tv?.textSize?.toInt() ?: 42) * 13 / 10
+                val size = (tv?.textSize?.toInt() ?: 42) * 18 / 10  //原本（* 13 / 10）
                 val bitmap = BitmapFactory.decodeResource(res, imgRes)
                 val scaleBitmap = Bitmap.createScaledBitmap(bitmap, size, size, true)
 

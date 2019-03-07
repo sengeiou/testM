@@ -58,6 +58,7 @@ class VideoMessage() : TextMessage(), Serializable {
     companion object {
         fun parseFromNet(entity: MessageEntity): VideoMessage {
             val videoMessage = VideoMessage(entity)
+            videoMessage.setDisplayType(DBConstant.SHOW_VIDEO_TYPE)
             videoMessage.readStatus = MessageConstant.VIDEO_UNREAD
             videoMessage.setStatus(MessageConstant.MSG_SUCCESS)
             return videoMessage

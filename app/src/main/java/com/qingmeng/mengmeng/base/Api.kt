@@ -136,7 +136,7 @@ interface Api {
             @Field("avatar") avatar: String?,//头像
             @Field("name") name: String,//真实姓名*
             @Field("sex") sex: Int?,//年龄
-            @Field("phone") phone: String,//手机号*
+//            @Field("phone") phone: String,//手机号*
             @Field("telephone") telephone: String?,//固定电话
             @Field("wx") wx: String?,//微信
             @Field("qq") qq: String?,//qq
