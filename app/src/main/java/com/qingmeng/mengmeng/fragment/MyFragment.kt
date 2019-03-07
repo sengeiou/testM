@@ -9,6 +9,7 @@ import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.*
 import com.qingmeng.mengmeng.constant.IConstants
+import com.qingmeng.mengmeng.constant.IConstants.MY_TO_MESSAGE
 import com.qingmeng.mengmeng.entity.MyInformation
 import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.imageLoader.CacheType
@@ -113,7 +114,7 @@ class MyFragment : BaseFragment() {
 
         //消息
         llMyMessage.setOnClickListener {
-            startActivity<MyMessageActivity>()
+            startActivity<MyMessageActivity>(MY_TO_MESSAGE to true)
         }
 
         //登录

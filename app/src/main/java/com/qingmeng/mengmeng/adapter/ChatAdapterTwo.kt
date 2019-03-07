@@ -42,10 +42,12 @@ import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.MyMessageChatActivity
 import com.qingmeng.mengmeng.utils.GlideCacheUtils
+import com.qingmeng.mengmeng.utils.dp2px
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.utils.setMarginExt
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  *  Description :聊天多个样式的Adapter
@@ -372,11 +374,18 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val ivMyMessageChatRvOtherAudioHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherAudioHead)
         private val tvMyMessageChatRvOtherAudioTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvOtherAudioTime)
         private val llMyMessageChatRvOtherAudio = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvOtherAudio)
+        private val viewMyMessageChatRvOtherAudio = itemView.findViewById<View>(R.id.viewMyMessageChatRvOtherAudio)
         private val ivMyMessageChatRvOtherAudioImage = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherAudioImage)
         fun bindViewHolder(position: Int) {
             val audioMessage = msgObjectList[position] as AudioMessage
             setHeadImage(audioMessage, ivMyMessageChatRvOtherAudioHead)
             tvMyMessageChatRvOtherAudioTime.text = "${audioMessage.audiolength}\""
+            val dp = if (audioMessage.audiolength * 4 < 150) {
+                context.dp2px(audioMessage.audiolength * 4)
+            } else {
+                context.dp2px(150)
+            }
+            viewMyMessageChatRvOtherAudio.layoutParams.width = dp
             llMyMessageChatRvOtherAudio.let {
                 it.setOnClickListener {
                     audioClick(audioMessage, ivMyMessageChatRvOtherAudioImage)
@@ -643,6 +652,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val ivMyMessageChatRvMineAudioHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineAudioHead)
         private val tvMyMessageChatRvMineAudioTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvMineAudioTime)
         private val llMyMessageChatRvMineAudio = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvMineAudio)
+        private val viewMyMessageChatRvMineAudio = itemView.findViewById<View>(R.id.viewMyMessageChatRvMineAudio)
         private val ivMyMessageChatRvMineAudioImage = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineAudioImage)
         private val pbMyMessageChatRvMineAudioProgress = itemView.findViewById<ProgressBar>(R.id.pbMyMessageChatRvMineAudioProgress)
         private val ivMyMessageChatRvMineAudioFail = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineAudioFail)
@@ -650,6 +660,12 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             val audioMessage = msgObjectList[position] as AudioMessage
             setHeadImage(audioMessage, ivMyMessageChatRvMineAudioHead)
             tvMyMessageChatRvMineAudioTime.text = "${audioMessage.audiolength}\""
+            val dp = if (audioMessage.audiolength * 4 < 150) {
+                context.dp2px(audioMessage.audiolength * 4)
+            } else {
+                context.dp2px(150)
+            }
+            viewMyMessageChatRvMineAudio.layoutParams.width = dp
             llMyMessageChatRvMineAudio.let {
                 it.setOnClickListener {
                     audioClick(audioMessage, ivMyMessageChatRvMineAudioImage)
@@ -852,6 +868,10 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         if (msg is ImageMessage) {
             ImageMessage.addToImageMessageList(msg)
         }
+        //撤回的消息
+        if (msg.infoType == DBConstant.SHOW_REVOKE_TYPE) {
+            updateRevokeMsg(msg)
+        }
         mLayoutManager?.let {
             notifyDataSetChanged()
             it.scrollToPosition(msgObjectList.lastIndex)
@@ -871,29 +891,26 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     /**
      * 撤回一条消息
      */
-    fun revokeMsg(entity: MessageEntity) {
-        entity.displayType = DBConstant.SHOW_REVOKE_TYPE
-        //根据消息修改数据库内容
-        DBInterface.instance().insertOrUpdateMessage(entity)
+    fun revokeMsg(entity: MessageEntity, newEntity: MessageEntity, position: Int) {
+        newEntity.created = entity.created
+        msgObjectList.add(position, newEntity)
+        msgObjectList.remove(entity)
         notifyDataSetChanged()
     }
 
     /**
      * 修改新收到的消息
      */
-    fun updateRevokeMsg(entity: MessageEntity) {
+    private fun updateRevokeMsg(entity: MessageEntity) {
         val txtMsg = entity as TextMessage
-        for (objectList in msgObjectList) {
-            if (objectList is MessageEntity) {
-                val messageEntity = objectList
-                if (messageEntity.msgId == txtMsg.getAttributeInt(MessageExtConst.MSGID)) {
-                    objectList.displayType = DBConstant.SHOW_REVOKE_TYPE
-                    //根据消息修改数据库内容
-                    DBInterface.instance().insertOrUpdateMessage(messageEntity)
-                }
+        msgObjectList.forEachIndexed { index, msg ->
+            if (msg is MessageEntity && msg.msgId == txtMsg.getAttributeInt(MessageExtConst.MSGID)) {
+                txtMsg.created = msg.created
+                msgObjectList.remove(entity)
+                msgObjectList.add(index, txtMsg)
+                msgObjectList.remove(msg)
             }
         }
-        notifyDataSetChanged()
     }
 
     /**

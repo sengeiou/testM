@@ -1,6 +1,7 @@
 package com.qingmeng.mengmeng.activity
 
 import android.app.Activity
+import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
 import android.view.MotionEvent
 import android.view.View
@@ -22,6 +23,11 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
+import com.qingmeng.mengmeng.constant.IConstants
+import com.qingmeng.mengmeng.constant.IConstants.MESSAGE_TO_CHAT
+import com.qingmeng.mengmeng.constant.IConstants.MYFRAGMENT_TO_MESSAGE
+import com.qingmeng.mengmeng.constant.IConstants.MY_TO_MESSAGE
+import com.qingmeng.mengmeng.constant.IConstants.TO_MESSAGE
 import com.qingmeng.mengmeng.entity.MyMessage
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -32,8 +38,9 @@ import de.greenrobot.event.EventBus
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_message.*
+import kotlinx.android.synthetic.main.activity_shop_detail.*
 import kotlinx.android.synthetic.main.layout_head.*
-import org.jetbrains.anko.startActivity
+import org.jetbrains.anko.startActivityForResult
 import java.util.*
 
 /**
@@ -51,6 +58,7 @@ class MyMessageActivity : BaseActivity() {
     private var mRecentSessionList = ArrayList<RecentInfo>()             //消息内容
     private var mList = ArrayList<MyMessage>()                           //接口消息内容
     private var mAvatar = ""                                             //默认发送者头像
+    private var mIsMyFragmentEnter = false                               //是我的板块进来的
 
     companion object {
         var instance: MyMessageActivity? = null                          //当前aty
@@ -87,6 +95,10 @@ class MyMessageActivity : BaseActivity() {
 
         instance = this
         setHeadName(R.string.message)
+        mIsMyFragmentEnter = intent.getBooleanExtra(MY_TO_MESSAGE, false)
+        if (mIsMyFragmentEnter) {
+            MYFRAGMENT_TO_MESSAGE = true
+        }
 
         initAdapter()
         myDialog.showLoadingDialog()
@@ -146,12 +158,10 @@ class MyMessageActivity : BaseActivity() {
 //                    })
                     FaceInitData.init(applicationContext)
                     FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
-                    startActivity<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to t.sessionKey, "title" to t.name, "avatar" to mAvatar)
+                    startActivityForResult<MyMessageChatActivity>(TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to t.sessionKey, "title" to t.name, "avatar" to mAvatar)
+                    MESSAGE_TO_CHAT = true
                     //如果聊天页面存在了 就销毁它
-                    if (MyMessageChatActivity.instance != null) {
-                        MyMessageChatActivity.instance!!.setResult(Activity.RESULT_OK)
-                        MyMessageChatActivity.instance!!.finish()
-                    }
+                    finishAty(MyMessageChatActivity::class.java)
                 }
                 //删除
                 getView<TextView>(R.id.tvMyMessageRvDelete).setOnClickListener {
@@ -374,8 +384,36 @@ class MyMessageActivity : BaseActivity() {
         }
     }
 
+
+    //如果页面存在了 就销毁它
+    private fun finishAty(activity: Class<*>) {
+        when (activity) {
+            MyMessageChatActivity::class.java -> {
+                if (MyMessageChatActivity.instance != null) {
+                    MyMessageChatActivity.instance!!.setResult(Activity.RESULT_OK)
+                    MyMessageChatActivity.instance!!.finish()
+                }
+            }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        data?.let { mDetailVp.currentItem = it.getIntExtra(IConstants.POSITION, 0) }
+        if (resultCode == Activity.RESULT_OK && requestCode == IConstants.TO_MESSAGE) {
+            //必须是我的板块进的聊天列表，然后不是第一次进（聊天列表进聊天后就返回不finish,进了聊天后又进了另一个页面才finish）
+            if (MYFRAGMENT_TO_MESSAGE && !mIsMyFragmentEnter && !MESSAGE_TO_CHAT) {
+                onBackPressed()
+            }
+        }
+    }
+
     override fun onBackPressed() {
         setResult(Activity.RESULT_OK)
+        //只有从我的板块进来返回时才为false
+        if (MYFRAGMENT_TO_MESSAGE && mIsMyFragmentEnter) {
+            MYFRAGMENT_TO_MESSAGE = false
+        }
         super.onBackPressed()
     }
 

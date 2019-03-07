@@ -136,7 +136,7 @@ interface Api {
             @Field("avatar") avatar: String?,//头像
             @Field("name") name: String,//真实姓名*
             @Field("sex") sex: Int?,//年龄
-            @Field("phone") phone: String,//手机号*
+//            @Field("phone") phone: String,//手机号*
             @Field("telephone") telephone: String?,//固定电话
             @Field("wx") wx: String?,//微信
             @Field("qq") qq: String?,//qq
@@ -160,13 +160,6 @@ interface Api {
     //换绑手机
     @GET("app/user/exchange_Phone")
     fun updatePhone(@Query("newPhone") newPhone: String, @Query("smsCode") smsCode: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
-
-    /**
-     * 获取banner图信息
-     * @param  type 1、首页；3、头报 5.登录banner 6.引导页
-     **/
-    @GET("api/banner/get_banner")
-    fun getbanner(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
 
     //忘记密码
     @POST("app/user/forget_password")

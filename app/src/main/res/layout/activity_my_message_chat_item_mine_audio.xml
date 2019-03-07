@@ -52,8 +52,15 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/padding_dp_10"
         android:background="@drawable/ripple_bg_drawable_blue_radius5"
+        android:gravity="end"
         android:padding="@dimen/padding_dp_10"
         >
+
+        <View
+            android:id="@+id/viewMyMessageChatRvMineAudio"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            />
 
         <ImageView
             android:id="@+id/ivMyMessageChatRvMineAudioImage"

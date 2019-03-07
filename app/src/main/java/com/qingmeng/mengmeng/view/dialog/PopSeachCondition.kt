@@ -268,7 +268,6 @@ class PopSeachCondition : PopupWindow {
 
     override fun dismiss() {
         super.dismiss()
-//        backgroundAlphaExt(1f)
         mMenuView.bottom_condition_view.visibility = View.GONE
     }
 
