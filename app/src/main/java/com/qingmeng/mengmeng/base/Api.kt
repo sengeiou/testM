@@ -161,13 +161,6 @@ interface Api {
     @GET("app/user/exchange_Phone")
     fun updatePhone(@Query("newPhone") newPhone: String, @Query("smsCode") smsCode: String, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
 
-    /**
-     * 获取banner图信息
-     * @param  type 1、首页；3、头报 5.登录banner 6.引导页
-     **/
-    @GET("api/banner/get_banner")
-    fun getbanner(@Header("VERSION") version: String, @Query("type") type: Int): Observable<BaseBean<BannerData>>
-
     //忘记密码
     @POST("app/user/forget_password")
     fun forgetpassword(@Query("phone") phone: String, @Query("smsCode") msmCode: String, @Query("password") password: String, @Query("notarizePassword") notarizePassword: String): Observable<BaseBean<UserBean>>
