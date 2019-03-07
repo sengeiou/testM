@@ -15,8 +15,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
 import android.view.animation.AlphaAnimation
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.luck.picture.lib.immersive.LightStatusBarUtils
@@ -40,9 +38,6 @@ class SplashActivity : BaseActivity() {
      * 显示广告页面
      */
     private val WHAT_ADV = 1
-    private var width = 0
-    private var height = 0
-    private var padding = 0
     private var currentIndex = 0
     private var time = -1
     private var advImg = ""
@@ -68,20 +63,7 @@ class SplashActivity : BaseActivity() {
     }
 
     override fun initData() {
-        if (sharedSingleton.getBoolean(IConstants.FIRSTLOGIN, true)) {
-            width = resources.getDimension(R.dimen.splash_width).toInt()
-            height = resources.getDimension(R.dimen.splash_height).toInt()
-            padding = resources.getDimension(R.dimen.splash_horizontal).toInt()
-        }
         handler.sendEmptyMessageDelayed(WHAT_ADV, 1500)
-        val display = windowManager.defaultDisplay
-        val params = mSplashPoint.layoutParams as RelativeLayout.LayoutParams
-
-        if (display.height.toFloat() / display.width >= 1.8) {//全面屏
-            params.bottomMargin = (resources.displayMetrics.density * 60).toInt()
-        } else {
-            params.bottomMargin = (resources.displayMetrics.density * 45).toInt()
-        }
         getAdv()
     }
 
@@ -125,11 +107,7 @@ class SplashActivity : BaseActivity() {
 
             override fun onPageSelected(position: Int) {
                 Log.e("SplashActivity", "onPageSelected  position == $position")
-                if (mSplashPoint.childCount > 0) {
-                    mSplashPoint.getChildAt(currentIndex).isEnabled = false
-                    mSplashPoint.getChildAt(position).isEnabled = true
-                    currentIndex = position
-                }
+                currentIndex = position
             }
 
         })
@@ -205,20 +183,9 @@ class SplashActivity : BaseActivity() {
                 splashActivity.WHAT_ADV -> {
                     if (sharedSingleton.getBoolean(IConstants.FIRSTLOGIN, true)) {
                         mSplashContent.visibility = View.GONE
-                        mGuideLayout.visibility = View.VISIBLE
+                        mSplashVp.visibility = View.VISIBLE
                         mAdapter = GuideImgAdapter()
                         mSplashVp.adapter = mAdapter
-                        var view: View
-                        for (i in 0 until mAdapter!!.count) {
-                            val layoutParams = LinearLayout.LayoutParams(splashActivity.width, splashActivity.height)
-                            view = View(splashActivity)
-                            view.setBackgroundResource(R.drawable.point_guide)
-                            view.isEnabled = i == 0
-                            if (i != 0) {
-                                layoutParams.leftMargin = padding
-                            }
-                            mSplashPoint.addView(view, layoutParams)
-                        }
                     } else if (TextUtils.isEmpty(splashActivity.advImg)) {
                         //没有广告信息
                         splashActivity.handler.sendEmptyMessageDelayed(splashActivity.WHAT_SKIP, 1000)
