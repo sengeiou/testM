@@ -18,7 +18,7 @@ import java.util.regex.Pattern
  */
 object SpanStringUtils {
 
-    fun getEmotionContent(emotion_map_type: Int, context: Context, source: String, tv: TextView? = null): SpannableString {
+    fun getEmotionContent(emotion_map_type: Int, context: Context, source: String, tv: TextView? = null, bigger: Boolean = false): SpannableString {
         val spannableString = SpannableString(source)
         val res = context.resources
 
@@ -35,7 +35,11 @@ object SpanStringUtils {
             val imgRes = EmotionUtils.getImgByName(emotion_map_type, key)
             if (imgRes != -1) {
                 // 压缩表情图片
-                val size = (tv?.textSize?.toInt() ?: 42) * 18 / 10  //原本（* 13 / 10）
+                val size = if (bigger) {
+                    (tv?.textSize?.toInt() ?: 42) * 16 / 10
+                } else {
+                    (tv?.textSize?.toInt() ?: 42) * 13 / 10
+                }
                 val bitmap = BitmapFactory.decodeResource(res, imgRes)
                 val scaleBitmap = Bitmap.createScaledBitmap(bitmap, size, size, true)
 
