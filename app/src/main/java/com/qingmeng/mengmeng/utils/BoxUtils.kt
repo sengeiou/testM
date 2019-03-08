@@ -194,8 +194,8 @@ object BoxUtils {
     }
 
     //删除所有加盟数据
-    fun removeJoinType(joinTypeList: MutableList<JoinModes>) {
-        boxStore.runInTxAsync({ joinTypeBox.remove(joinTypeList) }, { _, _ -> })
+    fun removeJoinType() {
+        boxStore.runInTxAsync({ joinTypeBox.removeAll() }, { _, _ -> })
     }
 
     //   获取所有加盟方式数据
@@ -209,41 +209,12 @@ object BoxUtils {
     }
 
     //删除所有投资金额
-    fun removeMoneyType(joinTypeList: MutableList<CapitalList>) {
-        boxStore.runInTxAsync({ joinMoneyBox.remove(joinTypeList) }, { _, _ -> })
+    fun removeMoneyType() {
+        boxStore.runInTxAsync({ joinMoneyBox.removeAll() }, { _, _ -> })
     }
 
     //   获取所有投资金额数据
     fun getMoneyType(): MutableList<CapitalList> {
         return joinMoneyBox.query().build().find()
     }
-    //保存所有搜索页面城市列表数据
-//    fun saveSeachCity(seachCityList: MutableList<FatherDto>) {
-//        boxStore.runInTxAsync({ seachCityBox.put(seachCityList) }, { _, _ -> })
-//    }
-//
-//    //删除所有搜索页面城市列表数据
-//    fun removeSeachCity(seachCityList: MutableList<FatherDto>) {
-//        boxStore.runInTxAsync({ seachCityBox.remove(seachCityList) }, { _, _ -> })
-//    }
-//
-//    //   获取所有搜索页面城市列表数据
-//    fun getSeachCity(fahterId: Long): MutableList<FatherDto> {
-//        return seachCityBox.query().equal(FatherDto_.fatherId, fahterId).build().find()
-//    }
-
-    // 保存所有搜索页面餐饮类型列表数据
-//    fun saveSeachFoodType(seachFoodTypeList: MutableList<FoodType>) {
-//        boxStore.runInTxAsync({ seachFoodTypeBox.put(seachFoodTypeList) }, { _, _ -> })
-//    }
-//
-//    //删除所有搜索页面餐饮类型列表数据
-//    fun removeSeachFoodType(seachFoodTypeList: MutableList<FoodType>) {
-//        boxStore.runInTxAsync({ seachFoodTypeBox.remove(seachFoodTypeList) }, { _, _ -> })
-//    }
-//
-//    //   获取所有搜索页面餐饮类型列表数据
-//    fun getSeachFoodType(fahterId: Long): MutableList<FoodType> {
-//        return seachFoodTypeBox.query().equal(FoodType_.fahterId, fahterId).build().find()
-//    }
 }
