@@ -1539,35 +1539,4 @@ public class CameraActivity extends AppCompatActivity implements MediaRecorder.O
     public interface SwitchCameraCallBack {
         void switchCamera(boolean isSwitchFromFront);
     }
-
-    public int coundOdd() {
-        int count = 0;
-
-        for (int a = 0; a <= 5; a++) {
-            if (a % 2 != 0) {
-                count++;
-            }
-            for (int b = 0; b <= 5 && b != a; b++) {
-                if (b % 2 != 0) {
-                    count++;
-                }
-                for (int c = 0; c <= 5 && c != a && c != b; c++) {
-                    if (c % 2 != 0) {
-                        count++;
-                    }
-                    for (int d = 0; d <= 5 && d != a && d != b && d != c; d++) {
-                        if (d % 2 != 0) {
-                            count++;
-                        }
-                        for (int e = 0; e <= 5 && e != a && e != b && e != c && e != d; e++) {
-                            if (e % 2 != 0) {
-                                count++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        return count;
-    }
 }

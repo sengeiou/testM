@@ -169,7 +169,7 @@ public class AudioRenderView extends  BaseMsgRenderView {
 
         //针对path 的设定
         if (null != audioPath) {
-            int resource = isMine?R.anim.tt_voice_play_mine:R.anim.tt_voice_play_other;
+            int resource = isMine?R.drawable.tt_voice_play_mine:R.drawable.tt_voice_play_other;
             audioAnttView.setBackgroundResource(resource);
             AnimationDrawable animationDrawable = (AnimationDrawable) audioAnttView.getBackground();
 

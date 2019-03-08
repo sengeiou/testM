@@ -10,6 +10,7 @@ import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.support.v7.widget.GridLayoutManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -120,13 +121,11 @@ class PopSeachCondition : PopupWindow {
                 if (it.checkState) {
                     checkedMoneyData.append("${it.id},")
                 }
-                // mMoneyAdapter.notifyDataSetChanged()
             }
             mTextJoinTypeList.forEach {
                 if (it.checkState) {
                     checkedTypeData.append("${it.id},")
                 }
-                //  mJoinModelAdapter.notifyDataSetChanged()
             }
             mSelectCallBack.onSelectCallBack(checkedMoneyData, checkedTypeData)
             dismiss()
@@ -199,17 +198,14 @@ class PopSeachCondition : PopupWindow {
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         bean.data?.let {
-                            //如果数据不为空   再清缓存
-                            if (!it.capitalList.isEmpty()) {
-                                if (!mTextMoneyList.isEmpty()) {
-                                    //清除缓存
-                                    BoxUtils.removeMoneyType(mTextMoneyList)
-                                    mTextMoneyList.clear()
-                                }
-                                mTextMoneyList.addAll(it.capitalList)
-                                BoxUtils.saveMoneyType(mTextMoneyList)
-                                mMoneyAdapter.notifyDataSetChanged()
+                            if (!mTextMoneyList.isEmpty()) {
+                                //清除缓存
+                                BoxUtils.removeMoneyType()
+                                mTextMoneyList.clear()
                             }
+                            mTextMoneyList.addAll(it.capitalList)
+                            BoxUtils.saveMoneyType(mTextMoneyList)
+                            mMoneyAdapter.notifyDataSetChanged()
                         }
                     }
                 }, {
@@ -226,17 +222,14 @@ class PopSeachCondition : PopupWindow {
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         bean.data?.let {
-                            //如果数据不为空   再清缓存
-                            if (!it.joinModes.isEmpty()) {
-                                if (!mTextJoinTypeList.isEmpty()) {
-                                    //清除缓存
-                                    BoxUtils.removeJoinType(mTextJoinTypeList)
-                                    mTextJoinTypeList.clear()
-                                }
-                                mTextJoinTypeList.addAll(it.joinModes)
-                                BoxUtils.saveJoinType(mTextJoinTypeList)
-                                mJoinModelAdapter.notifyDataSetChanged()
+                            if (!mTextJoinTypeList.isEmpty()) {
+                                //清除缓存
+                                BoxUtils.removeJoinType()
+                                mTextJoinTypeList.clear()
                             }
+                            mTextJoinTypeList.addAll(it.joinModes)
+                            BoxUtils.saveJoinType(mTextJoinTypeList)
+                            mJoinModelAdapter.notifyDataSetChanged()
                         }
                     }
                 }, {
@@ -245,7 +238,6 @@ class PopSeachCondition : PopupWindow {
     }
 
     override fun showAsDropDown(anchor: View, xoff: Int, yoff: Int, gravity: Int) {
-//        backgroundAlphaExt(0.5f)
         mMenuView.bottom_condition_view.visibility = View.VISIBLE
         //解决7.0showAsDropDown  失效
         if (Build.VERSION.SDK_INT == 24) {

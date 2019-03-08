@@ -88,7 +88,7 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
 
     //验证手机号是否注册
     private fun httpCheckPhone(phone: String) {
-        ApiUtils.getApi().hasRegistered(phone, 1)
+        ApiUtils.getApi().hasRegistered(phone, 2)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({

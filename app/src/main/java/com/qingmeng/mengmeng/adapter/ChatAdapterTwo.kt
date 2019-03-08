@@ -42,7 +42,6 @@ import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.MyMessageChatActivity
 import com.qingmeng.mengmeng.utils.GlideCacheUtils
-import com.qingmeng.mengmeng.utils.dp2px
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.utils.setMarginExt
 import java.io.File
@@ -291,7 +290,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             val textMessage = msgObjectList[position] as TextMessage
             setHeadImage(textMessage, ivMyMessageChatRvOtherTextHead)
             tvMyMessageChatRvOtherTextText.let {
-                it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), textMessage.info, it)
+                it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), textMessage.info, it, true)
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
                     true
@@ -310,6 +309,8 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         fun bindViewHolder(position: Int) {
             val imageMessage = msgObjectList[position] as ImageMessage
             setHeadImage(imageMessage, ivMyMessageChatRvOtherImageHead)
+            //缩放图片宽高比
+            zoomProportion(imageMessage)
             ivMyMessageChatRvOtherImageImage.let {
                 //有本地的先加载本地的
                 if (FileUtil.isFileExist(imageMessage.path)) {
@@ -374,18 +375,13 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val ivMyMessageChatRvOtherAudioHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherAudioHead)
         private val tvMyMessageChatRvOtherAudioTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvOtherAudioTime)
         private val llMyMessageChatRvOtherAudio = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvOtherAudio)
-        private val viewMyMessageChatRvOtherAudio = itemView.findViewById<View>(R.id.viewMyMessageChatRvOtherAudio)
+        private val tvMyMessageChatRvOtherAudio = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvOtherAudio)
         private val ivMyMessageChatRvOtherAudioImage = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvOtherAudioImage)
         fun bindViewHolder(position: Int) {
             val audioMessage = msgObjectList[position] as AudioMessage
             setHeadImage(audioMessage, ivMyMessageChatRvOtherAudioHead)
             tvMyMessageChatRvOtherAudioTime.text = "${audioMessage.audiolength}\""
-            val dp = if (audioMessage.audiolength * 4 < 150) {
-                context.dp2px(audioMessage.audiolength * 4)
-            } else {
-                context.dp2px(150)
-            }
-            viewMyMessageChatRvOtherAudio.layoutParams.width = dp
+            tvMyMessageChatRvOtherAudio.text = audioLengthToContent(audioMessage.audiolength)
             llMyMessageChatRvOtherAudio.let {
                 it.setOnClickListener {
                     audioClick(audioMessage, ivMyMessageChatRvOtherAudioImage)
@@ -502,7 +498,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             val textMessage = msgObjectList[position] as TextMessage
             setHeadImage(textMessage, ivMyMessageChatRvMineTextHead)
             tvMyMessageChatRvMineTextText.let {
-                it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), textMessage.info, it)
+                it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), textMessage.info, it, true)
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
                     true
@@ -652,7 +648,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val ivMyMessageChatRvMineAudioHead = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineAudioHead)
         private val tvMyMessageChatRvMineAudioTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvMineAudioTime)
         private val llMyMessageChatRvMineAudio = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvMineAudio)
-        private val viewMyMessageChatRvMineAudio = itemView.findViewById<View>(R.id.viewMyMessageChatRvMineAudio)
+        private val viewMyMessageChatRvMineAudio = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvMineAudio)
         private val ivMyMessageChatRvMineAudioImage = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineAudioImage)
         private val pbMyMessageChatRvMineAudioProgress = itemView.findViewById<ProgressBar>(R.id.pbMyMessageChatRvMineAudioProgress)
         private val ivMyMessageChatRvMineAudioFail = itemView.findViewById<ImageView>(R.id.ivMyMessageChatRvMineAudioFail)
@@ -660,12 +656,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             val audioMessage = msgObjectList[position] as AudioMessage
             setHeadImage(audioMessage, ivMyMessageChatRvMineAudioHead)
             tvMyMessageChatRvMineAudioTime.text = "${audioMessage.audiolength}\""
-            val dp = if (audioMessage.audiolength * 4 < 150) {
-                context.dp2px(audioMessage.audiolength * 4)
-            } else {
-                context.dp2px(150)
-            }
-            viewMyMessageChatRvMineAudio.layoutParams.width = dp
+            viewMyMessageChatRvMineAudio.text = audioLengthToContent(audioMessage.audiolength)
             llMyMessageChatRvMineAudio.let {
                 it.setOnClickListener {
                     audioClick(audioMessage, ivMyMessageChatRvMineAudioImage)
@@ -1164,6 +1155,25 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             }
             GlideLoader.load(AppManager.instance.currentActivity(), avatarUrl, imageView, placeholder = R.drawable.default_img_icon, roundRadius = 15)
         }
+    }
+
+    /**
+     * 根据时间长度返回一个空字符串
+     */
+    private fun audioLengthToContent(length: Int): String {
+        val num = if (length <= 40) length else 40
+        var str = ""
+        for (i in 0..num) {
+            str += " "
+        }
+        return str
+    }
+
+    /**
+     * 缩放图片比例
+     */
+    private fun zoomProportion(message:ImageMessage) {
+
     }
 
     /**
