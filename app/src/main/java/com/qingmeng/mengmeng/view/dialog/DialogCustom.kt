@@ -255,7 +255,7 @@ class DialogCustom(private var mContext: Context?) {
     /**
      * @param callback 姓名 手机号 留言
      */
-    fun showJoinDataDialog(shopName: String, callback: (String, String, String) -> Unit) {
+    fun showJoinDataDialog(shopName: String, callback: (String, String, String, MyBottomDialog) -> Unit) {
         bottomSheetDialog = MyBottomDialog(mContext!!)
         val view = LayoutInflater.from(mContext!!).inflate(R.layout.dialog_want_to_join, null)
         bottomSheetDialog.setContentView(view)
@@ -289,8 +289,7 @@ class DialogCustom(private var mContext: Context?) {
                 phone.length < 11 -> ToastUtil.showShort(R.string.correct_phone)
                 TextUtils.isEmpty(message) -> ToastUtil.showShort(R.string.join_data_msg)
                 else -> {
-                    callback(name, phone, message)
-                    bottomSheetDialog.cancel()
+                    callback(name, phone, message, bottomSheetDialog)
                 }
             }
         }
