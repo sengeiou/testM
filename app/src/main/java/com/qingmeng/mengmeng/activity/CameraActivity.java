@@ -725,7 +725,7 @@ public class CameraActivity extends AppCompatActivity implements MediaRecorder.O
                 mCamera.release();
                 mCamera = null;
             }
-            setResult(RESULT_OK, new Intent().putExtra("noPermission",true));
+            setResult(RESULT_OK, new Intent().putExtra("noPermission", true));
             finish();
             e.printStackTrace();
         }
@@ -774,8 +774,8 @@ public class CameraActivity extends AppCompatActivity implements MediaRecorder.O
                 previewHeight = previewSize.height;
             }
             ULogToDevice.d("test", TAG, "摄像头支持 宽:" + previewWidth + " #高=" + previewHeight);
-        }else{
-            setResult(RESULT_OK, new Intent().putExtra("noPermission",true));
+        } else {
+            setResult(RESULT_OK, new Intent().putExtra("noPermission", true));
             this.finish();
         }
     }

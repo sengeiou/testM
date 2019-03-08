@@ -7,7 +7,7 @@ import android.widget.ImageView
 import com.qingmeng.mengmeng.R
 
 class GuideImgAdapter : PagerAdapter() {
-    private val imgIds = arrayOf(R.drawable.img_splash1, R.drawable.img_splash2, R.drawable.img_splash3, R.drawable.img_splash4)
+    private val imgIds = arrayOf(R.drawable.img_splash1, R.drawable.img_splash2, R.drawable.img_splash3)
 
     override fun isViewFromObject(view: View, any: Any): Boolean = view == any
 
@@ -19,7 +19,7 @@ class GuideImgAdapter : PagerAdapter() {
 
     override fun instantiateItem(container: ViewGroup, position: Int): Any {
         val image = ImageView(container.context)
-        image.scaleType = ImageView.ScaleType.FIT_XY
+        image.scaleType = ImageView.ScaleType.CENTER_CROP
         image.setImageResource(imgIds[position])
         container.addView(image)
         return image

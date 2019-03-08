@@ -38,7 +38,14 @@
             android:id="@+id/ivMyMessageChatRvOtherAudioImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@anim/tt_voice_play_other"
+            android:background="@drawable/tt_voice_play_other"
+            />
+
+        <TextView
+            android:id="@+id/tvMyMessageChatRvOtherAudio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
             />
     </LinearLayout>
 

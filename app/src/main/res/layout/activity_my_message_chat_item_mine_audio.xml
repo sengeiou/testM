@@ -52,14 +52,21 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/padding_dp_10"
         android:background="@drawable/ripple_bg_drawable_blue_radius5"
+        android:gravity="end"
         android:padding="@dimen/padding_dp_10"
         >
+
+        <TextView
+            android:id="@+id/tvMyMessageChatRvMineAudio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            />
 
         <ImageView
             android:id="@+id/ivMyMessageChatRvMineAudioImage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@anim/tt_voice_play_mine"
+            android:background="@drawable/tt_voice_play_mine"
             />
     </LinearLayout>
 

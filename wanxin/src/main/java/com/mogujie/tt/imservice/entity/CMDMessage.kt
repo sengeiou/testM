@@ -19,7 +19,7 @@ class CmdMessage() : TextMessage() {
         parseMessage(entity)
     }
 
-    override fun getSpecial(): Boolean = true
+    override fun getSpecial(): Boolean = false
 
     companion object {
         /**

@@ -54,7 +54,7 @@ class JoinRecommendAdapter(val context: Context, val onItemClick: (JoinRecommend
             if (TextUtils.isEmpty(joinBean.capitalName)) {
                 recommendMoney.text = "面议"
             } else{
-                recommendMoney.text = "￥${joinBean.capitalName}"
+                recommendMoney.text = joinBean.capitalName
             }
             itemView.setOnClickListener { onItemClick(joinBean) }
             if (!TextUtils.isEmpty(joinBean.logo)) {

@@ -7,6 +7,7 @@ import com.google.protobuf.ByteString;
 import com.google.protobuf.CodedInputStream;
 import com.mogujie.tt.config.DBConstant;
 import com.mogujie.tt.config.MessageConstant;
+import com.mogujie.tt.config.MessageExtConst;
 import com.mogujie.tt.config.SysConstant;
 import com.mogujie.tt.db.DBInterface;
 import com.mogujie.tt.db.entity.MessageEntity;
@@ -81,11 +82,11 @@ public class IMMessageManager extends IMManager {
         logger.d("chat#ackReceiveMsg 收到消息 -> msg:%s", msg);
         IMBaseDefine.SessionType sessionType = Java2ProtoBuf.getProtoSessionType(msg.getSessionType());
         IMMessage.IMMsgDataAck imMsgDataAck = IMMessage.IMMsgDataAck.newBuilder()
-        .setMsgId(msg.getMsgId())
-        .setSessionId(msg.getToId())
-        .setUserId(msg.getFromId())
-        .setSessionType(sessionType)
-        .build();
+            .setMsgId(msg.getMsgId())
+            .setSessionId(msg.getToId())
+            .setUserId(msg.getFromId())
+            .setSessionType(sessionType)
+            .build();
         int sid = IMBaseDefine.ServiceID.SID_MSG_VALUE;
         int cid = IMBaseDefine.MessageCmdID.CID_MSG_DATA_ACK_VALUE;
         imSocketManager.sendRequest(imMsgDataAck, sid, cid);
@@ -177,13 +178,13 @@ public class IMMessageManager extends IMManager {
 
 
         IMMessage.IMMsgData msgData = IMMessage.IMMsgData.newBuilder()
-        .setFromUserId(msgEntity.getFromId())
-        .setToSessionId(msgEntity.getToId())
-        .setMsgId(0)
-        .setCreateTime(msgEntity.getCreated())
-        .setMsgType(msgType)
-        .setMsgData(ByteString.copyFrom(sendContent))  // 这个点要特别注意 todo ByteString.copyFrom
-        .build();
+            .setFromUserId(msgEntity.getFromId())
+            .setToSessionId(msgEntity.getToId())
+            .setMsgId(0)
+            .setCreateTime(msgEntity.getCreated())
+            .setMsgType(msgType)
+            .setMsgData(ByteString.copyFrom(sendContent))  // 这个点要特别注意 todo ByteString.copyFrom
+            .build();
         int sid = IMBaseDefine.ServiceID.SID_MSG_VALUE;
         int cid = IMBaseDefine.MessageCmdID.CID_MSG_DATA_VALUE;
 
@@ -201,12 +202,18 @@ public class IMMessageManager extends IMManager {
 
                     messageEntity.setStatus(MessageConstant.MSG_SUCCESS);
                     messageEntity.setMsgId(imMsgDataAck.getMsgId());
-                    if (messageEntity.getDisplayType() != DBConstant.SHOW_REVOKE_TYPE) {
-                        /**主键ID已经存在，直接替换*/
-                        dbInterface.insertOrUpdateMessage(messageEntity);
-                        /**更新sessionEntity lastMsgId问题*/
-                        sessionManager.updateSession(messageEntity);
+                    //撤回消息特殊处理
+                    if (messageEntity.getDisplayType() == DBConstant.SHOW_REVOKE_TYPE) {
+                        //时间赋值一样的
+                        int create = dbInterface.getMessageByMsgId(messageEntity.getAttributeInt(MessageExtConst.MSGID)).getCreated();
+                        messageEntity.setCreated(create);
+                        //先从数据库删除相应id的数据
+                        dbInterface.deleteMessageByMsgId(messageEntity.getAttributeInt(MessageExtConst.MSGID));
                     }
+                    /**主键ID已经存在，直接替换*/
+                    dbInterface.insertOrUpdateMessage(messageEntity);
+                    /**更新sessionEntity lastMsgId问题*/
+                    sessionManager.updateSession(messageEntity);
                     triggerEvent(new MessageEvent(MessageEvent.Event.ACK_SEND_MESSAGE_OK, messageEntity));
                 } catch (IOException e) {
                     e.printStackTrace();
@@ -255,9 +262,18 @@ public class IMMessageManager extends IMManager {
 
         /**对于混合消息，未读消息计数还是1,session已经更新*/
         if (!recvMessage.isSpecial()) {
+            //撤回消息特殊处理
+            if (recvMessage.getDisplayType() == DBConstant.SHOW_REVOKE_TYPE) {
+                //时间赋值一样的
+                int create = dbInterface.getMessageByMsgId(recvMessage.getAttributeInt(MessageExtConst.MSGID)).getCreated();
+                recvMessage.setCreated(create);
+                //先从数据库删除相应id的数据
+                dbInterface.deleteMessageByMsgId(recvMessage.getAttributeInt(MessageExtConst.MSGID));
+            }
             dbInterface.insertOrUpdateMessage(recvMessage);
             sessionManager.updateSession(recvMessage);
         }
+
         /**
          *  发送已读确认由上层的activity处理 特殊处理
          *  1. 未读计数、 通知、session页面
@@ -627,11 +643,11 @@ public class IMMessageManager extends IMManager {
         int userId = IMLoginManager.instance().getLoginId();
         IMBaseDefine.SessionType sType = Java2ProtoBuf.getProtoSessionType(sessionType);
         IMMessage.IMGetMsgByIdReq imGetMsgByIdReq = IMMessage.IMGetMsgByIdReq.newBuilder()
-        .setSessionId(peerId)
-        .setUserId(userId)
-        .setSessionType(sType)
-        .addAllMsgIdList(msgIds)
-        .build();
+            .setSessionId(peerId)
+            .setUserId(userId)
+            .setSessionType(sType)
+            .addAllMsgIdList(msgIds)
+            .build();
         int sid = IMBaseDefine.ServiceID.SID_MSG_VALUE;
         int cid = IMBaseDefine.MessageCmdID.CID_MSG_GET_BY_MSG_ID_REQ_VALUE;
         imSocketManager.sendRequest(imGetMsgByIdReq, sid, cid);
@@ -689,12 +705,12 @@ public class IMMessageManager extends IMManager {
         int loginId = IMLoginManager.instance().getLoginId();
 
         IMMessage.IMGetMsgListReq req = IMMessage.IMGetMsgListReq.newBuilder()
-        .setUserId(loginId)
-        .setSessionType(Java2ProtoBuf.getProtoSessionType(peerType))
-        .setSessionId(peerId)
-        .setMsgIdBegin(lastMsgId)
-        .setMsgCnt(cnt)
-        .build();
+            .setUserId(loginId)
+            .setSessionType(Java2ProtoBuf.getProtoSessionType(peerType))
+            .setSessionId(peerId)
+            .setMsgIdBegin(lastMsgId)
+            .setMsgCnt(cnt)
+            .build();
 
         int sid = IMBaseDefine.ServiceID.SID_MSG_VALUE;
         int cid = IMBaseDefine.MessageCmdID.CID_MSG_LIST_REQUEST_VALUE;

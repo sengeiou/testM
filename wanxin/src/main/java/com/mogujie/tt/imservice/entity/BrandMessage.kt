@@ -48,6 +48,7 @@ class BrandMessage() : TextMessage(), Serializable {
     companion object {
         fun parseFromNet(entity: MessageEntity): BrandMessage {
             val brandMessage = BrandMessage(entity)
+            brandMessage.setDisplayType(DBConstant.SHOW_BRAND_TYPE)
             brandMessage.setStatus(MessageConstant.MSG_SUCCESS)
             return brandMessage
         }
