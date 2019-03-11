@@ -224,6 +224,7 @@ class MySettingsUserActivity : BaseActivity() {
                     myDialog.dismissLoadingDialog()
                     it.apply {
                         if (code == 12000) {
+                            MainApplication.instance.user.userInfo.avatar = mAvatar
                             ToastUtil.showShort("修改成功")
                             //把本地图片地址返回给上一页
                             setResult(Activity.RESULT_OK, Intent().apply {
