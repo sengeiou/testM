@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
@@ -33,6 +34,7 @@ import org.jetbrains.anko.startActivity
 
  *  Date: 2019/1/3
  */
+@SuppressLint("CheckResult")
 class MyMyLeavingMessageActivity : BaseActivity() {
     private lateinit var mLayoutManager: LinearLayoutManager
     private lateinit var mAdapter: CommonAdapter<MyLeavingMessage>
@@ -183,12 +185,14 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                                 mHasNextPage = false
                                 if (pageNum == 1) {
                                     //空白页提示
+                                    tvMyMyLeavingMessageTips.text = getString(R.string.my_myLeavingMessage_null_tips)
                                     llMyMyLeavingMessageTips.visibility = View.VISIBLE
                                     srlMyMyLeavingMessage.isRefreshEnabled = true
                                 }
                             } else {
                                 mHasNextPage = true
                                 if (pageNum == 1) {
+                                    tvMyMyLeavingMessageTips.text = getString(R.string.my_myLeavingMessage_null_tips)
                                     llMyMyLeavingMessageTips.visibility = View.GONE
                                 }
                                 //把内容添加到mList里去
@@ -202,6 +206,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                     myDialog.dismissLoadingDialog()
                     setRefreshAsFalse()
                     mCanHttpLoad = true
+                    tvMyMyLeavingMessageTips.text = getString(R.string.no_net)
                     llMyMyLeavingMessageTips.visibility = View.VISIBLE
                     srlMyMyLeavingMessage.isRefreshEnabled = true
                 }, {}, { addSubscription(it) })

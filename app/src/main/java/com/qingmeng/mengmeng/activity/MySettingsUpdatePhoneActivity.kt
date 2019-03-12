@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import com.qingmeng.mengmeng.BaseActivity
@@ -22,6 +23,7 @@ import org.json.JSONObject
 
  *  Date: 2019/1/3
  */
+@SuppressLint("CheckResult")
 class MySettingsUpdatePhoneActivity : BaseActivity() {
 
     override fun getLayoutId(): Int {

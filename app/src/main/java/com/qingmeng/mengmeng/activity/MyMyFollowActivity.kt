@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
@@ -34,6 +35,7 @@ import org.jetbrains.anko.startActivity
 
  *  Date: 2019/1/3
  */
+@SuppressLint("CheckResult")
 class MyMyFollowActivity : BaseActivity() {
     private lateinit var mLayoutManager: LinearLayoutManager
     private lateinit var mAdapter: CommonAdapter<MyFollow>
@@ -55,9 +57,6 @@ class MyMyFollowActivity : BaseActivity() {
         val title = intent.getStringExtra("title")
         setHeadName(title)
         mIsMyFollow = title == getString(R.string.my_myFollow)
-        if (!mIsMyFollow) {
-            tvMyMyFollowTips.text = getString(R.string.my_myFootprint_null_tips)
-        }
 
         //适配器初始化
         initAdapter()
@@ -196,12 +195,22 @@ class MyMyFollowActivity : BaseActivity() {
                                 mHasNextPage = false
                                 if (pageNum == 1) {
                                     //空白页提示
+                                    if (mIsMyFollow) {
+                                        tvMyMyFollowTips.text = getString(R.string.my_myFollow_null_tips)
+                                    } else {
+                                        tvMyMyFollowTips.text = getString(R.string.my_myFootprint_null_tips)
+                                    }
                                     llMyMyFollowTips.visibility = View.VISIBLE
                                     srlMyMyFollow.isRefreshEnabled = true
                                 }
                             } else {
                                 mHasNextPage = true
                                 if (pageNum == 1) {
+                                    if (mIsMyFollow) {
+                                        tvMyMyFollowTips.text = getString(R.string.my_myFollow_null_tips)
+                                    } else {
+                                        tvMyMyFollowTips.text = getString(R.string.my_myFootprint_null_tips)
+                                    }
                                     llMyMyFollowTips.visibility = View.GONE
                                 }
                                 //把内容添加到mList里去
@@ -215,6 +224,7 @@ class MyMyFollowActivity : BaseActivity() {
                     myDialog.dismissLoadingDialog()
                     setRefreshAsFalse()
                     mCanHttpLoad = true
+                    tvMyMyFollowTips.text = getString(R.string.no_net)
                     llMyMyFollowTips.visibility = View.VISIBLE
                     srlMyMyFollow.isRefreshEnabled = true
                 }, {}, { addSubscription(it) })
