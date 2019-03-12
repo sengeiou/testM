@@ -18,7 +18,6 @@ import android.widget.TextView
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener
 import com.aspsine.swipetoloadlayout.OnRefreshListener
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
@@ -110,11 +109,11 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
         swipe_target.layoutManager = mLauyoutManger
         mAdapter = CommonAdapter(this, R.layout.red_shop_search_result_item, mSeachResultList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
+                Glide.with(this@RedShopSeachResult)
+                        .load(data.logo).apply(RequestOptions()
+                        .transform(GlideRoundTransformCenterCrop())
+                        .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.search_result_bigLogo))
                 if (data.status == 1) {
-                    Glide.with(this@RedShopSeachResult)
-                            .load(data.logo).apply(RequestOptions()
-                            .transform(GlideRoundTransformCenterCrop())
-                            .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.search_result_bigLogo))
                     val spanString = SpannableString("证\t\t\t${data.name}")
                     val drawable = resources.getDrawable(R.drawable.detail_icon_certification)
                     val imageSpan = ImageSpan(drawable, ImageSpan.ALIGN_BASELINE)
@@ -279,10 +278,10 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
             startActivity<RedShopSeach>(IConstants.BACK_SEACH to keyWord)
         }
         head_search_mBack.setOnClickListener {
-            //            if (popupMenu1.isShowing) popupMenu1.dismiss()
-//            if (popupMenu2.isShowing) popupMenu2.dismiss()
-//            if (popupMenu3.isShowing) popupMenu3.dismiss()
-//            if (popupMenu4.isShowing) popupMenu4.dismiss()
+            //if (popupMenu1.isShowing) popupMenu1.dismiss()
+            //if (popupMenu2.isShowing) popupMenu2.dismiss()
+            //if (popupMenu3.isShowing) popupMenu3.dismiss()
+            //if (popupMenu4.isShowing) popupMenu4.dismiss()
             this.finish()
         }
         mSeachToTop.setOnClickListener {
@@ -362,7 +361,6 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
         seach_result_swipeLayout.setOnLoadMoreListener(this)
         swipe_target.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             internal var lastVisibleItemPosition: Int = 0
-            internal var firstVisibleItemPosition: Int = 0
             //滚动状态改变时
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -376,18 +374,11 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 lastVisibleItemPosition = mLauyoutManger.findLastVisibleItemPosition()
-                //回到顶部
-                firstVisibleItemPosition = mLauyoutManger.findFirstVisibleItemPosition()
-
-                if (!mSeachResultList.isEmpty()) {
-                    val view: View = mLauyoutManger.findViewByPosition(firstVisibleItemPosition)!!
-                    val firstVisiableChildViewTop = view.top
-                    val itemHeight = view.height
-                    if ((firstVisibleItemPosition) * itemHeight - firstVisiableChildViewTop == 0) {
-                        mSeachToTop.visibility = View.GONE
-                    } else {
-                        mSeachToTop.visibility = View.VISIBLE
-                    }
+                //滑到顶部了0
+                if (!recyclerView.canScrollVertically(-1)) {
+                    mSeachToTop.visibility = View.GONE
+                } else {
+                    mSeachToTop.visibility = View.VISIBLE
                 }
             }
         })
@@ -500,10 +491,10 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
     }
 
 //    override fun onDestroy() {
+//        super.onDestroy()
 //        if (popupMenu1.isShowing) popupMenu1.dismiss()
 //        if (popupMenu2.isShowing) popupMenu2.dismiss()
 //        if (popupMenu3.isShowing) popupMenu3.dismiss()
 //        if (popupMenu4.isShowing) popupMenu4.dismiss()
-//        super.onDestroy()
 //    }
 }
