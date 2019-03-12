@@ -66,8 +66,8 @@ object IConstants {
     val DIR_AUDIO_STR = StorageUtils.getPublicStorageDir("${ROOT_NAME}/audio")
 
     //微信
-    val APPID_WECHAT = "wx3359dcde9a73108e"
-    val SECRET_WECHAT = "32c2252fa2fdbd6e76e181883c1c15e5"
+    val APPID_WECHAT = "wx9eaf08161137b52e"
+    val SECRET_WECHAT = "90f41ca172fbdeb216e1a03044b3ca27"
     //QQ
     val APP_ID_QQ = "1106680659"
     val APP_KEY_QQ = "bwh1Tr7jyhDZqtYU"
