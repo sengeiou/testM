@@ -27,13 +27,13 @@ import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.ShopDetailVpAdapter
 import com.qingmeng.mengmeng.constant.IConstants.BRANDID
-import com.qingmeng.mengmeng.constant.IConstants.TO_MESSAGE
 import com.qingmeng.mengmeng.constant.IConstants.ENTER_BRAND_NUM
 import com.qingmeng.mengmeng.constant.IConstants.FROM_TYPE
 import com.qingmeng.mengmeng.constant.IConstants.IMGS
 import com.qingmeng.mengmeng.constant.IConstants.MESSAGE_BACK_BRAND_ID
 import com.qingmeng.mengmeng.constant.IConstants.MYFRAGMENT_TO_MESSAGE
 import com.qingmeng.mengmeng.constant.IConstants.POSITION
+import com.qingmeng.mengmeng.constant.IConstants.TO_MESSAGE
 import com.qingmeng.mengmeng.entity.BrandBean
 import com.qingmeng.mengmeng.entity.BrandInformation
 import com.qingmeng.mengmeng.entity.BrandInitialFee
@@ -244,8 +244,8 @@ class ShopDetailActivity : BaseActivity() {
             }
         }
         mGetJoinData.setOnClickListener { _ ->
-            myDialog.showJoinDataDialog(name) { name, phone, message ->
-                ApiUtils.join(id, name, phone, message, myDialog) { addSubscription(it) }
+            myDialog.showJoinDataDialog(name) { name, phone, message, dialog ->
+                ApiUtils.join(id, name, phone, message, myDialog, { dialog.cancel() },{ addSubscription(it) })
             }
         }
         mDetailScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->

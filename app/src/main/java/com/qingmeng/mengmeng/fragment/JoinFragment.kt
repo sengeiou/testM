@@ -249,8 +249,8 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 
         val adapter = JoinRecommendAdapter(context!!) { it ->
             if (it.isFakeBrand == 1) {
-                myDialog.showJoinDataDialog(it.name) { name, phone, message ->
-                    ApiUtils.join(it.id, name, phone, message, myDialog) { addSubscription(it) }
+                myDialog.showJoinDataDialog(it.name) { name, phone, message, dialog ->
+                    ApiUtils.join(it.id, name, phone, message, myDialog, { dialog.cancel() },{ addSubscription(it) })
                 }
             } else {
                 startActivity<ShopDetailActivity>(BRANDID to it.id)

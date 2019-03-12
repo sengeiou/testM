@@ -290,8 +290,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     //banner加载图片
     override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: Banner?, position: Int) {
         model?.let {
-            Glide.with(this).load(it.imgUrl).apply(RequestOptions().centerCrop()
-                    .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(itemView)
+            Glide.with(this).load(it.imgUrl).apply(RequestOptions().centerCrop()).into(itemView)
         }
     }
 

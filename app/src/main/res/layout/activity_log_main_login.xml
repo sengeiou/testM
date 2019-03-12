@@ -30,7 +30,6 @@
         android:layout_marginTop="@dimen/padding_dp_45"
         android:layout_weight="1"
         app:banner_pageChangeDuration="2000"
-        app:banner_placeholderDrawable="@drawable/default_img_banner"
         app:banner_pointContainerBackground="@color/transparent"
         app:banner_pointDrawable="@color/transparent"/>
 
