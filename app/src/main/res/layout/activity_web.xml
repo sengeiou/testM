@@ -19,12 +19,13 @@
         android:id="@+id/mNoNet"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:drawableTop="@drawable/no_content"
         android:drawablePadding="@dimen/padding_dp_15"
         android:gravity="center_horizontal"
-        android:drawableTop="@drawable/no_content"
         android:text="@string/no_net"
-        android:layout_centerInParent="true"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/text_size_15"/>
+        android:textSize="@dimen/text_size_15"
+        android:visibility="gone"/>
 
 </RelativeLayout>
