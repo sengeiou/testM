@@ -16,7 +16,7 @@ public class GlideRoundTransformCenterCrop extends CenterCrop {
     private static float radius = 0f;
 
     public GlideRoundTransformCenterCrop() {
-        this(10);
+        this(5);
     }
 
     @SuppressWarnings("static-access")

@@ -65,7 +65,6 @@
         android:id="@+id/waveProgress"
         android:layout_width="@dimen/padding_dp_50"
         android:layout_height="@dimen/padding_dp_50"
-        android:visibility="gone"
         android:layout_centerInParent="true"/>
 
 </RelativeLayout>
