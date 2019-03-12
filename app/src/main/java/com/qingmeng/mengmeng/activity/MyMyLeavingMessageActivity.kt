@@ -125,7 +125,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                     setTextColorRes(R.id.tvMyMyLeavingMessageRvState, R.color.green)
                 }
                 setText(R.id.tvMyMyLeavingMessageRvLeavingMessage, t.message)
-                GlideLoader.load(this@MyMyLeavingMessageActivity, t.logo, getView(R.id.ivMyMyLeavingMessageRvLogo), centerCrop = false)
+                GlideLoader.load(this@MyMyLeavingMessageActivity, t.logo, getView(R.id.ivMyMyLeavingMessageRvLogo), centerCrop = false, placeholder = R.drawable.default_img_icon)
                 setText(R.id.tvMyMyLeavingMessageRvBrandName, t.brandName)
                 if (t.capitalName.isNullOrBlank()) {
                     setText(R.id.tvMyMyLeavingMessageRvInvestmentAmount, getString(R.string.face))
@@ -133,7 +133,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                     setText(R.id.tvMyMyLeavingMessageRvInvestmentAmount, t.capitalName)
                 }
                 getView<TextView>(R.id.tvMyMyLeavingMessageRvStoreNumStatic).let {
-                    if (TextUtils.isEmpty(t.storesNum)) {
+                    if (TextUtils.isEmpty(t.storesNum) || t.storesNum == "null") {
                         it.visibility = View.GONE
                         setText(R.id.tvMyMyLeavingMessageRvStoreNum, "")
                     } else {

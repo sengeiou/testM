@@ -8,6 +8,7 @@ import android.content.pm.PackageManager
 import android.os.Build
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.ImageView
@@ -190,11 +191,13 @@ class MainActivity : BaseActivity() {
     fun onEventMainThread(loginEvent: LoginEvent) {
         when (loginEvent) {
             LoginEvent.LOCAL_LOGIN_SUCCESS, LoginEvent.LOGIN_OK -> { //登录成功
+                Log.i("yang","=====================登录成功")
                 (AppManager.instance.currentActivity() as BaseActivity).let {
                     it.myDialog.dismissLoadingDialog()
                 }
             }
             LoginEvent.LOGIN_AUTH_FAILED, LoginEvent.LOGIN_INNER_FAILED -> { //登录失败
+                Log.i("yang","=====================登录失败")
                 (AppManager.instance.currentActivity() as BaseActivity).let {
                     it.myDialog.dismissLoadingDialog()
                 }

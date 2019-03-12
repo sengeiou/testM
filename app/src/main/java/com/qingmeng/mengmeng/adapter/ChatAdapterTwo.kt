@@ -16,6 +16,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.app.common.extensions.setWidthHeightExt
 import com.bumptech.glide.Glide
 import com.lemo.emojcenter.utils.EmotionUtils
 import com.lemo.emojcenter.utils.SpanStringUtils
@@ -42,6 +43,8 @@ import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.MyMessageChatActivity
 import com.qingmeng.mengmeng.utils.GlideCacheUtils
+import com.qingmeng.mengmeng.utils.ImageUtils
+import com.qingmeng.mengmeng.utils.dp2px
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.utils.setMarginExt
 import java.io.File
@@ -214,7 +217,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         private val tvMyMessageChatRvTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvTime)
         fun bindViewHolder(item: Any) {
             if (msgObjectList[0] == item) {
-                llMyMessageChatRvAllTime.setMarginExt(top = 30)
+                llMyMessageChatRvAllTime.setMarginExt(top = 60)
             } else {
                 llMyMessageChatRvAllTime.setMarginExt(top = 0)
             }
@@ -253,7 +256,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         fun bindViewHolder(position: Int) {
             val brandMessage = msgObjectList[position] as BrandMessage
             if (position == 0) {
-                llMyMessageChatRvAllBrand.setMarginExt(top = 30)
+                llMyMessageChatRvAllBrand.setMarginExt(top = 60)
             } else {
                 llMyMessageChatRvAllBrand.setMarginExt(top = 0)
             }
@@ -309,9 +312,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         fun bindViewHolder(position: Int) {
             val imageMessage = msgObjectList[position] as ImageMessage
             setHeadImage(imageMessage, ivMyMessageChatRvOtherImageHead)
-            //缩放图片宽高比
-            zoomProportion(imageMessage)
             ivMyMessageChatRvOtherImageImage.let {
+                val imageSize = ImageUtils.getImageSizeWrap(imageMessage.width, imageMessage.height, context.dp2px(50), context.dp2px(150), context.dp2px(50), context.dp2px(150))
+                it.setWidthHeightExt(imageSize.width, imageSize.height)
                 //有本地的先加载本地的
                 if (FileUtil.isFileExist(imageMessage.path)) {
                     GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
@@ -539,6 +542,8 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             val imageMessage = msgObjectList[position] as ImageMessage
             setHeadImage(imageMessage, ivMyMessageChatRvMineImageHead)
             ivMyMessageChatRvMineImageImage.let {
+                val imageSize = ImageUtils.getImageSizeWrap(imageMessage.width, imageMessage.height, context.dp2px(50), context.dp2px(150), context.dp2px(50), context.dp2px(150))
+                it.setWidthHeightExt(imageSize.width, imageSize.height)
                 //有本地的先加载本地的
                 if (FileUtil.isFileExist(imageMessage.path)) {
                     GlideLoader.load(AppManager.instance.currentActivity(), imageMessage.path, it, placeholder = R.drawable.default_img_icon, roundRadius = 15)
@@ -1167,13 +1172,6 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             str += " "
         }
         return str
-    }
-
-    /**
-     * 缩放图片比例
-     */
-    private fun zoomProportion(message:ImageMessage) {
-
     }
 
     /**

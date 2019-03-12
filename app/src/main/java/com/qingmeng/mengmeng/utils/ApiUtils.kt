@@ -56,7 +56,7 @@ object ApiUtils {
     }
 
     //加盟
-    fun join(id: Int, name: String, phone: String, message: String, myDialog: DialogCustom, addSubscription: (Disposable) -> Unit) {
+    fun join(id: Int, name: String, phone: String, message: String, myDialog: DialogCustom,success:()->Unit, addSubscription: (Disposable) -> Unit) {
         myDialog.showLoadingDialog()
         getApi().join(id, name, phone, message)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -65,6 +65,7 @@ object ApiUtils {
                     myDialog.dismissLoadingDialog()
                     if (bean.code == 12000) {
                         ToastUtil.showShort(R.string.submit_success)
+                        success()
                     } else {
                         ToastUtil.showShort(bean.msg)
                     }
