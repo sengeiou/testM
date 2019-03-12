@@ -45,7 +45,8 @@ android {
             shrinkResources false
             signingConfig signingConfigs.mengmeng
             //请求地址
-            buildConfigField("String", "SERVER_IP", "\"http://apptest.ejiameng.cn/\"")
+//            buildConfigField("String", "SERVER_IP", "\"http://apptest.ejiameng.cn/\"")
+            buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
             //SD目录名
             buildConfigField("String", "APP_DIR", "\"mengmeng\"")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -57,7 +58,8 @@ android {
             shrinkResources false
             signingConfig signingConfigs.mengmeng
             //请求地址
-            buildConfigField("String", "SERVER_IP", "\"http://apptest.ejiameng.cn/\"")
+//            buildConfigField("String", "SERVER_IP", "\"http://apptest.ejiameng.cn/\"")
+            buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
             //SD目录名
             buildConfigField("String", "APP_DIR", "\"mengmeng\"")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'

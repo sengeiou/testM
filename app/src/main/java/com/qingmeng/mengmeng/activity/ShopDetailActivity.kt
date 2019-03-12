@@ -119,15 +119,17 @@ class ShopDetailActivity : BaseActivity() {
             mGoodsUndercarriageText.visibility = View.GONE
             brandBean = bean
             name = bean.name
+            val density = resources.displayMetrics.density
             if (bean.status == 1) {
+                mDetailName.setPadding(0, 0, 0, 0)
                 val spanString = SpannableString("证 $name")
                 val drawable = resources.getDrawable(R.drawable.detail_icon_certification)
                 val imageSpan = ImageSpan(drawable, ImageSpan.ALIGN_BASELINE)
                 spanString.setSpan(imageSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
-                val density = resources.displayMetrics.density
                 drawable.setBounds(0, (7 * density).toInt(), (14 * density).toInt(), (21 * density).toInt())
                 mDetailName.text = spanString
             } else {
+                mDetailName.setPadding(0, (5 * density).toInt(), 0, 0)
                 mDetailName.text = name
             }
             mDetailType.text = bean.foodName
@@ -182,7 +184,7 @@ class ShopDetailActivity : BaseActivity() {
         mDetailMore.setOnClickListener {
             myDialog.showMorePop(it, {
                 toNextResult<MyMessageActivity>(TO_MESSAGE)
-                if(!MYFRAGMENT_TO_MESSAGE){
+                if (!MYFRAGMENT_TO_MESSAGE) {
                     //如果聊天列表页面存在了 就销毁它
                     finishAty(MyMessageActivity::class.java)
                 }
@@ -245,7 +247,7 @@ class ShopDetailActivity : BaseActivity() {
         }
         mGetJoinData.setOnClickListener { _ ->
             myDialog.showJoinDataDialog(name) { name, phone, message, dialog ->
-                ApiUtils.join(id, name, phone, message, myDialog, { dialog.cancel() },{ addSubscription(it) })
+                ApiUtils.join(id, name, phone, message, myDialog, { dialog.cancel() }, { addSubscription(it) })
             }
         }
         mDetailScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->
