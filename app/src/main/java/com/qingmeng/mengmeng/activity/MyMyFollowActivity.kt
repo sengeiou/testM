@@ -133,7 +133,7 @@ class MyMyFollowActivity : BaseActivity() {
         mAdapter = CommonAdapter(this, R.layout.activity_my_myfollow_item, mList, holderConvert = { holder, t, position, payloads ->
             holder.apply {
                 //glide加载图片
-                GlideLoader.load(this@MyMyFollowActivity, t.logo, getView(R.id.ivMyMyFollowRvLogo), cacheType = CacheType.All, placeholder = R.mipmap.my_settings)
+                GlideLoader.load(this@MyMyFollowActivity, t.logo, getView(R.id.ivMyMyFollowRvLogo), cacheType = CacheType.All, placeholder = R.drawable.default_img_icon)
                 if (mIsMyFollow) {
                     setText(R.id.tvMyMyFollowRvBrandName, t.name)
                 } else {

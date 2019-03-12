@@ -13,7 +13,7 @@ import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.utils.ToastUtil
 
 /**
- *  Description :
+ *  Description : 邮箱输入提示
 
  *  Author:yang
 
