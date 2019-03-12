@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
@@ -52,6 +53,7 @@ import java.util.*
 
  *  Date: 2019/1/3
  */
+@SuppressLint("CheckResult")
 class MyMessageActivity : BaseActivity() {
     private lateinit var mLayoutManager: LinearLayoutManager
     private lateinit var mAdapter: CommonAdapter<RecentInfo>

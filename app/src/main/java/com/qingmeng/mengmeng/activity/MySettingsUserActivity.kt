@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.view.Gravity
@@ -32,6 +33,7 @@ import kotlinx.android.synthetic.main.layout_head.*
 
  *  Date: 2019/1/3
  */
+@SuppressLint("CheckResult")
 class MySettingsUserActivity : BaseActivity() {
     private lateinit var mBottomDialog: SelectDialog           //自定义dialog
     private lateinit var mPopCity: PopCitySelect               //城市选择pop

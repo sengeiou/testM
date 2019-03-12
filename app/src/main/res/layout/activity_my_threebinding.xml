@@ -36,7 +36,16 @@
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@mipmap/my_settings_aboutus_icon"
+                    android:src="@drawable/seach_nothing"
+                    />
+
+                <TextView
+                    android:id="@+id/tvMyThreeBindingTips"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/padding_dp_21"
+                    android:layout_marginTop="@dimen/padding_dp_10"
+                    android:text="@string/no_net"
                     />
             </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.view.View
@@ -23,7 +24,7 @@ import org.jetbrains.anko.support.v4.startActivity
 /**
  * 我的板块
  */
-
+@SuppressLint("CheckResult")
 class MyFragment : BaseFragment() {
     private lateinit var spf: SharedPreferencesHelper
     private var mLoginSuccess = false                    //登录状态

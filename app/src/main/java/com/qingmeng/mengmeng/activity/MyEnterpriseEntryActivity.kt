@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.activity
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
@@ -21,6 +22,7 @@ import kotlinx.android.synthetic.main.layout_head.*
 
  *  Date: 2019/1/3
  */
+@SuppressLint("CheckResult")
 class MyEnterpriseEntryActivity : BaseActivity() {
 
     override fun getLayoutId(): Int {

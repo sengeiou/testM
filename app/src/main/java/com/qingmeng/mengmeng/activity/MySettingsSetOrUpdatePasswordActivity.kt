@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.text.Editable
@@ -27,6 +28,7 @@ import kotlinx.android.synthetic.main.layout_head.*
 
  *  Date: 2019/1/3
  */
+@SuppressLint("CheckResult")
 class MySettingsSetOrUpdatePasswordActivity : BaseActivity() {
     private var mIsSetPass = true  //是否是设置密码
 
