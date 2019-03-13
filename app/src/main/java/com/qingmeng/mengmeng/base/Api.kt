@@ -1,6 +1,7 @@
 package com.qingmeng.mengmeng.base
 
 import com.qingmeng.mengmeng.entity.*
+import com.qingmeng.mengmeng.utils.loginshare.bean.SinaUserBean
 import com.qingmeng.mengmeng.utils.loginshare.bean.WxInfoBean
 import com.qingmeng.mengmeng.utils.loginshare.bean.WxTokenBean
 import io.reactivex.Observable
@@ -288,4 +289,8 @@ interface Api {
     //分享获取信息
     @GET("api/share/third_party_share")
     fun getShareMessage(@Query("ACCESS-TOKEN") access_token: String, @Query("type") type: Int, @Query("id") id: Int): Observable<BaseBean<ShareBean>>
+
+    //获取新浪
+    @GET("https://api.weibo.com/2/users/show.json")
+    fun getSinaInfo(@Query("access_token") access_token: String, @Query("uid") uid: String): Observable<SinaUserBean>
 }

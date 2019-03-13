@@ -71,4 +71,18 @@ object IConstants {
     //QQ
     val APP_ID_QQ = "1106680659"
     val APP_KEY_QQ = "bwh1Tr7jyhDZqtYU"
+    //微博
+    val APP_ID_SINA = "1439791251"
+    val APP_KEY_SINA = "856474246"
+    val APP_SECRET_SINA = "17a934ca23dd28ced1bd704c3a8d6870"
+    /**
+     * WeiboSDKDemo 应用对应的权限，第三方开发者一般不需要这么多，可直接设置成空即可。
+     * 详情请查看 Demo 中对应的注释。
+     */
+    const val APP_SCOPE_SINA =""
+    /**
+     * 当前 DEMO 应用的回调页，第三方应用可以使用自己的回调页。
+     * 建议使用默认回调页：https://api.weibo.com/oauth2/default.html
+     */
+    val APP_REDIRECT_URL_SINA = "https://api.weibo.com/oauth2/default.html"
 }

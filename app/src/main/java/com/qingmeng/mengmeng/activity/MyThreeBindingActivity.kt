@@ -10,13 +10,13 @@ import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.ThreeBindingBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.loginshare.QQThreeLogin
 import com.qingmeng.mengmeng.utils.loginshare.bean.WxBean
 import com.qingmeng.mengmeng.utils.loginshare.bean.WxInfoBean
 import com.qingmeng.mengmeng.utils.loginshare.bean.WxTokenBean
 import com.qingmeng.mengmeng.view.dialog.DialogCommon
 import com.tencent.mm.opensdk.modelmsg.SendAuth
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
-import com.tencent.tauth.Tencent
 import de.greenrobot.event.EventBus
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -35,7 +35,7 @@ import kotlinx.android.synthetic.main.layout_head.*
 @SuppressLint("CheckResult")
 class MyThreeBindingActivity : BaseActivity() {
     private lateinit var mDialog: DialogCommon   //弹框
-    private lateinit var mTencent: Tencent
+    private var mQQThreeLogin = QQThreeLogin()
 
     override fun getLayoutId(): Int {
         return R.layout.activity_my_threebinding
@@ -185,13 +185,14 @@ class MyThreeBindingActivity : BaseActivity() {
 
     //qq绑定
     private fun bindingQQ() {
-//        mQQLoginShare.login(this, { isSuc, qqDataBean ->
-//            if (isSuc) {
-//                httpThreeBinding(1)
-//            } else {
-//                ToastUtil.showShort(getString(R.string.my_threeBinding_qq_tips))
-//            }
-//        })
+        mQQThreeLogin.login(this, IConstants.APP_ID_QQ) { isSuc, qqDataBean ->
+            if (isSuc) {
+                httpThreeBinding(1, WxInfoBean(openid = qqDataBean?.openid
+                        ?: "", headimgurl = "", nickname = ""), qqDataBean?.accessToken ?: "")
+            } else {
+                ToastUtil.showShort("获取用户信息失败")
+            }
+        }
     }
 
     //绑定微信

@@ -1,0 +1,136 @@
+-----------------------------------------------qq登录-----------------------------------------------
+*1
+val mQQThreeLogin:QQThreeLogin
+*3
+mQQThreeLogin.login(activity, { isSuc, qqDataBean, qqUserInfoBean ->
+    if (isSuc) {
+        threeLogin(qqDataBean?.openid
+        ?: "", ConstNet.LOGIN_SIGN_QQ, qqUserInfoBean?.nickname
+        ?: "", qqUserInfoBean?.figureurlQq1 ?: "", null)
+    }
+})
+*2
+mQQThreeLogin.onActivityResult(requestCode, resultCode, data)
+
+-----------------------------------------------qq分享-----------------------------------------------
+ShareQQManager.shareToQQ(context as Activity, url, title, desc, thumbUrl)
+
+-----------------------------------------------微信登录-----------------------------------------------
+*1
+if (!EventBus.getDefault().isRegistered(this)) {
+    EventBus.getDefault().register(this)
+}
+*2
+//绑定微信
+private fun bindingWeChat() {
+    val mWeChatApi = WXAPIFactory.createWXAPI(this, IConstants.APPID_WECHAT)
+    if (!mWeChatApi.isWXAppInstalled) {
+        // 提醒用户没有安装微信
+        ToastUtil.showShort(getString(R.string.wechat_no_tips))
+        return
+    }
+
+    mWeChatApi.registerApp(IConstants.APPID_WECHAT)
+    val req = SendAuth.Req()
+    req.scope = "snsapi_userinfo"
+    req.state = "wechat_sdk_demo_test"
+    mWeChatApi.sendReq(req)
+}
+*3
+//微信登录
+fun onEvent(wxBean: WxBean) {
+    if (!TextUtils.isEmpty(wxBean.code)) {
+        EventBus.getDefault().removeStickyEvent(wxBean)
+        loginCode(wxBean.code)
+    }
+}
+*4
+//微信登录
+@POST("https://api.weixin.qq.com/sns/oauth2/access_token")
+fun getWeChatToken(@Query("appid") appid: String, @Query("secret") secret: String,@Query("code") code: String, @Query("grant_type") grant_type: String = "authorization_code"): Observable<WxTokenBean>
+
+@POST("https://api.weixin.qq.com/sns/userinfo")
+fun getWeChatInfo(@Query("access_token") access_token: String, @Query("openid") openid: String): Observable<WxInfoBean>
+
+private fun loginCode(code: String) {
+    myDialog.showLoadingDialog()
+    ApiUtils.getApi()
+        .getWeChatToken(IConstants.APPID_WECHAT, IConstants.SECRET_WECHAT, code)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.io())
+        .subscribe({
+            if (it != null && !TextUtils.isEmpty(it.access_token)) {
+                getWxInfo(it)
+            } else {
+                myDialog.dismissLoadingDialog()
+                ToastUtil.showShort("获取用户信息失败")
+            }
+        }, {
+            myDialog.dismissLoadingDialog()
+            ToastUtil.showShort("获取用户信息失败")
+        }, {}, { addSubscription(it) })
+}
+
+private fun getWxInfo(tokenBean: WxTokenBean) {
+    ApiUtils.getApi()
+        .getWeChatInfo(tokenBean.access_token, tokenBean.openid)
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.io())
+        .subscribe({
+            if (it != null && !TextUtils.isEmpty(it.openid)) {
+                //**你接下来要做的事
+                httpThreeBinding(2, it, tokenBean.access_token)
+            } else {
+                myDialog.dismissLoadingDialog()
+                ToastUtil.showShort("获取用户信息失败")
+            }
+        }, {
+            myDialog.dismissLoadingDialog()
+            ToastUtil.showShort("获取用户信息失败")
+        }, {}, { addSubscription(it) })
+}
+*5
+EventBus.getDefault().unregister(this)
+-----------------------------------------------微信分享-----------------------------------------------
+*1
+//Application里注册微信分享
+ShareWechatManager.regWechat()
+*2
+//分享微信
+async {
+    val bitmap = Glide.with(App.instance)
+                .asBitmap()
+                .load(thumbUrl)
+                .submit(50, 50).get()
+    ShareWechatManager.shareToWechat(0, url, title, desc, bitmap)
+}
+//分享朋友圈
+async {
+    val bitmap = Glide.with(App.instance)
+                .asBitmap()
+                .load(thumbUrl)
+                .submit(50, 50).get()
+    ShareWechatManager.shareToWechat(1, url, title, desc, bitmap)
+}
+
+-----------------------------------------------微博登录-----------------------------------------------
+*1
+val mSinaThreeLogin:SinaThreeLogin
+*3
+mSinaThreeLogin.login(activity, { isSuc, errorInfo, accessToken, sinaUserBean ->
+    if (isSuc) {
+        threeLogin(accessToken?.uid ?: "", ConstNet.LOGIN_SIGN_WB, sinaUserBean?.name
+            ?: "", sinaUserBean?.avatarHd ?: "", null)
+    }
+})
+*2
+mSinaThreeLogin.onActivityResult(requestCode, resultCode, data)
+
+-----------------------------------------------微博分享-----------------------------------------------
+async {
+    val bitmap = Glide.with(App.instance)
+    .asBitmap()
+    .load(thumbUrl)
+    .submit(50, 50).get()
+    ShareWeiboManager.shareToWeibo(context as Activity, title, desc, bitmap)
+}
