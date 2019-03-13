@@ -36,11 +36,12 @@ interface Api {
     @FormUrlEncoded
     fun bindPhone(@Field("phone") phone: String, @Field("smsCode") smsCode: String,
                   @Field("openId") openId: String, @Field("token") token: String,
+                  @Field("weChatUnionId") weChatUnionId: String,
                   @Field("avatar") avatar: String, @Field("type") type: Int,
-                  @Field("password") password: String, @Field("verifyPassword") verifyPassword: String,
-                  @Field("userName") userName: String, @Field("weChatUnionId") weChatUnionId: String,
-                  @Field("thirdUserName") thirdUserName: String, @Field("isUserProtocol") isUserProtocol: Int = 1,
-                  @Field("userType") userType: Int = 2): Observable<BaseBean<UserBean>>
+                  @Field("password") password: String, @Field("isUserProtocol") isUserProtocol: Int = 1,
+                  @Field("userName") userName: String,
+                  @Field("userType") userType: Int = 2,
+                  @Field("thirdUserName") thirdUserName: String): Observable<BaseBean<UserBean>>
 
     //注册
     @POST("app/user/phone_register")

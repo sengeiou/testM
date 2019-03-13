@@ -138,7 +138,11 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
                             } else setText(R.id.search_result_joinStoreNum, "$storeNum")
                             View.VISIBLE
                         } else View.GONE
-                setTagFlowLayout(getView(R.id.seach_result_tagFliwLayout), data.affiliateSupport as ArrayList<String>)
+                if(data.affiliateSupport == null){
+                    setTagFlowLayout(getView(R.id.seach_result_tagFliwLayout), ArrayList())
+                }else{
+                    setTagFlowLayout(getView(R.id.seach_result_tagFliwLayout), data.affiliateSupport as ArrayList<String>)
+                }
                 getView<LinearLayout>(R.id.search_linearlayout).setOnClickListener {
                     startActivity<ShopDetailActivity>(IConstants.BRANDID to data.id)
                 }

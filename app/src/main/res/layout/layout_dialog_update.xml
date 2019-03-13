@@ -63,6 +63,7 @@
 
     <com.qingmeng.mengmeng.view.WaveProgressView
         android:id="@+id/waveProgress"
+        android:visibility="gone"
         android:layout_width="@dimen/padding_dp_50"
         android:layout_height="@dimen/padding_dp_50"
         android:layout_centerInParent="true"/>
