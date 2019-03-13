@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.activity
 
+import android.annotation.SuppressLint
 import android.view.View
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
@@ -21,6 +22,7 @@ import kotlinx.android.synthetic.main.layout_head.*
 
  *  Date: 2019/1/3
  */
+@SuppressLint("CheckResult")
 class MyThreeBindingActivity : BaseActivity() {
     private lateinit var mDialog: DialogCommon   //弹框
 

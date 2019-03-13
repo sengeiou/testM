@@ -38,10 +38,11 @@
                     />
 
                 <TextView
+                    android:id="@+id/tvMyMyLeavingMessageTips"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/padding_dp_21"
                     android:layout_marginTop="@dimen/padding_dp_10"
+                    android:layout_marginBottom="@dimen/padding_dp_21"
                     android:text="@string/my_myLeavingMessage_null_tips"
                     />
             </LinearLayout>
