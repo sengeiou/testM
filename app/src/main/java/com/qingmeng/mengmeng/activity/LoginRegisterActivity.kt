@@ -42,7 +42,7 @@ class LoginRegisterActivity : BaseActivity() {
     private var mPhone = ""
     private var mCode = ""
     private var mPsw = ""
-    private var mSurePsw = ""
+    // private var mSurePsw = ""
     private var openId = ""
     private var token = ""
     private var weChatUnionId = ""
@@ -156,8 +156,8 @@ class LoginRegisterActivity : BaseActivity() {
     //绑定手机
     private fun bindPhone() {
         myDialog.showLoadingDialog()
-        ApiUtils.getApi().bindPhone(mPhone, mCode, openId, token, avatar,
-                threeType, mPsw, mSurePsw, mUserName, weChatUnionId, thirdUserName)
+        ApiUtils.getApi().bindPhone(mPhone, mCode, openId, token, weChatUnionId, avatar,
+                threeType, mPsw, 1, mUserName, 2, thirdUserName)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -182,7 +182,7 @@ class LoginRegisterActivity : BaseActivity() {
     //注册
     private fun register() {
         myDialog.showLoadingDialog()
-        ApiUtils.getApi().register(mUserName, mPhone, mCode, mPsw, 2,1,1)
+        ApiUtils.getApi().register(mUserName, mPhone, mCode, mPsw, 2, 1, 1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -191,9 +191,9 @@ class LoginRegisterActivity : BaseActivity() {
                         bean.data?.let {
                             MainApplication.instance.user = it
                             MainApplication.instance.TOKEN = it.token
-                            sharedSingleton.setString(IConstants.login_name,mUserName)
-                            sharedSingleton.setString(IConstants.login_phone,mPhone)
-                            sharedSingleton.setString(IConstants.login_pwd,mPsw)
+                            sharedSingleton.setString(IConstants.login_name, mUserName)
+                            sharedSingleton.setString(IConstants.login_phone, mPhone)
+                            sharedSingleton.setString(IConstants.login_pwd, mPsw)
                             it.upDate()
                             //还要登录完信..
                             mImService?.loginManager?.login("${it.wxUid}", it.wxToken)

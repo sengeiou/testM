@@ -97,7 +97,8 @@ open class NewsPaperAdapter(val context: Context, var mImgsList: ArrayList<Banne
             url = newsPagerList.articleUrl
             Glide.with(context).load(newsPagerList.banner).apply(RequestOptions()
                     .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)
-                    .transform(GlideRoundTransformCenterCrop()))
+                    .transform(GlideRoundTransformCenterCrop())
+            )
                     .into(mImgView)
             itemView.setOnClickListener { onItemClickListener(newsPagerList) }
         }
