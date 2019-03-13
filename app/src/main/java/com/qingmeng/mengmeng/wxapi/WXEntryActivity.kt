@@ -5,9 +5,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.view.WindowManager
-import com.qingmeng.mengmeng.activity.LoginMainActivity
 import com.qingmeng.mengmeng.constant.IConstants
-import com.qingmeng.mengmeng.entity.WxBean
+import com.qingmeng.mengmeng.utils.loginshare.bean.WxBean
 import com.tencent.mm.opensdk.constants.ConstantsAPI
 import com.tencent.mm.opensdk.modelbase.BaseReq
 import com.tencent.mm.opensdk.modelbase.BaseResp

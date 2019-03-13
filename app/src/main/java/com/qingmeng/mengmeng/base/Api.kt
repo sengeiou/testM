@@ -1,6 +1,8 @@
 package com.qingmeng.mengmeng.base
 
 import com.qingmeng.mengmeng.entity.*
+import com.qingmeng.mengmeng.utils.loginshare.bean.WxInfoBean
+import com.qingmeng.mengmeng.utils.loginshare.bean.WxTokenBean
 import io.reactivex.Observable
 import retrofit2.http.*
 
@@ -230,8 +232,8 @@ interface Api {
     fun deleteMyFootprint(@Query("brandId") brandId: Int, @Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
 
     //第三方绑定状态查询
-    @GET("api/get_industry")
-    fun threeBindingState(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<Any>>
+    @GET("app/user/is_binding")
+    fun threeBindingState(@Header("ACCESS-TOKEN") token: String): Observable<BaseBean<ThreeBindingBean>>
 
     //第三方绑定
     @POST("app/user/third_party_binding")

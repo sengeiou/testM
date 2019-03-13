@@ -51,6 +51,7 @@
     <string name="video">视频</string>
     <string name="face">面议</string>
     <string name="seach">搜索感兴趣的品牌</string>
+    <string name="wechat_no_tips">未检测到微信客户端</string>
     <!-- =======================================爱加盟===================================== -->
     <string name="join_feedback_description">请输入反馈描述，上传照片有助于我们判断，提升投诉通过率哦！</string>
     <string name="join_feedback_type">请选择反馈问题的类型</string>
