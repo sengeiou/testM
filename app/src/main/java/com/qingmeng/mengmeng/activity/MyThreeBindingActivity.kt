@@ -1,6 +1,7 @@
 package com.qingmeng.mengmeng.activity
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.text.TextUtils
 import android.view.View
 import com.qingmeng.mengmeng.BaseActivity
@@ -36,6 +37,7 @@ import kotlinx.android.synthetic.main.layout_head.*
 class MyThreeBindingActivity : BaseActivity() {
     private lateinit var mDialog: DialogCommon   //弹框
     private var mQQThreeLogin = QQThreeLogin()
+    private var mCanClickAgain = true            //是否可以再次点击
 
     override fun getLayoutId(): Int {
         return R.layout.activity_my_threebinding
@@ -76,7 +78,9 @@ class MyThreeBindingActivity : BaseActivity() {
                 })
                 mDialog.show()
             } else {  //跳转QQ绑定
-                bindingQQ()
+                if (mCanClickAgain) {
+                    bindingQQ()
+                }
             }
         }
 
@@ -90,7 +94,9 @@ class MyThreeBindingActivity : BaseActivity() {
                 })
                 mDialog.show()
             } else {  //跳转微信绑定
-                bindingWeChat()
+                if (mCanClickAgain) {
+                    bindingWeChat()
+                }
             }
         }
     }
@@ -130,6 +136,7 @@ class MyThreeBindingActivity : BaseActivity() {
                 .subscribe({
                     srlMyThreeBinding.isRefreshing = false
                     it.apply {
+                        myDialog.dismissLoadingDialog()
                         if (code == 12000) {
                             //1.QQ 2.微信
                             when (type) {
@@ -147,7 +154,7 @@ class MyThreeBindingActivity : BaseActivity() {
                         }
                     }
                 }, {
-
+                    myDialog.dismissLoadingDialog()
                 }, {}, { addSubscription(it) })
     }
 
@@ -185,7 +192,11 @@ class MyThreeBindingActivity : BaseActivity() {
 
     //qq绑定
     private fun bindingQQ() {
+        mCanClickAgain = false
+        myDialog.showLoadingDialog()
         mQQThreeLogin.login(this, IConstants.APP_ID_QQ) { isSuc, qqDataBean ->
+            mCanClickAgain = true
+            myDialog.dismissLoadingDialog()
             if (isSuc) {
                 httpThreeBinding(1, WxInfoBean(openid = qqDataBean?.openid
                         ?: "", headimgurl = "", nickname = ""), qqDataBean?.accessToken ?: "")
@@ -197,9 +208,12 @@ class MyThreeBindingActivity : BaseActivity() {
 
     //绑定微信
     private fun bindingWeChat() {
+        mCanClickAgain = false
+        myDialog.showLoadingDialog()
         val mWeChatApi = WXAPIFactory.createWXAPI(this, IConstants.APPID_WECHAT)
         if (!mWeChatApi.isWXAppInstalled) {
             // 提醒用户没有安装微信
+            myDialog.dismissLoadingDialog()
             ToastUtil.showShort(getString(R.string.wechat_no_tips))
             return
         }
@@ -216,11 +230,11 @@ class MyThreeBindingActivity : BaseActivity() {
         if (!TextUtils.isEmpty(wxBean.code)) {
             EventBus.getDefault().removeStickyEvent(wxBean)
             loginCode(wxBean.code)
+            mCanClickAgain = true
         }
     }
 
     private fun loginCode(code: String) {
-        myDialog.showLoadingDialog()
         ApiUtils.getApi()
                 .getWeChatToken(IConstants.APPID_WECHAT, IConstants.SECRET_WECHAT, code)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -259,24 +273,29 @@ class MyThreeBindingActivity : BaseActivity() {
     private fun setData(threeBindingBean: ThreeBindingBean) {
         when (threeBindingBean.qqBinding) {
             0 -> {
-                tvMyThreeBindingQQ.text = getString(R.string.my_threeBinding_not)
-                tvMyThreeBindingQQ.setTextColor(resources.getColor(R.color.color_999999))
-            }
-            1 -> {
                 tvMyThreeBindingQQ.text = getString(R.string.my_threeBinding_yes)
                 tvMyThreeBindingQQ.setTextColor(resources.getColor(R.color.color_333333))
+            }
+            1 -> {
+                tvMyThreeBindingQQ.text = getString(R.string.my_threeBinding_not)
+                tvMyThreeBindingQQ.setTextColor(resources.getColor(R.color.color_999999))
             }
         }
         when (threeBindingBean.wxBinding) {
             0 -> {
-                tvMyThreeBindingWechat.text = getString(R.string.my_threeBinding_not)
-                tvMyThreeBindingWechat.setTextColor(resources.getColor(R.color.color_999999))
-            }
-            1 -> {
                 tvMyThreeBindingWechat.text = getString(R.string.my_threeBinding_yes)
                 tvMyThreeBindingWechat.setTextColor(resources.getColor(R.color.color_333333))
             }
+            1 -> {
+                tvMyThreeBindingWechat.text = getString(R.string.my_threeBinding_not)
+                tvMyThreeBindingWechat.setTextColor(resources.getColor(R.color.color_999999))
+            }
         }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        mQQThreeLogin.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun onDestroy() {

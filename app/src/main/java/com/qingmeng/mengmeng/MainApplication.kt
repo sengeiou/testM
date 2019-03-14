@@ -15,12 +15,10 @@ import com.mogujie.tt.utils.ImageLoaderUtil
 import com.qingmeng.mengmeng.entity.MyObjectBox
 import com.qingmeng.mengmeng.entity.UserBean
 import com.qingmeng.mengmeng.utils.SharedSingleton
-import com.qingmeng.mengmeng.utils.loginshare.ShareWechatManager
 import com.qingmeng.mengmeng.view.MyVideoView
 import com.tencent.bugly.crashreport.CrashReport
 import io.objectbox.BoxStore
 import io.objectbox.android.AndroidObjectBrowser
-import org.jetbrains.anko.async
 import java.io.BufferedReader
 import java.io.FileReader
 import java.io.IOException
@@ -49,10 +47,6 @@ class MainApplication : MultiDexApplication() {
         sharedSingleton = SharedSingleton.instance
         user = UserBean.fromString()
         TOKEN = user.token
-        async {
-            //注册微信分享
-            ShareWechatManager.regWechat()
-        }
         initBox()
         initBugly()
 

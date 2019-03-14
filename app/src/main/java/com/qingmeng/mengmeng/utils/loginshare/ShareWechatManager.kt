@@ -3,6 +3,7 @@ package com.qingmeng.mengmeng.utils.loginshare
 import AppManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -18,11 +19,7 @@ import com.tencent.mm.opensdk.openapi.WXAPIFactory
  * describe:
  */
 object ShareWechatManager {
-    val api: IWXAPI by lazy { WXAPIFactory.createWXAPI(AppManager.instance.currentActivity(), IConstants.APPID_WECHAT, true) }
-
-    fun regWechat() {
-        api.registerApp(IConstants.APPID_WECHAT)
-    }
+    val api: IWXAPI by lazy { WXAPIFactory.createWXAPI(MainApplication.instance, IConstants.APPID_WECHAT, true) }
 
     /**
      * @param flag        0 微信好友 1 微信朋友圈
@@ -34,6 +31,7 @@ object ShareWechatManager {
     fun shareToWechat(flag: Int, url: String, title: String, description: String,
                       thumb: Bitmap = BitmapFactory.decodeResource(AppManager.instance.currentActivity().resources, R.drawable.login_logo)) {
         var content = description
+        api.registerApp(IConstants.APPID_WECHAT)
         if (flag != 0 && flag != 1) {
             return
         }

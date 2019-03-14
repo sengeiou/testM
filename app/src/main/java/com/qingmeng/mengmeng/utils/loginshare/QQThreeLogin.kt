@@ -105,7 +105,7 @@ class QQThreeLogin {
         override fun onCancel() {
             mCallback?.invoke(false, null, null)
             mCallbackToken?.invoke(false, null)
-            ToastUtil.showShort("取消")
+//            ToastUtil.showShort("取消")
         }
     }
 

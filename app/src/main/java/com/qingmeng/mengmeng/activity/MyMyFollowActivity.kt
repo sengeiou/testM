@@ -97,6 +97,8 @@ class MyMyFollowActivity : BaseActivity() {
         rvMyMyFollow.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
+                //防止有些手机屏幕太高 一页显示10条还没到底部的那种 这里给它还可以上滑加载
+                srlMyMyFollow.isLoadMoreEnabled = mLayoutManager.findLastCompletelyVisibleItemPosition() == mList.lastIndex && mHasNextPage
                 //滑到顶部了
                 if (!recyclerView.canScrollVertically(-1)) {
                     if (!srlMyMyFollow.isLoadingMore) {
