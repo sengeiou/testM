@@ -51,7 +51,7 @@ android {
             buildConfigField("String", "APP_DIR", "\"mengmeng\"")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //bugly
-            buildConfigField("String", "BUGLY_APPID", "\"0bf47d1cec\"")
+            buildConfigField("String", "BUGLY_APPID", "\"13ac216f66\"")
         }
         debug {
             minifyEnabled false
@@ -64,7 +64,7 @@ android {
             buildConfigField("String", "APP_DIR", "\"mengmeng\"")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //bugly
-            buildConfigField("String", "BUGLY_APPID", "\"0bf47d1cec\"")
+            buildConfigField("String", "BUGLY_APPID", "\"6f80b267bd\"")
         }
     }
     sourceSets {
@@ -141,6 +141,8 @@ dependencies {
     implementation project(':common')
     implementation files('libs/BaiduLBS_Android.jar')
     implementation project(':facelibs')
+    //微博
+    implementation 'com.sina.weibo.sdk:core:4.3.6:openDefaultRelease@aar'
 }
 
 //allprojects {

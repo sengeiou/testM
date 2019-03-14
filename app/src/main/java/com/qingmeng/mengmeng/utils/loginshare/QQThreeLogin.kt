@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.utils.loginshare
 
+import AppManager
 import android.app.Activity
 import android.content.Intent
 import com.app.common.json.GsonUtil
@@ -45,7 +46,7 @@ class QQThreeLogin {
     }
 
     private fun login() {
-        mTencent = Tencent.createInstance(APP_ID_QQ, mActivity)
+        mTencent = Tencent.createInstance(APP_ID_QQ, AppManager.instance.currentActivity())
         mTencent.login(mActivity, "all", mLoginQQListener)
         //        if (!mTencent.isSessionValid()) {
 //            mTencent.login(mActivity, "all", mLoginQQListener)
@@ -66,7 +67,7 @@ class QQThreeLogin {
         mTencent.setAccessToken(qqDataBean.accessToken, qqDataBean.expiresIn.toString())
         mTencent.openId = qqDataBean.openid
 
-        mInfo = UserInfo(mActivity, mTencent.qqToken)
+        mInfo = UserInfo(AppManager.instance.currentActivity(), mTencent.qqToken)
         mInfo?.getUserInfo(object : IUiListener {
             override fun onComplete(data: Any?) {
                 val qqUserBean = GsonUtil().fromJson(data?.toString(), QQUserInfoBean::class.java)
@@ -104,7 +105,7 @@ class QQThreeLogin {
         override fun onCancel() {
             mCallback?.invoke(false, null, null)
             mCallbackToken?.invoke(false, null)
-            ToastUtil.showShort("取消")
+//            ToastUtil.showShort("取消")
         }
     }
 
