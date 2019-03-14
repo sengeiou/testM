@@ -30,28 +30,22 @@ import com.qingmeng.mengmeng.constant.IConstants.THREE_TYPE
 import com.qingmeng.mengmeng.constant.IConstants.TYPE
 import com.qingmeng.mengmeng.constant.IConstants.WE_CHAT_UNIONID
 import com.qingmeng.mengmeng.entity.Banner
-import com.qingmeng.mengmeng.entity.WxBean
-import com.qingmeng.mengmeng.entity.WxInfoBean
-import com.qingmeng.mengmeng.entity.WxTokenBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.BoxUtils
 import com.qingmeng.mengmeng.utils.OpenMallApp
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.loginshare.QQThreeLogin
+import com.qingmeng.mengmeng.utils.loginshare.bean.WxBean
+import com.qingmeng.mengmeng.utils.loginshare.bean.WxInfoBean
+import com.qingmeng.mengmeng.utils.loginshare.bean.WxTokenBean
 import com.qingmeng.mengmeng.view.AlphaPageTransformer
-import com.tencent.connect.UserInfo
-import com.tencent.connect.common.Constants
 import com.tencent.mm.opensdk.modelmsg.SendAuth
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
-import com.tencent.tauth.IUiListener
-import com.tencent.tauth.Tencent
-import com.tencent.tauth.UiError
 import de.greenrobot.event.EventBus
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_log_main_login.*
 import org.jetbrains.anko.*
-import org.json.JSONException
-import org.json.JSONObject
 
 
 /**
@@ -64,8 +58,7 @@ import org.json.JSONObject
 class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>, BGABanner.Adapter<ImageView, Banner> {
     private var from = 0 //1商品详情 0其他
     private var mVersion = ""
-    private lateinit var mTencent: Tencent
-    private val uiListener = BaseUiListener()
+    private var mQQThreeLogin = QQThreeLogin()
     private val mImgList = ArrayList<Banner>()
 
     //完信相关
@@ -135,13 +128,13 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
 
     //QQ第三方登录
     private fun qqLogin() {
-        mTencent = Tencent.createInstance(IConstants.APP_ID_QQ, applicationContext)
-        if (!mTencent.isSessionValid) {
-            mTencent.login(this, "all", uiListener)
-        } else {
-            myDialog.dismissLoadingDialog()
-            mTencent.logout(this)
-            ToastUtil.showShort(getString(R.string.please_click))
+        mQQThreeLogin.login(this, IConstants.APP_ID_QQ) { isSuc, qqDataBean, qqUserInfoBean ->
+            if (isSuc) {
+                threeLogin(WxInfoBean(qqDataBean?.openid ?: "", qqUserInfoBean?.figureurlQq2
+                        ?: "", qqUserInfoBean?.nickname ?: ""), qqDataBean?.accessToken ?: "", 1)
+            } else {
+                ToastUtil.showShort(getString(R.string.please_click))
+            }
         }
     }
 
@@ -204,7 +197,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     }
 
     private fun threeLogin(infoBean: WxInfoBean, token: String, type: Int) {
-        ApiUtils.getApi().loginThree(infoBean.openid, type,1)
+        ApiUtils.getApi().loginThree(infoBean.openid, type, 1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ response ->
@@ -278,9 +271,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (data != null) {
-            Tencent.onActivityResultData(requestCode, resultCode, data, uiListener)
-        }
+        mQQThreeLogin.onActivityResult(requestCode, resultCode, data)
         if (requestCode == LOGIN_BACK && resultCode == Activity.RESULT_OK) {
             setResult(Activity.RESULT_OK)
             finish()
@@ -318,66 +309,5 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
         imServiceConnector.disconnect(this)
         EventBus.getDefault().unregister(this)
         super.onDestroy()
-    }
-
-    @Suppress("NAME_SHADOWING")
-    private inner class BaseUiListener : IUiListener {
-        override fun onComplete(o: Any) {
-            try {
-                //这里的Constants类，是 com.tencent.connect.common.Constants类，下面的几个参数也是固定的
-                val jsonObject = JSONObject(o.toString())
-                val token = jsonObject.getString(Constants.PARAM_ACCESS_TOKEN)
-                val expires = jsonObject.getString(Constants.PARAM_EXPIRES_IN)
-                val openId = jsonObject.getString(Constants.PARAM_OPEN_ID)
-                if (!TextUtils.isEmpty(token) && !TextUtils.isEmpty(expires) && !TextUtils.isEmpty(openId)) {
-                    mTencent.setAccessToken(token, expires)
-                    mTencent.openId = openId
-                    val info = UserInfo(this@LoginMainActivity, mTencent.qqToken)
-                    info.getUserInfo(object : IUiListener {
-                        override fun onComplete(o: Any) {
-                            try {
-                                val jsonObject = JSONObject(o.toString())
-                                val ret = jsonObject.getInt("ret")
-                                if (ret == 0) {
-                                    val image = jsonObject.getString("figureurl_qq_2")
-                                    val nickname = jsonObject.getString("nickname")
-                                    threeLogin(WxInfoBean(mTencent.openId, image, nickname), token, 1)
-                                } else {
-                                    myDialog.showLoadingDialog()
-                                    ToastUtil.showLong("错误码：" + ret + "    错误信息：" + jsonObject.getString("msg"))
-                                }
-                            } catch (e: JSONException) {
-                                myDialog.dismissLoadingDialog()
-                                e.printStackTrace()
-                                ToastUtil.showShort("Token无效")
-                            }
-                        }
-
-                        override fun onError(uiError: UiError) {
-                            myDialog.dismissLoadingDialog()
-                            ToastUtil.showShort("获取用户信息失败")
-                        }
-
-                        override fun onCancel() {
-                            myDialog.dismissLoadingDialog()
-                            ToastUtil.showShort(R.string.cancel)
-                        }
-                    })
-                }
-            } catch (e: JSONException) {
-                myDialog.dismissLoadingDialog()
-            }
-
-        }
-
-        override fun onError(uiError: UiError) {
-            myDialog.dismissLoadingDialog()
-            ToastUtil.showShort(R.string.login_error)
-        }
-
-        override fun onCancel() {
-            myDialog.dismissLoadingDialog()
-            ToastUtil.showShort(R.string.cancel_login)
-        }
     }
 }

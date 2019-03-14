@@ -1,13 +1,23 @@
 package com.qingmeng.mengmeng.activity
 
 import android.annotation.SuppressLint
+import android.text.TextUtils
 import android.view.View
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.constant.IConstants
+import com.qingmeng.mengmeng.entity.ThreeBindingBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.loginshare.bean.WxBean
+import com.qingmeng.mengmeng.utils.loginshare.bean.WxInfoBean
+import com.qingmeng.mengmeng.utils.loginshare.bean.WxTokenBean
 import com.qingmeng.mengmeng.view.dialog.DialogCommon
+import com.tencent.mm.opensdk.modelmsg.SendAuth
+import com.tencent.mm.opensdk.openapi.WXAPIFactory
+import com.tencent.tauth.Tencent
+import de.greenrobot.event.EventBus
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_threebinding.*
@@ -25,6 +35,7 @@ import kotlinx.android.synthetic.main.layout_head.*
 @SuppressLint("CheckResult")
 class MyThreeBindingActivity : BaseActivity() {
     private lateinit var mDialog: DialogCommon   //弹框
+    private lateinit var mTencent: Tencent
 
     override fun getLayoutId(): Int {
         return R.layout.activity_my_threebinding
@@ -32,7 +43,9 @@ class MyThreeBindingActivity : BaseActivity() {
 
     override fun initObject() {
         super.initObject()
-
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
         setHeadName(R.string.my_threeBinding)
 
 //        srlMyThreeBinding.isRefreshing = true
@@ -94,7 +107,9 @@ class MyThreeBindingActivity : BaseActivity() {
                     it.apply {
                         if (code == 12000) {
                             llMyThreeBindingTips.visibility = View.GONE
-                            setData()
+                            data?.let {
+                                setData(it)
+                            }
                         } else {
                             llMyThreeBindingTips.visibility = View.VISIBLE
                         }
@@ -107,9 +122,9 @@ class MyThreeBindingActivity : BaseActivity() {
     }
 
     //第三方绑定接口
-    private fun httpThreeBinding(type: Int) {
+    private fun httpThreeBinding(type: Int, infoBean: WxInfoBean, token: String) {
         ApiUtils.getApi()
-                .threeBinding(type, "", "", "", MainApplication.instance.TOKEN)
+                .threeBinding(type, infoBean.openid, token, infoBean.unionid, MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({
@@ -181,21 +196,90 @@ class MyThreeBindingActivity : BaseActivity() {
 
     //绑定微信
     private fun bindingWeChat() {
-//        val mWeChatApi = WXAPIFactory.createWXAPI(this, WX_APPID)
-//        if (!mWeChatApi.isWXAppInstalled) {
-//            // 提醒用户没有安装微信
-//            ToastUtil.showShort(getString(R.string.my_threeBinding_no_wechat))
-//            return
-//        }
-//
-//        mWeChatApi.registerApp(WX_APPID)
-//        val req = SendAuth.Req()
-//        req.scope = "snsapi_userinfo"
-//        req.state = "wechat_sdk_demo_test"
-//        mWeChatApi.sendReq(req)
+        val mWeChatApi = WXAPIFactory.createWXAPI(this, IConstants.APPID_WECHAT)
+        if (!mWeChatApi.isWXAppInstalled) {
+            // 提醒用户没有安装微信
+            ToastUtil.showShort(getString(R.string.wechat_no_tips))
+            return
+        }
+
+        mWeChatApi.registerApp(IConstants.APPID_WECHAT)
+        val req = SendAuth.Req()
+        req.scope = "snsapi_userinfo"
+        req.state = "wechat_sdk_demo_test"
+        mWeChatApi.sendReq(req)
     }
 
-    private fun setData() {
+    //微信登录
+    fun onEvent(wxBean: WxBean) {
+        if (!TextUtils.isEmpty(wxBean.code)) {
+            EventBus.getDefault().removeStickyEvent(wxBean)
+            loginCode(wxBean.code)
+        }
+    }
 
+    private fun loginCode(code: String) {
+        myDialog.showLoadingDialog()
+        ApiUtils.getApi()
+                .getWeChatToken(IConstants.APPID_WECHAT, IConstants.SECRET_WECHAT, code)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    if (it != null && !TextUtils.isEmpty(it.access_token)) {
+                        getWxInfo(it)
+                    } else {
+                        myDialog.dismissLoadingDialog()
+                        ToastUtil.showShort("获取用户信息失败")
+                    }
+                }, {
+                    myDialog.dismissLoadingDialog()
+                    ToastUtil.showShort("获取用户信息失败")
+                }, {}, { addSubscription(it) })
+    }
+
+    private fun getWxInfo(tokenBean: WxTokenBean) {
+        ApiUtils.getApi()
+                .getWeChatInfo(tokenBean.access_token, tokenBean.openid)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({
+                    if (it != null && !TextUtils.isEmpty(it.openid)) {
+                        httpThreeBinding(2, it, tokenBean.access_token)
+                    } else {
+                        myDialog.dismissLoadingDialog()
+                        ToastUtil.showShort("获取用户信息失败")
+                    }
+                }, {
+                    myDialog.dismissLoadingDialog()
+                    ToastUtil.showShort("获取用户信息失败")
+                }, {}, { addSubscription(it) })
+    }
+
+    private fun setData(threeBindingBean: ThreeBindingBean) {
+        when (threeBindingBean.qqBinding) {
+            0 -> {
+                tvMyThreeBindingQQ.text = getString(R.string.my_threeBinding_not)
+                tvMyThreeBindingQQ.setTextColor(resources.getColor(R.color.color_999999))
+            }
+            1 -> {
+                tvMyThreeBindingQQ.text = getString(R.string.my_threeBinding_yes)
+                tvMyThreeBindingQQ.setTextColor(resources.getColor(R.color.color_333333))
+            }
+        }
+        when (threeBindingBean.wxBinding) {
+            0 -> {
+                tvMyThreeBindingWechat.text = getString(R.string.my_threeBinding_not)
+                tvMyThreeBindingWechat.setTextColor(resources.getColor(R.color.color_999999))
+            }
+            1 -> {
+                tvMyThreeBindingWechat.text = getString(R.string.my_threeBinding_yes)
+                tvMyThreeBindingWechat.setTextColor(resources.getColor(R.color.color_333333))
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(this)
     }
 }
