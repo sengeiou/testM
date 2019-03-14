@@ -101,8 +101,8 @@ class HeadDetailsActivity : BaseActivity() {
                             }
                         }
                         //分享数据未传入
-                      //  mBottomDialog = ShareDialog(this, wxList, monentsList, qqList, sinaList)
-                      //  mBottomDialog = ShareDialog(this, wxList)
+                        //  mBottomDialog = ShareDialog(this, wxList, monentsList, qqList, sinaList)
+                        //  mBottomDialog = ShareDialog(this, wxList)
                         mBottomDialog.show()
                     }
                 })
