@@ -18,10 +18,10 @@ class ShareDialog(context: Context) : Dialog(context, R.style.dialog_share) {
     private val shareQQ: LinearLayout
     private val shareSina: LinearLayout
     private val shareCancel: TextView
-   // private lateinit var content: String
 
-    //    var wxList: ArrayList<WeChat>, var monentsList: ArrayList<WeChatCircle>,
-//    var qqList: ArrayList<Qq>,var sinaList: ArrayList<MicroBlog>
+    // private lateinit var content: String
+    // var wxList: ArrayList<WeChat>, var monentsList: ArrayList<WeChatCircle>,
+    // var qqList: ArrayList<Qq>,var sinaList: ArrayList<MicroBlog>
     init {
         setContentView(R.layout.dialog_share)
         val wlp = window.attributes
@@ -37,10 +37,10 @@ class ShareDialog(context: Context) : Dialog(context, R.style.dialog_share) {
 
     private fun initListener() {
         shareWx.setOnClickListener {
-            //            wxList.forEach {
-//                content=it.content
-//            }
-//            ToastUtil.showShort("分享到微信"+"${content}")
+        // wxList.forEach {
+        //content=it.content
+        //}
+        //ToastUtil.showShort("分享到微信"+"${content}")
             ToastUtil.showShort("分享到微信")
             dismiss()
         }
