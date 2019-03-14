@@ -41,6 +41,7 @@ import com.qingmeng.mengmeng.entity.ShopDetailImg
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.utils.setDrawableTop
+import com.qingmeng.mengmeng.view.dialog.ShareDialog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_shop_detail.*
@@ -58,6 +59,7 @@ class ShopDetailActivity : BaseActivity() {
     private val mJoinSupport = ArrayList<String>()
     private var brandInformation: BrandInformation? = null
     private var brandInitialFee: BrandInitialFee? = null
+    private lateinit var mShareDialog: ShareDialog
     private var brandBean: BrandBean? = null
     private var name = ""
     private var id = 0
@@ -193,7 +195,8 @@ class ShopDetailActivity : BaseActivity() {
             }, {
                 toNext<JoinFeedbackActivity>(BRANDID to id)
             }, {
-                //todo 分享
+                mShareDialog = ShareDialog(this)
+                mShareDialog.show()
             })
         }
         mDetailJoinSupport.setOnClickListener { myDialog.showBrandDialog(mJoinSupport) }

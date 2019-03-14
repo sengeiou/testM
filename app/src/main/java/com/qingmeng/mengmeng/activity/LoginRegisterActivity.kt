@@ -42,7 +42,6 @@ class LoginRegisterActivity : BaseActivity() {
     private var mPhone = ""
     private var mCode = ""
     private var mPsw = ""
-    // private var mSurePsw = ""
     private var openId = ""
     private var token = ""
     private var weChatUnionId = ""
