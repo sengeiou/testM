@@ -49,6 +49,7 @@ class MyThreeBindingActivity : BaseActivity() {
             EventBus.getDefault().register(this)
         }
         setHeadName(R.string.my_threeBinding)
+        swipe_target.visibility = View.GONE
 
 //        srlMyThreeBinding.isRefreshing = true
         myDialog.showLoadingDialog()
@@ -112,11 +113,13 @@ class MyThreeBindingActivity : BaseActivity() {
                     srlMyThreeBinding.isRefreshing = false
                     it.apply {
                         if (code == 12000) {
+                            swipe_target.visibility = View.VISIBLE
                             llMyThreeBindingTips.visibility = View.GONE
                             data?.let {
                                 setData(it)
                             }
                         } else {
+                            swipe_target.visibility = View.GONE
                             llMyThreeBindingTips.visibility = View.VISIBLE
                         }
                     }

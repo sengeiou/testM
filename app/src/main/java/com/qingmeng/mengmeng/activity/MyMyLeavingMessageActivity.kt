@@ -149,7 +149,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                 }
                 //品牌详情点击
                 getView<RelativeLayout>(R.id.rlMyMyLeavingMessageRvBrandDetails).setOnClickListener {
-                    if (t.brandId == 0) {
+                    if (t.brandId == 0 || t.isDel) {
                         ToastUtil.showShort(R.string.invalid_brand_tips)
                     } else {
                         startActivity<ShopDetailActivity>(IConstants.BRANDID to t.brandId)

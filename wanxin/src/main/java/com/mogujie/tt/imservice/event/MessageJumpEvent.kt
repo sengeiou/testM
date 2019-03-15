@@ -10,4 +10,5 @@ package com.mogujie.tt.imservice.event
  *  Date: 2019/3/14
  */
 class MessageJumpEvent {
+
 }

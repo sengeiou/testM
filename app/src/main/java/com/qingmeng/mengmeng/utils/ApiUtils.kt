@@ -56,9 +56,9 @@ object ApiUtils {
     }
 
     //加盟
-    fun join(id: Int, name: String, phone: String, message: String, myDialog: DialogCustom,success:()->Unit, addSubscription: (Disposable) -> Unit) {
+    fun join(id: Int, name: String, phone: String, message: String, type: Int, myDialog: DialogCustom, success: () -> Unit, addSubscription: (Disposable) -> Unit) {
         myDialog.showLoadingDialog()
-        getApi().join(id, name, phone, message)
+        getApi().join(id, name, phone, message, type)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->

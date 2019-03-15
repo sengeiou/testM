@@ -2,10 +2,19 @@ package com.qingmeng.mengmeng.activity
 
 import AppManager
 import android.annotation.SuppressLint
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.os.Build
+import android.support.v4.app.NotificationCompat
 import android.support.v4.content.ContextCompat
 import android.text.TextUtils
 import android.util.Log
@@ -19,15 +28,28 @@ import com.baidu.location.BDLocation
 import com.baidu.location.BDLocationListener
 import com.baidu.location.LocationClient
 import com.baidu.location.LocationClientOption
+import com.mogujie.tt.config.DBConstant
+import com.mogujie.tt.config.IntentConstant
+import com.mogujie.tt.config.SysConstant
 import com.mogujie.tt.config.UrlConstant
+import com.mogujie.tt.db.sp.ConfigurationSp
 import com.mogujie.tt.db.sp.SystemConfigSp
+import com.mogujie.tt.imservice.entity.UnreadEntity
 import com.mogujie.tt.imservice.event.LoginEvent
 import com.mogujie.tt.imservice.event.ReconnectEvent
 import com.mogujie.tt.imservice.event.SocketEvent
+import com.mogujie.tt.imservice.manager.IMContactManager
+import com.mogujie.tt.imservice.manager.IMGroupManager
+import com.mogujie.tt.imservice.manager.IMLoginManager
+import com.mogujie.tt.imservice.manager.IMNotificationManager.PRIMARY_CHANNEL
 import com.mogujie.tt.imservice.service.IMService
 import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.mogujie.tt.utils.IMUIHelper
 import com.mogujie.tt.utils.NetworkUtil
+import com.nostra13.universalimageloader.core.ImageLoader
+import com.nostra13.universalimageloader.core.assist.FailReason
+import com.nostra13.universalimageloader.core.assist.ImageSize
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
@@ -47,6 +69,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.clearTask
+import org.jetbrains.anko.ctx
 import org.jetbrains.anko.intentFor
 import org.jetbrains.anko.newTask
 
@@ -57,6 +80,7 @@ class MainActivity : BaseActivity() {
     private var mMyLocationListener: MyLocationListener? = null
     private var mLocationClient: LocationClient? = null
     private var updateDialog: DialogCustom.UpdateDialog? = null
+    private lateinit var mConfigurationSp: ConfigurationSp
 
     //完信相关
     private var mImService: IMService? = null
@@ -106,6 +130,8 @@ class MainActivity : BaseActivity() {
             SystemConfigSp.instance().setStrConfig(SystemConfigSp.SysCfgDimension.LOGINSERVER, UrlConstant.ACCESS_MSG_ADDRESS)
         }
         imServiceConnector.connect(this)
+        val loginId = IMLoginManager.instance().loginId
+        mConfigurationSp = ConfigurationSp.instance(ctx, loginId)
     }
 
     override fun initData() {
@@ -191,13 +217,13 @@ class MainActivity : BaseActivity() {
     fun onEventMainThread(loginEvent: LoginEvent) {
         when (loginEvent) {
             LoginEvent.LOCAL_LOGIN_SUCCESS, LoginEvent.LOGIN_OK -> { //登录成功
-                Log.i("yang","=====================登录成功")
+                Log.i("yang", "=====================登录成功")
                 (AppManager.instance.currentActivity() as BaseActivity).let {
                     it.myDialog.dismissLoadingDialog()
                 }
             }
             LoginEvent.LOGIN_AUTH_FAILED, LoginEvent.LOGIN_INNER_FAILED -> { //登录失败
-                Log.i("yang","=====================登录失败")
+                Log.i("yang", "=====================登录失败")
                 (AppManager.instance.currentActivity() as BaseActivity).let {
                     it.myDialog.dismissLoadingDialog()
                 }
@@ -344,7 +370,7 @@ class MainActivity : BaseActivity() {
     //登录盟盟
     private fun loginMengmeng(username: String, password: String) {
         ApiUtils.getApi()
-                .accountLogin(username, password,1)
+                .accountLogin(username, password, 1)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
@@ -391,6 +417,136 @@ class MainActivity : BaseActivity() {
     private fun logOut() {
         deleteUser()
         startActivity(intentFor<MainActivity>().newTask().clearTask())
+    }
+
+    /**
+     * 通知栏通知
+     */
+    fun onEvent(entity: UnreadEntity) {
+        showNotification(entity)
+    }
+
+    private fun showNotification(unreadEntity: UnreadEntity) {
+        // todo eric need to set the exact size of the big icon
+        // 服务端有些特定的支持 尺寸是不是要调整一下 todo 100*100  下面的就可以不要了
+        val targetSize = ImageSize(80, 80)
+        val peerId = unreadEntity.peerId
+        val sessionType = unreadEntity.sessionType
+        var avatarUrl = ""
+        var title = ""
+        val content = unreadEntity.info
+        val unit = ctx.getString(com.leimo.wanxin.R.string.msg_cnt_unit)
+        val totalUnread = unreadEntity.unReadCnt
+
+        if (unreadEntity.sessionType == DBConstant.SESSION_TYPE_SINGLE) {
+            val contact = IMContactManager.instance().findContact(peerId)
+            if (contact != null) {
+                title = contact.mainName
+                avatarUrl = contact.avatar
+            } else {
+                title = "User_$peerId"
+                avatarUrl = ""
+            }
+        } else {
+            val group = IMGroupManager.instance().findGroup(peerId)
+            if (group != null) {
+                title = group.mainName
+                avatarUrl = group.avatar
+            } else {
+                title = "Group_$peerId"
+                avatarUrl = ""
+            }
+        }
+        //获取头像
+        avatarUrl = IMUIHelper.getRealAvatarUrl(avatarUrl)
+        val ticker = String.format("[%d%s]%s: %s", totalUnread, unit, title, content)
+        val notificationId = getSessionNotificationId(unreadEntity.sessionKey)
+        val intent = Intent(ctx, MyMessageChatActivity::class.java)
+        intent.putExtra(IntentConstant.KEY_SESSION_KEY, unreadEntity.sessionKey)
+        intent.putExtra("title", title)
+
+        val finalTitle = title
+        ImageLoader.getInstance().loadImage(avatarUrl, targetSize, null, object : SimpleImageLoadingListener() {
+
+            override fun onLoadingComplete(imageUri: String?, view: View?, loadedImage: Bitmap?) {
+                // holder.image.setImageBitmap(loadedImage);
+                showInNotificationBar(finalTitle, ticker, loadedImage, notificationId, intent)
+            }
+
+            override fun onLoadingFailed(imageUri: String?, view: View?, failReason: FailReason?) {
+                // 服务器支持的格式有哪些
+                // todo eric default avatar is too small, need big size(128 * 128)
+                val defaultBitmap = BitmapFactory.decodeResource(ctx.getResources(), IMUIHelper.getDefaultAvatarResId(unreadEntity.sessionType))
+                showInNotificationBar(finalTitle, ticker, defaultBitmap, notificationId, intent)
+            }
+        })
+    }
+
+    private fun showInNotificationBar(title: String, ticker: String, iconBitmap: Bitmap?, notificationId: Int, intent: Intent) {
+        val notifyMgr = ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+                ?: return
+        val builder: NotificationCompat.Builder
+        //判断是否是8.0Android.O
+        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val chan1 = NotificationChannel(PRIMARY_CHANNEL,
+                    "Primary Channel", NotificationManager.IMPORTANCE_DEFAULT)
+            chan1.lightColor = Color.GREEN
+            chan1.lockscreenVisibility = Notification.VISIBILITY_PRIVATE
+            notifyMgr.createNotificationChannel(chan1)
+            builder = NotificationCompat.Builder(ctx, PRIMARY_CHANNEL)
+        } else {
+            builder = NotificationCompat.Builder(ctx)
+        }
+        builder.setContentTitle(title)
+        builder.setContentText(ticker)
+        builder.setSmallIcon(R.mipmap.ic_launcher)
+        builder.setTicker(ticker)
+        builder.setWhen(System.currentTimeMillis())
+        builder.setAutoCancel(true)
+
+        // this is the content near the right bottom side
+        // builder.setContentInfo("content info");
+
+        if (mConfigurationSp.getCfg(SysConstant.SETTING_GLOBAL, ConfigurationSp.CfgDimension.VIBRATION)) {
+            // delay 0ms, vibrate 200ms, delay 250ms, vibrate 200ms
+            val vibrate = longArrayOf(0, 200, 250, 200)
+            builder.setVibrate(vibrate)
+        } else {
+        }
+
+        // sound
+        if (mConfigurationSp.getCfg(SysConstant.SETTING_GLOBAL, ConfigurationSp.CfgDimension.SOUND)) {
+            builder.setDefaults(Notification.DEFAULT_SOUND)
+        } else {
+        }
+        if (iconBitmap != null) {
+            builder.setLargeIcon(iconBitmap)
+        } else {
+            // do nothint ?
+        }
+        // if MessageActivity is in the background, the system would bring it to
+        // the front
+//        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+        val pendingIntent = PendingIntent.getActivity(ctx, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
+        builder.setContentIntent(pendingIntent)
+        val notification = builder.build()
+        notifyMgr.notify(notificationId, notification)
+    }
+
+    // come from
+    // http://www.partow.net/programming/hashfunctions/index.html#BKDRHashFunction
+    private fun hashBKDR(str: String): Long {
+        val seed: Long = 131 // 31 131 1313 13131 131313 etc..
+        var hash: Long = 0
+
+        for (i in 0 until str.length) {
+            hash = hash * seed + str[i].toLong()
+        }
+        return hash
+    }
+
+    private fun getSessionNotificationId(sessionKey: String): Int {
+        return hashBKDR(sessionKey).toInt()
     }
 
     /**

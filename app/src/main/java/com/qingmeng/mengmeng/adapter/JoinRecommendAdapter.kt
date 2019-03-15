@@ -61,8 +61,9 @@ class JoinRecommendAdapter(val context: Context, val onItemClick: (JoinRecommend
 //                Glide.with(context).load(joinBean.appCover).apply(RequestOptions()
 //                        .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(recommendLogo)
 //            } else {
-                if (!TextUtils.isEmpty(joinBean.logo)) {
-                    Glide.with(context).load(joinBean.logo).apply(RequestOptions()
+            val logo = if(!TextUtils.isEmpty(joinBean.appCover)) joinBean.appCover else joinBean.logo
+                if (!TextUtils.isEmpty(logo)) {
+                    Glide.with(context).load(logo).apply(RequestOptions()
                             .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(recommendLogo)
                 }
 //            }

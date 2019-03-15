@@ -138,7 +138,7 @@ class MyMessageChatActivity : BaseActivity() {
         }
         mBundle = intent.getBundleExtra("bundle")
         if (mBundle != null) {
-            mAvatar = mBundle!!.getString("avatar")
+            mAvatar = mBundle!!.getString("avatar") ?: ""
         } else {
             mAvatar = intent.getStringExtra("avatar") ?: ""
         }
@@ -797,6 +797,10 @@ class MyMessageChatActivity : BaseActivity() {
             entityList
         } else {
             mutableListOf(textMessage)
+        }
+        //为空是状态栏跳进来的 就不发送假消息了
+        if (TextUtils.isEmpty(mAvatar)) {
+            list!!.remove(textMessage)
         }
         //添加品牌
         if (mBundle != null) {

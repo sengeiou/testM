@@ -156,7 +156,7 @@ class LoginRegisterActivity : BaseActivity() {
     private fun bindPhone() {
         myDialog.showLoadingDialog()
         ApiUtils.getApi().bindPhone(mPhone, mCode, openId, token, weChatUnionId, avatar,
-                threeType, mPsw, 1, mUserName, 2, thirdUserName)
+                threeType, mPsw, 1, mUserName, 2, 1, thirdUserName)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->

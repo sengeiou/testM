@@ -31,14 +31,14 @@ interface ApiService {
     //撤回消息
     @POST("message/withdraw")
     @FormUrlEncoded
-    fun msgRevoke(@Field("wxFromId") wxUserName: Int, @Field("wxToId") wxPassWord: Int, @Field("wxMsgId") wxProjectId: Int): Observable<BaseBean<Object>>
+    fun msgRevoke(@Field("wxFromId") wxUserName: Int, @Field("wxToId") wxPassWord: Int, @Field("wxMsgId") wxProjectId: Int): Observable<BaseBean<Any>>
 
     //删除消息
     @POST("message/deletemsg")
     @FormUrlEncoded
-    fun msgDelete(@Field("wxFromId") wxUserName: Int, @Field("wxToId") wxPassWord: Int, @Field("wxMsgId") wxProjectId: Int): Observable<BaseBean<Object>>
+    fun msgDelete(@Field("wxFromId") wxUserName: Int, @Field("wxToId") wxPassWord: Int, @Field("wxMsgId") wxProjectId: Int): Observable<BaseBean<Any>>
 
     @POST("message/deletemsg")
     @FormUrlEncoded
-    fun addImg(@Part file: MultipartBody.Part): Observable<BaseBean<Object>>
+    fun addImg(@Part file: MultipartBody.Part): Observable<BaseBean<Any>>
 }
