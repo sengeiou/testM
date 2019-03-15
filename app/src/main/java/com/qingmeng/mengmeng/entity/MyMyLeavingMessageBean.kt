@@ -24,5 +24,7 @@ data class MyLeavingMessage(
         val capitalName: String,
         val storesNum: String,
         val directStoreNum: Int,
-        val joinStoreNum: Int
+        val joinStoreNum: Int,
+        val isStand: Boolean,
+        val isDel: Boolean
 )

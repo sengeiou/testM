@@ -289,7 +289,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
             this.finish()
         }
         mSeachToTop.setOnClickListener {
-            swipe_target.scrollToPosition(0)
+            swipe_target.smoothScrollToPosition(0)
             mSeachToTop.visibility = View.GONE
             seach_result_swipeLayout.isLoadMoreEnabled = false
         }
@@ -378,7 +378,7 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 lastVisibleItemPosition = mLauyoutManger.findLastVisibleItemPosition()
-                //滑到顶部了0
+                //滑到顶部了
                 if (!recyclerView.canScrollVertically(-1)) {
                     mSeachToTop.visibility = View.GONE
                 } else {

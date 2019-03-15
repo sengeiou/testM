@@ -20,6 +20,7 @@ import android.webkit.WebSettings
 import android.webkit.WebView
 import cn.jzvd.Jzvd
 import cn.jzvd.JzvdStd
+import com.bumptech.glide.Glide
 import com.lemo.emojcenter.FaceInitData
 import com.mogujie.tt.config.IntentConstant
 import com.qingmeng.mengmeng.BaseActivity
@@ -40,16 +41,16 @@ import com.qingmeng.mengmeng.entity.BrandInitialFee
 import com.qingmeng.mengmeng.entity.ShopDetailImg
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.loginshare.ShareQQManager
+import com.qingmeng.mengmeng.utils.loginshare.ShareWechatManager
+import com.qingmeng.mengmeng.utils.loginshare.ShareWeiboManager
 import com.qingmeng.mengmeng.utils.setDrawableTop
 import com.qingmeng.mengmeng.view.dialog.ShareDialog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_shop_detail.*
-import org.jetbrains.anko.clearTask
-import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.*
 import org.jetbrains.anko.internals.AnkoInternals
-import org.jetbrains.anko.newTask
-import org.jetbrains.anko.startActivity
 
 @Suppress("DEPRECATION")
 @SuppressLint("CheckResult", "StringFormatMatches", "SetTextI18n", "SetJavaScriptEnabled")
@@ -195,7 +196,33 @@ class ShopDetailActivity : BaseActivity() {
             }, {
                 toNext<JoinFeedbackActivity>(BRANDID to id)
             }, {
-                mShareDialog = ShareDialog(this)
+                mShareDialog = ShareDialog(this, {
+                    async {
+                        val bitmap = Glide.with(this@ShopDetailActivity)
+                                .asBitmap()
+                                .load("http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
+                                .submit(50, 50).get()
+                        ShareWechatManager.shareToWechat(0, "测试链接", "测试标题", "内容测试", bitmap)
+                    }
+                }, {
+                    async {
+                        val bitmap = Glide.with(this@ShopDetailActivity)
+                                .asBitmap()
+                                .load("http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
+                                .submit(50, 50).get()
+                        ShareWechatManager.shareToWechat(1, "测试链接", "测试标题", "内容测试", bitmap)
+                    }
+                }, {
+                    ShareQQManager.shareToQQ(this@ShopDetailActivity, "测试链接", "测试标题", "内容测试", "http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
+                }, {
+                    async {
+                        val bitmap = Glide.with(this@ShopDetailActivity)
+                                .asBitmap()
+                                .load("http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
+                                .submit(50, 50).get()
+                        ShareWeiboManager.shareToWeibo(this@ShopDetailActivity, "测试标题", "内容测试", bitmap)
+                    }
+                })
                 mShareDialog.show()
             })
         }
@@ -250,7 +277,7 @@ class ShopDetailActivity : BaseActivity() {
         }
         mGetJoinData.setOnClickListener { _ ->
             myDialog.showJoinDataDialog(name) { name, phone, message, dialog ->
-                ApiUtils.join(id, name, phone, message, myDialog, { dialog.cancel() }, { addSubscription(it) })
+                ApiUtils.join(id, name, phone, message, 0, myDialog, { dialog.cancel() }, { addSubscription(it) })
             }
         }
         mDetailScroll.setOnScrollChangeListener { _, _, scrollY, _, _ ->

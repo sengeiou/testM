@@ -25,11 +25,11 @@
     <TextView
         android:id="@+id/mMenu"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/padding_dp_10"
-        android:padding="@dimen/padding_dp_10"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="true"
+        android:gravity="center"
+        android:paddingStart="@dimen/padding_dp_10"
+        android:paddingEnd="@dimen/padding_dp_10"
         android:textColor="@color/white"
         android:textSize="@dimen/text_size_18" />
 </RelativeLayout>

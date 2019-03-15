@@ -35,13 +35,18 @@ interface Api {
     //第三方绑定
     @POST("app/user/third_party_phone_binding")
     @FormUrlEncoded
-    fun bindPhone(@Field("phone") phone: String, @Field("smsCode") smsCode: String,
-                  @Field("openId") openId: String, @Field("token") token: String,
+    fun bindPhone(@Field("phone") phone: String,
+                  @Field("smsCode") smsCode: String,
+                  @Field("openId") openId: String,
+                  @Field("token") token: String,
                   @Field("weChatUnionId") weChatUnionId: String,
-                  @Field("avatar") avatar: String, @Field("type") type: Int,
-                  @Field("password") password: String, @Field("isUserProtocol") isUserProtocol: Int = 1,
+                  @Field("avatar") avatar: String,
+                  @Field("type") type: Int,
+                  @Field("password") password: String,
+                  @Field("isUserProtocol") isUserProtocol: Int = 1, //是否同意用户协议（0.否1.是）
                   @Field("userName") userName: String,
-                  @Field("userType") userType: Int = 2,
+                  @Field("userType") userType: Int = 2, //用户类型（用户类型:1.企业，2.个人）
+                  @Field("deviceType") deviceType: Int = 1, //设备登录类型（1.app(安卓) ，2:app(ios)）
                   @Field("thirdUserName") thirdUserName: String): Observable<BaseBean<UserBean>>
 
     //注册
@@ -93,7 +98,7 @@ interface Api {
     //申请加盟接口
     @POST("api/add_comment")
     fun join(@Query("brandId") brandId: Int, @Query("name") name: String,
-             @Query("phone") phone: String, @Query("message") message: String): Observable<BaseBean<Any>>
+             @Query("phone") phone: String, @Query("message") message: String, @Query("type") type: Int): Observable<BaseBean<Any>>
 
     //账号登录
     @POST("app/user/account_login")
@@ -184,7 +189,7 @@ interface Api {
     fun get_hot_search(@Header("VERSION") version: String): Observable<BaseBean<HotSearchBean>>
 
     //爱加盟首页搜索
-    @POST("/api/join/get_search_brands")
+    @POST("api/join/get_search_brands")
     @FormUrlEncoded
     fun join_search_brands(@Field("fatherId") fatherId: Int?,//餐饮类型父ID
                            @Field("typeId") typeId: Int?,//餐饮类型ID
@@ -195,7 +200,7 @@ interface Api {
                            @Field("pageNum") pageNum: Int)//页数1页10条
             : Observable<BaseBean<SeachResult>>
 
-    @POST("/api/join/get_search_brands")
+    @POST("api/join/get_search_brands")
     @FormUrlEncoded
     fun join_search_brands(@Field("keyWord") keyWord: String?,//搜索关键字
                            @Field("cityIds") cityIds: String?,//爱加盟区域ID

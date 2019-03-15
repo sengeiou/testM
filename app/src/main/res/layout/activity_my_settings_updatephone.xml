@@ -135,6 +135,7 @@
                 android:hint="@string/my_settings_updatePhone_msgTips"
                 android:textSize="@dimen/text_size_14"
                 android:textColor="@color/color_333333"
+                android:singleLine="true"
                 />
         </LinearLayout>
     </LinearLayout>

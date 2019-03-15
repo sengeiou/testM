@@ -54,52 +54,37 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:orientation="horizontal">
+        >
 
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:orientation="horizontal">
+        <Button
+            android:id="@+id/search_condition_pop_button_CZ"
+            style="@style/text_back_text"
+            android:layout_width="@dimen/padding_dp_90"
+            android:layout_height="@dimen/padding_dp_40"
+            android:layout_marginStart="@dimen/padding_dp_70"
+            android:layout_marginTop="@dimen/padding_dp_35"
+            android:layout_marginBottom="@dimen/padding_dp_15"
+            android:text="@string/seach_button_exit"
+            android:textSize="@dimen/text_size_15"
+            />
 
-            <Button
-                android:id="@+id/search_condition_pop_button_CZ"
-                style="@style/text_back_text"
-                android:layout_width="@dimen/padding_dp_90"
-                android:layout_height="@dimen/padding_dp_40"
-                android:layout_marginBottom="@dimen/padding_dp_15"
-                android:layout_marginStart="@dimen/padding_dp_70"
-                android:layout_marginTop="@dimen/padding_dp_35"
-                android:text="@string/seach_button_exit"
-                android:textSize="@dimen/text_size_15" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/white"
-            android:orientation="horizontal">
-
-            <Button
-                android:id="@+id/search_condition_pop_button_QD"
-                android:layout_width="@dimen/padding_dp_90"
-                android:layout_height="@dimen/padding_dp_40"
-                android:layout_marginBottom="@dimen/padding_dp_15"
-                android:layout_marginEnd="@dimen/padding_dp_70"
-                android:layout_marginTop="@dimen/padding_dp_35"
-                android:background="@drawable/seach_result_botton"
-                android:gravity="center"
-                android:text="@string/seach_button_sure"
-                android:textColor="@drawable/seach_result_botton_text"
-                android:textSize="@dimen/text_size_15" />
-        </LinearLayout>
-    </LinearLayout>
+        <Button
+            android:id="@+id/search_condition_pop_button_QD"
+            android:layout_width="@dimen/padding_dp_90"
+            android:layout_height="@dimen/padding_dp_40"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="@dimen/padding_dp_35"
+            android:layout_marginEnd="@dimen/padding_dp_70"
+            android:layout_marginBottom="@dimen/padding_dp_15"
+            android:background="@drawable/seach_result_botton"
+            android:text="@string/seach_button_sure"
+            android:textColor="@drawable/seach_result_botton_text"
+            android:textSize="@dimen/text_size_15" />
+    </RelativeLayout>
 
     <View
         android:id="@+id/bottom_condition_view"

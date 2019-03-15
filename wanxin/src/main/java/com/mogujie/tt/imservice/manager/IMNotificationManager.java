@@ -130,7 +130,8 @@ public class IMNotificationManager extends IMManager {
         //if the message is a multi login message which send from another terminal,not need notificate to status bar
         // 判断是否是自己的消息
         if (IMLoginManager.instance().getLoginId() != peerId) {
-            showNotification(entity);
+//            showNotification(entity);
+            EventBus.getDefault().post(entity);
         }
     }
 
