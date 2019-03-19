@@ -1,19 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/page_background_f5"
     android:orientation="vertical"
     >
 
-    <include layout="@layout/layout_head"/>
+    <include layout="@layout/layout_head" />
 
-    <WebView
-        android:id="@+id/wvMyEnterPriseEntry"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         >
 
-    </WebView>
+        <android.support.design.widget.AppBarLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@null"
+            >
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="535dp"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                />
+        </android.support.design.widget.AppBarLayout>
+
+        <com.qingmeng.mengmeng.view.NestedScrollWebView
+            android:id="@+id/wvMyEnterPriseEntry"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            />
+    </android.support.design.widget.CoordinatorLayout>
+
+    <!--<ScrollView-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--&gt;-->
+
+    <!--<LinearLayout-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="match_parent"-->
+    <!--android:orientation="vertical"-->
+    <!--&gt;-->
+
+    <!--<View-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="535dp"-->
+    <!--/>-->
+
+    <!--<WebView-->
+    <!--android:id="@+id/wvMyEnterPriseEntry"-->
+    <!--android:layout_width="match_parent"-->
+    <!--android:layout_height="1000dp"-->
+    <!--/>-->
+    <!--</LinearLayout>-->
+    <!--</ScrollView>-->
 </LinearLayout>

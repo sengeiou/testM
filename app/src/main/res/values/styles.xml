@@ -132,11 +132,6 @@
         <item name="android:textColor">@color/color_999999</item>
     </style>
 
-    <style name="text_back_text">
-        <item name="android:background">@drawable/seach_result_botton</item>
-        <item name="android:textColor">@drawable/seach_result_botton_text</item>
-    </style>
-
     <style name="WaveProgressViewDefault">
         <item name="radius">55dp</item>
         <item name="progress_text_color">#fff</item>

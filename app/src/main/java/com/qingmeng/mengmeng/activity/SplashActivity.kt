@@ -23,6 +23,7 @@ import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.GuideImgAdapter
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.utils.ApiUtils
+import com.qingmeng.mengmeng.utils.OpenMallApp
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_splash.*
@@ -92,8 +93,17 @@ class SplashActivity : BaseActivity() {
     }
 
     override fun initListener() {
+        //广告跳转
         mSplashAdv.setOnClickListener {
-            //todo 广告页跳转
+            if (!TextUtils.isEmpty(advLink)) {
+                try {
+                    OpenMallApp.open(this, advLink)
+                } catch (e: OpenMallApp.NotInstalledException) {
+                    startActivity(Intent(this, MainActivity::class.java).apply {
+                        putExtra(IConstants.detailUrl, advLink)
+                    })
+                }
+            }
         }
         mSplashBtn.setOnClickListener { handler.sendEmptyMessage(WHAT_SKIP) }
         mSplashVp.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {

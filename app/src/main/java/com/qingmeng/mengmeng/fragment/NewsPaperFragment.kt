@@ -1,18 +1,17 @@
 package com.qingmeng.mengmeng.fragment
 
 import android.annotation.SuppressLint
-import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
-import com.aspsine.swipetoloadlayout.OnLoadMoreListener
-import com.aspsine.swipetoloadlayout.OnRefreshListener
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.HeadDetailsActivity
 import com.qingmeng.mengmeng.activity.ShopDetailActivity
 import com.qingmeng.mengmeng.activity.WebViewActivity
+import com.qingmeng.mengmeng.adapter.LoadMoreWrapper
 import com.qingmeng.mengmeng.adapter.NewsPaperAdapter
+import com.qingmeng.mengmeng.adapter.util.FooterView
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.Banner
 import com.qingmeng.mengmeng.entity.NewsPagerBean
@@ -26,9 +25,11 @@ import kotlinx.android.synthetic.main.layout_red_news_head.*
 import org.jetbrains.anko.support.v4.startActivity
 
 @SuppressLint("CheckResult")
-class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener {
-    private lateinit var mLauyoutManger: LinearLayoutManager
-    private lateinit var mNewsPagerAdapter: NewsPaperAdapter
+class NewsPaperFragment : BaseFragment() {
+    private lateinit var mLayoutManager: LinearLayoutManager
+    private lateinit var mAdapter: NewsPaperAdapter
+    private lateinit var mLoadMoreAdapter: LoadMoreWrapper<Any>
+    private lateinit var mFootView: FooterView
     private var mCanHttpLoad = true                          //是否请求接口
     private var mHasNextPage = true                          //是否请求下一页
     private var mPageNum: Int = 1                            //接口请求页数
@@ -47,36 +48,62 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
         mRedNewsHead.layoutParams.height = mRedNewsHead.layoutParams.height + getBarHeight(context!!)
         mRedNewsTitle.setMarginExt(top = statusBarHeight + context!!.dp2px(60))
         mRedNewsBack.visibility = View.GONE
+        mFootView = FooterView(context!!)
+        setFooterStatus(mFootView, 3)
         initAdapter()
     }
 
     override fun initListener() {
         super.initListener()
-        news_swipeLayout.setOnLoadMoreListener(this)
-        news_swipeLayout.setOnRefreshListener(this)
+
+        //下拉刷新
+        news_swipeLayout.setOnRefreshListener {
+            getNewData()
+        }
+
+        //上滑加载
+        news_swipeLayout.setOnLoadMoreListener {
+            httpLoad(mPageNum)
+        }
+
         swipe_target.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            internal var lastVisibleItemPosition: Int = 0
             //滚动状态改变时
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                //没有滑动时 在最下面
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition + 1 == mNewsPagerAdapter.itemCount) {
-                    news_swipeLayout.isLoadMoreEnabled = true
+                //滑到顶部了
+                if (!recyclerView.canScrollVertically(-1)) {
+                    if (!news_swipeLayout.isLoadingMore) {
+                        news_swipeLayout.isRefreshEnabled = true
+                        news_swipeLayout.isLoadMoreEnabled = false
+                    }
+                    //没有滑动时 在最下面一个item
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE && mLayoutManager.findLastVisibleItemPosition() + 1 == mLoadMoreAdapter.itemCount) {
+                    //如果下拉刷新没有刷新的话
+                    if (!news_swipeLayout.isRefreshing) {
+                        if (mNewsList.isNotEmpty()) {
+                            //是否有下一页
+                            if (mHasNextPage) {
+                                //是否可以请求接口
+                                if (mCanHttpLoad) {
+                                    news_swipeLayout.isRefreshEnabled = false
+//                                    news_swipeLayout.isLoadMoreEnabled = true
+                                    httpLoad(mPageNum)
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    news_swipeLayout.isRefreshEnabled = false
+                    news_swipeLayout.isLoadMoreEnabled = false
                 }
-            }
-
-            //滑动
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                lastVisibleItemPosition = mLauyoutManger.findLastVisibleItemPosition()
             }
         })
     }
 
     private fun initAdapter() {
-        mLauyoutManger = LinearLayoutManager(context)
-        swipe_target.layoutManager = mLauyoutManger
-        mNewsPagerAdapter = NewsPaperAdapter(context!!, mImgList, {
+        mLayoutManager = LinearLayoutManager(context)
+        swipe_target.layoutManager = mLayoutManager
+        mAdapter = NewsPaperAdapter(context!!, mImgList, {
             startActivity<HeadDetailsActivity>("URL" to it.articleUrl, IConstants.articleId to it.id)
         }, {
             it.apply {
@@ -94,7 +121,9 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
                 }
             }
         })
-        swipe_target.adapter = mNewsPagerAdapter
+        mLoadMoreAdapter = LoadMoreWrapper(mAdapter)
+        mLoadMoreAdapter.setLoadMoreView(mFootView)
+        swipe_target.adapter = mLoadMoreAdapter
     }
 
     override fun initData() {
@@ -127,26 +156,16 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
                 .subscribe({
 
                     if (!mNewsList.isEmpty()) {
-                        mNewsPagerAdapter.addItems(mNewsList)
-                        mNewsPagerAdapter.notifyDataSetChanged()
+                        mAdapter.addItems(mNewsList)
+                        mLoadMoreAdapter.notifyDataSetChanged()
                     }
                     if (!mImgList.isEmpty()) {
-                        mNewsPagerAdapter.notifyDataSetChanged()
+                        mLoadMoreAdapter.notifyDataSetChanged()
                     }
                     getNewData()
                 }, {
                     getNewData()
                 }, {}, { addSubscription(it) })
-    }
-
-    override fun onLoadMore() {
-        //  isLoadMore = false
-        news_swipeLayout.isRefreshing = false
-        httpLoad(mPageNum)
-    }
-
-    override fun onRefresh() {
-        getNewData()
     }
 
     private fun endLoadingMore() {
@@ -175,7 +194,6 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
     //头报列表文章
     private fun httpLoad(pageNum: Int) {
         mCanHttpLoad = false
-
         ApiUtils.getApi().getNewsHeadList(pageNum)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -191,6 +209,9 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
                                 if (pageNum == 1) {
                                     //拿数据库数据
                                     getCacheData()
+                                    setFooterStatus(mFootView, 3)
+                                } else {
+                                    setFooterStatus(mFootView, 2)
                                 }
                             } else {
                                 mHasNextPage = true
@@ -205,7 +226,7 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
                                             if (!mNewsList.isEmpty()) {
                                                 mNewsList.clear()
                                             }
-                                            mNewsPagerAdapter.updateItems(mNewsList)
+                                            mAdapter.updateItems(mNewsList)
                                         }
                                         if (!mNewsList.isEmpty()) {
                                             BoxUtils.removeNewsPager(mNewsList)
@@ -213,15 +234,20 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
                                         }
                                         mNewsList.addAll(it.data)
                                         //数据库存入缓存
-                                        mNewsPagerAdapter.addItems(mNewsList)
+                                        mAdapter.addItems(mNewsList)
                                         BoxUtils.saveNewsPager(mNewsList)
                                         news_swipeLayout.isLoadMoreEnabled = false
                                         mPageNum++
+                                        setFooterStatus(mFootView, 1)
+                                        //如果不满一个屏幕 就隐藏
+                                        if (mNewsList.size < 8) {
+                                            setFooterStatus(mFootView, 3)
+                                        }
                                     }
                                 }
                             }
                             //适配器更新数据
-                            mNewsPagerAdapter.notifyDataSetChanged()
+                            mLoadMoreAdapter.notifyDataSetChanged()
                         }
                     }
                 }, {
@@ -249,7 +275,7 @@ class NewsPaperFragment : BaseFragment(), OnLoadMoreListener, OnRefreshListener 
                                 mImgList.addAll(it.banners)
                                 //存入缓存
                                 BoxUtils.saveBanners(mImgList)
-                                mNewsPagerAdapter.notifyDataSetChanged()
+                                mLoadMoreAdapter.notifyDataSetChanged()
                             }
                         }
                     }

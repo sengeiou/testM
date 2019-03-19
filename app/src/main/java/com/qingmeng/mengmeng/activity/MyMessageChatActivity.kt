@@ -343,7 +343,7 @@ class MyMessageChatActivity : BaseActivity() {
 
         //系统工具 +
         ivMyMessageChatFunction.setOnClickListener {
-            PermissionUtils.readAndWrite(this, {
+            PermissionUtils.readAndWrite(this) {
                 //如果键盘没有显示 就直接打开布局
                 if (!mKeyBoardUtil.isShowInputKeyboard()) {
                     llMyMessageChatFunction.visibility = View.VISIBLE
@@ -361,7 +361,7 @@ class MyMessageChatActivity : BaseActivity() {
                     mKeyBoardUtil.hideInputKeyboard()
                 }
                 scrollToBottomListItem()
-            })
+            }
         }
 
         //输入框点击
@@ -716,15 +716,17 @@ class MyMessageChatActivity : BaseActivity() {
     //显示最近60秒内的截图或拍照
     private fun showLastImg() {
         val imgBean = GetImgUtils.getLatestPhoto(this)
-        if (System.currentTimeMillis() / 1000 - imgBean[0].mTime <= 60) {
-            mImgSeePopChat = PopChatImg(this, imgBean[0].imgUrl, true, {
-                //打开一个发送图片的pop
-                PopChatImg(this, it, false, {
-                    handleTakePhotoData(it)
-                }).showAtLocation(llMyMessageRoot, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 0)
-            })
-            if (!mImgSeePopChat.isShowing) {
-                mImgSeePopChat.showAsDropDown(ivMyMessageChatFunction, -(this.dp2px(85) - ivMyMessageChatFunction.width), -(this.dp2px(125) + ivMyMessageChatFunction.height))
+        if(imgBean.isNotEmpty()){
+            if (System.currentTimeMillis() / 1000 - imgBean[0].mTime <= 60) {
+                mImgSeePopChat = PopChatImg(this, imgBean[0].imgUrl, true) {
+                    //打开一个发送图片的pop
+                    PopChatImg(this, it, false) {
+                        handleTakePhotoData(it)
+                    }.showAtLocation(llMyMessageRoot, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 0)
+                }
+                if (!mImgSeePopChat.isShowing) {
+                    mImgSeePopChat.showAsDropDown(ivMyMessageChatFunction, -(this.dp2px(85) - ivMyMessageChatFunction.width), -(this.dp2px(125) + ivMyMessageChatFunction.height))
+                }
             }
         }
     }

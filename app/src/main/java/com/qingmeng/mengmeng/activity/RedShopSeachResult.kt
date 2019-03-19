@@ -15,13 +15,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.aspsine.swipetoloadlayout.OnLoadMoreListener
-import com.aspsine.swipetoloadlayout.OnRefreshListener
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
+import com.qingmeng.mengmeng.adapter.LoadMoreWrapper
+import com.qingmeng.mengmeng.adapter.util.FooterView
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.SEACH_RESULT
 import com.qingmeng.mengmeng.constant.IConstants.THREE_LEVEL
@@ -30,6 +30,7 @@ import com.qingmeng.mengmeng.constant.IConstants.secondLevel
 import com.qingmeng.mengmeng.entity.SearchDto
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.setFooterStatus
 import com.qingmeng.mengmeng.view.GlideRoundTransformCenterCrop
 import com.qingmeng.mengmeng.view.dialog.PopSeachCondition
 import com.qingmeng.mengmeng.view.dialog.PopSeachSelect
@@ -45,14 +46,13 @@ import org.jetbrains.anko.startActivity
 
 
 @SuppressLint("CheckResult")
-class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener {
-
-
-    private lateinit var mAdapter: CommonAdapter<SearchDto>
-    private lateinit var mLauyoutManger: LinearLayoutManager
+class RedShopSeachResult : BaseActivity() {
+    private lateinit var mAdapter: LoadMoreWrapper<SearchDto>
+    private lateinit var mLayoutManager: LinearLayoutManager
     private lateinit var popupMenu1: PopSeachSelect
     private lateinit var popupMenu2: PopSeachSelect
     private lateinit var popupMenu3: PopSeachSelect
+    private lateinit var mFootView: FooterView
     private var popupMenu4: PopSeachCondition? = null
     private var mIsInstantiationOne = false
     private var mIsInstantiationTwo = false
@@ -77,6 +77,10 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
 
     override fun initObject() {
         super.initObject()
+
+        mFootView = FooterView(this)
+        setFooterStatus(mFootView, 3)
+
         initAdapter()
         //传入
         keyWord = intent.getStringExtra(SEACH_RESULT) ?: ""
@@ -95,24 +99,161 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
         } else {
             search_food_type.text = mShowTittle
         }
+
         head_search.setText(keyWord)
         goToSeach()
     }
 
-    private fun goToSeach() {
-        httpSeach(keyWord, fatherId, typeId, cityIds, capitalIds, modeIds, integratedSortId, mPageNum)
+    override fun initListener() {
+
+        //下拉刷新
+        seach_result_swipeLayout.setOnRefreshListener {
+            httpSeach(keyWord, fatherId, typeId, cityIds, capitalIds, modeIds, integratedSortId, 1)
+        }
+
+        //上滑加载
+        seach_result_swipeLayout.setOnLoadMoreListener {
+            httpSeach(keyWord, fatherId, typeId, cityIds, capitalIds, modeIds, integratedSortId, mPageNum)
+        }
+
+        head_search.setOnClickListener {
+            super.initListener()
+            startActivity<RedShopSeach>(IConstants.BACK_SEACH to keyWord)
+        }
+
+        head_search_mBack.setOnClickListener {
+            //if (popupMenu1.isShowing) popupMenu1.dismiss()
+            //if (popupMenu2.isShowing) popupMenu2.dismiss()
+            //if (popupMenu3.isShowing) popupMenu3.dismiss()
+            //if (popupMenu4.isShowing) popupMenu4.dismiss()
+            this.finish()
+        }
+
+        mSeachToTop.setOnClickListener {
+            swipe_target.smoothScrollToPosition(0)
+            mSeachToTop.visibility = View.GONE
+            seach_result_swipeLayout.isLoadMoreEnabled = false
+        }
+
+        search_food_type.setOnClickListener {
+            if (!mIsInstantiationOne) {
+                if (fatherId == 0) popupMenu1 = PopSeachSelect(this, 1, typeId) else popupMenu1 = PopSeachSelect(this, 1, fatherId)
+            }
+            popupMenu1.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
+                override fun onSelectCallBack(selectId: Int, selectFatherId: Int, selectName: String) {
+                    typeId = selectId
+                    fatherId = selectFatherId
+                    search_food_type.text = selectName
+                    mPageNum = 1
+                    if (keyWord.isEmpty()) {
+                        goToSeach()
+                    } else {
+                        keyWord = ""
+                        head_search.setText("")
+                        goToSeach()
+                    }
+                }
+            })
+            mIsInstantiationOne = true
+            setShow(1)
+        }
+
+        search_add_area.setOnClickListener {
+            if (!mIsInstantiationTwo) {
+                popupMenu2 = PopSeachSelect(this, 2, -1)
+            }
+            //回调数据    传入搜索接口
+            popupMenu2.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
+                override fun onSelectCallBack(selectId: Int, selectFatherId: Int, selectName: String) {
+                    cityIds = selectId.toString()
+                    search_add_area.text = selectName
+                    mPageNum = 1
+                    goToSeach()
+                }
+            })
+            mIsInstantiationTwo = true
+            setShow(2)
+        }
+
+        search_ranking.setOnClickListener {
+            if (!mIsInstantiationThree) {
+                popupMenu3 = PopSeachSelect(this, 3, -1)
+            }
+            popupMenu3.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
+                override fun onSelectCallBack(selectId: Int, selectFatherId: Int, selectName: String) {
+                    integratedSortId = selectId
+                    search_ranking.text = selectName
+                    mPageNum = 1
+                    goToSeach()
+                }
+            })
+            mIsInstantiationThree = true
+            setShow(3)
+        }
+
+        search_screning_conditon.setOnClickListener {
+            if (!mIsInstantiationFour && popupMenu4 == null) {
+                popupMenu4 = PopSeachCondition(this)
+            }
+            popupMenu4?.setOnSelectListener(selectListener = object : PopSeachCondition.SelectCallBack {
+                override fun onSelectCallBack(selectMoney: StringBuffer, selectType: StringBuffer) {
+                    capitalIds = selectMoney.toString()        //投资金额ID
+                    modeIds = selectType.toString()         //加盟模式ID
+                    mPageNum = 1
+                    goToSeach()
+                }
+            })
+            mIsInstantiationFour = true
+            setShow(4)
+        }
+
+        swipe_target.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            //滚动状态改变时
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                //滑到顶部了
+                if (!recyclerView.canScrollVertically(-1)) {
+                    mSeachToTop.visibility = View.GONE
+                    if (!seach_result_swipeLayout.isLoadingMore) {
+                        seach_result_swipeLayout.isRefreshEnabled = true
+                        seach_result_swipeLayout.isLoadMoreEnabled = false
+                    }
+                    //没有滑动时 在最下面
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE && mLayoutManager.findLastVisibleItemPosition() + 1 == mAdapter.itemCount) {
+                    mSeachToTop.visibility = View.VISIBLE
+                    //如果下拉刷新没有刷新的话
+                    if (!seach_result_swipeLayout.isRefreshing) {
+                        if (mSeachResultList.isNotEmpty()) {
+                            //是否有下一页
+                            if (mHasNextPage) {
+                                //是否可以请求接口
+                                if (mCanHttpLoad) {
+                                    seach_result_swipeLayout.isRefreshEnabled = false
+//                                    seach_result_swipeLayout.isLoadMoreEnabled = true
+                                    httpSeach(keyWord, fatherId, typeId, cityIds, capitalIds, modeIds, integratedSortId, mPageNum)
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    mSeachToTop.visibility = View.VISIBLE
+                    seach_result_swipeLayout.isRefreshEnabled = false
+                    seach_result_swipeLayout.isLoadMoreEnabled = false
+                }
+            }
+        })
     }
 
     private fun initAdapter() {
         //搜索结果 Adapter
-        mLauyoutManger = LinearLayoutManager(this)
-        swipe_target.layoutManager = mLauyoutManger
-        mAdapter = CommonAdapter(this, R.layout.red_shop_search_result_item, mSeachResultList, holderConvert = { holder, data, position, payloads ->
+        mLayoutManager = LinearLayoutManager(this)
+        swipe_target.layoutManager = mLayoutManager
+        val adapter = CommonAdapter(this, R.layout.red_shop_search_result_item, mSeachResultList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
                 Glide.with(this@RedShopSeachResult)
                         .load(data.logo).apply(RequestOptions()
-                        .transform(GlideRoundTransformCenterCrop())
-                        .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.search_result_bigLogo))
+                                .transform(GlideRoundTransformCenterCrop())
+                                .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.search_result_bigLogo))
                 if (data.status == 1) {
                     val spanString = SpannableString("证\t\t\t${data.name}")
                     val drawable = resources.getDrawable(R.drawable.detail_icon_certification)
@@ -138,9 +279,9 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
                             } else setText(R.id.search_result_joinStoreNum, "$storeNum")
                             View.VISIBLE
                         } else View.GONE
-                if(data.affiliateSupport == null){
+                if (data.affiliateSupport == null) {
                     setTagFlowLayout(getView(R.id.seach_result_tagFliwLayout), ArrayList())
-                }else{
+                } else {
                     setTagFlowLayout(getView(R.id.seach_result_tagFliwLayout), data.affiliateSupport as ArrayList<String>)
                 }
                 getView<LinearLayout>(R.id.search_linearlayout).setOnClickListener {
@@ -148,18 +289,10 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
                 }
             }
         })
+        mAdapter = LoadMoreWrapper(adapter)
+        //加载更多布局
+        mAdapter.setLoadMoreView(mFootView)
         swipe_target.adapter = mAdapter
-    }
-
-    private fun setTagFlowLayout(view: TagFlowLayout, maffiliateSupportList: ArrayList<String>) {
-        view.adapter = object : TagAdapter<String>(maffiliateSupportList) {
-            override fun getView(parent: FlowLayout?, position: Int, data: String?): View {
-                return LayoutInflater.from(this@RedShopSeachResult).inflate(R.layout.item_seach_result_tab_flow_layout, seach_result_tagFliwLayout, false)
-                        .apply {
-                            findViewById<TextView>(R.id.Tag_seach_result).setText(data)
-                        }
-            }
-        }
     }
 
     /**搜索接口  pageNum 必选
@@ -185,12 +318,19 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
                     endLoad()
                     mCanHttpLoad = true
                     if (bean.code == 12000) {
+                        if (pageNum == 1) {
+                            mSeachResultList.clear()
+                            mPageNum = 1
+                        }
                         if (bean.data == null || bean.data?.data!!.isEmpty()) {
                             mHasNextPage = false
                             //如果没数据 就显示搜索不到页面
                             if (pageNum == 1) {
-                                mSeachResultList.clear()
                                 seach_result_nothing.visibility = View.VISIBLE
+                                seach_result_swipeLayout.isRefreshEnabled = true
+                                setFooterStatus(mFootView, 3)
+                            } else {
+                                setFooterStatus(mFootView, 2)
                             }
                         } else {
                             mHasNextPage = true
@@ -198,52 +338,48 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
                             if (pageNum == 1) {
                                 seach_result_nothing.visibility = View.GONE
                             }
-                            bean.data?.let {
-                                if (!it.data.isEmpty()) {
-                                    if (pageNum == 1) {
-                                        mSeachResultList.clear()
-                                        mPageNum = 1
-                                        if (!mSeachResultList.isEmpty()) {
-                                            mSeachResultList.clear()
-                                        }
-                                    }
-                                    mSeachResultList.addAll(it.data)
-                                    seach_result_swipeLayout.isLoadMoreEnabled = false
-                                    mPageNum++
-                                } else {
-                                    seach_result_nothing.visibility = View.VISIBLE
-                                }
+                            mSeachResultList.addAll(bean.data?.data!!)
+                            mPageNum++
+                            setFooterStatus(mFootView, 1)
+                            //如果不满一个屏幕 就隐藏
+                            if (mSeachResultList.size < 10) {
+                                setFooterStatus(mFootView, 3)
                             }
                         }
                         mAdapter.notifyDataSetChanged()
                     } else {
-                        seach_result_nothing.visibility = View.VISIBLE
+                        ToastUtil.showShort(bean.msg)
                     }
                 }, {
                     //刷新状态关闭
                     endLoad()
                     mCanHttpLoad = true
                     seach_result_nothing.visibility = View.VISIBLE
+                    seach_result_swipeLayout.isRefreshEnabled = true
                     ToastUtil.showNetError()
                 }, {}, { addSubscription(it) })
     }
 
-    private fun endLoad() {
-        if (seach_result_swipeLayout.isRefreshing) {
-            seach_result_swipeLayout.endRefresh()
-        }
-        if (seach_result_swipeLayout.isLoadingMore) {
-            seach_result_swipeLayout.endLoadMore()
+    private fun setTagFlowLayout(view: TagFlowLayout, maffiliateSupportList: ArrayList<String>) {
+        view.adapter = object : TagAdapter<String>(maffiliateSupportList) {
+            override fun getView(parent: FlowLayout?, position: Int, data: String?): View {
+                return LayoutInflater.from(this@RedShopSeachResult).inflate(R.layout.item_seach_result_tab_flow_layout, seach_result_tagFliwLayout, false)
+                        .apply {
+                            findViewById<TextView>(R.id.Tag_seach_result).setText(data)
+                        }
+            }
         }
     }
 
-    override fun onRefresh() {
-        httpSeach(keyWord, fatherId, typeId, cityIds, capitalIds, modeIds, integratedSortId, 1)
-    }
-
-    override fun onLoadMore() {
-        seach_result_swipeLayout.isRefreshing = false
+    private fun goToSeach() {
         httpSeach(keyWord, fatherId, typeId, cityIds, capitalIds, modeIds, integratedSortId, mPageNum)
+    }
+
+    private fun endLoad() {
+        seach_result_swipeLayout.isRefreshing = false
+        seach_result_swipeLayout.isLoadingMore = false
+        seach_result_swipeLayout.isRefreshEnabled = false
+        seach_result_swipeLayout.isLoadMoreEnabled = false
     }
 
     /**
@@ -275,118 +411,6 @@ class RedShopSeachResult : BaseActivity(), OnLoadMoreListener, OnRefreshListener
 //                    ToastUtil.showNetError()
 //                }, {}, { addSubscription(it) })
 //    }
-
-    override fun initListener() {
-        head_search.setOnClickListener {
-            super.initListener()
-            startActivity<RedShopSeach>(IConstants.BACK_SEACH to keyWord)
-        }
-        head_search_mBack.setOnClickListener {
-            //if (popupMenu1.isShowing) popupMenu1.dismiss()
-            //if (popupMenu2.isShowing) popupMenu2.dismiss()
-            //if (popupMenu3.isShowing) popupMenu3.dismiss()
-            //if (popupMenu4.isShowing) popupMenu4.dismiss()
-            this.finish()
-        }
-        mSeachToTop.setOnClickListener {
-            swipe_target.smoothScrollToPosition(0)
-            mSeachToTop.visibility = View.GONE
-            seach_result_swipeLayout.isLoadMoreEnabled = false
-        }
-        search_food_type.setOnClickListener {
-            if (!mIsInstantiationOne) {
-                if (fatherId == 0) popupMenu1 = PopSeachSelect(this, 1, typeId) else popupMenu1 = PopSeachSelect(this, 1, fatherId)
-            }
-            popupMenu1.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
-                override fun onSelectCallBack(selectId: Int, selectFatherId: Int, selectName: String) {
-                    typeId = selectId
-                    fatherId = selectFatherId
-                    search_food_type.text = selectName
-                    mPageNum = 1
-                    if (keyWord.isEmpty()) {
-                        goToSeach()
-                    } else {
-                        keyWord = ""
-                        head_search.setText("")
-                        goToSeach()
-                    }
-                }
-            })
-            mIsInstantiationOne = true
-            setShow(1)
-        }
-        search_add_area.setOnClickListener {
-            if (!mIsInstantiationTwo) {
-                popupMenu2 = PopSeachSelect(this, 2, -1)
-            }
-            //回调数据    传入搜索接口
-            popupMenu2.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
-                override fun onSelectCallBack(selectId: Int, selectFatherId: Int, selectName: String) {
-                    cityIds = selectId.toString()
-                    search_add_area.text = selectName
-                    mPageNum = 1
-                    goToSeach()
-                }
-            })
-            mIsInstantiationTwo = true
-            setShow(2)
-        }
-        search_ranking.setOnClickListener {
-            if (!mIsInstantiationThree) {
-                popupMenu3 = PopSeachSelect(this, 3, -1)
-            }
-            popupMenu3.setOnSelectListener(object : PopSeachSelect.SelectCallBack {
-                override fun onSelectCallBack(selectId: Int, selectFatherId: Int, selectName: String) {
-                    integratedSortId = selectId
-                    search_ranking.text = selectName
-                    mPageNum = 1
-                    goToSeach()
-                }
-            })
-            mIsInstantiationThree = true
-            setShow(3)
-        }
-        search_screning_conditon.setOnClickListener {
-            if (!mIsInstantiationFour && popupMenu4 == null) {
-                popupMenu4 = PopSeachCondition(this)
-            }
-            popupMenu4?.setOnSelectListener(selectListener = object : PopSeachCondition.SelectCallBack {
-                override fun onSelectCallBack(selectMoney: StringBuffer, selectType: StringBuffer) {
-                    capitalIds = selectMoney.toString()        //投资金额ID
-                    modeIds = selectType.toString()         //加盟模式ID
-                    mPageNum = 1
-                    goToSeach()
-                }
-            })
-            mIsInstantiationFour = true
-            setShow(4)
-        }
-        seach_result_swipeLayout.setOnRefreshListener(this)
-        seach_result_swipeLayout.setOnLoadMoreListener(this)
-        swipe_target.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            internal var lastVisibleItemPosition: Int = 0
-            //滚动状态改变时
-            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-                super.onScrollStateChanged(recyclerView, newState)
-                //没有滑动时 在最下面
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition + 1 == mAdapter.itemCount) {
-                    seach_result_swipeLayout.isLoadMoreEnabled = true
-                }
-            }
-
-            //滚动时
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                lastVisibleItemPosition = mLauyoutManger.findLastVisibleItemPosition()
-                //滑到顶部了
-                if (!recyclerView.canScrollVertically(-1)) {
-                    mSeachToTop.visibility = View.GONE
-                } else {
-                    mSeachToTop.visibility = View.VISIBLE
-                }
-            }
-        })
-    }
 
     private fun setShow(position: Int) {
         //避免点击之后另外三个窗口还存在情况

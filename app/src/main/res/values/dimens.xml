@@ -14,9 +14,12 @@
     <dimen name="padding_dp_9">9dp</dimen>
     <dimen name="padding_dp_10">10dp</dimen>
     <dimen name="padding_dp_11">11dp</dimen>
+    <dimen name="padding_dp_11_25">11.25dp</dimen>
     <dimen name="padding_dp_12">12dp</dimen>
+    <dimen name="padding_dp_12_5">12.5dp</dimen>
     <dimen name="padding_dp_13">13dp</dimen>
     <dimen name="padding_dp_13_5">13.5dp</dimen>
+    <dimen name="padding_dp_13_75">13.75dp</dimen>
     <dimen name="padding_dp_14">14dp</dimen>
     <dimen name="padding_dp_14_5">14.5dp</dimen>
     <dimen name="padding_dp_15">15dp</dimen>

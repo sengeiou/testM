@@ -164,6 +164,7 @@ public class ImageLoader {
 
     }
 
+
     //往SD卡写入文件的方法
     public static void saveFileToSD(String filepath, byte[] bytes) throws Exception {
         File dir1 = new File(filepath);

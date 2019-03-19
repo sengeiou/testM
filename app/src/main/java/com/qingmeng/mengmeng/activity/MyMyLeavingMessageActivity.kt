@@ -14,11 +14,14 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
+import com.qingmeng.mengmeng.adapter.LoadMoreWrapper
+import com.qingmeng.mengmeng.adapter.util.FooterView
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.MyLeavingMessage
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
+import com.qingmeng.mengmeng.utils.setFooterStatus
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_myleavingmessage.*
@@ -37,8 +40,9 @@ import org.jetbrains.anko.startActivity
 @SuppressLint("CheckResult")
 class MyMyLeavingMessageActivity : BaseActivity() {
     private lateinit var mLayoutManager: LinearLayoutManager
-    private lateinit var mAdapter: CommonAdapter<MyLeavingMessage>
+    private lateinit var mAdapter: LoadMoreWrapper<MyLeavingMessage>
     private var mList = ArrayList<MyLeavingMessage>()
+    private lateinit var mFootView: FooterView
     private var mPageNum: Int = 1                                        //接口请求页数
     private var mCanHttpLoad = true                                      //是否可以请求接口
     private var mHasNextPage = true                                      //是否有下一页
@@ -52,6 +56,9 @@ class MyMyLeavingMessageActivity : BaseActivity() {
         super.initObject()
 
         setHeadName(R.string.my_myLeavingMessage)
+
+        mFootView = FooterView(this)
+        setFooterStatus(mFootView, 3)
 
         initAdapter()
 
@@ -89,7 +96,8 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                         srlMyMyLeavingMessage.isRefreshEnabled = true
                         srlMyMyLeavingMessage.isLoadMoreEnabled = false
                     }
-                } else if (!recyclerView.canScrollVertically(1)) {  //滑到底部了
+                    //没有滑动时 在最下面一个item
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE && mLayoutManager.findLastVisibleItemPosition() + 1 == mAdapter.itemCount) {
                     //如果下拉刷新没有刷新的话
                     if (!srlMyMyLeavingMessage.isRefreshing) {
                         if (mList.isNotEmpty()) {
@@ -98,7 +106,8 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                                 //是否可以请求接口
                                 if (mCanHttpLoad) {
                                     srlMyMyLeavingMessage.isRefreshEnabled = false
-                                    srlMyMyLeavingMessage.isLoadMoreEnabled = true
+//                                    srlMyMyLeavingMessage.isLoadMoreEnabled = true
+                                    httpLoad(mPageNum)
                                 }
                             }
                         }
@@ -115,7 +124,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
     private fun initAdapter() {
         mLayoutManager = LinearLayoutManager(this)
         rvMyMyLeavingMessage.layoutManager = mLayoutManager
-        mAdapter = CommonAdapter(this, R.layout.activity_my_myleavingmessage_item, mList, holderConvert = { holder, t, position, payloads ->
+        val adapter = CommonAdapter(this, R.layout.activity_my_myleavingmessage_item, mList, holderConvert = { holder, t, position, payloads ->
             holder.apply {
                 setText(R.id.tvMyMyLeavingMessageRvTime, t.createTime)
                 //待查看
@@ -149,7 +158,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                 }
                 //品牌详情点击
                 getView<RelativeLayout>(R.id.rlMyMyLeavingMessageRvBrandDetails).setOnClickListener {
-                    if (t.brandId == 0 || t.isDel) {
+                    if (t.brandId == 0 || t.isDel || t.commentType == 1) {
                         ToastUtil.showShort(R.string.invalid_brand_tips)
                     } else {
                         startActivity<ShopDetailActivity>(IConstants.BRANDID to t.brandId)
@@ -157,6 +166,8 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                 }
             }
         })
+        mAdapter = LoadMoreWrapper(adapter)
+        mAdapter.setLoadMoreView(mFootView)
         rvMyMyLeavingMessage.adapter = mAdapter
     }
 
@@ -188,6 +199,9 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                                     tvMyMyLeavingMessageTips.text = getString(R.string.my_myLeavingMessage_null_tips)
                                     llMyMyLeavingMessageTips.visibility = View.VISIBLE
                                     srlMyMyLeavingMessage.isRefreshEnabled = true
+                                    setFooterStatus(mFootView, 3)
+                                } else {
+                                    setFooterStatus(mFootView, 2)
                                 }
                             } else {
                                 mHasNextPage = true
@@ -198,8 +212,15 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                                 //把内容添加到mList里去
                                 mList.addAll(data?.data!!)
                                 mPageNum++
+                                setFooterStatus(mFootView, 1)
+                                //如果不满一个屏幕 就隐藏
+                                if (mList.size < 8) {
+                                    setFooterStatus(mFootView, 3)
+                                }
                             }
                             mAdapter.notifyDataSetChanged()
+                        } else {
+                            ToastUtil.showShort(it.msg)
                         }
                     }
                 }, {

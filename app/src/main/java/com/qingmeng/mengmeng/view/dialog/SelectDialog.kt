@@ -83,7 +83,7 @@ class SelectDialog constructor(context: Context, private val menuList: ArrayList
                             }
                             menuList.lastIndex -> {
                                 getView<View>(R.id.viewSelectDialogRvLine).visibility = View.VISIBLE
-                                getView<TextView>(R.id.tvSelectDialogRvMenuL).setBackgroundResource(R.drawable.ripple_bg_white_bottom_radius15)
+                                getView<TextView>(R.id.tvSelectDialogRvMenuL).setBackgroundResource(R.drawable.ripple_bg_white_bottom_radius15_t)
                             }
                             else -> {
                                 getView<View>(R.id.viewSelectDialogRvLine).visibility = View.VISIBLE

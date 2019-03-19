@@ -67,7 +67,6 @@ object OpenMallApp {
             e.printStackTrace()
             throw NotInstalledException()
         }
-
     }
 
     class NotInstalledException internal constructor() : Exception()
