@@ -32,7 +32,7 @@
                 android:gravity="center"
                 android:text="@string/wechat"
                 android:textColor="@color/color_333333"
-                android:textSize="@dimen/text_size_18" />
+                android:textSize="@dimen/text_size_16" />
 
         </LinearLayout>
 
@@ -56,7 +56,7 @@
                 android:gravity="center"
                 android:text="@string/wechat_friends"
                 android:textColor="@color/color_333333"
-                android:textSize="@dimen/text_size_18" />
+                android:textSize="@dimen/text_size_16" />
 
         </LinearLayout>
 
@@ -80,7 +80,7 @@
                 android:gravity="center"
                 android:text="@string/qq"
                 android:textColor="@color/color_333333"
-                android:textSize="@dimen/text_size_18" />
+                android:textSize="@dimen/text_size_16" />
 
         </LinearLayout>
 
@@ -105,7 +105,7 @@
                 android:gravity="center"
                 android:text="@string/sina"
                 android:textColor="@color/color_333333"
-                android:textSize="@dimen/text_size_18" />
+                android:textSize="@dimen/text_size_16" />
 
         </LinearLayout>
     </LinearLayout>

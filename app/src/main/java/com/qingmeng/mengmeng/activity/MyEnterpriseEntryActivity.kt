@@ -56,7 +56,8 @@ class MyEnterpriseEntryActivity : BaseActivity() {
                 .subscribe({
                     it.apply {
                         if (code == 12000) {
-                            wvMyEnterPriseEntry.loadUrl(data.toString())
+//                            wvMyEnterPriseEntry.loadUrl(data.toString())
+                            wvMyEnterPriseEntry.loadUrl("http://47.99.139.155:11000/api/page_render/brand_detail_html?id=265")
                         } else {
                             myDialog.dismissLoadingDialog()
                         }
@@ -88,6 +89,17 @@ class MyEnterpriseEntryActivity : BaseActivity() {
                 }
             }
         }
+//        wvMyEnterPriseEntry.webViewClient = object : WebViewClient(){
+//            override fun onPageFinished(view: WebView?, url: String?) {
+//                super.onPageFinished(view, url)
+//
+//                //这个是一定要加上那个的,配合scrollView和WebView的height=wrap_content属性使用
+//                val w = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+//                val h = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+//                //重新测量
+//                wvMyEnterPriseEntry.measure(w, h)
+//            }
+//        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mWebSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }

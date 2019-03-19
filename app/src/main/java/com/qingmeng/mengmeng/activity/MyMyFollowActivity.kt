@@ -13,12 +13,15 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.adapter.CommonAdapter
+import com.qingmeng.mengmeng.adapter.LoadMoreWrapper
+import com.qingmeng.mengmeng.adapter.util.FooterView
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.entity.MyFollow
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.utils.imageLoader.CacheType
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
+import com.qingmeng.mengmeng.utils.setFooterStatus
 import com.qingmeng.mengmeng.view.SwipeMenuLayout
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -38,8 +41,9 @@ import org.jetbrains.anko.startActivity
 @SuppressLint("CheckResult")
 class MyMyFollowActivity : BaseActivity() {
     private lateinit var mLayoutManager: LinearLayoutManager
-    private lateinit var mAdapter: CommonAdapter<MyFollow>
+    private lateinit var mAdapter: LoadMoreWrapper<MyFollow>
     private var mList = ArrayList<MyFollow>()
+    private lateinit var mFootView: FooterView
     private var mPageNum: Int = 1                                        //接口请求页数
     private var mCanHttpLoad = true                                      //是否可以请求接口
     private var mHasNextPage = true                                      //是否有下一页
@@ -57,6 +61,9 @@ class MyMyFollowActivity : BaseActivity() {
         val title = intent.getStringExtra("title")
         setHeadName(title)
         mIsMyFollow = title == getString(R.string.my_myFollow)
+
+        mFootView = FooterView(this)
+        setFooterStatus(mFootView, 3)
 
         //适配器初始化
         initAdapter()
@@ -97,15 +104,15 @@ class MyMyFollowActivity : BaseActivity() {
         rvMyMyFollow.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                //防止有些手机屏幕太高 一页显示10条还没到底部的那种 这里给它还可以上滑加载
-                srlMyMyFollow.isLoadMoreEnabled = mLayoutManager.findLastCompletelyVisibleItemPosition() == mList.lastIndex && mHasNextPage
                 //滑到顶部了
                 if (!recyclerView.canScrollVertically(-1)) {
                     if (!srlMyMyFollow.isLoadingMore) {
                         srlMyMyFollow.isRefreshEnabled = true
                         srlMyMyFollow.isLoadMoreEnabled = false
                     }
-                } else if (!recyclerView.canScrollVertically(1)) {  //滑到底部了
+                    //!recyclerView.canScrollVertically(1)  //滑到最底部了
+                    //没有滑动时 在最下面一个item
+                } else if (newState == RecyclerView.SCROLL_STATE_IDLE && mLayoutManager.findLastVisibleItemPosition() + 1 == mAdapter.itemCount) {
                     //如果下拉刷新没有刷新的话
                     if (!srlMyMyFollow.isRefreshing) {
                         if (mList.isNotEmpty()) {
@@ -114,7 +121,8 @@ class MyMyFollowActivity : BaseActivity() {
                                 //是否可以请求接口
                                 if (mCanHttpLoad) {
                                     srlMyMyFollow.isRefreshEnabled = false
-                                    srlMyMyFollow.isLoadMoreEnabled = true
+//                                    srlMyMyFollow.isLoadMoreEnabled = true
+                                    httpLoad(mPageNum)
                                 }
                             }
                         }
@@ -131,7 +139,7 @@ class MyMyFollowActivity : BaseActivity() {
     private fun initAdapter() {
         mLayoutManager = LinearLayoutManager(this)
         rvMyMyFollow.layoutManager = mLayoutManager
-        mAdapter = CommonAdapter(this, R.layout.activity_my_myfollow_item, mList, holderConvert = { holder, t, position, payloads ->
+        val adapter = CommonAdapter(this, R.layout.activity_my_myfollow_item, mList, holderConvert = { holder, t, position, payloads ->
             holder.apply {
                 //glide加载图片
                 GlideLoader.load(this@MyMyFollowActivity, t.logo, getView(R.id.ivMyMyFollowRvLogo), cacheType = CacheType.All, placeholder = R.drawable.default_img_icon)
@@ -164,6 +172,10 @@ class MyMyFollowActivity : BaseActivity() {
                 }
             }
         })
+        //为apdater嵌套一个划到底部加载更多
+        mAdapter = LoadMoreWrapper(adapter)
+        //加载更多布局
+        mAdapter.setLoadMoreView(mFootView)
         rvMyMyFollow.adapter = mAdapter
     }
 
@@ -188,7 +200,6 @@ class MyMyFollowActivity : BaseActivity() {
                         if (code == 12000) {
                             //如果页数是1 清空内容重新加载
                             if (pageNum == 1) {
-                                //清空已经选择集合
                                 mList.clear()
                                 mPageNum = 1
                             }
@@ -204,6 +215,9 @@ class MyMyFollowActivity : BaseActivity() {
                                     }
                                     llMyMyFollowTips.visibility = View.VISIBLE
                                     srlMyMyFollow.isRefreshEnabled = true
+                                    setFooterStatus(mFootView, 3)
+                                } else {
+                                    setFooterStatus(mFootView, 2)
                                 }
                             } else {
                                 mHasNextPage = true
@@ -218,8 +232,15 @@ class MyMyFollowActivity : BaseActivity() {
                                 //把内容添加到mList里去
                                 mList.addAll(data?.data!!)
                                 mPageNum++
+                                setFooterStatus(mFootView, 1)
+                                //如果不满一个屏幕 就隐藏
+                                if (mList.size < 15) {
+                                    setFooterStatus(mFootView, 3)
+                                }
                             }
                             mAdapter.notifyDataSetChanged()
+                        } else {
+                            ToastUtil.showShort(it.msg)
                         }
                     }
                 }, {

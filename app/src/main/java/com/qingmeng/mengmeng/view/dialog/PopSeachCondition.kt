@@ -10,7 +10,6 @@ import android.graphics.Rect
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.support.v7.widget.GridLayoutManager
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -138,20 +137,20 @@ class PopSeachCondition : PopupWindow {
         mGridManager = GridLayoutManager(mActivity, 3)
         mMenuView.search_result_condition_recycler_money.layoutManager = mGridManager
         mMenuView.search_result_condition_recycler_money.isNestedScrollingEnabled = false
-        mMoneyAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextMoneyList, holderConvert = { holder, data, position, payloads ->
+        mMoneyAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item_screen, mTextMoneyList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
-                getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
+                getView<RelativeLayout>(R.id.rlSelectDialogRvMenuGScreen).apply {
                     if (data.checkState) {
                         setBackgroundColor(resources.getColor(R.color.colorBlueBright))
-                        getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.color_5ab1e1))
-                        getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.VISIBLE
+                        getView<TextView>(R.id.tvSelectDialogRvMenuGScreen).setTextColor(resources.getColor(R.color.color_5ab1e1))
+                        getView<ImageView>(R.id.ivSelectDialogRvMenuGScreen).visibility = View.VISIBLE
                     } else {
                         setBackgroundResource(R.color.dialog_item_bg)
-                        getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.black))
-                        getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.GONE
+                        getView<TextView>(R.id.tvSelectDialogRvMenuGScreen).setTextColor(resources.getColor(R.color.black))
+                        getView<ImageView>(R.id.ivSelectDialogRvMenuGScreen).visibility = View.GONE
                     }
                 }
-                setText(R.id.tvSelectDialogRvMenuG, data.name)
+                setText(R.id.tvSelectDialogRvMenuGScreen, data.name)
             }
         }, onItemClick = { view, holder, position ->
             mTextMoneyList[position].let {
@@ -165,20 +164,20 @@ class PopSeachCondition : PopupWindow {
         mGridManager = GridLayoutManager(mActivity, 3)
         mMenuView.search_result_condition_recycler_joinType.layoutManager = mGridManager
         mMenuView.search_result_condition_recycler_joinType.isNestedScrollingEnabled = false
-        mJoinModelAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item, mTextJoinTypeList, holderConvert = { holder, data, position, payloads ->
+        mJoinModelAdapter = CommonAdapter(mActivity, R.layout.view_dialog_choose_item_screen, mTextJoinTypeList, holderConvert = { holder, data, position, payloads ->
             holder.apply {
-                getView<RelativeLayout>(R.id.rlSelectDialogRvMenuG).apply {
+                getView<RelativeLayout>(R.id.rlSelectDialogRvMenuGScreen).apply {
                     if (data.checkState) {
                         setBackgroundColor(resources.getColor(R.color.colorBlueBright))
-                        getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.color_5ab1e1))
-                        getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.VISIBLE
+                        getView<TextView>(R.id.tvSelectDialogRvMenuGScreen).setTextColor(resources.getColor(R.color.color_5ab1e1))
+                        getView<ImageView>(R.id.ivSelectDialogRvMenuGScreen).visibility = View.VISIBLE
                     } else {
                         setBackgroundResource(R.color.dialog_item_bg)
-                        getView<TextView>(R.id.tvSelectDialogRvMenuG).setTextColor(resources.getColor(R.color.black))
-                        getView<ImageView>(R.id.ivSelectDialogRvMenuG).visibility = View.GONE
+                        getView<TextView>(R.id.tvSelectDialogRvMenuGScreen).setTextColor(resources.getColor(R.color.black))
+                        getView<ImageView>(R.id.ivSelectDialogRvMenuGScreen).visibility = View.GONE
                     }
                 }
-                setText(R.id.tvSelectDialogRvMenuG, data.name)
+                setText(R.id.tvSelectDialogRvMenuGScreen, data.name)
             }
         }, onItemClick = { view, holder, position ->
             mTextJoinTypeList[position].let {

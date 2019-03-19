@@ -3,17 +3,24 @@ package com.mogujie.tt.ui.fragment;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.app.common.utils.CacheImgUtil;
+import com.app.common.utils.StorageUtils;
 import com.leimo.wanxin.R;
 import com.mogujie.tt.imservice.entity.ImageMessage;
 import com.mogujie.tt.imservice.service.IMService;
+import com.mogujie.tt.ui.view.DialogCommon_T;
 import com.mogujie.tt.utils.FileUtil;
 import com.mogujie.tt.utils.ImageLoaderUtil;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -21,6 +28,9 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.polites.android.GestureImageView;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 
 public class MessageImageFragment extends android.support.v4.app.Fragment {
@@ -86,6 +96,7 @@ public class MessageImageFragment extends android.support.v4.app.Fragment {
                 @Override
                 public void onClick(View v) {
                     parentLayout.performClick();
+
                 }
             });
             parentLayout.setOnClickListener(new View.OnClickListener() {
@@ -96,6 +107,40 @@ public class MessageImageFragment extends android.support.v4.app.Fragment {
                         getActivity().overridePendingTransition(
                                 R.anim.tt_stay, R.anim.tt_image_exit);
                     }
+                }
+            });
+            parentLayout.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    final String imageUrl = messageInfo.getUrl();
+                    if (!TextUtils.isEmpty(messageInfo.getPath()) && FileUtil.isFileExist(messageInfo.getPath())) {
+                        new DialogCommon_T(getContext(), "", "是否保存图片？", "取消", "确定",
+                                new Function1<View, Unit>() {
+                                    @Override
+                                    public Unit invoke(View view) {
+                                        return null;
+                                    }
+                                },
+                                new Function1<View, Unit>() {
+                                    @Override
+                                    public Unit invoke(View view) {
+                                        CacheImgUtil.INSTANCE.downImage(getContext(), imageUrl, StorageUtils.INSTANCE.getPublicStorageDir("mengmeng", null) + "/image/" + System.currentTimeMillis() + "y.png", "com.qingmeng.mengmeng",
+                                                new Function1<Boolean, Unit>() {
+                                                    @Override
+                                                    public Unit invoke(Boolean success) {
+                                                        if (success) {
+                                                            Toast.makeText(getContext(), "保存成功", Toast.LENGTH_SHORT).show();
+                                                        } else {
+                                                            Toast.makeText(getContext(), "保存失败", Toast.LENGTH_SHORT).show();
+                                                        }
+                                                        return null;
+                                                    }
+                                                });
+                                        return null;
+                                    }
+                                }, true, R.style.dialog_common_t).show();
+                    }
+                    return true;
                 }
             });
         } catch (Exception e) {
@@ -164,10 +209,44 @@ public class MessageImageFragment extends android.support.v4.app.Fragment {
                         parentLayout.performClick();
                     }
                 });
+                newView.setOnTouchListener(new View.OnTouchListener() {
+                    Point point = new Point();
+                    boolean isLongClick = false;
+
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        switch (event.getAction()) {
+                            case MotionEvent.ACTION_DOWN:
+                                point.x = (int) v.getX();
+                                point.y = (int) v.getY();
+                                isLongClick = true;
+                                //延时触发
+                                new Handler().postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        if (isLongClick) {
+                                            parentLayout.performLongClick();
+                                        }
+                                    }
+                                }, 800);
+                                break;
+                            case MotionEvent.ACTION_MOVE:
+                                int x = (int) (point.x - v.getX());
+                                int y = (int) (point.y - v.getY());
+                                //移动位置超出正负5
+                                if (x < -5 || x > 5 || y < -5 || y > 5) {
+                                    isLongClick = false;
+                                }
+                                break;
+                            default:
+                                isLongClick = false;
+                                break;
+                        }
+                        return false;
+                    }
+                });
             }
         } catch (Exception e) {
         }
     }
-
-
 }

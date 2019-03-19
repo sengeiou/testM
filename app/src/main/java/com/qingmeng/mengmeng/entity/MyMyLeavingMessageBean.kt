@@ -26,5 +26,6 @@ data class MyLeavingMessage(
         val directStoreNum: Int,
         val joinStoreNum: Int,
         val isStand: Boolean,
-        val isDel: Boolean
+        val isDel: Boolean,
+        val commentType: Int    //真假品牌 0真 1假
 )

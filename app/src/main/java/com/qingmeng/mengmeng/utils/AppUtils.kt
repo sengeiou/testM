@@ -2,6 +2,8 @@ package com.qingmeng.mengmeng.utils
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageInfo
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.net.Uri
@@ -10,11 +12,13 @@ import android.support.v7.widget.RecyclerView
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.LinearLayout
-import android.widget.RelativeLayout
+import android.widget.*
+import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.adapter.util.FooterView
 import java.io.FileInputStream
 import java.io.FileNotFoundException
+
+
 
 /**
  *  Description :view工具
@@ -85,11 +89,32 @@ fun toSelfSetting(context: Context) {
     mIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
     if (Build.VERSION.SDK_INT >= 9) {
         mIntent.action = "android.settings.APPLICATION_DETAILS_SETTINGS"
-        mIntent.data = Uri.fromParts("package", context.packageName,null)
+        mIntent.data = Uri.fromParts("package", context.packageName, null)
     } else if (Build.VERSION.SDK_INT <= 8) {
         mIntent.action = Intent.ACTION_VIEW
         mIntent.setClassName("com.android.settings", "com.android.setting.InstalledAppDetails")
         mIntent.putExtra("com.android.settings.ApplicationPkgName", context.packageName)
     }
     context.startActivity(mIntent)
+}
+
+/**
+ * 设置加载更多状态
+ * style 1 加载中 2 加载结束 3 隐藏
+ */
+fun setFooterStatus(footerView: FooterView, style: Int) {
+    when (style) {
+        1 -> {
+            footerView.findViewById<ProgressBar>(R.id.progressBar_footer).visibility = View.VISIBLE
+            footerView.findViewById<TextView>(R.id.tv_foot_name).text = "加载中..."
+        }
+        2 -> {
+            footerView.findViewById<ProgressBar>(R.id.progressBar_footer).visibility = View.GONE
+            footerView.findViewById<TextView>(R.id.tv_foot_name).text = "---我是有底线的---"
+        }
+        3 -> {
+            footerView.findViewById<ProgressBar>(R.id.progressBar_footer).visibility = View.GONE
+            footerView.findViewById<TextView>(R.id.tv_foot_name).text = ""
+        }
+    }
 }
