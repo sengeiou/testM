@@ -98,13 +98,13 @@ public class AudioRenderView extends  BaseMsgRenderView {
                     return;
                 }
                 switch (audioReadStatus){
-                    case MessageConstant.AUDIO_UNREAD:
+                    case MessageConstant.UP_OSS_UNREAD:
                         if(btnImageListener != null){
                             btnImageListener.onClickUnread();
                             audioUnreadNotify.setVisibility(View.GONE);
                         }
                         break;
-                    case MessageConstant.AUDIO_READED:
+                    case MessageConstant.UP_OSS_READED:
                         if(btnImageListener != null){
                             btnImageListener.onClickReaded();
                         }
@@ -184,10 +184,10 @@ public class AudioRenderView extends  BaseMsgRenderView {
             }
 
             switch (audioReadStatus){
-                case MessageConstant.AUDIO_READED:
+                case MessageConstant.UP_OSS_READED:
                     audioAlreadyRead();
                     break;
-                case MessageConstant.AUDIO_UNREAD:
+                case MessageConstant.UP_OSS_UNREAD:
                     audioUnread();
                     break;
             }

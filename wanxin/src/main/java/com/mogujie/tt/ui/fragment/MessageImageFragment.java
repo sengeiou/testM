@@ -41,6 +41,7 @@ public class MessageImageFragment extends android.support.v4.app.Fragment {
     private ProgressBar mProgressbar = null;
     private FrameLayout parentLayout = null;
     private IMService imService;
+    private DialogCommon_T dialog;  //弹框
 
     public void setImService(IMService service) {
         this.imService = service;
@@ -76,10 +77,39 @@ public class MessageImageFragment extends android.support.v4.app.Fragment {
             curView = inflater.inflate(R.layout.fragment_message_image, null);
             initRes(curView);
             initData();
+            initView();
             return curView;
         } catch (Exception e) {
             return null;
         }
+    }
+
+    private void initView() {
+        dialog = new DialogCommon_T(getContext(), "", "是否保存图片？", "取消", "确定",
+                new Function1<View, Unit>() {
+                    @Override
+                    public Unit invoke(View view) {
+                        return null;
+                    }
+                },
+                new Function1<View, Unit>() {
+                    @Override
+                    public Unit invoke(View view) {
+                        CacheImgUtil.INSTANCE.downImage(getContext(), messageInfo.getUrl(), StorageUtils.INSTANCE.getPublicStorageDir("mengmeng", null) + "/image/" + System.currentTimeMillis() + "y.png", "com.qingmeng.mengmeng",
+                                new Function1<Boolean, Unit>() {
+                                    @Override
+                                    public Unit invoke(Boolean success) {
+                                        if (success) {
+                                            Toast.makeText(getContext(), "保存成功", Toast.LENGTH_SHORT).show();
+                                        } else {
+                                            Toast.makeText(getContext(), "保存失败", Toast.LENGTH_SHORT).show();
+                                        }
+                                        return null;
+                                    }
+                                });
+                        return null;
+                    }
+                }, true, R.style.dialog_common_t);
     }
 
     private void initRes(View curView) {
@@ -112,35 +142,10 @@ public class MessageImageFragment extends android.support.v4.app.Fragment {
             parentLayout.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
                 public boolean onLongClick(View v) {
-                    final String imageUrl = messageInfo.getUrl();
-                    if (!TextUtils.isEmpty(messageInfo.getPath()) && FileUtil.isFileExist(messageInfo.getPath())) {
-                        new DialogCommon_T(getContext(), "", "是否保存图片？", "取消", "确定",
-                                new Function1<View, Unit>() {
-                                    @Override
-                                    public Unit invoke(View view) {
-                                        return null;
-                                    }
-                                },
-                                new Function1<View, Unit>() {
-                                    @Override
-                                    public Unit invoke(View view) {
-                                        CacheImgUtil.INSTANCE.downImage(getContext(), imageUrl, StorageUtils.INSTANCE.getPublicStorageDir("mengmeng", null) + "/image/" + System.currentTimeMillis() + "y.png", "com.qingmeng.mengmeng",
-                                                new Function1<Boolean, Unit>() {
-                                                    @Override
-                                                    public Unit invoke(Boolean success) {
-                                                        if (success) {
-                                                            Toast.makeText(getContext(), "保存成功", Toast.LENGTH_SHORT).show();
-                                                        } else {
-                                                            Toast.makeText(getContext(), "保存失败", Toast.LENGTH_SHORT).show();
-                                                        }
-                                                        return null;
-                                                    }
-                                                });
-                                        return null;
-                                    }
-                                }, true, R.style.dialog_common_t).show();
+                    if (!dialog.isShowing()) {
+                        dialog.show();
                     }
-                    return true;
+                    return false;
                 }
             });
         } catch (Exception e) {
@@ -228,7 +233,7 @@ public class MessageImageFragment extends android.support.v4.app.Fragment {
                                             parentLayout.performLongClick();
                                         }
                                     }
-                                }, 800);
+                                }, 600);
                                 break;
                             case MotionEvent.ACTION_MOVE:
                                 int x = (int) (point.x - v.getX());

@@ -105,8 +105,8 @@ object BoxUtils {
     }
 
     //删除已过期的我的板块信息
-    fun removeMyInformation(myInformation: MyInformation) {
-        boxStore.runInTxAsync({ myInformationBox.remove(myInformation) }, { _, _ -> })
+    fun removeMyInformation() {
+        boxStore.runInTxAsync({ myInformationBox.removeAll() }, { _, _ -> })
     }
 
     //获取我的版块信息
@@ -123,8 +123,8 @@ object BoxUtils {
     }
 
     //删除已过期的所有城市
-    fun removeAllCity(allCityBean: AllCityBean) {
-        boxStore.runInTxAsync({ allCityBox.remove(allCityBean) }, { _, _ -> })
+    fun removeAllCity() {
+        boxStore.runInTxAsync({ allCityBox.removeAll() }, { _, _ -> })
     }
 
     //获取所有城市
@@ -179,8 +179,8 @@ object BoxUtils {
     }
 
     //删除所有头报列表数据
-    fun removeNewsPager(newsPagerList: MutableList<NewsPagerList>) {
-        boxStore.runInTxAsync({ newsPagerBox.remove(newsPagerList) }, { _, _ -> })
+    fun removeNewsPager() {
+        boxStore.runInTxAsync({ newsPagerBox.removeAll() }, { _, _ -> })
     }
 
     //   获取所有头报列表数据

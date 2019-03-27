@@ -24,7 +24,7 @@ open class BaseInterceptor(var requestCallback: ((request: Request) -> Unit)? = 
         private val UTF8 = Charset.forName("UTF-8")
     }
 
-    override fun intercept(chain: Interceptor.Chain): Response? {
+    override fun intercept(chain: Interceptor.Chain): Response?{
         val request = chain.request()
         requestCallback?.invoke(request)
         val response = chain.proceed(request)

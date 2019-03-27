@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Dialog
 import android.content.Context
@@ -19,15 +20,12 @@ import android.view.*
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.app.common.api.subscribeExtApi
 import com.lemo.emojcenter.constant.FaceLocalConstant
 import com.lemo.emojcenter.utils.EmotionUtils
 import com.lemo.emojcenter.utils.SpanStringUtils
 import com.luck.picture.lib.PictureSelector
 import com.luck.picture.lib.config.PictureConfig
 import com.luck.picture.lib.config.PictureMimeType
-import com.mogujie.tt.api.RequestManager
-import com.mogujie.tt.api.composeDefault
 import com.mogujie.tt.app.IMApplication
 import com.mogujie.tt.config.*
 import com.mogujie.tt.db.entity.GroupEntity
@@ -54,6 +52,8 @@ import com.qingmeng.mengmeng.utils.audio.MediaManager
 import com.qingmeng.mengmeng.view.dialog.DialogCommon
 import com.qingmeng.mengmeng.view.dialog.PopChatImg
 import de.greenrobot.event.EventBus
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_message_chat.*
 import kotlinx.android.synthetic.main.layout_head.*
 import kotlinx.android.synthetic.main.view_dialog_sound_volume.*
@@ -72,6 +72,7 @@ import kotlin.collections.ArrayList
 
  *  Date: 2019/1/3
  */
+@SuppressLint("CheckResult")
 class MyMessageChatActivity : BaseActivity() {
     private lateinit var mKeyBoardUtil: KeyBoardUtil            //系统键盘工具
     private lateinit var mLayoutManager: LinearLayoutManager
@@ -234,8 +235,8 @@ class MyMessageChatActivity : BaseActivity() {
         //音频
         ivMyMessageChatAudio.setOnClickListener {
             //判断是否有权限
-            PermissionUtils.audio(this, {
-                PermissionUtils.readAndWrite(this, {
+            PermissionUtils.audio(this) {
+                PermissionUtils.readAndWrite(this) {
                     //表情和工具布局隐藏 关闭软键盘
                     hiddenViewAndInputKeyboard()
                     //按住说话不显示就显示 反之隐藏
@@ -244,8 +245,8 @@ class MyMessageChatActivity : BaseActivity() {
                     } else {
                         View.GONE
                     }
-                })
-            })
+                }
+            }
         }
 
         //按住说话
@@ -260,9 +261,9 @@ class MyMessageChatActivity : BaseActivity() {
                     mSoundVolumeImg.setBackgroundResource(R.drawable.view_dialog_sound_volume_01)
                     mSoundVolumeLayout.setBackgroundResource(R.drawable.view_dialog_sound_volume_default_bg)
                     //录音
-                    mAudioManager.readyAudio(this, {
+                    mAudioManager.readyAudio(this) {
                         onReceiveMaxVolume(it)
-                    })
+                    }
                     //显示弹框
                     mSoundVolumeDialog.show()
                     true
@@ -292,12 +293,12 @@ class MyMessageChatActivity : BaseActivity() {
                         if (mAudioManager.getRecordTime() > 1) { //真.发送
                             mSoundVolumeDialog.dismiss()
                             //释放录音
-                            mAudioManager.releaseAudio({ path, recordTime ->
+                            mAudioManager.releaseAudio { path, recordTime ->
                                 if (mAudioManager.canSendAudio) {
                                     //发送语音
                                     onRecordVoiceEnd(path, recordTime)
                                 }
-                            })
+                            }
                         } else {  //发送条件未满足
                             mSoundVolumeImg.visibility = View.GONE
                             mSoundVolumeLayout.setBackgroundResource(R.drawable.view_dialog_sound_volume_short_tip_bg)
@@ -450,26 +451,26 @@ class MyMessageChatActivity : BaseActivity() {
 
         //拍照
         ivMyMessageChatFunctionCamera.setOnClickListener {
-            PermissionUtils.camera(this, {
+            PermissionUtils.camera(this) {
                 //打开相机
                 openCamera()
-            })
+            }
         }
 
         //照片
         ivMyMessageChatFunctionPhoto.setOnClickListener {
-            PermissionUtils.readAndWrite(this, {
+            PermissionUtils.readAndWrite(this) {
                 //打开相册
                 openAlbum()
-            })
+            }
         }
 
         //视频
         ivMyMessageChatFunctionVideo.setOnClickListener {
-            PermissionUtils.readAndWrite(this, {
+            PermissionUtils.readAndWrite(this) {
                 //打开视频
                 openVideo()
-            })
+            }
         }
 
         //语音听筒扬声器切换
@@ -499,20 +500,39 @@ class MyMessageChatActivity : BaseActivity() {
                 myDialog.showLoadingDialog()
                 val messageEntity = mAdapter.msgObjectList[position] as MessageEntity
                 //网络请求
-                RequestManager.instanceApi
-                        .msgRevoke(messageEntity.fromId, messageEntity.toId, messageEntity.msgId)
-                        .compose(composeDefault())
-                        .subscribeExtApi({
+                ApiUtils.getApi()
+                        .msgRevokeDelete(messageEntity.fromId, messageEntity.toId, messageEntity.msgId, 1)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe({
                             myDialog.dismissLoadingDialog()
-                            val newMsg = CmdMessage.buildForSend("撤回了一条消息", loginUser, currentSessionKey)?.apply {
-                                displayType = DBConstant.SHOW_REVOKE_TYPE
-                                setAttribute(MessageExtConst.MSGID, messageEntity.msgId)
-                                setAttribute(MessageExtConst.CMD_TIME, System.currentTimeMillis())
-                                mImService?.messageManager?.sendCMD(this)
+                            it.apply {
+                                if (code == 12000) {
+                                    val newMsg = CmdMessage.buildForSend("撤回了一条消息", loginUser, currentSessionKey)?.apply {
+                                        displayType = DBConstant.SHOW_REVOKE_TYPE
+                                        setAttribute(MessageExtConst.MSGID, messageEntity.msgId)
+                                        setAttribute(MessageExtConst.CMD_TIME, System.currentTimeMillis())
+                                        mImService?.messageManager?.sendCMD(this)
+                                    }
+                                    //调用adapter的撤回方法
+                                    mAdapter.revokeMsg(messageEntity, newMsg!!, position)
+                                } else {
+                                    ToastUtil.showShort(msg)
+                                }
                             }
-                            //调用adapter的撤回方法
-                            mAdapter.revokeMsg(messageEntity, newMsg!!, position)
-                        })
+                        }, {
+                            myDialog.dismissLoadingDialog()
+                            ToastUtil.showNetError()
+                        }, {}, { addSubscription(it) })
+
+//                RequestManager.instanceApi
+//                        .msgRevoke(messageEntity.fromId, messageEntity.toId, messageEntity.msgId)
+//                        .compose(composeDefault())
+//                        .subscribeExtApi({
+//                        },{
+//                            myDialog.dismissLoadingDialog()
+//                            ToastUtil.showNetError()
+//                        },{},{ addSubscription(it) })
             }
 
             //删除
@@ -524,14 +544,33 @@ class MyMessageChatActivity : BaseActivity() {
                 } else {
                     myDialog.showLoadingDialog()
                     //网络请求
-                    RequestManager.instanceApi
-                            .msgDelete(messageEntity.fromId, messageEntity.toId, messageEntity.msgId)
-                            .compose(composeDefault())
-                            .subscribeExtApi({
+                    ApiUtils.getApi()
+                            .msgRevokeDelete(messageEntity.fromId, messageEntity.toId, messageEntity.msgId, 2)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({
                                 myDialog.dismissLoadingDialog()
-                                //调用adapter的删除方法
-                                mAdapter.removeMsg(messageEntity)
-                            })
+                                it.apply {
+                                    if (code == 12000) {
+                                        //调用adapter的删除方法
+                                        mAdapter.removeMsg(messageEntity)
+                                    } else {
+                                        ToastUtil.showShort(msg)
+                                    }
+                                }
+                            }, {
+                                myDialog.dismissLoadingDialog()
+                                ToastUtil.showNetError()
+                            }, {}, { addSubscription(it) })
+
+//                    RequestManager.instanceApi
+//                            .msgDelete(messageEntity.fromId, messageEntity.toId, messageEntity.msgId)
+//                            .compose(composeDefault())
+//                            .subscribeExtApi({
+//                            },{
+//                                myDialog.dismissLoadingDialog()
+//                                ToastUtil.showNetError()
+//                            },{},{ addSubscription(it) })
                 }
             }
 
@@ -588,8 +627,8 @@ class MyMessageChatActivity : BaseActivity() {
         //消息适配器
         mLayoutManager = LinearLayoutManager(this)
         rvMyMessageChat.layoutManager = mLayoutManager
-        mAdapter = ChatAdapterTwo(this, msgObjectList, { audioMessage, imageView ->
-            PermissionUtils.readAndWrite(this, {
+        mAdapter = ChatAdapterTwo(this, msgObjectList) { audioMessage, imageView ->
+            PermissionUtils.readAndWrite(this) {
                 //音频点击事件
                 if (mMediaManager.isPlaying()) {    //正在播放点击就结束播放
                     cdMyMessageChatSwitchAudio.visibility = View.GONE
@@ -598,7 +637,7 @@ class MyMessageChatActivity : BaseActivity() {
                         stopAudioAnimation(imageView)
                     } else {
                         stopAudioAnimation(mImageView!!)
-                        mMediaManager.play(this, audioMessage.audioPath, {
+                        mMediaManager.play(this, audioMessage.audioPath, audioMessage.audioUrl, {
                             mImageView = imageView
                             cdMyMessageChatSwitchAudio.visibility = View.VISIBLE
                             startAudioAnimation(imageView)
@@ -608,7 +647,7 @@ class MyMessageChatActivity : BaseActivity() {
                         })
                     }
                 } else {
-                    mMediaManager.play(this, audioMessage.audioPath, {
+                    mMediaManager.play(this, audioMessage.audioPath, audioMessage.audioUrl, {
                         //刚开始播放
                         mImageView = imageView
                         cdMyMessageChatSwitchAudio.visibility = View.VISIBLE
@@ -619,8 +658,8 @@ class MyMessageChatActivity : BaseActivity() {
                         stopAudioAnimation(imageView)
                     })
                 }
-            })
-        })
+            }
+        }
         rvMyMessageChat.adapter = mAdapter
 
 //        //表情viewPager适配器
@@ -716,7 +755,7 @@ class MyMessageChatActivity : BaseActivity() {
     //显示最近60秒内的截图或拍照
     private fun showLastImg() {
         val imgBean = GetImgUtils.getLatestPhoto(this)
-        if(imgBean.isNotEmpty()){
+        if (imgBean.isNotEmpty()) {
             if (System.currentTimeMillis() / 1000 - imgBean[0].mTime <= 60) {
                 mImgSeePopChat = PopChatImg(this, imgBean[0].imgUrl, true) {
                     //打开一个发送图片的pop
@@ -803,6 +842,13 @@ class MyMessageChatActivity : BaseActivity() {
         //为空是状态栏跳进来的 就不发送假消息了
         if (TextUtils.isEmpty(mAvatar)) {
             list!!.remove(textMessage)
+        } else {
+            //无系统通知提示
+            if (list!![0].fromId == 0 && mIsSystemMotification) {
+                llMyMessageChatTips.visibility = View.VISIBLE
+            } else {
+                llMyMessageChatTips.visibility = View.GONE
+            }
         }
         //添加品牌
         if (mBundle != null) {
@@ -811,12 +857,6 @@ class MyMessageChatActivity : BaseActivity() {
         }
         mAdapter.msgObjectList.clear()
         mAdapter.loadHistoryList(list)
-        //无系统通知提示
-        if (list!![0].fromId == 0 && mIsSystemMotification) {
-            llMyMessageChatTips.visibility = View.VISIBLE
-        } else {
-            llMyMessageChatTips.visibility = View.GONE
-        }
     }
 
     /**
@@ -913,12 +953,17 @@ class MyMessageChatActivity : BaseActivity() {
                 onMsgUnAckTimeoutOrFailure(event.messageEntity)
             }
 
-            MessageEvent.Event.HANDLER_IMAGE_UPLOAD_SUCCESS, MessageEvent.Event.HANDLER_IMAGE_UPLOAD_FAILD -> { //成功和失败
+            MessageEvent.Event.HANDLER_IMAGE_UPLOAD_SUCCESS, MessageEvent.Event.HANDLER_IMAGE_UPLOAD_FAILD -> { //图片成功和失败
                 val imageMessage = event.messageEntity as ImageMessage
                 mAdapter.updateItemState(imageMessage)
             }
 
-            MessageEvent.Event.HANDLER_VIDEO_UPLOAD_SUCCESS, MessageEvent.Event.HANDLER_VIDEO_UPLOAD_FAILD -> {
+            MessageEvent.Event.HANDLER_AUDIO_UPLOAD_SUCCESS, MessageEvent.Event.HANDLER_AUDIO_UPLOAD_FAILD -> { //语音成功和失败
+                val imageMessage = event.messageEntity as AudioMessage
+                mAdapter.updateItemState(imageMessage)
+            }
+
+            MessageEvent.Event.HANDLER_VIDEO_UPLOAD_SUCCESS, MessageEvent.Event.HANDLER_VIDEO_UPLOAD_FAILD -> { //视频成功与失败
                 val videoMessage = event.messageEntity as VideoMessage
                 mAdapter.updateItemState(videoMessage)
             }
@@ -1046,8 +1091,8 @@ class MyMessageChatActivity : BaseActivity() {
      * 录音结束后处理录音数据
      */
     private fun onRecordVoiceEnd(audioSavePath: String, audioLen: Float) {
-        val audioMessage = AudioMessage.buildForSend(audioLen, audioSavePath, loginUser, peerEntity)
-        mImService?.messageManager?.sendVoice(audioMessage)
+        val audioMessage = AudioMessage.buildForSend(audioLen, audioSavePath, loginUser!!, peerEntity!!)
+        mImService?.messageManager?.sendAudio(audioMessage)
         pushList(audioMessage, true)
     }
 

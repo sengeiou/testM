@@ -148,7 +148,7 @@ public class ImageRenderView extends BaseMsgRenderView {
         ImageMessage imageMessage = new ImageMessage(entity);
         final String imagePath = imageMessage.getPath();
         final String url = imageMessage.getUrl();
-        int loadStatus = imageMessage.getLoadStatus();
+        int loadStatus = imageMessage.getSendStatus();
         if (TextUtils.isEmpty(url)) {
             /**消息状态异常*/
             msgStatusError(entity);
@@ -156,7 +156,7 @@ public class ImageRenderView extends BaseMsgRenderView {
         }
 
         switch (loadStatus) {
-            case MessageConstant.IMAGE_UNLOAD: {
+            case MessageConstant.UP_OSS_UNREAD: {
                 messageImage.setImageLoaddingCallback(new BubbleImageView.ImageLoaddingCallback() {
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap bitmap) {
@@ -195,12 +195,12 @@ public class ImageRenderView extends BaseMsgRenderView {
             }
             break;
 
-            case MessageConstant.IMAGE_LOADING: {
+            case MessageConstant.UP_OSS_LOADING: {
 
             }
             break;
 
-            case MessageConstant.IMAGE_LOADED_SUCCESS: {
+            case MessageConstant.UP_OSS_SUCCESS: {
                 messageImage.setImageLoaddingCallback(new BubbleImageView.ImageLoaddingCallback() {
                     @Override
                     public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
@@ -245,7 +245,7 @@ public class ImageRenderView extends BaseMsgRenderView {
             break;
 
             //todo 图像失败了，允许点击之后重新下载
-            case MessageConstant.IMAGE_LOADED_FAILURE: {
+            case MessageConstant.UP_OSS_FAILURE: {
                 //                msgStatusError(imageMessage);
                 //                getImageProgress().hideProgress();
                 messageImage.setImageLoaddingCallback(new BubbleImageView.ImageLoaddingCallback() {

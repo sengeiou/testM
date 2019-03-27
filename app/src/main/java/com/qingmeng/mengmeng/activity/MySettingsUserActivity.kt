@@ -45,7 +45,9 @@ class MySettingsUserActivity : BaseActivity() {
     //一些必填的内容
     private var mName: String = ""                   //真实姓名
     private var mPhone: String = ""                  //手机号
-    private var mDistrictId: Int = 0                 //县id
+    private var mProvinceId: Int = 0                 //省id
+    private var mCityId: Int = 0                     //市id
+    private var mDistrictId: Int = 0                 //区id
     private var mCapitalId: Int = 0                  //创业资本
     private var mIndustryOfInterest = ""             //感兴趣行业
     //一些选填的内容
@@ -156,11 +158,15 @@ class MySettingsUserActivity : BaseActivity() {
             mPopCity = PopCitySelect(this)
             mPopCity.showAtLocation(llMySettingsUser, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, 0)
             mPopCity.setOnCitySelectListener(object : PopCitySelect.CitySelectCallBack {
-                override fun onCitySelectCallBack(city: AllCity) {
+                override fun onCitySelectCallBack(oneCity: AllCity, twoCity: AllCity?, threeCity: AllCity?) {
                     //选择完后给城市id赋值 文本赋值
-                    mDistrictId = city.id.toInt()
-                    tvMySettingsUserCity.text = city.name
+                    mProvinceId = oneCity.id.toInt()
+                    mCityId = twoCity?.id?.toInt() ?: 0
+                    mDistrictId = threeCity?.id?.toInt() ?: 0
+                    val lastCity = if (threeCity != null) threeCity else if (twoCity != null) twoCity else oneCity
+                    tvMySettingsUserCity.text = lastCity.name
                     tvMySettingsUserCity.setTextColor(resources.getColor(R.color.color_333333))
+//                    ToastUtil.showShort("省：${oneCity.name}\n市：${twoCity?.name}\n区：${threeCity?.name}")
                 }
             })
         }
@@ -210,15 +216,16 @@ class MySettingsUserActivity : BaseActivity() {
                         }
                     }
                 }, {
+                    ToastUtil.showNetError()
                     myDialog.dismissLoadingDialog()
                     llMySettingsUserTips.visibility = View.VISIBLE
-                })
+                }, {}, { addSubscription(it) })
     }
 
     //修改个人信息接口
     private fun updateUserHttp() {
         ApiUtils.getApi()
-                .updateMySettingsUser(mAvatar, mName, mSex, mTelephone, mWx, mQQ, mEmail, mDistrictId, mCapitalId, mIndustryOfInterest,
+                .updateMySettingsUser(mAvatar, mName, mSex, mTelephone, mWx, mQQ, mEmail, mProvinceId, mCityId, mDistrictId, mCapitalId, mIndustryOfInterest,
                         MainApplication.instance.user.wxUid, MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -356,7 +363,7 @@ class MySettingsUserActivity : BaseActivity() {
             mName.isBlank() -> ToastUtil.showShort(getString(R.string.my_settings_user_name_tips))   //真实姓名
 //            mPhone.isBlank() -> ToastUtil.showShort(getString(R.string.phoneTips))  //手机号
 //            !InputCheckUtils.checkPhone(mPhone) -> ToastUtil.showShort(getString(R.string.phoneFormat_tips))   //手机号格式错误
-            mDistrictId == 0 -> ToastUtil.showShort(getString(R.string.popCitySelect_twoTips))   //城市id
+            mProvinceId == 0 -> ToastUtil.showShort(getString(R.string.popCitySelect_twoTips))   //省id 直接判断省id就可以了
             mCapitalId == 0 -> ToastUtil.showShort(getString(R.string.my_settings_user_money_tips))   //创业资本
             mIndustryOfInterest.isBlank() -> ToastUtil.showShort(getString(R.string.my_settings_user_interestIndustry_tips)) //感兴趣行业
             !mTelephone.isBlank() && !InputCheckUtils.checkTel(mTelephone) -> ToastUtil.showShort(getString(R.string.my_settings_user_telephone_tips))
@@ -430,6 +437,8 @@ class MySettingsUserActivity : BaseActivity() {
         mWx = mySettingsUserBean.wx
         mQQ = mySettingsUserBean.qq
         mEmail = mySettingsUserBean.email
+        mProvinceId = mySettingsUserBean.cityIds
+        mCityId = mySettingsUserBean.cityIds
         mDistrictId = mySettingsUserBean.cityIds
         mCapitalId = mySettingsUserBean.capitalId
         mIndustryOfInterest = mySettingsUserBean.industryOfInterest

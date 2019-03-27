@@ -25,7 +25,6 @@ import com.mogujie.tt.config.DBConstant
 import com.mogujie.tt.config.IntentConstant
 import com.mogujie.tt.config.MessageConstant
 import com.mogujie.tt.config.MessageExtConst
-import com.mogujie.tt.db.DBInterface
 import com.mogujie.tt.db.entity.MessageEntity
 import com.mogujie.tt.db.entity.UserEntity
 import com.mogujie.tt.imservice.entity.*
@@ -42,11 +41,8 @@ import com.mogujie.tt.utils.FileUtil
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.MyMessageChatActivity
-import com.qingmeng.mengmeng.utils.GlideCacheUtils
-import com.qingmeng.mengmeng.utils.ImageUtils
-import com.qingmeng.mengmeng.utils.dp2px
+import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
-import com.qingmeng.mengmeng.utils.setMarginExt
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -83,9 +79,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 RenderType.MESSAGE_TYPE_BRAND -> {    //品牌详情
                     (it as BrandViewHolder).bindViewHolder(position)
                 }
-            /**
-             * 别人消息
-             */
+                /**
+                 * 别人消息
+                 */
                 RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF -> {    //别人文本(emoji表情)
                     (it as OtherTextViewHolder).bindViewHolder(position)
                 }
@@ -104,9 +100,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 RenderType.MESSAGE_TYPE_OTHER_BRAND -> {    //别人品牌详情
                     (it as OtherBrandViewHolder).bindViewHolder(position)
                 }
-            /**
-             * 自己消息
-             */
+                /**
+                 * 自己消息
+                 */
                 RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF -> {  //自己文本(emoji表情)
                     (it as MineTextViewHolder).bindViewHolder(position)
                 }
@@ -148,9 +144,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_brand, viewGroup, false)
                 BrandViewHolder(view)
             }
-        /**
-         * 别人消息
-         */
+            /**
+             * 别人消息
+             */
             RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF -> {    //别人文本(emoji表情)
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_text, viewGroup, false)
                 OtherTextViewHolder(view, viewGroup)
@@ -175,9 +171,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_brand, viewGroup, false)
                 OtherBrandViewHolder(view, viewGroup)
             }
-        /**
-         * 自己消息
-         */
+            /**
+             * 自己消息
+             */
             RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF -> {  //自己文本(emoji表情)
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_text, viewGroup, false)
                 MineTextViewHolder(view, viewGroup)
@@ -388,7 +384,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             llMyMessageChatRvOtherAudio.let {
                 it.setOnClickListener {
                     audioClick(audioMessage, ivMyMessageChatRvOtherAudioImage)
-                    audioMessage.readStatus = MessageConstant.AUDIO_READED
+                    audioMessage.readStatus = MessageConstant.UP_OSS_READED
                     mImService!!.dbInterface.insertOrUpdateMessage(audioMessage)
                 }
                 it.setOnLongClickListener {
@@ -568,19 +564,16 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 showPopWindow(position, parent, it)
             }
             //图片发送状态
-            when (imageMessage.loadStatus) {
-                MessageConstant.IMAGE_UNLOAD -> {
-
-                }
-                MessageConstant.IMAGE_LOADING -> {  //发送中
+            when (imageMessage.status) {
+                MessageConstant.MSG_SENDING -> {  //发送中
                     pbMyMessageChatRvMineImageProgress.visibility = View.VISIBLE
                     ivMyMessageChatRvMineImageFail.visibility = View.GONE
                 }
-                MessageConstant.IMAGE_LOADED_SUCCESS -> {   //发送成功
+                MessageConstant.MSG_SUCCESS -> {   //发送成功
                     pbMyMessageChatRvMineImageProgress.visibility = View.GONE
                     ivMyMessageChatRvMineImageFail.visibility = View.GONE
                 }
-                MessageConstant.IMAGE_LOADED_FAILURE -> {   //发送失败
+                MessageConstant.MSG_FAILURE -> {   //发送失败
                     pbMyMessageChatRvMineImageProgress.visibility = View.GONE
                     ivMyMessageChatRvMineImageFail.visibility = View.VISIBLE
                 }
@@ -625,19 +618,16 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 showPopWindow(position, parent, it)
             }
             //图片发送状态
-            when (imageMessage.loadStatus) {
-                MessageConstant.IMAGE_UNLOAD -> {
-
-                }
-                MessageConstant.IMAGE_LOADING -> {  //发送中
+            when (imageMessage.status) {
+                MessageConstant.MSG_SENDING -> {  //发送中
                     pbMyMessageChatRvMineGifProgress.visibility = View.VISIBLE
                     ivMyMessageChatRvMineGifFail.visibility = View.GONE
                 }
-                MessageConstant.IMAGE_LOADED_SUCCESS -> {   //发送成功
+                MessageConstant.MSG_SUCCESS -> {   //发送成功
                     pbMyMessageChatRvMineGifProgress.visibility = View.GONE
                     ivMyMessageChatRvMineGifFail.visibility = View.GONE
                 }
-                MessageConstant.IMAGE_LOADED_FAILURE -> {   //发送失败
+                MessageConstant.MSG_FAILURE -> {   //发送失败
                     pbMyMessageChatRvMineGifProgress.visibility = View.GONE
                     ivMyMessageChatRvMineGifFail.visibility = View.VISIBLE
                 }
@@ -665,7 +655,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             llMyMessageChatRvMineAudio.let {
                 it.setOnClickListener {
                     audioClick(audioMessage, ivMyMessageChatRvMineAudioImage)
-                    audioMessage.readStatus = MessageConstant.AUDIO_READED
+                    audioMessage.readStatus = MessageConstant.UP_OSS_READED
                     mImService!!.dbInterface.insertOrUpdateMessage(audioMessage)
                 }
                 it.setOnLongClickListener {
@@ -751,22 +741,16 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 showPopWindow(position, parent, it)
             }
             //视频发送状态
-            when (videoMessage.readStatus) {
-                MessageConstant.VIDEO_UNREAD -> {   //未查看
-
-                }
-                MessageConstant.VIDEO_READED -> {   //已查看
-
-                }
-                MessageConstant.VIDEO_LOADING -> {  //发送中
+            when (videoMessage.status) {
+                MessageConstant.MSG_SENDING -> {  //发送中
                     pbMyMessageChatRvMineVideoProgress.visibility = View.VISIBLE
                     ivMyMessageChatRvMineVideoFail.visibility = View.GONE
                 }
-                MessageConstant.VIDEO_LOADED_SUCCESS -> {   //发送成功
+                MessageConstant.MSG_SUCCESS -> {   //发送成功
                     pbMyMessageChatRvMineVideoProgress.visibility = View.GONE
                     ivMyMessageChatRvMineVideoFail.visibility = View.GONE
                 }
-                MessageConstant.VIDEO_LOADED_FAILURE -> {   //发送失败
+                MessageConstant.MSG_FAILURE -> {   //发送失败
                     pbMyMessageChatRvMineVideoProgress.visibility = View.GONE
                     ivMyMessageChatRvMineVideoFail.visibility = View.VISIBLE
                 }
@@ -879,7 +863,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
      */
     fun removeMsg(messageEntity: MessageEntity) {
         //根据消息Id删除数据库内容
-        DBInterface.instance().deleteMessageByMsgId(messageEntity.msgId)
+        mImService!!.dbInterface!!.deleteMessageByMsgId(messageEntity.msgId)
         msgObjectList.remove(messageEntity)
         notifyDataSetChanged()
     }
@@ -1205,25 +1189,34 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         //重新发送
         override fun onResendClick() {
             try {
-                if (mType == DBConstant.SHOW_AUDIO_TYPE || mType == DBConstant.SHOW_ORIGIN_TEXT_TYPE) {
-                    if (mMsgInfo.displayType == DBConstant.SHOW_AUDIO_TYPE) {
-                        if (mMsgInfo.sendContent.size < 4) {
+                when (mType) {
+                    DBConstant.SHOW_IMAGE_TYPE -> { //图片
+                        val imageMessage = mMsgInfo as ImageMessage
+                        if (!File(imageMessage.path).exists()) {
+                            ToastUtil.showShort(com.leimo.wanxin.R.string.image_path_unavaluable)
                             return
                         }
                     }
-                } else if (mType == DBConstant.SHOW_IMAGE_TYPE) {
-                    // 之前的状态是什么 上传没有成功继续上传
-                    // 上传成功，发送消息
-                    val imageMessage = mMsgInfo as ImageMessage
-                    if (TextUtils.isEmpty(imageMessage.path)) {
-                        Toast.makeText(context, context.getString(com.leimo.wanxin.R.string.image_path_unavaluable), Toast.LENGTH_LONG).show()
-                        return
+                    DBConstant.SHOW_AUDIO_TYPE -> { //语音
+                        val audioMessage = mMsgInfo as AudioMessage
+                        if (!File(audioMessage.audioPath).exists() || audioMessage.sendContent!!.size < 4) {
+                            ToastUtil.showShort("路径错误")
+                            return
+                        }
+                    }
+                    DBConstant.SHOW_VIDEO_TYPE -> { //视频
+                        val videoMessage = mMsgInfo as VideoMessage
+                        if (!File(videoMessage.path).exists()) {
+                            ToastUtil.showShort(com.leimo.wanxin.R.string.image_path_unavaluable)
+                            return
+                        }
                     }
                 }
-                mMsgInfo.status = MessageConstant.MSG_SENDING
-                msgObjectList.removeAt(mPosition)
-                addItem(mMsgInfo)
                 if (mImService != null) {
+                    mMsgInfo.status = MessageConstant.MSG_SENDING
+                    msgObjectList.removeAt(mPosition)
+                    addItem(mMsgInfo)
+                    notifyDataSetChanged()
                     mImService?.messageManager?.resendMessage(mMsgInfo)
                 }
             } catch (e: Exception) {

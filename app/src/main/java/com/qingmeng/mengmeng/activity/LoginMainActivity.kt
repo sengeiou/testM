@@ -59,7 +59,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     private var from = 0 //1商品详情 0其他
     private var mVersion = ""
     private var mQQThreeLogin = QQThreeLogin()
-    private val mImgList = ArrayList<Banner>()
+    private var mImgList = ArrayList<Banner>()
 
     //完信相关
     private var mImService: IMService? = null
@@ -98,9 +98,10 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
         mImgList.addAll(bannerData)
         if (!mImgList.isEmpty()) {
             mVersion = mImgList[0].version
+            setBanner()
         } else {
             banner_login_main.setData(R.drawable.login_icon_banner1, R.drawable.login_icon_banner2, R.drawable.login_icon_banner3)
-            (0..2).forEach { banner_login_main.getItemImageView(it).scaleType = ImageView.ScaleType.CENTER }
+            (0..2).forEach { banner_login_main.getItemImageView(it).scaleType = ImageView.ScaleType.FIT_CENTER }//CENTER_INSIDE
             banner_login_main.setPageTransformer(AlphaPageTransformer())
             banner_login_main.setAllowUserScrollable(false)
             banner_login_main.viewPager.setPageChangeDuration(10000)
@@ -240,14 +241,11 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         bean.data?.let {
-                            if (!it.banners.isEmpty()) {
-                                if (!mImgList.isEmpty()) {
-                                    BoxUtils.removeBanners(mImgList)
-                                    mImgList.clear()
-                                }
+                            if (it.banners != null) {
+                                BoxUtils.removeBanners(mImgList)
                                 it.setVersion()
                                 mVersion = it.version
-                                mImgList.addAll(it.banners)
+                                mImgList = it.banners as ArrayList<Banner>
                                 BoxUtils.saveBanners(mImgList)
                                 setBanner()
                             }
@@ -262,9 +260,8 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
         banner_login_main.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
         banner_login_main.setDelegate(this)//设置点击事件，重写点击回调方法
         banner_login_main.setData(mImgList, null)
-        banner_login_main.setAutoPlayAble(mImgList.size > 1)
-        banner_login_main.setData(mImgList, null)
         banner_login_main.setPageTransformer(AlphaPageTransformer())
+        banner_login_main.setAutoPlayAble(mImgList.size > 1)
         banner_login_main.setAllowUserScrollable(false)
         banner_login_main.viewPager.setPageChangeDuration(10000)
     }
@@ -281,7 +278,8 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     //banner加载图片
     override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: Banner?, position: Int) {
         model?.let {
-            Glide.with(this).load(it.imgUrl).apply(RequestOptions().centerCrop()).into(itemView)
+            Glide.with(this).load(it.imgUrl).apply(RequestOptions().dontAnimate().fitCenter()).into(itemView)
+            itemView.scaleType = ImageView.ScaleType.FIT_CENTER
         }
     }
 
@@ -297,7 +295,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
                         try {
                             OpenMallApp.open(this@LoginMainActivity, exteriorUrl)
                         } catch (e: OpenMallApp.NotInstalledException) {
-                            startActivity<WebViewActivity>(IConstants.detailUrl to url)
+                            startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
                         }
                     }
                 }

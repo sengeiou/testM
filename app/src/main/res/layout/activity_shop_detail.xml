@@ -137,6 +137,7 @@
                 android:orientation="vertical"
                 android:paddingStart="@dimen/padding_dp_10"
                 android:paddingEnd="@dimen/padding_dp_10"
+                android:splitMotionEvents="false"
                 >
 
                 <TextView

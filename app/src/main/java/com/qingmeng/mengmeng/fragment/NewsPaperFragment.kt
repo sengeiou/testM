@@ -33,9 +33,8 @@ class NewsPaperFragment : BaseFragment() {
     private var mCanHttpLoad = true                          //是否请求接口
     private var mHasNextPage = true                          //是否请求下一页
     private var mPageNum: Int = 1                            //接口请求页数
-    private var isLoadMore = false                              //加载更多
-    private var isRefeshing = false                             //下拉刷新
     private var mImgList = ArrayList<Banner>()
+    private var imgList = ArrayList<Banner>()                //用来删除本地数据用
     private var mNewsList = ArrayList<NewsPagerList>()       //接口请求数据
     override fun getLayoutId(): Int = R.layout.fragment_head_newspaper
 
@@ -51,6 +50,7 @@ class NewsPaperFragment : BaseFragment() {
         mFootView = FooterView(context!!)
         setFooterStatus(mFootView, 3)
         initAdapter()
+        getCacheData()
     }
 
     override fun initListener() {
@@ -115,7 +115,7 @@ class NewsPaperFragment : BaseFragment() {
                         try {
                             OpenMallApp.open(context!!, exteriorUrl)
                         } catch (e: OpenMallApp.NotInstalledException) {
-                            startActivity<WebViewActivity>(IConstants.detailUrl to url)
+                            startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
                         }
                     }
                 }
@@ -124,71 +124,6 @@ class NewsPaperFragment : BaseFragment() {
         mLoadMoreAdapter = LoadMoreWrapper(mAdapter)
         mLoadMoreAdapter.setLoadMoreView(mFootView)
         swipe_target.adapter = mLoadMoreAdapter
-    }
-
-    override fun initData() {
-        super.initData()
-        getCacheData()
-    }
-
-    private fun getCacheData() {
-        Observable.create<NewsPagerBean> {
-            val newsList = BoxUtils.getNewsPager()
-            val bannerList = BoxUtils.getBannersByType(8)
-            if (!mImgList.isEmpty()) {
-                mImgList.clear()
-            }
-            if (!mNewsList.isEmpty()) {
-                mNewsList.clear()
-            }
-            mImgList.addAll(bannerList)
-            mNewsList.addAll(newsList)
-            var mSeachCondition = NewsPagerBean(ArrayList())
-            if (!mNewsList.isEmpty()) {
-                mSeachCondition = NewsPagerBean.fromString(mNewsList[0].id)
-            }
-            if (!mImgList.isEmpty()) {
-                mSeachCondition = NewsPagerBean.fromString(mImgList[0].id)
-            }
-            it.onNext(mSeachCondition)
-        }.subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-
-                    if (!mNewsList.isEmpty()) {
-                        mAdapter.addItems(mNewsList)
-                        mLoadMoreAdapter.notifyDataSetChanged()
-                    }
-                    if (!mImgList.isEmpty()) {
-                        mLoadMoreAdapter.notifyDataSetChanged()
-                    }
-                    getNewData()
-                }, {
-                    getNewData()
-                }, {}, { addSubscription(it) })
-    }
-
-    private fun endLoadingMore() {
-        if (news_swipeLayout.isRefreshing) {
-            news_swipeLayout.endRefresh()
-        }
-        if (news_swipeLayout.isLoadingMore) {
-            news_swipeLayout.endLoadMore()
-        }
-    }
-
-    private fun getNewData() {
-        isLoadMore = true
-        isRefeshing = true
-        httpLoad(1)
-        httpBannerLoad(getVision(1))
-    }
-
-    private fun getVision(type: Int): String {
-        return when {
-            type == 1 && !mImgList.isEmpty() -> mImgList[0].version
-            else -> ""
-        }
     }
 
     //头报列表文章
@@ -203,47 +138,35 @@ class NewsPaperFragment : BaseFragment() {
                     mCanHttpLoad = true
                     it.apply {
                         if (code == 12000) {
+                            //如果页数是1 ，清空内容重新加载
+                            if (pageNum == 1) {
+                                BoxUtils.removeNewsPager()
+                                //清空已选择集合
+                                mNewsList.clear()
+                                mPageNum = 1
+                                mAdapter.updateItems(mNewsList)
+                            }
                             //请求后判断数据
                             if (data == null || data?.data!!.isEmpty()) {
                                 mHasNextPage = false
                                 if (pageNum == 1) {
-                                    //拿数据库数据
-                                    getCacheData()
                                     setFooterStatus(mFootView, 3)
                                 } else {
                                     setFooterStatus(mFootView, 2)
                                 }
                             } else {
                                 mHasNextPage = true
-                                data?.let {
-                                    if (data !== null) {
-                                        //如果页数是1 ，清空内容重新加载
-                                        if (pageNum == 1) {
-                                            //清空已选择集合
-                                            BoxUtils.removeNewsPager(mNewsList)
-                                            mNewsList.clear()
-                                            mPageNum = 1
-                                            if (!mNewsList.isEmpty()) {
-                                                mNewsList.clear()
-                                            }
-                                            mAdapter.updateItems(mNewsList)
-                                        }
-                                        if (!mNewsList.isEmpty()) {
-                                            BoxUtils.removeNewsPager(mNewsList)
-                                            mNewsList.clear()
-                                        }
-                                        mNewsList.addAll(it.data)
-                                        //数据库存入缓存
-                                        mAdapter.addItems(mNewsList)
-                                        BoxUtils.saveNewsPager(mNewsList)
-                                        news_swipeLayout.isLoadMoreEnabled = false
-                                        mPageNum++
-                                        setFooterStatus(mFootView, 1)
-                                        //如果不满一个屏幕 就隐藏
-                                        if (mNewsList.size < 8) {
-                                            setFooterStatus(mFootView, 3)
-                                        }
-                                    }
+                                mNewsList.addAll(data!!.data)
+                                mAdapter.addItems(data!!.data)
+                                //保存第一页的数据
+                                if (mPageNum == 1) {
+                                    BoxUtils.saveNewsPager(mNewsList)
+                                }
+                                mPageNum++
+                                setFooterStatus(mFootView, 1)
+                                //如果不满一个屏幕 就隐藏
+                                if (mNewsList.size < 8) {
+                                    setFooterStatus(mFootView, 3)
                                 }
                             }
                             //适配器更新数据
@@ -265,13 +188,12 @@ class NewsPaperFragment : BaseFragment() {
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         bean.data?.let {
-                            if (!it.banners.isEmpty()) {
-                                if (!mImgList.isEmpty()) {
-                                    //清除缓存
-                                    BoxUtils.removeBanners(mImgList)
-                                    mImgList.clear()
-                                }
+                            if (it.banners != null) {
+                                //清除缓存
+                                BoxUtils.removeBanners(imgList)
+                                mImgList.clear()
                                 it.setVersion()
+                                imgList = it.banners as ArrayList<Banner>
                                 mImgList.addAll(it.banners)
                                 //存入缓存
                                 BoxUtils.saveBanners(mImgList)
@@ -286,10 +208,53 @@ class NewsPaperFragment : BaseFragment() {
                 })
     }
 
-    override fun onHiddenChanged(hidden: Boolean) {
-        super.onHiddenChanged(hidden)
-        if (!hidden) {
-            getNewData()
+    private fun getCacheData() {
+        Observable.create<NewsPagerBean> {
+            val newsList = BoxUtils.getNewsPager()
+            BoxUtils.getBannersByType(8)?.let {
+                imgList.addAll(it)
+            }
+            mImgList.clear()
+            mNewsList.clear()
+            mImgList.addAll(imgList)
+            mNewsList.addAll(newsList)
+            var mSeachCondition = NewsPagerBean(ArrayList())
+            if (!mNewsList.isEmpty()) {
+                mSeachCondition = NewsPagerBean.fromString(mNewsList[0].id)
+            }
+            if (!mImgList.isEmpty()) {
+                mSeachCondition = NewsPagerBean.fromString(mImgList[0].id)
+            }
+            it.onNext(mSeachCondition)
+        }.subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    if (mNewsList.isNotEmpty()) {
+                        mAdapter.addItems(mNewsList)
+                    }
+                    mLoadMoreAdapter.notifyDataSetChanged()
+                    getNewData()
+                }, {
+                    getNewData()
+                }, {}, { addSubscription(it) })
+    }
+
+    private fun endLoadingMore() {
+        news_swipeLayout.isRefreshing = false
+        news_swipeLayout.isLoadingMore = false
+        news_swipeLayout.isRefreshEnabled = false
+        news_swipeLayout.isLoadMoreEnabled = false
+    }
+
+    private fun getNewData() {
+        httpLoad(1)
+        httpBannerLoad(getVision(1))
+    }
+
+    private fun getVision(type: Int): String {
+        return when {
+            type == 1 && !mImgList.isEmpty() -> mImgList[0].version
+            else -> ""
         }
     }
 }

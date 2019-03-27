@@ -69,7 +69,10 @@ open class TextMessage : MessageEntity, Serializable {
                 return null
             }
             val peerEntity = PeerEntity.getPeerEntity(sessionKey)
-            return TextMessage().apply { buildSendMessage(fromUser, peerEntity, content, DBConstant.SHOW_ORIGIN_TEXT_TYPE) }
+            return TextMessage().apply {
+                setStatus(MessageConstant.MSG_SENDING)
+                buildSendMessage(fromUser, peerEntity, content, DBConstant.SHOW_ORIGIN_TEXT_TYPE)
+            }
         }
     }
 }

@@ -226,10 +226,16 @@ class ShopDetailActivity : BaseActivity() {
                 mShareDialog.show()
             })
         }
-        mDetailJoinSupport.setOnClickListener { myDialog.showBrandDialog(mJoinSupport) }
-        mDetailBrandInformation.setOnClickListener { _ -> brandInformation?.let { myDialog.showBrandDialog(it) } }
-        mDetailJoinMoney.setOnClickListener { _ -> brandInitialFee?.let { myDialog.showBrandDialog(it) } }
-        mCustomerService.setOnClickListener { _ ->
+        mDetailJoinSupport.setOnClickListener {
+            myDialog.showBrandDialog(mJoinSupport)
+        }
+        mDetailBrandInformation.setOnClickListener {
+            brandInformation?.let { myDialog.showBrandDialog(it) }
+        }
+        mDetailJoinMoney.setOnClickListener {
+            brandInitialFee?.let { myDialog.showBrandDialog(it) }
+        }
+        mCustomerService.setOnClickListener {
             brandBean?.let {
                 FaceInitData.init(applicationContext)
                 FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")

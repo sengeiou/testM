@@ -64,23 +64,24 @@ open class NewsPaperAdapter(val context: Context, var mImgsList: ArrayList<Banne
             mList.clear()
         }
         mList.addAll(items)
-        notifyDataSetChanged()
+//        notifyDataSetChanged()
     }
 
     /** 在列表尾添加一串数据  */
     fun addItems(items: List<NewsPagerList>) {
         mList.addAll(items)
-        notifyDataSetChanged()
+//        notifyDataSetChanged()
     }
 
     inner class NewspaperBannerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val bgaBanner = itemView.findViewById<BGABanner>(R.id.news_pager_bgaBanner)
         fun bindViewHolder() {
-            bgaBanner.setAdapter(this@NewsPaperAdapter) //必须设置此适配器，否则方法不会调用接口来填充图片
-            bgaBanner.setDelegate(this@NewsPaperAdapter) //设置点击事件，重写点击回调方法
-            bgaBanner.setData(mImgsList, null)
-            bgaBanner.setAutoPlayAble(mImgsList.size > 1)
-            bgaBanner.setData(mImgsList, null)
+            if (mImgsList.isNotEmpty()) {
+                bgaBanner.setAdapter(this@NewsPaperAdapter) //必须设置此适配器，否则方法不会调用接口来填充图片
+                bgaBanner.setDelegate(this@NewsPaperAdapter) //设置点击事件，重写点击回调方法
+                bgaBanner.setData(mImgsList, null)
+                bgaBanner.setAutoPlayAble(mImgsList.size > 1)
+            }
         }
     }
 
@@ -96,7 +97,7 @@ open class NewsPaperAdapter(val context: Context, var mImgsList: ArrayList<Banne
             mDate.text = getDateToString(newsPagerList.formatTime.toLong())
             url = newsPagerList.articleUrl
             Glide.with(context).load(newsPagerList.banner).apply(RequestOptions()
-                    .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)
+                    .placeholder(R.drawable.default_img_banner)
                     .transform(GlideRoundTransformCenterCrop())
             )
                     .into(mImgView)

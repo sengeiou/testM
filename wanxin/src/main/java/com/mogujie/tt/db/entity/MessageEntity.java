@@ -11,6 +11,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.mogujie.tt.config.DBConstant;
 import com.mogujie.tt.config.MessageConstant;
+import com.mogujie.tt.imservice.entity.AudioMessage;
 import com.mogujie.tt.imservice.entity.BrandMessage;
 import com.mogujie.tt.imservice.entity.ContentEntity;
 import com.mogujie.tt.imservice.entity.ImageMessage;
@@ -32,7 +33,6 @@ import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
-import org.greenrobot.greendao.annotation.Generated;
 
 /**
  * 这个类不同与其他自动生成代码
@@ -591,6 +591,8 @@ public class MessageEntity implements Serializable {
         switch (type) {
             case DBConstant.SHOW_IMAGE_TYPE:
                 return ImageMessage.Companion.parseFromNet(this);
+            case DBConstant.SHOW_AUDIO_TYPE:
+                return AudioMessage.Companion.parseFromNet(this);
             case DBConstant.SHOW_VIDEO_TYPE:
                 return VideoMessage.Companion.parseFromNet(this);
             case DBConstant.SHOW_BRAND_TYPE:

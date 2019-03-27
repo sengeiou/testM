@@ -82,11 +82,11 @@ public class IMMessageManager extends IMManager {
         logger.d("chat#ackReceiveMsg 收到消息 -> msg:%s", msg);
         IMBaseDefine.SessionType sessionType = Java2ProtoBuf.getProtoSessionType(msg.getSessionType());
         IMMessage.IMMsgDataAck imMsgDataAck = IMMessage.IMMsgDataAck.newBuilder()
-            .setMsgId(msg.getMsgId())
-            .setSessionId(msg.getToId())
-            .setUserId(msg.getFromId())
-            .setSessionType(sessionType)
-            .build();
+                .setMsgId(msg.getMsgId())
+                .setSessionId(msg.getToId())
+                .setUserId(msg.getFromId())
+                .setSessionType(sessionType)
+                .build();
         int sid = IMBaseDefine.ServiceID.SID_MSG_VALUE;
         int cid = IMBaseDefine.MessageCmdID.CID_MSG_DATA_ACK_VALUE;
         imSocketManager.sendRequest(imMsgDataAck, sid, cid);
@@ -118,7 +118,7 @@ public class IMMessageManager extends IMManager {
 
 
     /**
-     * 图片、视频的处理放在这里，因为在发送图片的过程中，很可能messageActivity已经关闭掉
+     * 图片、视频、语音的处理放在这里，因为在发送图片的过程中，很可能messageActivity已经关闭掉
      */
     public void onEvent(MessageEvent event) {
         MessageEvent.Event type = event.getEvent();
@@ -126,7 +126,7 @@ public class IMMessageManager extends IMManager {
             case IMAGE_UPLOAD_FAILD:
                 logger.d("pic#onUploadImageFaild");
                 ImageMessage imageMessage = (ImageMessage) event.getMessageEntity();
-                imageMessage.setLoadStatus(MessageConstant.IMAGE_LOADED_FAILURE);
+                imageMessage.setSendStatus(MessageConstant.UP_OSS_FAILURE);
                 imageMessage.setStatus(MessageConstant.MSG_FAILURE);
                 dbInterface.insertOrUpdateMessage(imageMessage);
 
@@ -135,10 +135,37 @@ public class IMMessageManager extends IMManager {
                 event.setMessageEntity(imageMessage);
                 triggerEvent(event);
                 break;
-            case IMAGE_UPLOAD_SUCCESS:
+            case AUDIO_UPLOAD_FAILD:    //语音发送失败通知
+                logger.d("pic#onUploadImageFaild");
+                AudioMessage audioMessage = (AudioMessage) event.getMessageEntity();
+                audioMessage.setSendStatus(MessageConstant.UP_OSS_FAILURE);
+                audioMessage.setStatus(MessageConstant.MSG_FAILURE);
+                dbInterface.insertOrUpdateMessage(audioMessage);
+
+                /**通知Activity层 失败*/
+                event.setEvent(MessageEvent.Event.HANDLER_AUDIO_UPLOAD_FAILD);
+                event.setMessageEntity(audioMessage);
+                triggerEvent(event);
+                break;
+            case VIDEO_UPLOAD_FAILD:    //视频发送失败通知
+                logger.d("pic#onUploadImageFaild");
+                VideoMessage videoMessage = (VideoMessage) event.getMessageEntity();
+                videoMessage.setSendStatus(MessageConstant.UP_OSS_FAILURE);
+                videoMessage.setStatus(MessageConstant.MSG_FAILURE);
+                dbInterface.insertOrUpdateMessage(videoMessage);
+
+                /**通知Activity层 失败*/
+                event.setEvent(MessageEvent.Event.HANDLER_VIDEO_UPLOAD_FAILD);
+                event.setMessageEntity(videoMessage);
+                triggerEvent(event);
+                break;
+            case IMAGE_UPLOAD_SUCCESS:  //图片上传oss成功
                 onImageLoadSuccess(event);
                 break;
-            case VIDEO_UPLOAD_SUCCESS:
+            case AUDIO_UPLOAD_SUCCESS:  //语音上传oss成功
+                onAudioLoadSuccess(event);
+                break;
+            case VIDEO_UPLOAD_SUCCESS:  //视频上传oss成功
                 onVideoLoadSuccess(event);
                 break;
         }
@@ -178,13 +205,13 @@ public class IMMessageManager extends IMManager {
 
 
         IMMessage.IMMsgData msgData = IMMessage.IMMsgData.newBuilder()
-            .setFromUserId(msgEntity.getFromId())
-            .setToSessionId(msgEntity.getToId())
-            .setMsgId(0)
-            .setCreateTime(msgEntity.getCreated())
-            .setMsgType(msgType)
-            .setMsgData(ByteString.copyFrom(sendContent))  // 这个点要特别注意 todo ByteString.copyFrom
-            .build();
+                .setFromUserId(msgEntity.getFromId())
+                .setToSessionId(msgEntity.getToId())
+                .setMsgId(0)
+                .setCreateTime(msgEntity.getCreated())
+                .setMsgType(msgType)
+                .setMsgData(ByteString.copyFrom(sendContent))  // 这个点要特别注意 todo ByteString.copyFrom
+                .build();
         int sid = IMBaseDefine.ServiceID.SID_MSG_VALUE;
         int cid = IMBaseDefine.MessageCmdID.CID_MSG_DATA_VALUE;
 
@@ -360,24 +387,27 @@ public class IMMessageManager extends IMManager {
         for (ImageMessage msg : msgList) {
             needDbList.add(msg);
         }
-        DBInterface.instance().batchInsertOrUpdateMessage(needDbList);
+        dbInterface.batchInsertOrUpdateMessage(needDbList);
 
         for (ImageMessage msg : msgList) {
             logger.d("chat#pic#sendImage  msg:%s", msg);
             // image message would wrapped as a text message after uploading
-            int loadStatus = msg.getLoadStatus();
+            int loadStatus = msg.getSendStatus();
 
             switch (loadStatus) {
-                case MessageConstant.IMAGE_LOADED_FAILURE:
-                case MessageConstant.IMAGE_UNLOAD:
-                case MessageConstant.IMAGE_LOADING:
-                    msg.setLoadStatus(MessageConstant.IMAGE_LOADING);
+                case MessageConstant.UP_OSS_UNREAD:
+                case MessageConstant.UP_OSS_READED:
+                case MessageConstant.UP_OSS_SUCCESS:  //上传成功
+                    sendMessage(msg);
+                    break;
+                case MessageConstant.UP_OSS_FAILURE:  //上传失败
+                    msg.setStatus(MessageConstant.MSG_FAILURE);
+                    msg.setSendStatus(MessageConstant.UP_OSS_FAILURE);
+                case MessageConstant.UP_OSS_LOADING: //上传中
+                    msg.setSendStatus(MessageConstant.UP_OSS_LOADING);
                     Intent loadImageIntent = new Intent(ctx, LoadImageService.class);
                     loadImageIntent.putExtra(SysConstant.UPLOAD_INTENT_PARAMS, msg);
                     ctx.startService(loadImageIntent);
-                    break;
-                case MessageConstant.IMAGE_LOADED_SUCCESS:
-                    sendMessage(msg);
                     break;
                 default:
                     throw new RuntimeException("sendImages#status不可能出现的状态");
@@ -385,6 +415,42 @@ public class IMMessageManager extends IMManager {
         }
         /**将最后一条更新到Session上面*/
         sessionManager.updateSession(msgList.get(len - 1));
+    }
+
+    /**
+     * 发送语音消息
+     *
+     * @param msg
+     */
+    public void sendAudio(AudioMessage msg) {
+        if (null == msg) {
+            return;
+        }
+        dbInterface.insertOrUpdateMessage(msg);
+
+        logger.d("chat#audio#sendAudio  msg:%s", msg.toString());
+        // image message would wrapped as a text message after uploading
+        int loadStatus = msg.getSendStatus();
+        switch (loadStatus) {
+            case MessageConstant.UP_OSS_UNREAD:
+            case MessageConstant.UP_OSS_READED:
+            case MessageConstant.UP_OSS_SUCCESS:  //上传成功
+                sendMessage(msg);
+                break;
+            case MessageConstant.UP_OSS_FAILURE:  //上传失败
+                msg.setStatus(MessageConstant.MSG_FAILURE);
+                msg.setSendStatus(MessageConstant.UP_OSS_FAILURE);
+            case MessageConstant.UP_OSS_LOADING: //上传中
+                msg.setSendStatus(MessageConstant.UP_OSS_LOADING);
+                Intent loadImageIntent = new Intent(ctx, LoadImageService.class);
+                loadImageIntent.putExtra(SysConstant.UPLOAD_INTENT_PARAMS, msg);
+                ctx.startService(loadImageIntent);
+                break;
+            default:
+                throw new RuntimeException("sendAudio#status不可能出现的状态");
+        }
+        /**将最后一条更新到Session上面*/
+        sessionManager.updateSession(msg);
     }
 
     /**
@@ -403,24 +469,27 @@ public class IMMessageManager extends IMManager {
         for (VideoMessage msg : msgList) {
             needDbList.add(msg);
         }
-        DBInterface.instance().batchInsertOrUpdateMessage(needDbList);
+        dbInterface.batchInsertOrUpdateMessage(needDbList);
 
         for (VideoMessage msg : msgList) {
             logger.d("chat#pic#sendVideos  msg:%s", msg);
             // image message would wrapped as a text message after uploading
-            int loadStatus = msg.getReadStatus();
+            int loadStatus = msg.getSendStatus();
 
             switch (loadStatus) {
-                case MessageConstant.VIDEO_LOADED_FAILURE:
-                case MessageConstant.VIDEO_UNREAD:
-                case MessageConstant.VIDEO_LOADING:
-                    msg.setReadStatus(MessageConstant.VIDEO_LOADING);
+                case MessageConstant.UP_OSS_UNREAD:
+                case MessageConstant.UP_OSS_READED:
+                case MessageConstant.UP_OSS_SUCCESS:  //上传成功
+                    sendMessage(msg);
+                    break;
+                case MessageConstant.UP_OSS_FAILURE:  //上传失败
+                    msg.setStatus(MessageConstant.MSG_FAILURE);
+                    msg.setSendStatus(MessageConstant.UP_OSS_FAILURE);
+                case MessageConstant.UP_OSS_LOADING: //上传中
+                    msg.setSendStatus(MessageConstant.UP_OSS_LOADING);
                     Intent loadImageIntent = new Intent(ctx, LoadImageService.class);
                     loadImageIntent.putExtra(SysConstant.UPLOAD_INTENT_PARAMS, msg);
                     ctx.startService(loadImageIntent);
-                    break;
-                case MessageConstant.VIDEO_LOADED_SUCCESS:
-                    sendMessage(msg);
                     break;
                 default:
                     throw new RuntimeException("sendVideos#status不可能出现的状态");
@@ -467,7 +536,12 @@ public class IMMessageManager extends IMManager {
                 sendSingleImage((ImageMessage) msgInfo);
                 break;
             case DBConstant.SHOW_AUDIO_TYPE:
-                sendVoice((AudioMessage) msgInfo);
+                sendAudio((AudioMessage) msgInfo);
+                break;
+            case DBConstant.SHOW_VIDEO_TYPE:
+                ArrayList sendList = new ArrayList<VideoMessage>();
+                sendList.add(msgInfo);
+                sendVideos(sendList);
                 break;
             default:
                 throw new IllegalArgumentException("#resendMessage#enum type is wrong!!,cause by displayType" + msgType);
@@ -643,11 +717,11 @@ public class IMMessageManager extends IMManager {
         int userId = IMLoginManager.instance().getLoginId();
         IMBaseDefine.SessionType sType = Java2ProtoBuf.getProtoSessionType(sessionType);
         IMMessage.IMGetMsgByIdReq imGetMsgByIdReq = IMMessage.IMGetMsgByIdReq.newBuilder()
-            .setSessionId(peerId)
-            .setUserId(userId)
-            .setSessionType(sType)
-            .addAllMsgIdList(msgIds)
-            .build();
+                .setSessionId(peerId)
+                .setUserId(userId)
+                .setSessionType(sType)
+                .addAllMsgIdList(msgIds)
+                .build();
         int sid = IMBaseDefine.ServiceID.SID_MSG_VALUE;
         int cid = IMBaseDefine.MessageCmdID.CID_MSG_GET_BY_MSG_ID_REQ_VALUE;
         imSocketManager.sendRequest(imGetMsgByIdReq, sid, cid);
@@ -705,12 +779,12 @@ public class IMMessageManager extends IMManager {
         int loginId = IMLoginManager.instance().getLoginId();
 
         IMMessage.IMGetMsgListReq req = IMMessage.IMGetMsgListReq.newBuilder()
-            .setUserId(loginId)
-            .setSessionType(Java2ProtoBuf.getProtoSessionType(peerType))
-            .setSessionId(peerId)
-            .setMsgIdBegin(lastMsgId)
-            .setMsgCnt(cnt)
-            .build();
+                .setUserId(loginId)
+                .setSessionType(Java2ProtoBuf.getProtoSessionType(peerType))
+                .setSessionId(peerId)
+                .setMsgIdBegin(lastMsgId)
+                .setMsgCnt(cnt)
+                .build();
 
         int sid = IMBaseDefine.ServiceID.SID_MSG_VALUE;
         int cid = IMBaseDefine.MessageCmdID.CID_MSG_LIST_REQUEST_VALUE;
@@ -773,7 +847,6 @@ public class IMMessageManager extends IMManager {
      * 下载图片的整体迁移出来
      */
     private void onImageLoadSuccess(MessageEvent imageEvent) {
-
         ImageMessage imageMessage = (ImageMessage) imageEvent.getMessageEntity();
         logger.d("pic#onImageUploadFinish");
         String imageUrl = imageMessage.getUrl();
@@ -787,8 +860,7 @@ public class IMMessageManager extends IMManager {
         }
 
         imageMessage.setUrl(realImageURL);
-        imageMessage.setStatus(MessageConstant.MSG_SUCCESS);
-        imageMessage.setLoadStatus(MessageConstant.IMAGE_LOADED_SUCCESS);
+        imageMessage.setSendStatus(MessageConstant.UP_OSS_SUCCESS);
         dbInterface.insertOrUpdateMessage(imageMessage);
 
         /**通知Activity层 成功 ， 事件通知*/
@@ -800,9 +872,34 @@ public class IMMessageManager extends IMManager {
         sendMessage(imageMessage);
     }
 
+    private void onAudioLoadSuccess(MessageEvent audioEvent) {
+        AudioMessage audioMessage = (AudioMessage) audioEvent.getMessageEntity();
+        logger.d("pic#onAudioUploadFinish");
+        String audioUrl = audioMessage.getAudioUrl();
+        logger.d("pic#audioUrl:%s", audioUrl);
+        String realAudioURL = "";
+        try {
+            realAudioURL = URLDecoder.decode(audioUrl, "utf-8");
+            logger.d("pic#realImageUrl:%s", realAudioURL);
+        } catch (UnsupportedEncodingException e) {
+            logger.e(e.toString());
+        }
+
+        audioMessage.setAudioUrl(realAudioURL);
+        audioMessage.setSendStatus(MessageConstant.UP_OSS_SUCCESS);
+        dbInterface.insertOrUpdateMessage(audioMessage);
+
+        /**通知Activity层 成功 ， 事件通知*/
+        audioEvent.setEvent(MessageEvent.Event.HANDLER_AUDIO_UPLOAD_SUCCESS);
+        audioEvent.setMessageEntity(audioMessage);
+        triggerEvent(audioMessage);
+
+        audioMessage.setContent(audioMessage.getContent());
+        sendMessage(audioMessage);
+    }
+
 
     private void onVideoLoadSuccess(MessageEvent videoEvent) {
-
         VideoMessage videoMessage = (VideoMessage) videoEvent.getMessageEntity();
         logger.d("pic#onVideoUploadFinish");
         String videoUrl = videoMessage.getUrl();
@@ -816,8 +913,7 @@ public class IMMessageManager extends IMManager {
         }
 
         videoMessage.setUrl(realImageURL);
-        videoMessage.setStatus(MessageConstant.MSG_SUCCESS);
-        videoMessage.setReadStatus(MessageConstant.VIDEO_LOADED_SUCCESS);
+        videoMessage.setSendStatus(MessageConstant.UP_OSS_SUCCESS);
         videoMessage.setDisplayType(DBConstant.SHOW_VIDEO_TYPE);
         dbInterface.insertOrUpdateMessage(videoMessage);
 

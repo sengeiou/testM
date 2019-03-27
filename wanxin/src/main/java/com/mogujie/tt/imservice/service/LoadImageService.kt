@@ -14,6 +14,7 @@ import com.mogujie.tt.api.request.ApiUrl
 import com.mogujie.tt.config.NetConstant
 import com.mogujie.tt.config.PathConstant
 import com.mogujie.tt.config.SysConstant
+import com.mogujie.tt.imservice.entity.AudioMessage
 import com.mogujie.tt.imservice.entity.ImageMessage
 import com.mogujie.tt.imservice.entity.VideoMessage
 import com.mogujie.tt.imservice.event.MessageEvent
@@ -23,11 +24,8 @@ import com.youke.yingba.base.api.upload.FileUpLoadObserver
 import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.ObservableOnSubscribe
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import okhttp3.Call
-import org.json.JSONException
 import org.json.JSONObject
 import java.io.BufferedOutputStream
 import java.io.File
@@ -60,6 +58,9 @@ class LoadImageService : IntentService {
         if (obj is ImageMessage) {
             uploadImage(obj)
         }
+        if(obj is AudioMessage){
+            upLoadAudio(obj)
+        }
         if (obj is VideoMessage) {
             uploadVedio(obj)
         }
@@ -89,7 +90,7 @@ class LoadImageService : IntentService {
     }
 
     private fun upImage(messageInfo: ImageMessage) {
-        RequestFileManager.uploadFileByKey(ApiUrl.UPLOAD_IMAGE, "fileImg", File(messageInfo.path), object : FileUpLoadObserver<String>() {
+        RequestFileManager.uploadFileByKey(ApiUrl.UPLOAD_FILE, "fileVoice", File(messageInfo.path), object : FileUpLoadObserver<String>() {
             override fun onUpLoadSuccess(t: String) {
                 logger.d("上传图片完成：${t}")
                 val jsonObj = JSONObject(t)
@@ -105,6 +106,56 @@ class LoadImageService : IntentService {
 
             override fun onUpLoadFail(throwable: Throwable) {
                 Log.d(TAG, "onUpLoadFail: ", throwable)
+                EventBus.getDefault().post(MessageEvent(MessageEvent.Event.IMAGE_UPLOAD_FAILD, messageInfo))
+            }
+
+            override fun onProgress(up: Long, total: Long) {
+                Log.d(TAG, "onProgress: up=$up")
+            }
+
+            override fun onSubscribe(d: Disposable) {}
+        })
+    }
+
+//    @SuppressLint("CheckResult")
+//    private fun uploadAudio(messageInfo: AudioMessage) {
+//        Log.d(TAG, "uploadImage: " + messageInfo.audioPath)
+//        if (!File(messageInfo.audioPath).exists()) {
+//            EventBus.getDefault().post(MessageEvent(MessageEvent.Event.AUDIO_UPLOAD_FAILD, messageInfo))
+//        } else {
+//            Observable.create(ObservableOnSubscribe<String> { emitter ->
+//                val pathCompres = CompressImage.Builder().path(messageInfo.audioPath).widthMax(1280).heightMax(1280).lengthMax(300).build().compress()
+//                emitter.onNext(pathCompres)
+//                emitter.onComplete()
+//            })
+//                    .subscribeOn(Schedulers.io())
+//                    .observeOn(Schedulers.io())
+//                    .subscribe {
+//                        messageInfo.audioPath = it
+//                        upAudio(messageInfo)
+//                    }
+//        }
+//    }
+
+    //上传语音流
+    private fun upLoadAudio(messageInfo: AudioMessage) {
+        RequestFileManager.uploadFileByKey(ApiUrl.UPLOAD_FILE, "fileVoice", File(messageInfo.audioPath), object : FileUpLoadObserver<String>() {
+            override fun onUpLoadSuccess(t: String) {
+                logger.d("上传语音完成：${t}")
+                val jsonObj = JSONObject(t)
+                val code = jsonObj.optInt("code")
+                val audioUrl = jsonObj.optString("data")
+                if (code == NetConstant.REQUEST_SUCCESS && !TextUtils.isEmpty(audioUrl)) {
+                    messageInfo.audioUrl = audioUrl
+                    EventBus.getDefault().post(MessageEvent(MessageEvent.Event.AUDIO_UPLOAD_SUCCESS, messageInfo))
+                } else {
+                    EventBus.getDefault().post(MessageEvent(MessageEvent.Event.AUDIO_UPLOAD_FAILD, messageInfo))
+                }
+            }
+
+            override fun onUpLoadFail(throwable: Throwable) {
+                Log.d(TAG, "onUpLoadFail: ", throwable)
+                EventBus.getDefault().post(MessageEvent(MessageEvent.Event.AUDIO_UPLOAD_FAILD, messageInfo))
             }
 
             override fun onProgress(up: Long, total: Long) {
@@ -117,7 +168,7 @@ class LoadImageService : IntentService {
 
     private fun uploadVedio(messageInfo: VideoMessage) {
         Log.d(TAG, "uploadVedio: " + messageInfo.toString())
-        RequestFileManager.uploadFileByKey(ApiUrl.UPLOAD_FILE, "file", File(messageInfo.path), object : FileUpLoadObserver<String>() {
+        RequestFileManager.uploadFileByKey(ApiUrl.UPLOAD_FILE, "fileVoice", File(messageInfo.path), object : FileUpLoadObserver<String>() {
             override fun onUpLoadSuccess(t: String) {
                 logger.i("upload video return,result=$t")
                 val jsonObj = JSONObject(t)
@@ -135,6 +186,7 @@ class LoadImageService : IntentService {
 
             override fun onUpLoadFail(throwable: Throwable) {
                 Log.d(TAG, "onUpLoadFail: ", throwable)
+                EventBus.getDefault().post(MessageEvent(MessageEvent.Event.VIDEO_UPLOAD_FAILD, messageInfo))
             }
 
             override fun onProgress(up: Long, total: Long) {
@@ -152,7 +204,7 @@ class LoadImageService : IntentService {
         val thumbnailPath = PathConstant.getVideoThumbnailDir(applicationContext) + "/" + fileName + ".jpg"
         saveBitmapFile(bitmap, thumbnailPath)
 
-        RequestFileManager.uploadFileByKey(ApiUrl.UPLOAD_IMAGE, "fileImg", File(messageInfo.path), object : FileUpLoadObserver<String>() {
+        RequestFileManager.uploadFileByKey(ApiUrl.UPLOAD_FILE, "fileVoice", File(messageInfo.path), object : FileUpLoadObserver<String>() {
             override fun onUpLoadSuccess(t: String) {
                val root = JSONObject(t)
                 val code = root.optInt("code")
@@ -164,7 +216,7 @@ class LoadImageService : IntentService {
             }
 
             override fun onUpLoadFail(throwable: Throwable) {
-
+                EventBus.getDefault().post(MessageEvent(MessageEvent.Event.VIDEO_UPLOAD_SUCCESS, messageInfo))
             }
 
             override fun onProgress(up: Long, total: Long) {
