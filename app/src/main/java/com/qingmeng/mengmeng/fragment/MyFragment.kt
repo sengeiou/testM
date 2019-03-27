@@ -137,7 +137,7 @@ class MyFragment : BaseFragment() {
                             llMyNoLogin.visibility = View.VISIBLE
                             tvMyLogin.visibility = View.GONE
                             //数据库删除
-                            BoxUtils.removeMyInformation(mMyInformation)
+                            BoxUtils.removeMyInformation()
                             //信息赋值
                             mMyInformation = data as MyInformation
                             //数据库保存
@@ -190,6 +190,7 @@ class MyFragment : BaseFragment() {
                     httpLoad()
                 }, {
                     srlMy.isRefreshing = false
+                    tvMyLogin.visibility = View.VISIBLE
                 }, {}, { addSubscription(it) })
     }
 
@@ -245,7 +246,7 @@ class MyFragment : BaseFragment() {
         tvMyMyFootprintNum.text = getString(R.string.my_defaultNum)
         mLoginSuccess = false
         //数据库删除
-        BoxUtils.removeMyInformation(mMyInformation)
+        BoxUtils.removeMyInformation()
     }
 
     override fun onHiddenChanged(hidden: Boolean) {

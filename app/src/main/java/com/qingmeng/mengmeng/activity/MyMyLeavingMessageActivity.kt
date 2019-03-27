@@ -144,7 +144,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                     setText(R.id.tvMyMyLeavingMessageRvInvestmentAmount, t.capitalName)
                 }
                 getView<TextView>(R.id.tvMyMyLeavingMessageRvStoreNumStatic).let {
-                    if (TextUtils.isEmpty(t.storesNum) || t.storesNum == "null") {
+                    if (TextUtils.isEmpty(t.storesNum) || t.storesNum == "null" || t.storesNum == "0") {
                         it.visibility = View.GONE
                         setText(R.id.tvMyMyLeavingMessageRvStoreNum, "")
                     } else {
@@ -196,7 +196,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                                 mHasNextPage = false
                                 if (pageNum == 1) {
                                     //空白页提示
-                                    tvMyMyLeavingMessageTips.text = getString(R.string.my_myLeavingMessage_null_tips)
+                                    setTipsText(getString(R.string.my_myLeavingMessage_null_tips))
                                     llMyMyLeavingMessageTips.visibility = View.VISIBLE
                                     srlMyMyLeavingMessage.isRefreshEnabled = true
                                     setFooterStatus(mFootView, 3)
@@ -206,7 +206,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                             } else {
                                 mHasNextPage = true
                                 if (pageNum == 1) {
-                                    tvMyMyLeavingMessageTips.text = getString(R.string.my_myLeavingMessage_null_tips)
+                                    setTipsText(getString(R.string.my_myLeavingMessage_null_tips))
                                     llMyMyLeavingMessageTips.visibility = View.GONE
                                 }
                                 //把内容添加到mList里去
@@ -227,7 +227,7 @@ class MyMyLeavingMessageActivity : BaseActivity() {
                     myDialog.dismissLoadingDialog()
                     setRefreshAsFalse()
                     mCanHttpLoad = true
-                    tvMyMyLeavingMessageTips.text = getString(R.string.no_net)
+                    setTipsText(getString(R.string.no_net))
                     llMyMyLeavingMessageTips.visibility = View.VISIBLE
                     srlMyMyLeavingMessage.isRefreshEnabled = true
                 }, {}, { addSubscription(it) })
@@ -287,6 +287,11 @@ class MyMyLeavingMessageActivity : BaseActivity() {
         srlMyMyLeavingMessage.isLoadingMore = false
         srlMyMyLeavingMessage.isRefreshEnabled = false
         srlMyMyLeavingMessage.isLoadMoreEnabled = false
+    }
+
+    //设置提示内容
+    private fun setTipsText(tips: String) {
+        llMyMyLeavingMessageTips.findViewById<TextView>(R.id.tvViewTips).text = tips
     }
 
     override fun onBackPressed() {

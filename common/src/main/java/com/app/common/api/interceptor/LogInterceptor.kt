@@ -33,7 +33,7 @@ class LogInterceptor : BaseInterceptor(requestCallback = {
                 ", isHttps=" + it.isHttps +
                 ", Params=[${URLDecoder.decode(sb.toString(), "utf-8")}]" +
                 '}'
-        Log.d("LogInterceptor", "intercept#request:\n$info")
+        Log.i("LogInterceptor", "intercept#request:\n$info")
     } catch (e: Exception) {
     }
 })

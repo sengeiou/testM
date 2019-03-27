@@ -149,6 +149,9 @@ dependencies {
     implementation files('libs/BaiduLBS_Android.jar')
     implementation project(':facelibs')
 
+    //缓存网络文件
+    implementation 'com.danikula:videocache:2.7.0'
+
     //微博
     implementation 'com.sina.weibo.sdk:core:4.3.6:openDefaultRelease@aar'
 }

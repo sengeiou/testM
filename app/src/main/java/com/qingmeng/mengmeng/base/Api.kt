@@ -5,12 +5,21 @@ import com.qingmeng.mengmeng.utils.loginshare.bean.SinaUserBean
 import com.qingmeng.mengmeng.utils.loginshare.bean.WxInfoBean
 import com.qingmeng.mengmeng.utils.loginshare.bean.WxTokenBean
 import io.reactivex.Observable
+import io.reactivex.annotations.NonNull
+import okhttp3.ResponseBody
 import retrofit2.http.*
 
 /**
  * Created by zq on 2018/8/13
  */
 interface Api {
+    /**
+     * 下载文件
+     */
+    @Streaming
+    @GET
+    fun downLoadFile(@NonNull @Url url: String): Observable<ResponseBody>
+
     /**
      * 验证手机用户名是否注册
      * @param type 1 用户名 2 手机
@@ -150,7 +159,9 @@ interface Api {
             @Field("wx") wx: String?,//微信
             @Field("qq") qq: String?,//qq
             @Field("email") email: String?,//邮箱
-            @Field("districtId") districtId: Int,//城市id*
+            @Field("provinceId") provinceId: Int,//省id*
+            @Field("cityId") cityId: Int,//市id*
+            @Field("districtId") districtId: Int,//区id*
             @Field("capitalId") capitalId: Int,//创业资本*
             @Field("industryOfInterest") industryOfInterest: String,//感兴趣行业*
             @Field("wxUid") wxUid: Int,//完信uId*
@@ -256,7 +267,7 @@ interface Api {
     fun getMyMessage(): Observable<BaseBean<MyMessageBean>>
 
     //获取头报文章列表
-    @GET("/api/newspaper/article_list")
+    @GET("api/newspaper/article_list")
     fun getNewsHeadList(@Query("pageNum") pageNum: Int): Observable<BaseBean<NewsPagerListBean>>
 
     //红铺列表
@@ -298,4 +309,9 @@ interface Api {
     //获取新浪
     @GET("https://api.weibo.com/2/users/show.json")
     fun getSinaInfo(@Query("access_token") access_token: String, @Query("uid") uid: String): Observable<SinaUserBean>
+
+    //撤回删除消息 type 1撤回 2删除
+    @POST("/api/msg_op/msg")
+    @FormUrlEncoded
+    fun msgRevokeDelete(@Field("wxFromId") wxUserName: Int, @Field("wxToId") wxPassWord: Int, @Field("wxMsgId") wxProjectId: Int, @Field("type") type: Int): Observable<BaseBean<Any>>
 }

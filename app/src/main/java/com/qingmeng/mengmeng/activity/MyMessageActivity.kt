@@ -97,6 +97,7 @@ class MyMessageActivity : BaseActivity() {
 
         instance = this
         setHeadName(R.string.message)
+        llMyMessageTips.findViewById<TextView>(R.id.tvViewTips).text = getString(R.string.my_message_null_tips)
         mIsMyFragmentEnter = intent.getBooleanExtra(MY_TO_MESSAGE, false)
         if (mIsMyFragmentEnter) {
             MYFRAGMENT_TO_MESSAGE = true
@@ -160,10 +161,14 @@ class MyMessageActivity : BaseActivity() {
 //                    })
                     FaceInitData.init(applicationContext)
                     FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
-                    startActivityForResult<MyMessageChatActivity>(TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to t.sessionKey, "title" to t.name, "avatar" to mAvatar)
-                    MESSAGE_TO_CHAT = true
-                    //如果聊天页面存在了 就销毁它
-                    finishAty(MyMessageChatActivity::class.java)
+                    if (t.sessionKey != null && t.name != null) {
+                        startActivityForResult<MyMessageChatActivity>(TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to t.sessionKey, "title" to t.name, "avatar" to mAvatar)
+                        MESSAGE_TO_CHAT = true
+                        //如果聊天页面存在了 就销毁它
+                        finishAty(MyMessageChatActivity::class.java)
+                    } else {
+                        httpLoad()
+                    }
                 }
                 //删除
                 getView<TextView>(R.id.tvMyMessageRvDelete).setOnClickListener {
@@ -215,14 +220,21 @@ class MyMessageActivity : BaseActivity() {
             recentInfo.name = myMessage.name
             recentInfo.peerId = myMessage.wxUid
             recentInfo.sessionKey = "1_${myMessage.wxUid}"
-            if (myMessage.name == getString(R.string.systemNotification) || myMessage.wxUid == getString(R.string.systemNotification_id).toInt()) {
-                mRecentSessionList.add(0, recentInfo)
+            if (myMessage.name == getString(R.string.systemNotification) && myMessage.wxUid == getString(R.string.systemNotification_id).toInt()) {
+                if (mRecentSessionList.isEmpty()) {
+                    mRecentSessionList.add(0, recentInfo)
+                } else {
+                    //防止重复添加
+                    if (mRecentSessionList[0].name != getString(R.string.systemNotification)) {
+                        mRecentSessionList.add(0, recentInfo)
+                    }
+                }
             } else {
                 if (myMessage.name.contains("盟盟客服")) {
                     mAvatar = myMessage.avatar
                 }
                 var isRepeat = false
-                mRecentSessionList.forEach {
+                mRecentSessionList?.forEach {
                     //过滤重复会话
                     if (myMessage.wxUid == it.peerId) {
                         it.name = myMessage.name

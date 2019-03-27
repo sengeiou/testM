@@ -2,10 +2,14 @@ package com.qingmeng.mengmeng.activity
 
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
+import android.webkit.WebViewClient
 import com.bumptech.glide.Glide
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
@@ -89,7 +93,6 @@ class HeadDetailsActivity : BaseActivity() {
             })
             mBottomDialog.show()
         }
-
     }
 
     @SuppressLint("CheckResult")
@@ -131,7 +134,9 @@ class HeadDetailsActivity : BaseActivity() {
                         //  mBottomDialog = ShareDialog(this, wxList)
                         mBottomDialog.show()
                     }
-                })
+                },{
+
+                }, {}, { addSubscription(it) })
     }
 
     private fun initWebView() {
@@ -148,6 +153,7 @@ class HeadDetailsActivity : BaseActivity() {
             builtInZoomControls = false
             layoutAlgorithm = WebSettings.LayoutAlgorithm.SINGLE_COLUMN
             javaScriptCanOpenWindowsAutomatically = true
+            domStorageEnabled = true
         }
         NewsWebView.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView, progress: Int) {
@@ -156,10 +162,38 @@ class HeadDetailsActivity : BaseActivity() {
                 }
             }
         }
+        NewsWebView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
+                if (url == null) return false
+
+                try {
+                    if (url.startsWith("openApp.jdMobile://")//京东
+                            || url.startsWith("tmall://")//天猫
+                            || url.startsWith("taobao://")//淘宝
+                            || url.startsWith("tbopen://")//淘宝
+                    ) {
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        startActivity(intent)
+                        return true
+                    }//其他自定义的scheme
+                } catch (e: Exception) { //防止crash (如果手机上没有安装处理某个scheme开头的url的APP, 会导致crash)
+                    return true//没有安装该app时，返回true，表示拦截自定义链接，但不跳转，避免弹出上面的错误页面
+                }
+
+                //处理http和https开头的url
+                view.loadUrl(url)
+                return true
+            }
+
+            override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
+                super.onReceivedError(view, errorCode, description, failingUrl)
+                if (failingUrl == url) {
+                    llHeadDetailsTips.visibility = View.VISIBLE
+                }
+            }
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mWebSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
     }
-
-
 }

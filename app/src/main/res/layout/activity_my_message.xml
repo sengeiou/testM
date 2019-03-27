@@ -24,29 +24,11 @@
             android:orientation="vertical"
             >
 
-            <LinearLayout
+            <include
                 android:id="@+id/llMyMessageTips"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:orientation="vertical"
+                layout="@layout/view_tips"
                 android:visibility="gone"
-                >
-
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@mipmap/search_nothing"
-                    />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/padding_dp_21"
-                    android:layout_marginTop="@dimen/padding_dp_10"
-                    android:text="@string/my_message_null_tips"
-                    />
-            </LinearLayout>
+                />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rvMyMessage"

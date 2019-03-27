@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.view.dialog
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.graphics.Point
 import android.graphics.drawable.ColorDrawable
@@ -31,15 +32,18 @@ import kotlinx.android.synthetic.main.activity_my_settings_user_citypop.view.*
 
  *  Date: 2019/01/05
  */
+@SuppressLint("CheckResult")
 class PopCitySelect : PopupWindow {
     private var mActivity: Activity
     private lateinit var mLayoutManager: LinearLayoutManager
     private lateinit var mAdapter: CommonAdapter<AllCity>
     private var mAllCityBean = AllCityBean()                         //接口数据
     private var mList = ArrayList<AllCity>()                         //目前列表用到的数据
-    private var mOneCityList = ArrayList<AllCity>()                  //一级城市（省）
+    //    private var mOneCityList = ArrayList<AllCity>()                  //一级城市（省）
     private var mTwoCityList = ArrayList<AllCity>()                  //二级城市（市）
     private var mThreeCityList = ArrayList<AllCity>()                //三级城市（区/县）
+    private lateinit var mSelectOneCity: AllCity                      //当前选择的省
+    private lateinit var mSelectTwoCity: AllCity                      //当前选择的市
     private var mMenuView: View
     private var mPointPosition = Point()                             //手指按下坐标
     private var record = arrayOf(0, 0)                               //存放手指按下坐标和时间戳
@@ -193,16 +197,18 @@ class PopCitySelect : PopupWindow {
                 mMenuView.rlMySettingsUserPopTopBottom.visibility = View.VISIBLE
                 mMenuView.tvMySettingsUserPopOneTips.text = mList[position].name
                 mMenuView.tvMySettingsUserPopTips.text = "选择城市"
-                //遍历二级城市列表 把所有父id为当前城市id的市拿出来加到mList里去
+                //记录选择的第一个城市
+                mSelectOneCity = mList[position]
                 mList.clear()
+                //遍历二级城市列表 把所有父id为当前城市id的市拿出来加到mList里去
                 mTwoCityList.forEach {
-                    if (it.fatherId.toString() == mOneCityList[position].id) {
+                    if (it.fatherId.toString() == mSelectOneCity.id) {
                         mList.add(it)
                     }
                 }
                 //如果mList是空的 那么就直接关闭pop 调回调方法
                 if (mList.isEmpty()) {
-                    mCitySelectCallBack?.onCitySelectCallBack(mOneCityList[position])
+                    mCitySelectCallBack?.onCitySelectCallBack(mSelectOneCity)
                     dismiss()
                 } else {
                     //滚到第一个
@@ -215,16 +221,16 @@ class PopCitySelect : PopupWindow {
                 mMenuView.tvMySettingsUserPopTwoTips.text = mList[position].name
                 mMenuView.tvMySettingsUserPopThreeTips.text = "请选择县"
                 mMenuView.tvMySettingsUserPopTips.text = "选择区/县"
-                //先把当前城市保存下来 以便后面比较
-                val city = mList[position]
+                //记录选择的第二个城市
+                mSelectTwoCity = mList[position]
                 mList.clear()
                 mThreeCityList.forEach {
-                    if (it.fatherId.toString() == city.id) {
+                    if (it.fatherId.toString() == mSelectTwoCity.id) {
                         mList.add(it)
                     }
                 }
                 if (mList.isEmpty()) {
-                    mCitySelectCallBack?.onCitySelectCallBack(city)
+                    mCitySelectCallBack?.onCitySelectCallBack(mSelectOneCity, mSelectTwoCity)
                     dismiss()
                 } else {
                     //滚到第一个
@@ -233,7 +239,7 @@ class PopCitySelect : PopupWindow {
                 }
             } else {  //选择第三个县
                 //调用回调
-                mCitySelectCallBack?.onCitySelectCallBack(mList[position])
+                mCitySelectCallBack?.onCitySelectCallBack(mSelectOneCity, mSelectTwoCity, mList[position])
                 dismiss()
             }
         })
@@ -255,7 +261,7 @@ class PopCitySelect : PopupWindow {
                     it.apply {
                         if (code == 12000) {
                             //数据库先删除bean
-                            BoxUtils.removeAllCity(mAllCityBean)
+                            BoxUtils.removeAllCity()
                             mAllCityBean = data!!
                             //数据库保存bean
                             BoxUtils.saveAllCity(mAllCityBean)
@@ -290,14 +296,14 @@ class PopCitySelect : PopupWindow {
 
     //数据分类
     private fun setData(bean: AllCityBean) {
-        mOneCityList.clear()
+//        mOneCityList.clear()
         mTwoCityList.clear()
         mThreeCityList.clear()
         //遍历请求到的数组 然后一个个分类存放
         bean.city.forEach {
             // || it.level == 0
             if (it.level == 1) {
-                mOneCityList.add(it)
+//                mOneCityList.add(it)
                 //先从省级别选择
                 mList.add(it)
             } else if (it.level == 2) {
@@ -335,6 +341,6 @@ class PopCitySelect : PopupWindow {
     }
 
     interface CitySelectCallBack {
-        fun onCitySelectCallBack(city: AllCity)
+        fun onCitySelectCallBack(oneCity: AllCity, twoCity: AllCity? = null, threeCity: AllCity? = null)
     }
 }

@@ -9,7 +9,7 @@ package com.mogujie.tt.config
  */
 object MessageExtConst {
     //本地扩展
-    const val LOADSTATUS = "loadStatus"
+    const val SENDSTATUS = "sendStatus"
     const val READSTATUS = "readStatus"
     //发送扩展
     const val MSGID = "wxMsgId"
@@ -31,6 +31,7 @@ object MessageExtConst {
     //语音
     const val AUDIO_URL = "audioUrl"
     const val AUDIO_PATH = "audioPath"
+    const val AUDIO_LENGTH = "audioLength"
     const val AUDIO_DURATION = "audioDuration"
 
     //撤回消息

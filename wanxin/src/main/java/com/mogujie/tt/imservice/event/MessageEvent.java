@@ -45,10 +45,17 @@ public class MessageEvent {
         HANDLER_IMAGE_UPLOAD_SUCCESS,
         IMAGE_UPLOAD_SUCCESS,
 
+        //语音上传oss
         HANDLER_VIDEO_UPLOAD_FAILD,
         VIDEO_UPLOAD_FAILD,
         HANDLER_VIDEO_UPLOAD_SUCCESS,
-        VIDEO_UPLOAD_SUCCESS
+        VIDEO_UPLOAD_SUCCESS,
+
+        //视频上传oss
+        HANDLER_AUDIO_UPLOAD_FAILD,
+        AUDIO_UPLOAD_FAILD,
+        HANDLER_AUDIO_UPLOAD_SUCCESS,
+        AUDIO_UPLOAD_SUCCESS
 
     }
 

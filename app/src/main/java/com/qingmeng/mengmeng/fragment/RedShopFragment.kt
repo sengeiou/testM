@@ -35,6 +35,9 @@ class RedShopFragment : BaseFragment() {
     private var mLeftList = ArrayList<RedShopLeftBean>()
     private var mRightInListType = ArrayList<RedShopLeftBean>()
     private var mRightInListHost = ArrayList<RedShopLeftBean>()
+    private var leftList = ArrayList<RedShopLeftBean>()             //用来本地删除用
+    private var rightInListType = ArrayList<RedShopLeftBean>()
+    private var rightInListHost = ArrayList<RedShopLeftBean>()
     override fun getLayoutId(): Int = R.layout.fragment_red_shop
 
     override fun initObject() {
@@ -57,9 +60,15 @@ class RedShopFragment : BaseFragment() {
 
     private fun getCacheData() {
         Observable.create<RedShopBean> {
-            val leftList = BoxUtils.getAllRedShop(0, 0)
-            val rightInListType = BoxUtils.getAllRedShop(1, 2)
-            val rightInListHost = BoxUtils.getAllRedShop(1, 1)
+            BoxUtils.getAllRedShop(0, 0)?.let {
+                leftList.addAll(it)
+            }
+            BoxUtils.getAllRedShop(1, 2)?.let {
+                rightInListType.addAll(it)
+            }
+            BoxUtils.getAllRedShop(1, 1)?.let {
+                rightInListHost.addAll(it)
+            }
             if (!mLeftList.isEmpty()) {
                 mLeftList.clear()
             }
@@ -97,7 +106,6 @@ class RedShopFragment : BaseFragment() {
                     httpLoad(0, getVersion(0))
                     httpLoad2(1, getVersion(1))
                 }, {
-
                     httpLoad(0, getVersion(0))
                     httpLoad2(1, getVersion(1))
                 }, {}, { addSubscription(it) })
@@ -107,8 +115,14 @@ class RedShopFragment : BaseFragment() {
     //点击缓存
     private fun getClickCache(fahterId: Long) {
         Observable.create<RedShopBean> {
-            val rightInListType = BoxUtils.getAllRedShop(fahterId, 2)
-            val rightInListHost = BoxUtils.getAllRedShop(fahterId, 1)
+            BoxUtils.getAllRedShop(fahterId, 2)?.let {
+                rightInListType.clear()
+                rightInListType.addAll(it)
+            }
+            BoxUtils.getAllRedShop(fahterId, 1)?.let {
+                rightInListHost.clear()
+                rightInListHost.addAll(it)
+            }
             if (!mRightInListType.isEmpty()) {
                 mRightInListType.clear()
             }
@@ -221,13 +235,12 @@ class RedShopFragment : BaseFragment() {
                     it.apply {
                         if (code == 12000) {
                             data?.let {
-                                if (!mLeftList.isEmpty()) {
-                                    BoxUtils.removeAllRedShop(mLeftList)
-                                    mLeftList.clear()
-                                }
+                                BoxUtils.removeAllRedShop(leftList)
+                                mLeftList.clear()
                                 it.setVersion()
-                                BoxUtils.saveAllRedShop(mLeftList)
-                                mLeftList.addAll(it.type.typeList)//1级分类
+                                mLeftList.addAll(it.type.typeList)   //1级分类
+                                leftList = it.type.typeList as ArrayList<RedShopLeftBean>
+                                BoxUtils.saveAllRedShop(leftList)
                                 mLeftList.forEach {
                                     if (it.id == 1) {
                                         it.checkState = true
@@ -251,19 +264,17 @@ class RedShopFragment : BaseFragment() {
                     it.apply {
                         if (code == 12000) {
                             data?.let {
-                                if (!mRightInListType.isEmpty()) {
-                                    BoxUtils.removeAllRedShop(mRightInListType)
-                                    mRightInListType.clear()
-                                }
-                                if (!mRightInListHost.isEmpty()) {
-                                    BoxUtils.removeAllRedShop(mRightInListHost)
-                                    mRightInListHost.clear()
-                                }
+                                BoxUtils.removeAllRedShop(rightInListType)
+                                BoxUtils.removeAllRedShop(rightInListHost)
+                                mRightInListType.clear()
+                                mRightInListHost.clear()
                                 it.setVersion()
                                 mRightInListType.addAll(it.type.typeList)
-                                BoxUtils.saveAllRedShop(mRightInListType)
+                                rightInListType = it.type.typeList as ArrayList<RedShopLeftBean>
+                                BoxUtils.saveAllRedShop(rightInListType)
                                 mRightInListHost.addAll(it.popularBrands.hotBrands!!)
-                                BoxUtils.saveAllRedShop(mRightInListHost)
+                                rightInListHost = it.popularBrands.hotBrands as ArrayList<RedShopLeftBean>
+                                BoxUtils.saveAllRedShop(rightInListHost)
                                 mRightAdapterType.notifyDataSetChanged()
                                 mRightAdapterHost.notifyDataSetChanged()
                             }
@@ -288,6 +299,9 @@ class RedShopFragment : BaseFragment() {
     override fun onHiddenChanged(hidden: Boolean) {
         super.onHiddenChanged(hidden)
         if (!hidden) {
+            httpLoad(0, getVersion(0))
+            httpLoad2(1, getVersion(1))
+
             mLeftList.forEach {
                 it.checkState = false
                 if (it.id == 1) {

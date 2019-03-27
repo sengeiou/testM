@@ -199,14 +199,20 @@ class DialogCustom(private var mContext: Context?) {
                 val bean = any as BrandInformation
                 money_total.setContent(bean.belongName)
                 var tempStr = ""
-                bean.modeName.indices.forEach { tempStr += if (it == 0) bean.modeName[it] else ",${bean.modeName[it]}" }
+                bean.modeName?.let {
+                    it.indices.forEach { tempStr += if (it == 0) bean.modeName[it] else ",${bean.modeName[it]}" }
+                }
                 money_join.setContent(tempStr)
                 tempStr = ""
-                bean.cityName.indices.forEach { tempStr += if (it == 0) bean.cityName[it] else ",${bean.cityName[it]}" }
+                bean.cityName?.let {
+                    it.indices.forEach { tempStr += if (it == 0) bean.cityName[it] else ",${bean.cityName[it]}" }
+                }
                 money_ensure.setContent(tempStr)
                 money_equipment.setContent(bean.regionWarrantName)
                 tempStr = ""
-                bean.crowdName.indices.forEach { tempStr += if (it == 0) bean.crowdName[it] else ",${bean.crowdName[it]}" }
+                bean.crowdName?.let {
+                    it.indices.forEach { tempStr += if (it == 0) bean.crowdName[it] else ",${bean.crowdName[it]}" }
+                }
                 money_other.setContent(tempStr)
                 money_tip.visibility = View.GONE
             }

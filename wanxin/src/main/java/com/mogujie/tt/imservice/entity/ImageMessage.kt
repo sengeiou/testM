@@ -34,17 +34,15 @@ class ImageMessage() : TextMessage(), Serializable {
             setAttribute(MessageExtConst.IMG_URL, value)
             field = value
         }
-
     var width: Int = 0
         get() = getAttributeInt(MessageExtConst.IMG_WIDTH)
-
     var height: Int = 0
         get() = getAttributeInt(MessageExtConst.IMG_HEIGHT)
-
-    var loadStatus: Int = 0
-        get() = getAttributeInt(MessageExtConst.LOADSTATUS)
+    //发送状态
+    var sendStatus: Int = 0
+        get() = getAttributeInt(MessageExtConst.SENDSTATUS)
         set(value) {
-            setAttribute(MessageExtConst.LOADSTATUS, value)
+            setAttribute(MessageExtConst.SENDSTATUS, value)
             field = value
         }
 
@@ -104,7 +102,8 @@ class ImageMessage() : TextMessage(), Serializable {
             }
             return ImageMessage().apply {
                 buildSendMessage(fromUser, peerEntity, DBConstant.DISPLAY_FOR_IMAGE, DBConstant.SHOW_IMAGE_TYPE)
-                loadStatus = MessageConstant.IMAGE_UNLOAD
+                sendStatus = MessageConstant.UP_OSS_LOADING
+                status = MessageConstant.MSG_SENDING
                 if (File(item.imagePath).exists()) {
                     path = item.imagePath
                 } else {
@@ -122,14 +121,15 @@ class ImageMessage() : TextMessage(), Serializable {
                 ImageMessage().apply {
                     buildSendMessage(fromUser, peerEntity, content, DBConstant.SHOW_IMAGE_TYPE)
                     path = takePhotoSavePath
-                    loadStatus = MessageConstant.IMAGE_UNLOAD
+                    sendStatus = MessageConstant.UP_OSS_LOADING
+                    status = MessageConstant.MSG_SENDING
                 }
 
         //接受到网络包，解析成本地的数据
         fun parseFromNet(entity: MessageEntity): ImageMessage {
             val imageMessage = ImageMessage(entity)
             imageMessage.setDisplayType(DBConstant.SHOW_IMAGE_TYPE)
-            imageMessage.loadStatus = MessageConstant.IMAGE_UNLOAD
+            imageMessage.sendStatus = MessageConstant.UP_OSS_UNREAD
             imageMessage.setStatus(MessageConstant.MSG_SUCCESS)
             return imageMessage
         }
@@ -140,8 +140,6 @@ class ImageMessage() : TextMessage(), Serializable {
             }
             val imageMessage = ImageMessage(entity)
             imageMessage.setDisplayType(DBConstant.SHOW_IMAGE_TYPE)
-            imageMessage.loadStatus = MessageConstant.IMAGE_LOADED_SUCCESS
-            imageMessage.setStatus(MessageConstant.MSG_SUCCESS)
             return imageMessage
         }
     }

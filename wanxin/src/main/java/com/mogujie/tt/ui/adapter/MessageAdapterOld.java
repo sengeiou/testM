@@ -407,7 +407,7 @@ public class MessageAdapterOld extends BaseAdapter {
                  * 2. 图片上传成功，但是发送失败。 点击重新发送??
                  */
                 if (FileUtil.isSdCardAvailuable()) {
-//                    imageMessage.setLoadStatus(MessageStatus.IMAGE_UNLOAD);//如果是图片已经上传成功呢？
+//                    imageMessage.setLoadStatus(MessageStatus.UP_OSS_UNREAD);//如果是图片已经上传成功呢？
                     imageMessage.setStatus(MessageConstant.MSG_SENDING);
                     if (imService != null) {
                         imService.getMessageManager().resendMessage(imageMessage);
@@ -438,14 +438,14 @@ public class MessageAdapterOld extends BaseAdapter {
                 logger.d("chat#pic#save image ok");
                 logger.d("pic#setsavepath:%s", loaclPath);
 //                imageMessage.setPath(loaclPath);//下载的本地路径不再存储
-                imageMessage.setLoadStatus(MessageConstant.IMAGE_LOADED_SUCCESS);
+                imageMessage.setSendStatus(MessageConstant.UP_OSS_SUCCESS);
                 updateItemState(imageMessage);
             }
 
             @Override
             public void onLoadFailed() {
                 logger.d("chat#pic#onBitmapFailed");
-                imageMessage.setLoadStatus(MessageConstant.IMAGE_LOADED_FAILURE);
+                imageMessage.setSendStatus(MessageConstant.UP_OSS_FAILURE);
                 updateItemState(imageMessage);
                 logger.d("download failed");
             }
@@ -458,7 +458,7 @@ public class MessageAdapterOld extends BaseAdapter {
                 // 创建一个pop对象，然后 分支判断状态，然后显示需要的内容
                 MessageOperatePopup popup = getPopMenu(parent, new OperateItemClickListener(imageMessage, position));
                 boolean bResend = (imageMessage.getStatus() == MessageConstant.MSG_FAILURE)
-                        || (imageMessage.getLoadStatus() == MessageConstant.IMAGE_UNLOAD);
+                        || (imageMessage.getSendStatus() == MessageConstant.UP_OSS_UNREAD);
                 //消息是否在2分钟之内创建的
                 boolean bRevoke = (getTime() - imageMessage.getCreated() < mDefaultTimeDifference);
                 popup.show(messageLayout, DBConstant.SHOW_IMAGE_TYPE, bResend, isMine, bRevoke, position);
@@ -558,7 +558,7 @@ public class MessageAdapterOld extends BaseAdapter {
             @Override
             public void onClickUnread() {
                 logger.d("chat#audio#set audio meessage read status");
-                audioMessage.setReadStatus(MessageConstant.AUDIO_READED);
+                audioMessage.setReadStatus(MessageConstant.UP_OSS_READED);
                 imService.getDbInterface().insertOrUpdateMessage(audioMessage);
             }
 

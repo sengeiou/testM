@@ -42,7 +42,8 @@ class SplashActivity : BaseActivity() {
     private var currentIndex = 0
     private var time = -1
     private var advImg = ""
-    private var advLink = ""
+    private var advWebLink = ""
+    private var advAppLink = ""
     private var advJump = 1
     private lateinit var handler: SkipHandler
     private var mAdapter: GuideImgAdapter? = null
@@ -81,7 +82,8 @@ class SplashActivity : BaseActivity() {
                                 if (isFinishing || (Build.VERSION.SDK_INT >= 17 && isDestroyed)) {
                                     return@let
                                 }
-                                advLink = it.banners[0].url
+                                advWebLink = it.banners[0].url
+                                advAppLink = it.banners[0].exteriorUrl
                                 advJump = it.banners[0].skipType
                                 Glide.with(this@SplashActivity).load(advImg)
                                         .apply(RequestOptions().placeholder(R.drawable.img_splash).error(R.drawable.img_splash))
@@ -95,12 +97,13 @@ class SplashActivity : BaseActivity() {
     override fun initListener() {
         //广告跳转
         mSplashAdv.setOnClickListener {
-            if (!TextUtils.isEmpty(advLink)) {
+            if (!TextUtils.isEmpty(advAppLink)) {
                 try {
-                    OpenMallApp.open(this, advLink)
+                    OpenMallApp.open(this, advAppLink)
                 } catch (e: OpenMallApp.NotInstalledException) {
-                    startActivity(Intent(this, MainActivity::class.java).apply {
-                        putExtra(IConstants.detailUrl, advLink)
+                    startActivity(Intent(this, WebViewActivity::class.java).apply {
+                        putExtra(IConstants.detailUrl, advWebLink)
+                        putExtra(IConstants.title, "详情")
                     })
                 }
             }

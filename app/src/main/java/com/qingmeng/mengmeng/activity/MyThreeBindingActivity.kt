@@ -126,6 +126,7 @@ class MyThreeBindingActivity : BaseActivity() {
                 }, {
                     myDialog.dismissLoadingDialog()
                     srlMyThreeBinding.isRefreshing = false
+                    swipe_target.visibility = View.VISIBLE
                     llMyThreeBindingTips.visibility = View.VISIBLE
                 }, {}, { addSubscription(it) })
     }
@@ -212,11 +213,10 @@ class MyThreeBindingActivity : BaseActivity() {
     //绑定微信
     private fun bindingWeChat() {
         mCanClickAgain = false
-        myDialog.showLoadingDialog()
         val mWeChatApi = WXAPIFactory.createWXAPI(this, IConstants.APPID_WECHAT)
         if (!mWeChatApi.isWXAppInstalled) {
+            mCanClickAgain = true
             // 提醒用户没有安装微信
-            myDialog.dismissLoadingDialog()
             ToastUtil.showShort(getString(R.string.wechat_no_tips))
             return
         }
@@ -226,6 +226,7 @@ class MyThreeBindingActivity : BaseActivity() {
         req.scope = "snsapi_userinfo"
         req.state = "wechat_sdk_demo_test"
         mWeChatApi.sendReq(req)
+        mCanClickAgain = true
     }
 
     //微信登录
@@ -233,11 +234,11 @@ class MyThreeBindingActivity : BaseActivity() {
         if (!TextUtils.isEmpty(wxBean.code)) {
             EventBus.getDefault().removeStickyEvent(wxBean)
             loginCode(wxBean.code)
-            mCanClickAgain = true
         }
     }
 
     private fun loginCode(code: String) {
+        myDialog.showLoadingDialog()
         ApiUtils.getApi()
                 .getWeChatToken(IConstants.APPID_WECHAT, IConstants.SECRET_WECHAT, code)
                 .observeOn(AndroidSchedulers.mainThread())

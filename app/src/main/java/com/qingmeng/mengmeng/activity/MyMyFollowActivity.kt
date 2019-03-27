@@ -209,9 +209,9 @@ class MyMyFollowActivity : BaseActivity() {
                                 if (pageNum == 1) {
                                     //空白页提示
                                     if (mIsMyFollow) {
-                                        tvMyMyFollowTips.text = getString(R.string.my_myFollow_null_tips)
+                                        setTipsText(getString(R.string.my_myFollow_null_tips))
                                     } else {
-                                        tvMyMyFollowTips.text = getString(R.string.my_myFootprint_null_tips)
+                                        setTipsText(getString(R.string.my_myFootprint_null_tips))
                                     }
                                     llMyMyFollowTips.visibility = View.VISIBLE
                                     srlMyMyFollow.isRefreshEnabled = true
@@ -223,9 +223,9 @@ class MyMyFollowActivity : BaseActivity() {
                                 mHasNextPage = true
                                 if (pageNum == 1) {
                                     if (mIsMyFollow) {
-                                        tvMyMyFollowTips.text = getString(R.string.my_myFollow_null_tips)
+                                        setTipsText(getString(R.string.my_myFollow_null_tips))
                                     } else {
-                                        tvMyMyFollowTips.text = getString(R.string.my_myFootprint_null_tips)
+                                        setTipsText(getString(R.string.my_myFootprint_null_tips))
                                     }
                                     llMyMyFollowTips.visibility = View.GONE
                                 }
@@ -247,7 +247,7 @@ class MyMyFollowActivity : BaseActivity() {
                     myDialog.dismissLoadingDialog()
                     setRefreshAsFalse()
                     mCanHttpLoad = true
-                    tvMyMyFollowTips.text = getString(R.string.no_net)
+                    setTipsText(getString(R.string.no_net))
                     llMyMyFollowTips.visibility = View.VISIBLE
                     srlMyMyFollow.isRefreshEnabled = true
                 }, {}, { addSubscription(it) })
@@ -315,6 +315,11 @@ class MyMyFollowActivity : BaseActivity() {
         srlMyMyFollow.isLoadingMore = false
         srlMyMyFollow.isRefreshEnabled = false
         srlMyMyFollow.isLoadMoreEnabled = false
+    }
+
+    //设置提示内容
+    private fun setTipsText(tips: String) {
+        llMyMyFollowTips.findViewById<TextView>(R.id.tvViewTips).text = tips
     }
 
     override fun onBackPressed() {

@@ -102,11 +102,12 @@
         <activity
             android:name=".activity.MyMessageChatActivity"
             android:launchMode="singleTop"
+            android:screenOrientation="portrait"
             />
         <activity android:name=".activity.CameraActivity"/>
         <activity android:name=".activity.WebViewActivity"/>
         <!-- 登录注册 -->
-        <activity android:name=".activity.LoginMainActivity"/>
+        <activity android:name=".activity.LoginMainActivity" />
         <activity android:name=".activity.LoginPwdActivity"/>
         <activity android:name=".activity.LoginChangePswActivity"/>
         <activity
@@ -118,8 +119,7 @@
             android:name="com.qingmeng.mengmeng.wxapi.WXEntryActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:exported="true"
-            android:launchMode="singleTop"
-            android:screenOrientation="portrait"
+            android:launchMode="singleTask"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
         <activity
             android:name="com.tencent.tauth.AuthActivity"

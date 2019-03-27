@@ -186,7 +186,7 @@ public class ProtoBuf2JavaBean {
         audioMessage.setMsgId(msgInfo.getMsgId());
         audioMessage.setMsgType(getJavaMsgType(msgInfo.getMsgType()));
         audioMessage.setStatus(MessageConstant.MSG_SUCCESS);
-        audioMessage.setReadStatus(MessageConstant.AUDIO_UNREAD);
+        audioMessage.setReadStatus(MessageConstant.UP_OSS_UNREAD);
         audioMessage.setDisplayType(DBConstant.SHOW_AUDIO_TYPE);
         audioMessage.setCreated(msgInfo.getCreateTime());
         audioMessage.setUpdated(msgInfo.getCreateTime());
@@ -195,7 +195,7 @@ public class ProtoBuf2JavaBean {
 
         byte[] audioStream = bytes.toByteArray();
         if(audioStream.length < 4){
-            audioMessage.setReadStatus(MessageConstant.AUDIO_READED);
+            audioMessage.setReadStatus(MessageConstant.UP_OSS_READED);
             audioMessage.setAudioPath("");
             audioMessage.setAudiolength(0);
         }else {

@@ -168,6 +168,7 @@ class LoginRegisterActivity : BaseActivity() {
                             it.upDate()
                             //还要登录完信..
                             mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
+                            registerOver()
                         }
                     } else {
                         ToastUtil.showShort(bean.msg)

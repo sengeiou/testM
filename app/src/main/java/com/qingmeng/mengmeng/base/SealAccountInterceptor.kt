@@ -1,10 +1,11 @@
 package com.qingmeng.mengmeng.base
 
-import okhttp3.Headers
-import okhttp3.Interceptor
-import okhttp3.Response
+import android.util.Log
+import com.app.common.BuildConfig
+import okhttp3.*
 import okio.Buffer
 import java.io.EOFException
+import java.net.URLDecoder
 import java.nio.charset.Charset
 import java.nio.charset.UnsupportedCharsetException
 
@@ -12,10 +13,14 @@ import java.nio.charset.UnsupportedCharsetException
 /**
  * Created by zq on 2018/9/6
  */
-class SealAccountInterceptor : Interceptor {
+open class SealAccountInterceptor : Interceptor {
     private val UTF8 = Charset.forName("UTF-8")
     override fun intercept(chain: Interceptor.Chain): Response {
-        val request = chain.request()
+        var request = chain.request()
+        //修改请求信息
+//        request = addUrlInformation(request)
+        //日志打印
+//        logOut(request)
         val response: Response = chain.proceed(request)
         val responseBody = response.body()
         responseBody?.let {
@@ -24,7 +29,6 @@ class SealAccountInterceptor : Interceptor {
                 val source = it.source()
                 source.request(java.lang.Long.MAX_VALUE) // Buffer the entire body.
                 val buffer = source.buffer()
-
                 var charset: Charset? = UTF8
                 val contentType = it.contentType()
                 contentType?.let {
@@ -51,7 +55,6 @@ class SealAccountInterceptor : Interceptor {
 //                }
             }
         }
-
         return response
     }
 
@@ -78,6 +81,56 @@ class SealAccountInterceptor : Interceptor {
             return true
         } catch (e: EOFException) {
             return false // Truncated UTF-8 sequence.
+        }
+    }
+
+    //添加默认请求信息
+    private fun addUrlInformation(original: Request, isToken: Boolean = false, isParams: Boolean = true): Request {
+        val originalHttpUrl = original.url()
+        //url添加get信息
+        val url = originalHttpUrl.newBuilder().apply {
+            if (isParams) {
+                //版本号
+                addQueryParameter("ver", "${BuildConfig.VERSION_CODE}")
+                //平台 1 android 2 ios
+                addQueryParameter("os", "1")
+            }
+        }.build()
+        // Request customization: add request headers 添加Headers
+        val requestBuilder = original.newBuilder().apply {
+            if (isToken) {
+                addHeader("accessToken", "")
+            }
+        }.url(url)
+        return requestBuilder.build()
+    }
+
+    //日志输出
+    private fun logOut(request: Request) {
+        try {
+            request.let {
+                val method = it.method()
+                val sb = StringBuilder()
+                if ("POST".equals(method)) {
+                    if (it.body() is FormBody) {
+                        val body = it.body() as FormBody
+                        for (i in 0..(body.size() - 1)) {
+                            sb.append(body.encodedName(i) + "=" + body.encodedValue(i) + ",")
+                        }
+                        sb.delete(sb.length - 1, sb.length)
+                    }
+                }
+                //URLDecoder.decode URLDecode解码
+                val info = "Request{" +
+                        "method=[${it.method()}]" +
+                        ", url=[${it.url()}]" +
+                        ", headers=[" + it.headers().toString() + "]" +
+                        ", isHttps=" + it.isHttps +
+                        ", Params=[${URLDecoder.decode(sb.toString(), "utf-8")}]" +
+                        '}'
+                Log.i("LogInterceptor", "intercept#request:\n$info")
+            }
+        } catch (e: Exception) {
         }
     }
 }

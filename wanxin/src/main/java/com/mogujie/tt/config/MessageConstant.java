@@ -14,28 +14,13 @@ public interface MessageConstant {
     public final int MSG_SUCCESS = 3;
 
     /**
-     * 图片消息状态，表示下载到本地、上传到服务器的状态
+     * 图片、语音、视频要上传阿里云os的消息(这些消息就根据这个状态发送判断)，未读 已读 上传成功 上传失败 上传中
      */
-    public final int IMAGE_UNLOAD = 1;
-    public final int IMAGE_LOADING = 2;
-    public final int IMAGE_LOADED_SUCCESS = 3;
-    public final int IMAGE_LOADED_FAILURE = 4;
-
-
-    /**
-     * 语音状态，未读与已读
-     */
-    public final int AUDIO_UNREAD = 1;
-    public final int AUDIO_READED = 2;
-
-    /**
-     * 视频状态，未看与已看
-     */
-    public final int VIDEO_UNREAD = 1;
-    public final int VIDEO_READED = 2;
-    public final int VIDEO_LOADED_SUCCESS = 3;
-    public final int VIDEO_LOADED_FAILURE = 4;
-    public final int VIDEO_LOADING = 5;
+    public final int UP_OSS_UNREAD = 1;
+    public final int UP_OSS_READED = 2;
+    public final int UP_OSS_SUCCESS = 3;
+    public final int UP_OSS_FAILURE = 4;
+    public final int UP_OSS_LOADING = 5;
 
     /**
      * 图片消息的前后常量

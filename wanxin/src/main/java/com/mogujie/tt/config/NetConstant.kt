@@ -8,5 +8,6 @@ package com.mogujie.tt.config
  */
 
 object NetConstant {
-   const val REQUEST_SUCCESS = 12003
+//   const val REQUEST_SUCCESS = 12003
+   const val REQUEST_SUCCESS = 12000
 }

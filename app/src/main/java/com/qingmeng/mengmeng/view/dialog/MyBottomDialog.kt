@@ -18,7 +18,9 @@ class MyBottomDialog(context: Context, style: Int = 0) : BottomSheetDialog(conte
             orginLayoutParams.height = windowHeight
             mContent.layoutParams = orginLayoutParams
             val mDialogBehavior = BottomSheetBehavior.from(mContent)
-            mDialogBehavior.setState(BottomSheetBehavior.STATE_EXPANDED)
+            mDialogBehavior.state = BottomSheetBehavior.STATE_EXPANDED
+            //跳过折叠状态
+            mDialogBehavior.skipCollapsed = true
         }
     }
 }

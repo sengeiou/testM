@@ -45,7 +45,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     private lateinit var commonNavigator: CommonNavigator
     private lateinit var mMenuAdapter: JoinMenuAdapter
 
-    private val mImgList = ArrayList<Banner>()
+    private var mImgList = ArrayList<Banner>()
     private val menuList = ArrayList<StaticBean>()
     private val tabList = ArrayList<StaticBean>()
     private val viewSparseArray = SparseArray<RecyclerView>()
@@ -78,7 +78,9 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 .subscribe({
                     initView()
                     initVPIndicator()
-                    setBanner()
+                    if (mImgList.isNotEmpty()) {
+                        setBanner()
+                    }
                     if (!tabList.isEmpty()) {
                         val view = getView(tabList[vpList.currentItem].id)
                         val adapter = view.adapter as JoinRecommendAdapter
@@ -257,6 +259,8 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
             }
         }
         recyclerView.adapter = adapter
+        //不可以多指触控
+        recyclerView.isMotionEventSplittingEnabled = false
         viewSparseArray.put(tagId, recyclerView)
         return recyclerView
     }
@@ -363,12 +367,10 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                     if (bean.code == 12000) {
                         bean.data?.let {
                             if (!it.banners.isEmpty()) {
-                                if (!mImgList.isEmpty()) {
-                                    BoxUtils.removeBanners(mImgList)
-                                    mImgList.clear()
-                                }
+                                BoxUtils.removeBanners(mImgList)
+//                                mImgList.clear()
                                 it.setVersion()
-                                mImgList.addAll(it.banners)
+                                mImgList = it.banners as ArrayList<Banner>
                                 BoxUtils.saveBanners(mImgList)
                                 setBanner()
                             }
@@ -418,7 +420,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                     try {
                         OpenMallApp.open(context!!, exteriorUrl)
                     } catch (e: OpenMallApp.NotInstalledException) {
-                        startActivity<WebViewActivity>(IConstants.detailUrl to url)
+                        startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
                     }
                 }
             }
@@ -429,7 +431,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: Banner?, position: Int) {
         model?.let {
             Glide.with(this).load(it.imgUrl).apply(RequestOptions()
-                    .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)
+                    .placeholder(R.drawable.default_img_banner)
                     .centerCrop()).into(itemView)
         }
     }
@@ -439,7 +441,6 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         mJoinBanner.setDelegate(this)//设置点击事件，重写点击回调方法
         mJoinBanner.setData(mImgList, null)
         mJoinBanner.setAutoPlayAble(mImgList.size > 1)
-        mJoinBanner.setData(mImgList, null)
     }
 
     /**
