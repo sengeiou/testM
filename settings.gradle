@@ -1,1 +1,1 @@
-include ':app', ':mgimlibs', ':webputil', ':wanxin', ':imgcompress', ':huaweilib', ':common', ':facelibs'
+include ':app', ':mgimlibs', ':webputil', ':wanxin', ':imgcompress', ':huaweilib', ':common', ':facelibs', ':waveview'
