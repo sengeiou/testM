@@ -47,7 +47,7 @@ import com.qingmeng.mengmeng.adapter.ChatAdapterTwo
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.MESSAGE_TO_CHAT
 import com.qingmeng.mengmeng.utils.*
-import com.qingmeng.mengmeng.utils.audio.AudioManager
+import com.qingmeng.mengmeng.utils.audio.AudioRecordManager
 import com.qingmeng.mengmeng.utils.audio.MediaManager
 import com.qingmeng.mengmeng.view.dialog.DialogCommon
 import com.qingmeng.mengmeng.view.dialog.PopChatImg
@@ -78,12 +78,13 @@ class MyMessageChatActivity : BaseActivity() {
     private lateinit var mLayoutManager: LinearLayoutManager
     private lateinit var mAdapter: ChatAdapterTwo
     //    private lateinit var mPageAdapter: PagerAdapter
-    private var mAudioManager = AudioManager.getInstance(IConstants.DIR_AUDIO_STR)    //语音工具类
+    private lateinit var mAudioRecordManager: AudioRecordManager //语音工具类
     private var mMediaManager = MediaManager
     private lateinit var mSoundVolumeDialog: Dialog             //语音弹出框
     private lateinit var mSoundVolumeImg: ImageView
     private lateinit var mSoundVolumeLayout: LinearLayout
-    private var mCanSendRadius = false                          //是否可以发送语音
+    private var mCanSendAudio = false                           //是否可以发送语音
+    private var mIsAutomaticSendAudio = false                   //是否自动发送的语音
     private lateinit var mImgSeePopChat: PopChatImg             //最近图片pop
     private var y1 = 0                                          //手指坐标
     private var y2 = 0
@@ -132,6 +133,7 @@ class MyMessageChatActivity : BaseActivity() {
         instance = this
         val title = intent.getStringExtra("title") ?: ""
         setHeadName(title)
+        mAudioRecordManager = AudioRecordManager.getInstance(this)
         //系统通知隐藏聊天功能
         if (title == getString(R.string.systemNotification)) {
             mIsSystemMotification = true
@@ -254,6 +256,7 @@ class MyMessageChatActivity : BaseActivity() {
             when (event.action) {
                 MotionEvent.ACTION_DOWN -> {    //按下
                     y1 = event.y.toInt()
+                    mIsAutomaticSendAudio = false
                     //设置点击背景
                     v.setBackgroundResource(R.drawable.ripple_bg_drawable_graydark_radius18)
                     (v as TextView).text = getString(R.string.release_to_over)
@@ -261,61 +264,74 @@ class MyMessageChatActivity : BaseActivity() {
                     mSoundVolumeImg.setBackgroundResource(R.drawable.view_dialog_sound_volume_01)
                     mSoundVolumeLayout.setBackgroundResource(R.drawable.view_dialog_sound_volume_default_bg)
                     //录音
-                    mAudioManager.readyAudio(this) {
+                    mAudioRecordManager.readyAudio(IConstants.DIR_AUDIO_STR, {
                         onReceiveMaxVolume(it)
-                    }
+                    }, { path, recordTime ->    //超出60秒的回调
+                        //自动发送语音 设置松开手后就不做处理
+                        mIsAutomaticSendAudio = true
+                        v.setBackgroundResource(R.drawable.ripple_bg_drawable_gray_radius18)
+                        v.text = getString(R.string.hold_to_talk)
+                        mSoundVolumeDialog.dismiss()
+                        onRecordVoiceEnd(path, recordTime)
+                    })
                     //显示弹框
                     mSoundVolumeDialog.show()
                     true
                 }
                 MotionEvent.ACTION_MOVE -> {    //移动
                     y2 = event.y.toInt()
-                    //向上移动180就改变提示
-                    if (y1 - y2 > 180) {
-                        mCanSendRadius = false
-                        (v as TextView).text = getString(R.string.cancel_to_send)
-                        mSoundVolumeImg.visibility = View.GONE
-                        mSoundVolumeLayout.setBackgroundResource(R.drawable.view_dialog_sound_volume_cancel_bg)
-                    } else {
-                        mCanSendRadius = true
-                        (v as TextView).text = getString(R.string.release_to_over)
-                        mSoundVolumeImg.visibility = View.VISIBLE
-                        mSoundVolumeLayout.setBackgroundResource(R.drawable.view_dialog_sound_volume_default_bg)
+                    //这里没有自动发送语音再设置相关值
+                    if (!mIsAutomaticSendAudio) {
+                        //向上移动180就改变提示
+                        if (y1 - y2 > 180) {
+                            mCanSendAudio = false
+                            (v as TextView).text = getString(R.string.cancel_to_send)
+                            mSoundVolumeImg.visibility = View.GONE
+                            mSoundVolumeLayout.setBackgroundResource(R.drawable.view_dialog_sound_volume_cancel_bg)
+                        } else {
+                            mCanSendAudio = true
+                            (v as TextView).text = getString(R.string.release_to_over)
+                            mSoundVolumeImg.visibility = View.VISIBLE
+                            mSoundVolumeLayout.setBackgroundResource(R.drawable.view_dialog_sound_volume_default_bg)
+                        }
                     }
                     true
                 }
                 MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> {  //松开
                     v.setBackgroundResource(R.drawable.ripple_bg_drawable_gray_radius18)
                     (v as TextView).text = getString(R.string.hold_to_talk)
-                    //发送语音
-                    if (mCanSendRadius) {
-                        //如果语音时间够的话就发送语音
-                        if (mAudioManager.getRecordTime() > 1) { //真.发送
-                            mSoundVolumeDialog.dismiss()
-                            //释放录音
-                            mAudioManager.releaseAudio { path, recordTime ->
-                                if (mAudioManager.canSendAudio) {
-                                    //发送语音
-                                    onRecordVoiceEnd(path, recordTime)
+                    //这里没有自动发送语音松开手再发送
+                    if (!mIsAutomaticSendAudio) {
+                        //发送语音
+                        if (mCanSendAudio) {
+                            //如果语音时间够的话就发送语音
+                            if (mAudioRecordManager.getRecordTime() > 1) { //真.发送
+                                mSoundVolumeDialog.dismiss()
+                                //释放录音
+                                mAudioRecordManager.releaseAudio { path, recordTime ->
+                                    if (mAudioRecordManager.canSendAudio) {
+                                        //发送语音
+                                        onRecordVoiceEnd(path, recordTime)
+                                    }
                                 }
+                            } else {  //发送条件未满足
+                                mSoundVolumeImg.visibility = View.GONE
+                                mSoundVolumeLayout.setBackgroundResource(R.drawable.view_dialog_sound_volume_short_tip_bg)
+                                //延时0.7秒再关闭弹框
+                                val timer = Timer()
+                                timer.schedule(object : TimerTask() {
+                                    override fun run() {
+                                        mSoundVolumeDialog.dismiss()
+                                        this.cancel()
+                                    }
+                                }, 700)
+                                mAudioRecordManager.cancelAudio()
                             }
-                        } else {  //发送条件未满足
-                            mSoundVolumeImg.visibility = View.GONE
-                            mSoundVolumeLayout.setBackgroundResource(R.drawable.view_dialog_sound_volume_short_tip_bg)
-                            //延时0.7秒再关闭弹框
-                            val timer = Timer()
-                            timer.schedule(object : TimerTask() {
-                                override fun run() {
-                                    mSoundVolumeDialog.dismiss()
-                                    this.cancel()
-                                }
-                            }, 700)
-                            mAudioManager.cancelAudio()
+                        } else {  //取消发送
+                            mSoundVolumeDialog.dismiss()
+                            //删除文件
+                            mAudioRecordManager.cancelAudio()
                         }
-                    } else {  //取消发送
-                        mSoundVolumeDialog.dismiss()
-                        //删除文件
-                        mAudioManager.cancelAudio()
                     }
                     false
                 }
