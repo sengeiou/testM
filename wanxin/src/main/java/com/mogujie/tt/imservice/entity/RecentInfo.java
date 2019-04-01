@@ -2,6 +2,7 @@ package com.mogujie.tt.imservice.entity;
 
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import com.mogujie.tt.config.DBConstant;
@@ -181,6 +182,16 @@ public class RecentInfo {
     }
 
     public String getName() {
+        if (name == null) {
+            try {
+                ContentEntity contentEntity = new Gson().fromJson(latestMsgData, ContentEntity.class);
+                if (contentEntity != null) {
+                    name = contentEntity.getNickname();
+                }
+            } catch (JsonSyntaxException e) {
+                Log.d(getClass().getSimpleName(), "isn't json：" + latestMsgData);
+            }
+        }
         return name;
     }
 
@@ -221,7 +232,7 @@ public class RecentInfo {
                     return contentEntity.getInfo();
                 }
             } catch (JsonSyntaxException e) {
-                Log.d(getClass().getSimpleName(),"isn't json："+latestMsgData);
+                Log.d(getClass().getSimpleName(), "isn't json：" + latestMsgData);
             }
         }
         return latestMsgData;
@@ -234,18 +245,18 @@ public class RecentInfo {
     @Override
     public String toString() {
         return "RecentInfo{" +
-        "sessionKey='" + sessionKey + '\'' +
-        ", peerId=" + peerId +
-        ", sessionType=" + sessionType +
-        ", latestMsgType=" + latestMsgType +
-        ", latestMsgId=" + latestMsgId +
-        ", latestMsgData='" + latestMsgData + '\'' +
-        ", updateTime=" + updateTime +
-        ", unReadCnt=" + unReadCnt +
-        ", name='" + name + '\'' +
-        ", avatar=" + new Gson().toJson(avatar).toString() +
-        ", isTop=" + isTop +
-        ", isForbidden=" + isForbidden +
-        '}';
+                "sessionKey='" + sessionKey + '\'' +
+                ", peerId=" + peerId +
+                ", sessionType=" + sessionType +
+                ", latestMsgType=" + latestMsgType +
+                ", latestMsgId=" + latestMsgId +
+                ", latestMsgData='" + latestMsgData + '\'' +
+                ", updateTime=" + updateTime +
+                ", unReadCnt=" + unReadCnt +
+                ", name='" + name + '\'' +
+                ", avatar=" + new Gson().toJson(avatar).toString() +
+                ", isTop=" + isTop +
+                ", isForbidden=" + isForbidden +
+                '}';
     }
 }

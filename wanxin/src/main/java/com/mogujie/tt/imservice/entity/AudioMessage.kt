@@ -48,7 +48,7 @@ class AudioMessage() : TextMessage(), Serializable {
 
     override fun getInfo(): String = DBConstant.DISPLAY_FOR_AUDIO
 
-    constructor(entity: MessageEntity):this() {
+    constructor(entity: MessageEntity) : this() {
         parseMessage(entity)
     }
 
@@ -83,6 +83,37 @@ class AudioMessage() : TextMessage(), Serializable {
             audioMessage.setCreated(nowTime)
             audioMessage.setUpdated(nowTime)
             val peerType = peerEntity.type
+            val msgType = if (peerType == DBConstant.SESSION_TYPE_GROUP)
+                DBConstant.MSG_TYPE_GROUP_AUDIO
+            else
+                DBConstant.MSG_TYPE_SINGLE_AUDIO
+            audioMessage.setMsgType(msgType)
+
+            audioMessage.audioPath = audioSavePath
+            audioMessage.audiolength = tLen
+            //自己发送的就把消息状态设置成已读
+            audioMessage.readStatus = MessageConstant.UP_OSS_READED
+            audioMessage.setDisplayType(DBConstant.SHOW_AUDIO_TYPE)
+            audioMessage.sendStatus = MessageConstant.UP_OSS_LOADING
+            audioMessage.setStatus(MessageConstant.MSG_SENDING)
+            audioMessage.buildSessionKey(true)
+            return audioMessage
+        }
+
+        fun buildForSend(audioLen: Float, audioSavePath: String, fromUser: UserEntity, peerId: Int, peerType: Int): AudioMessage {
+            var tLen = (audioLen + 0.5).toInt()
+            tLen = if (tLen < 1) 1 else tLen
+            if (tLen < audioLen) {
+                ++tLen
+            }
+
+            val nowTime = (System.currentTimeMillis() / 1000).toInt()
+            val audioMessage = AudioMessage()
+            audioMessage.setFromId(fromUser.peerId)
+            audioMessage.setToId(peerId)
+            audioMessage.setCreated(nowTime)
+            audioMessage.setUpdated(nowTime)
+            val peerType = peerType
             val msgType = if (peerType == DBConstant.SESSION_TYPE_GROUP)
                 DBConstant.MSG_TYPE_GROUP_AUDIO
             else

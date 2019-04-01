@@ -5,6 +5,9 @@ import android.app.Activity
 import android.content.Intent
 import android.view.View
 import com.dragger2.activitytest0718.util.SharedPreferencesHelper
+import com.mogujie.tt.imservice.event.UnreadEvent
+import com.mogujie.tt.imservice.service.IMService
+import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
@@ -15,6 +18,8 @@ import com.qingmeng.mengmeng.entity.MyInformation
 import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.imageLoader.CacheType
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
+import com.qingmeng.mengmeng.view.dot.UnreadMsgUtils
+import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -30,6 +35,29 @@ class MyFragment : BaseFragment() {
     private var mLoginSuccess = false                    //登录状态
     private var mMyInformation = MyInformation()         //个人信息bean
     private val REQUEST_MY = 746                         //下一页返回数据的requestCode
+
+    /**
+     * 消息用到的
+     */
+    private var mImService: IMService? = null
+    private val imServiceConnector = object : IMServiceConnector() {
+        override fun onServiceDisconnected() {
+            if (EventBus.getDefault().isRegistered(this)) {
+                EventBus.getDefault().unregister(this)
+            }
+        }
+
+        override fun onIMServiceConnected() {
+            IMServiceConnector.logger.d("MyFragment#recent#onIMServiceConnected")
+            mImService = this.imService
+            if (mImService == null) {
+                //why ,some reason
+                return
+            }
+            //设置未读消息
+            setNewMessagesCount()
+        }
+    }
 
     override fun getLayoutId(): Int {
         return R.layout.fragment_my
@@ -49,6 +77,12 @@ class MyFragment : BaseFragment() {
 
         //设置缓存数据
         getCacheData()
+
+        /**
+         * 消息用到的
+         */
+        imServiceConnector.connect(context)
+        EventBus.getDefault().register(this)
     }
 
     //点击事件
@@ -58,6 +92,7 @@ class MyFragment : BaseFragment() {
         //下拉刷新
         srlMy.setOnRefreshListener {
             httpSelect()
+            setNewMessagesCount()
         }
 
         //头像
@@ -114,7 +149,7 @@ class MyFragment : BaseFragment() {
         }
 
         //消息
-        llMyMessage.setOnClickListener {
+        rlMyMessage.setOnClickListener {
             startActivity<MyMessageActivity>(MY_TO_MESSAGE to true)
         }
 
@@ -256,6 +291,36 @@ class MyFragment : BaseFragment() {
         }
     }
 
+    /**
+     * -------------------------------------------------------------start-------------------------------------------------------------
+     */
+
+    fun onEventMainThread(event: UnreadEvent) {
+        when (event.event) {
+            UnreadEvent.Event.UNREAD_MSG_RECEIVED -> {  //新消息接收
+                setNewMessagesCount()
+            }
+            UnreadEvent.Event.UNREAD_MSG_LIST_OK -> {
+            }
+            UnreadEvent.Event.SESSION_READED_UNREAD_MSG -> {
+                setNewMessagesCount()
+            }
+        }
+    }
+
+    /**
+     * 设置未读消息
+     */
+    private fun setNewMessagesCount() {
+        val recentSessionList = mImService?.sessionManager?.recentListInfo
+        var unReadCount = 0
+        recentSessionList?.forEach {
+            unReadCount += it.unReadCnt
+        }
+        //未读消息
+        UnreadMsgUtils.show(viewMyMessageCount, unReadCount)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if ((requestCode == REQUEST_MY || requestCode == IConstants.LOGIN_BACK) && resultCode == Activity.RESULT_OK) {
@@ -267,5 +332,14 @@ class MyFragment : BaseFragment() {
                 httpSelect()
             }
         }
+    }
+
+    override fun onDestroy() {
+        if (EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().unregister(this)
+        }
+        imServiceConnector.disconnect(context)
+
+        super.onDestroy()
     }
 }

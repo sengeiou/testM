@@ -36,6 +36,25 @@ fun MessageEntity.buildSendMessage(fromUser: UserEntity, peerEntity: PeerEntity,
     return this
 }
 
+/**
+ * 构造发送消息
+ */
+fun MessageEntity.buildSendMessage(fromUser: UserEntity, peerId: Int, peerType: Int, info: String?, displayType: Int): MessageEntity {
+    val nowTime = (System.currentTimeMillis() / 1000).toInt()
+    this.fromId = fromUser.peerId
+    this.toId = peerId
+    this.updated = nowTime
+    this.created = nowTime
+    this.displayType = displayType
+    val peerType = peerType
+    this.msgType = if (peerType == DBConstant.SESSION_TYPE_GROUP) DBConstant.MSG_TYPE_GROUP_TEXT else DBConstant.MSG_TYPE_SINGLE_TEXT
+    this.status = MessageConstant.MSG_SENDING
+    this.info = info
+    this.nickname = fromUser.mainName
+    this.buildSessionKey(true)
+    return this
+}
+
 fun MessageEntity.parseFromDB(): MessageEntity? {
     return when (this.displayType) {
         DBConstant.SHOW_MIX_TEXT -> MixMessage.parseFromDB(this)

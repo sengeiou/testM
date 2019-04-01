@@ -125,6 +125,14 @@ class ImageMessage() : TextMessage(), Serializable {
                     status = MessageConstant.MSG_SENDING
                 }
 
+        fun buildForSend(takePhotoSavePath: String, fromUser: UserEntity, peerId: Int, peerType: Int) =
+                ImageMessage().apply {
+                    buildSendMessage(fromUser, peerId, peerType, content, DBConstant.SHOW_IMAGE_TYPE)
+                    path = takePhotoSavePath
+                    sendStatus = MessageConstant.UP_OSS_LOADING
+                    status = MessageConstant.MSG_SENDING
+                }
+
         //接受到网络包，解析成本地的数据
         fun parseFromNet(entity: MessageEntity): ImageMessage {
             val imageMessage = ImageMessage(entity)

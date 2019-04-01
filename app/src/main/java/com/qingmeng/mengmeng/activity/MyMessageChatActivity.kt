@@ -40,6 +40,7 @@ import com.mogujie.tt.imservice.event.UnreadEvent
 import com.mogujie.tt.imservice.manager.IMUnreadMsgManager
 import com.mogujie.tt.imservice.service.IMService
 import com.mogujie.tt.imservice.support.IMServiceConnector
+import com.mogujie.tt.protobuf.helper.EntityChangeEngine
 import com.mogujie.tt.ui.adapter.album.ImageItem
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.R
@@ -180,7 +181,7 @@ class MyMessageChatActivity : BaseActivity() {
             peerEntity = mImService!!.sessionManager.findPeerEntity(currentSessionKey)
         }
         //头像、历史消息加载、取消通知
-        setTitleByUser()
+//        setTitleByUser()
         reqHistoryMsg()
         mImService?.unReadMsgManager?.readUnreadSession(currentSessionKey)
         mImService?.notificationManager?.cancelSessionNotifications(currentSessionKey)
@@ -266,7 +267,8 @@ class MyMessageChatActivity : BaseActivity() {
                     //录音
                     mAudioRecordManager.readyAudio(IConstants.DIR_AUDIO_STR, {
                         onReceiveMaxVolume(it)
-                    }, { path, recordTime ->    //超出60秒的回调
+                    }, { path, recordTime ->
+                        //超出60秒的回调
                         //自动发送语音 设置松开手后就不做处理
                         mIsAutomaticSendAudio = true
                         v.setBackgroundResource(R.drawable.ripple_bg_drawable_gray_radius18)
@@ -1045,20 +1047,35 @@ class MyMessageChatActivity : BaseActivity() {
      * 2.本地消息不全，也会触发
      */
     private fun reqHistoryMsg() {
-        if (peerEntity != null) {
-            historyTimes++
-            val msgList = mImService?.messageManager?.loadHistoryMsg(historyTimes, currentSessionKey, peerEntity)
-            pushList(msgList)
-            scrollToBottomListItem()
+        val msgList = if (peerEntity == null) {
+            if (currentSessionKey == null) {
+                return
+            }
+            //将currentSessionKey拆分
+            val sessionInfo = EntityChangeEngine.spiltSessionKey(currentSessionKey)
+            mImService?.messageManager?.loadHistoryMsg(historyTimes, currentSessionKey, sessionInfo[0].toInt(), sessionInfo[1].toInt())
+        } else {
+            mImService?.messageManager?.loadHistoryMsg(historyTimes, currentSessionKey, peerEntity)
         }
+        historyTimes++
+        pushList(msgList)
+        scrollToBottomListItem()
     }
 
     /**
      * 处理拍照后的数据
      */
     private fun handleTakePhotoData(takePhotoSavePath: String) {
-        if (takePhotoSavePath != "" && loginUser != null && peerEntity != null) {
-            val imageMessage = ImageMessage.buildForSend(takePhotoSavePath, loginUser!!, peerEntity!!)
+        if (takePhotoSavePath != "" && loginUser != null) {
+            val imageMessage = if (peerEntity == null) {
+                if (currentSessionKey == null) {
+                    return
+                }
+                val sessionInfo = EntityChangeEngine.spiltSessionKey(currentSessionKey)
+                ImageMessage.buildForSend(takePhotoSavePath, loginUser!!, sessionInfo[0].toInt(), sessionInfo[1].toInt())
+            } else {
+                ImageMessage.buildForSend(takePhotoSavePath, loginUser!!, peerEntity!!)
+            }
             val sendList = ArrayList<ImageMessage>(1)
             sendList.add(imageMessage)
             mImService?.messageManager?.sendImages(sendList)
@@ -1107,9 +1124,20 @@ class MyMessageChatActivity : BaseActivity() {
      * 录音结束后处理录音数据
      */
     private fun onRecordVoiceEnd(audioSavePath: String, audioLen: Float) {
-        val audioMessage = AudioMessage.buildForSend(audioLen, audioSavePath, loginUser!!, peerEntity!!)
-        mImService?.messageManager?.sendAudio(audioMessage)
-        pushList(audioMessage, true)
+        if (audioSavePath != "" && loginUser != null) {
+            val audioMessage = if (peerEntity == null) {
+                if (currentSessionKey == null) {
+                    return
+                }
+                val sessionInfo = EntityChangeEngine.spiltSessionKey(currentSessionKey)
+                AudioMessage.buildForSend(audioLen, audioSavePath, loginUser!!, sessionInfo[0].toInt(), sessionInfo[1].toInt())
+            } else {
+                AudioMessage.buildForSend(audioLen, audioSavePath, loginUser!!, peerEntity!!)
+            }
+
+            mImService?.messageManager?.sendAudio(audioMessage)
+            pushList(audioMessage, true)
+        }
     }
 
     /**
