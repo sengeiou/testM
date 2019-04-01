@@ -67,6 +67,7 @@ class ShopDetailActivity : BaseActivity() {
     private var totalImg = 0
     private var hasVideo = false
     private var isAttention = 0
+    private var webUrl = ""
 
     override fun getLayoutId(): Int = R.layout.activity_shop_detail
 
@@ -178,6 +179,7 @@ class ShopDetailActivity : BaseActivity() {
             }
             vpAdapter.notifyDataSetChanged()
             mDetailWeb.loadUrl(bean.brandHtmlUrl)
+            webUrl = bean.brandHtmlUrl
         }
     }
 
@@ -460,6 +462,31 @@ class ShopDetailActivity : BaseActivity() {
             layoutAlgorithm = WebSettings.LayoutAlgorithm.SINGLE_COLUMN
             javaScriptCanOpenWindowsAutomatically = true
         }
+
+//        mDetailWeb.webViewClient = object : WebViewClient() {
+//            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest?): Boolean {
+//                view.loadUrl(webUrl)
+//                return true
+//            }
+//
+////            override fun onPageFinished(view: WebView, url: String?) {
+////                super.onPageFinished(view, url)
+////                //编写 javaScript方法
+////                val javascript =
+////                        "javascript:function hideOther() {" +
+////                                "var firstP = document.getElementsByTagName('p');" +
+////                                "   if(firstP[0].innerHTML == null || firstP[0].innerHTML == ''){" +
+////                                "       firstP[0].parentElement.removeChild(firstP[0]);" +
+////                                "   }" +
+////                                "}"
+////
+////                //创建方法
+////                view.loadUrl(javascript)
+////                //加载方法
+////                view.loadUrl("javascript:hideOther();")
+////            }
+//        }
+
         mDetailWeb.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView, progress: Int) {
                 if (progress >= 100) {

@@ -941,7 +941,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         } else {
             userEntity = mImService?.contactManager?.findContact(textMessage.fromId)
         }
-        return userEntity!!
+        return userEntity ?: UserEntity()
     }
 
     /**

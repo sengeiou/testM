@@ -579,6 +579,32 @@ public class IMMessageManager extends IMManager {
         return msgList;
     }
 
+    public List<MessageEntity> loadHistoryMsg(int pullTimes, String sessionKey, int peerId, int peerType) {
+        int lastMsgId = 99999999;
+        int lastCreateTime = (int) (System.currentTimeMillis() / 1000);
+        int count = SysConstant.MSG_CNT_PER_PAGE;
+        SessionEntity sessionEntity = IMSessionManager.instance().findSession(sessionKey);
+        if (sessionEntity != null) {
+            // 以前已经聊过天，删除之后，sessionEntity不存在
+            logger.i("#loadHistoryMsg# sessionEntity is " + sessionEntity.toString());
+            lastMsgId = sessionEntity.getLatestMsgId();
+            // 这个地方设定有问题，先使用最大的时间,session的update设定存在问题
+            //lastCreateTime = sessionEntity.getUpdated();
+        } else {
+            logger.i("#loadHistoryMsg# sessionEntity is null");
+        }
+
+        if (lastMsgId < 1 || TextUtils.isEmpty(sessionKey)) {
+            return Collections.emptyList();
+        }
+        if (count > lastMsgId) {
+            count = lastMsgId;
+        }
+        List<MessageEntity> msgList = doLoadHistoryMsg(pullTimes, peerId, peerType, sessionKey, lastMsgId, lastCreateTime, count);
+
+        return msgList;
+    }
+
     // 根据次数有点粗暴
     public List<MessageEntity> loadHistoryMsg(MessageEntity entity, int pullTimes) {
         logger.d("IMMessageActivity#LoadHistoryMsg");
