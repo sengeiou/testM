@@ -62,6 +62,7 @@
             android:process=":remote"/>
 
         <service android:name=".service.UpdateService"/>
+        <service android:name=".service.MMNotificationService"/>
 
         <activity
             android:name=".activity.SplashActivity"
