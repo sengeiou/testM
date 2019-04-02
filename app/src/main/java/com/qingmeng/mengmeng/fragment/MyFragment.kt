@@ -82,7 +82,9 @@ class MyFragment : BaseFragment() {
          * 消息用到的
          */
         imServiceConnector.connect(context)
-        EventBus.getDefault().register(this)
+        if (!EventBus.getDefault().isRegistered(this)) {
+            EventBus.getDefault().register(this)
+        }
     }
 
     //点击事件

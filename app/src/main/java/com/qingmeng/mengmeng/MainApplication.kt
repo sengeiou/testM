@@ -14,6 +14,7 @@ import com.mogujie.tt.imservice.service.IMService
 import com.mogujie.tt.utils.ImageLoaderUtil
 import com.qingmeng.mengmeng.entity.MyObjectBox
 import com.qingmeng.mengmeng.entity.UserBean
+import com.qingmeng.mengmeng.service.MMNotificationService
 import com.qingmeng.mengmeng.utils.SharedSingleton
 import com.qingmeng.mengmeng.view.MyVideoView
 import com.tencent.bugly.crashreport.CrashReport
@@ -50,8 +51,20 @@ class MainApplication : MultiDexApplication() {
         initBox()
         initBugly()
 
+        //开启盟盟通知栏服务
+        startMMNotificationService()
         startIMService()
         ImageLoaderUtil.initImageLoaderConfig(applicationContext)
+    }
+
+    private fun startMMNotificationService() {
+        val intent = Intent()
+        intent.setClass(this, MMNotificationService::class.java)
+        if (Build.VERSION.SDK_INT >= 26) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
+        }
     }
 
     private fun startIMService() {
