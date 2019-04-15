@@ -197,7 +197,7 @@ public class ProtoBuf2JavaBean {
         if(audioStream.length < 4){
             audioMessage.setReadStatus(MessageConstant.UP_OSS_READED);
             audioMessage.setAudioPath("");
-            audioMessage.setAudiolength(0);
+            audioMessage.setAudioLength(0);
         }else {
             int msgLen = audioStream.length;
             byte[] playTimeByte = new byte[4];
@@ -207,14 +207,14 @@ public class ProtoBuf2JavaBean {
             System.arraycopy(audioStream, 4, audioContent, 0, msgLen - 4);
             int playTime = CommonUtil.byteArray2int(playTimeByte);
             String audioSavePath = FileUtil.saveAudioResourceToFile(audioContent, audioMessage.getFromId());
-            audioMessage.setAudiolength(playTime);
+            audioMessage.setAudioLength(playTime);
             audioMessage.setAudioPath(audioSavePath);
         }
 
         /**抽离出来 或者用gson*/
         JSONObject extraContent = new JSONObject();
         extraContent.put("audioPath",audioMessage.getAudioPath());
-        extraContent.put("audiolength",audioMessage.getAudiolength());
+        extraContent.put("audiolength",audioMessage.getAudioLength());
         extraContent.put("readStatus",audioMessage.getReadStatus());
         String audioContent = extraContent.toString();
         audioMessage.setContent(audioContent);

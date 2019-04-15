@@ -20,13 +20,16 @@ class MySettingsUserBean {
     val qq: String = ""
     val email: String = ""
     val fax: String = ""
-    val provinceId: Int = 0
     val address: String = ""
     var capitalId: Int = 0
     var industryOfInterest: String = ""
     val capital: String = ""
     val industryOfInterestName: List<String> = ArrayList()
     val userName: String = ""
-    val cityIds: Int = 0
-    val cityName: String = ""
+    val provinceId: Int = 0
+    val cityId: Int = 0
+    val districtId: Int = 0
+    val province: String = ""
+    val city: String = ""
+    val districtName: String = ""
 }

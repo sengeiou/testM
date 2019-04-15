@@ -92,7 +92,7 @@ class ChatAdapter {
                         val audioMessage = item as AudioMessage
                         val userEntity = ChatAdapter.getUserEntity(audioMessage)
                         GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, getView(R.id.ivMyMessageChatRvOtherAudioHead), placeholder = R.mipmap.my_settings_aboutus_icon, roundRadius = 15)
-                        setText(R.id.tvMyMessageChatRvOtherAudioTime, "${audioMessage.audiolength}\"")
+                        setText(R.id.tvMyMessageChatRvOtherAudioTime, "${audioMessage.audioLength}\"")
                     }
                     RenderType.MESSAGE_TYPE_OTHER_VIDEO -> {  //视频
                         val videoMessage = item as VideoMessage
@@ -122,7 +122,7 @@ class ChatAdapter {
                         val audioMessage = item as AudioMessage
                         val userEntity = ChatAdapter.getUserEntity(audioMessage)
                         GlideLoader.load(AppManager.instance.currentActivity(), userEntity.avatar, getView(R.id.ivMyMessageChatRvMineAudioHead), placeholder = R.mipmap.my_settings_aboutus_icon, roundRadius = 15)
-                        setText(R.id.tvMyMessageChatRvMineAudioTime, "${audioMessage.audiolength}\"")
+                        setText(R.id.tvMyMessageChatRvMineAudioTime, "${audioMessage.audioLength}\"")
                     }
                     RenderType.MESSAGE_TYPE_MINE_VIDEO -> {  //视频
                         val videoMessage = item as VideoMessage

@@ -192,7 +192,7 @@ public class AudioRenderView extends  BaseMsgRenderView {
                     break;
             }
 
-            int audioLength =  audioMessage.getAudiolength();
+            int audioLength =  audioMessage.getAudioLength();
             audioDuration.setText(String.valueOf(audioLength) + '"');
             // messageLayout 的长按事件绑定 在上层做掉，有时间了再迁移
 

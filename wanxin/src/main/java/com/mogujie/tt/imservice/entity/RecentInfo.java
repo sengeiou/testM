@@ -182,7 +182,7 @@ public class RecentInfo {
     }
 
     public String getName() {
-        if (name == null) {
+        if (name == null || name.equals("")) {
             try {
                 ContentEntity contentEntity = new Gson().fromJson(latestMsgData, ContentEntity.class);
                 if (contentEntity != null) {

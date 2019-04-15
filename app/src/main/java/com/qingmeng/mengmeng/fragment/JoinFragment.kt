@@ -46,6 +46,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     private lateinit var mMenuAdapter: JoinMenuAdapter
 
     private var mImgList = ArrayList<Banner>()
+    private var imgList = ArrayList<Banner>()   //用来删除缓存用
     private val menuList = ArrayList<StaticBean>()
     private val tabList = ArrayList<StaticBean>()
     private val viewSparseArray = SparseArray<RecyclerView>()
@@ -62,10 +63,13 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     //获取缓存数据
     private fun getCacheData() {
         Observable.create<JoinRecommendBean> {
-            val bannerData = BoxUtils.getBannersByType(7)
+            BoxUtils.getBannersByType(7)?.let {
+                imgList.addAll(it)
+            }
             val menuData = BoxUtils.getStaticByType(1)
             val tabData = BoxUtils.getStaticByType(2)
-            mImgList.addAll(bannerData)
+            mImgList.clear()
+            mImgList.addAll(imgList)
             menuList.addAll(menuData)
             tabList.addAll(tabData)
             var recommendBean = JoinRecommendBean(ArrayList())
@@ -78,9 +82,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 .subscribe({
                     initView()
                     initVPIndicator()
-                    if (mImgList.isNotEmpty()) {
-                        setBanner()
-                    }
+                    setBanner()
                     if (!tabList.isEmpty()) {
                         val view = getView(tabList[vpList.currentItem].id)
                         val adapter = view.adapter as JoinRecommendAdapter
@@ -157,6 +159,8 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 topSearch.visibility = View.VISIBLE
             }
         })
+
+        mJoinBannerView.setOnClickListener { }
     }
 
     //设置分类icon
@@ -272,6 +276,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 
     override fun onRefresh() {
         getNewData()
+        mJoinBannerView.visibility = View.VISIBLE
     }
 
     private fun getNewData() {
@@ -367,18 +372,22 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                     if (bean.code == 12000) {
                         bean.data?.let {
                             if (!it.banners.isEmpty()) {
-                                BoxUtils.removeBanners(mImgList)
-//                                mImgList.clear()
+                                val isInitialization = mImgList.isEmpty()
+                                BoxUtils.removeBanners(imgList)
+                                mImgList.clear()
                                 it.setVersion()
-                                mImgList = it.banners as ArrayList<Banner>
-                                BoxUtils.saveBanners(mImgList)
-                                setBanner()
+                                imgList = it.banners as ArrayList<Banner>
+                                mImgList.addAll(it.banners)
+                                BoxUtils.saveBanners(imgList)
+                                setBanner(isInitialization)
                             }
                         }
                     } else if (bean.code != 20000) {
                         ToastUtil.showShort(bean.msg)
                     }
+                    mJoinBannerView.visibility = View.GONE
                 }, {
+                    mJoinBannerView.visibility = View.GONE
                     ToastUtil.showNetError()
                 }, {}, { addSubscription(it) })
     }
@@ -430,17 +439,23 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     //banner加载图片
     override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: Banner?, position: Int) {
         model?.let {
-            Glide.with(this).load(it.imgUrl).apply(RequestOptions()
+            Glide.with(this).load(model.imgUrl).apply(RequestOptions()
                     .placeholder(R.drawable.default_img_banner)
                     .centerCrop()).into(itemView)
         }
     }
 
-    private fun setBanner() {
-        mJoinBanner.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
-        mJoinBanner.setDelegate(this)//设置点击事件，重写点击回调方法
-        mJoinBanner.setData(mImgList, null)
-        mJoinBanner.setAutoPlayAble(mImgList.size > 1)
+    private fun setBanner(isFirst: Boolean = true) {
+        if (mImgList.isNotEmpty() && mImgList.size > 0) {
+            if (isFirst) {
+                mJoinBanner.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
+                mJoinBanner.setDelegate(this)//设置点击事件，重写点击回调方法
+                mJoinBanner.setAutoPlayAble(mImgList.size > 1)
+                mJoinBanner.setData(mImgList, null)
+            } else {
+                mJoinBanner.invalidate()
+            }
+        }
     }
 
     /**

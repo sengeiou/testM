@@ -1,32 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
 
     <com.qingmeng.mengmeng.view.SwipeLayout
         android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:load_more_enabled="false">
+        app:load_more_enabled="false"
+        >
 
         <android.support.design.widget.CoordinatorLayout
             android:id="@+id/swipe_target"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
 
             <android.support.design.widget.AppBarLayout
                 android:id="@+id/barLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/white">
+                android:background="@color/white"
+                >
 
                 <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:layout_scrollFlags="scroll">
+                    app:layout_scrollFlags="scroll"
+                    >
 
-                    <include layout="@layout/layout_banner"/>
+                    <include layout="@layout/layout_banner" />
 
                     <LinearLayout
                         android:id="@+id/bottomSearch"
@@ -35,7 +41,8 @@
                         android:layout_centerHorizontal="true"
                         android:layout_marginTop="@dimen/join_search_bar_top"
                         android:background="@drawable/bg_search"
-                        android:gravity="center">
+                        android:gravity="center"
+                        >
 
                         <TextView
                             android:layout_width="wrap_content"
@@ -44,56 +51,62 @@
                             android:drawablePadding="@dimen/padding_dp_5"
                             android:text="@string/seach"
                             android:textColor="@color/white"
-                            android:textSize="@dimen/text_size_14"/>
+                            android:textSize="@dimen/text_size_14"
+                            />
                     </LinearLayout>
-
                 </RelativeLayout>
 
                 <com.qingmeng.mengmeng.view.MyGridView
                     android:id="@+id/mJoinMenu"
                     android:layout_width="match_parent"
-                    android:listSelector="@color/transparent"
                     android:layout_height="wrap_content"
+                    android:listSelector="@color/transparent"
                     android:numColumns="4"
                     android:paddingStart="@dimen/padding_dp_25"
                     android:paddingTop="@dimen/padding_dp_20"
                     android:paddingEnd="0dp"
                     android:paddingBottom="@dimen/padding_dp_20"
                     android:verticalSpacing="@dimen/padding_dp_30"
-                    app:layout_scrollFlags="scroll"/>
+                    app:layout_scrollFlags="scroll"
+                    />
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/padding_dp_10"
-                    android:background="@color/common_bg"/>
+                    android:background="@color/common_bg"
+                    />
 
-                <include layout="@layout/layout_guess_you_like"/>
+                <include layout="@layout/layout_guess_you_like" />
 
                 <net.lucode.hackware.magicindicator.MagicIndicator
                     android:id="@+id/channelIndicator"
                     android:layout_width="match_parent"
                     android:layout_height="35dp"
-                    android:background="@color/white"/>
+                    android:background="@color/white"
+                    />
             </android.support.design.widget.AppBarLayout>
 
             <android.support.v4.view.ViewPager
                 android:id="@+id/vpList"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                />
         </android.support.design.widget.CoordinatorLayout>
     </com.qingmeng.mengmeng.view.SwipeLayout>
 
     <RelativeLayout
         android:id="@+id/mSearchLayout"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/padding_dp_64">
+        android:layout_height="@dimen/padding_dp_64"
+        >
 
         <ImageView
             android:id="@+id/mSearchBg"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_join_search"/>
+            android:background="@drawable/bg_join_search"
+            />
 
         <LinearLayout
             android:id="@+id/topSearch"
@@ -102,7 +115,8 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="@dimen/join_search_bar_top"
             android:background="@drawable/bg_search"
-            android:gravity="center">
+            android:gravity="center"
+            >
 
             <TextView
                 android:layout_width="wrap_content"
@@ -111,9 +125,9 @@
                 android:drawablePadding="@dimen/padding_dp_5"
                 android:text="@string/seach"
                 android:textColor="@color/white"
-                android:textSize="@dimen/text_size_14"/>
+                android:textSize="@dimen/text_size_14"
+                />
         </LinearLayout>
-
     </RelativeLayout>
 
     <ImageView
@@ -125,6 +139,6 @@
         android:layout_marginEnd="@dimen/padding_dp_10"
         android:layout_marginBottom="@dimen/padding_dp_54"
         android:src="@drawable/main_icon_to_top"
-        android:visibility="gone"/>
-
+        android:visibility="gone"
+        />
 </RelativeLayout>

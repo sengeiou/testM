@@ -182,7 +182,7 @@ public class EmotionUtils {
             EaseSmileUtils.e_highcar,
             EaseSmileUtils.e_cloudy,
             EaseSmileUtils.e_rain,
-            EaseSmileUtils.e_money,
+//            EaseSmileUtils.e_money,
         };
 
         int[] icons = new int[] {
@@ -324,7 +324,7 @@ public class EmotionUtils {
             R.drawable.highcar,
             R.drawable.cloudy,
             R.drawable.rain,
-            R.drawable.money,
+//            R.drawable.money,
         };
 
         for (int i = 0; i < icons2.length; i++) {

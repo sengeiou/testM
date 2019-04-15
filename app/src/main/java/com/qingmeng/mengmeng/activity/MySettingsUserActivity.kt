@@ -407,8 +407,15 @@ class MySettingsUserActivity : BaseActivity() {
         etMySettingsUserWechat.setText(mySettingsUserBean.wx)
         etMySettingsUserQQ.setText(mySettingsUserBean.qq)
         etMySettingsUserEmail.setText(mySettingsUserBean.email)
-        if (!mySettingsUserBean.cityName.isNullOrBlank()) {
-            tvMySettingsUserCity.text = mySettingsUserBean.cityName
+        val cityName = if (!mySettingsUserBean.districtName.isNullOrBlank()) {
+            mySettingsUserBean.districtName
+        } else if (!mySettingsUserBean.city.isNullOrBlank()) {
+            mySettingsUserBean.city
+        } else {
+            mySettingsUserBean.province
+        }
+        if (!cityName.isNullOrBlank()) {
+            tvMySettingsUserCity.text = cityName
             tvMySettingsUserCity.setTextColor(resources.getColor(R.color.color_333333))
         } else {
             tvMySettingsUserCity.text = getString(R.string.my_settings_user_select_no)
@@ -437,9 +444,9 @@ class MySettingsUserActivity : BaseActivity() {
         mWx = mySettingsUserBean.wx
         mQQ = mySettingsUserBean.qq
         mEmail = mySettingsUserBean.email
-        mProvinceId = mySettingsUserBean.cityIds
-        mCityId = mySettingsUserBean.cityIds
-        mDistrictId = mySettingsUserBean.cityIds
+        mProvinceId = mySettingsUserBean.provinceId
+        mCityId = mySettingsUserBean.cityId
+        mDistrictId = mySettingsUserBean.districtId
         mCapitalId = mySettingsUserBean.capitalId
         mIndustryOfInterest = mySettingsUserBean.industryOfInterest
     }
