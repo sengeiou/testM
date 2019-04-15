@@ -25,7 +25,7 @@ class AudioMessage() : TextMessage(), Serializable {
             setAttribute(MessageExtConst.AUDIO_URL, value)
             field = value
         }
-    var audiolength = 0
+    var audioLength = 0
         get() = getAttributeInt(MessageExtConst.AUDIO_LENGTH)
         set(value) {
             setAttribute(MessageExtConst.AUDIO_LENGTH, value)
@@ -90,7 +90,7 @@ class AudioMessage() : TextMessage(), Serializable {
             audioMessage.setMsgType(msgType)
 
             audioMessage.audioPath = audioSavePath
-            audioMessage.audiolength = tLen
+            audioMessage.audioLength = tLen
             //自己发送的就把消息状态设置成已读
             audioMessage.readStatus = MessageConstant.UP_OSS_READED
             audioMessage.setDisplayType(DBConstant.SHOW_AUDIO_TYPE)
@@ -121,7 +121,7 @@ class AudioMessage() : TextMessage(), Serializable {
             audioMessage.setMsgType(msgType)
 
             audioMessage.audioPath = audioSavePath
-            audioMessage.audiolength = tLen
+            audioMessage.audioLength = tLen
             //自己发送的就把消息状态设置成已读
             audioMessage.readStatus = MessageConstant.UP_OSS_READED
             audioMessage.setDisplayType(DBConstant.SHOW_AUDIO_TYPE)

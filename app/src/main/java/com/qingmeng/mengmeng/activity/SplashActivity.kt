@@ -78,13 +78,13 @@ class SplashActivity : BaseActivity() {
                     if (bean.code == 12000) {
                         bean.data?.let {
                             if (!it.banners.isEmpty()) {
-                                advImg = it.banners[0].imgUrl
+                                advImg = it.banners[it.banners.lastIndex].imgUrl
                                 if (isFinishing || (Build.VERSION.SDK_INT >= 17 && isDestroyed)) {
                                     return@let
                                 }
-                                advWebLink = it.banners[0].url
-                                advAppLink = it.banners[0].exteriorUrl
-                                advJump = it.banners[0].skipType
+                                advWebLink = it.banners[it.banners.lastIndex].url
+                                advAppLink = it.banners[it.banners.lastIndex].exteriorUrl
+                                advJump = it.banners[it.banners.lastIndex].skipType
                                 Glide.with(this@SplashActivity).load(advImg)
                                         .apply(RequestOptions().placeholder(R.drawable.img_splash).error(R.drawable.img_splash))
                                         .into(mSplashAdv)

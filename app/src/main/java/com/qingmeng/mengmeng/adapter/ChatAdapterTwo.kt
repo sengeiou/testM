@@ -379,8 +379,8 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         fun bindViewHolder(position: Int) {
             val audioMessage = msgObjectList[position] as AudioMessage
             setHeadImage(audioMessage, ivMyMessageChatRvOtherAudioHead)
-            tvMyMessageChatRvOtherAudioTime.text = "${audioMessage.audiolength}\""
-            tvMyMessageChatRvOtherAudio.text = audioLengthToContent(audioMessage.audiolength)
+            tvMyMessageChatRvOtherAudioTime.text = "${audioMessage.audioLength}\""
+            tvMyMessageChatRvOtherAudio.text = audioLengthToContent(audioMessage.audioLength)
             llMyMessageChatRvOtherAudio.let {
                 it.setOnClickListener {
                     audioClick(audioMessage, ivMyMessageChatRvOtherAudioImage)
@@ -650,8 +650,8 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         fun bindViewHolder(position: Int) {
             val audioMessage = msgObjectList[position] as AudioMessage
             setHeadImage(audioMessage, ivMyMessageChatRvMineAudioHead)
-            tvMyMessageChatRvMineAudioTime.text = "${audioMessage.audiolength}\""
-            viewMyMessageChatRvMineAudio.text = audioLengthToContent(audioMessage.audiolength)
+            tvMyMessageChatRvMineAudioTime.text = "${audioMessage.audioLength}\""
+            viewMyMessageChatRvMineAudio.text = audioLengthToContent(audioMessage.audioLength)
             llMyMessageChatRvMineAudio.let {
                 it.setOnClickListener {
                     audioClick(audioMessage, ivMyMessageChatRvMineAudioImage)

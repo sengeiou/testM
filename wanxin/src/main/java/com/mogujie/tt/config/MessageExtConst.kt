@@ -29,10 +29,10 @@ object MessageExtConst {
     const val VIDEO_THUMB_URL = "thumbUrl"
 
     //语音
-    const val AUDIO_URL = "audioUrl"
-    const val AUDIO_PATH = "audioPath"
-    const val AUDIO_LENGTH = "audioLength"
-    const val AUDIO_DURATION = "audioDuration"
+    const val AUDIO_URL = "voiceUrl"
+    const val AUDIO_PATH = "voicePath"
+    const val AUDIO_LENGTH = "voiceLength"
+    const val AUDIO_DURATION = "voiceDuration"
 
     //撤回消息
     const val CMD_TIME = "wxTimer"

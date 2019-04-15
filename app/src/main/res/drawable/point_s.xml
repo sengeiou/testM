@@ -5,6 +5,7 @@
         android:width="@dimen/padding_dp_8"
         android:height="@dimen/padding_dp_8"/>
 
-    <solid android:color="#99000000"/>
+    <!--<solid android:color="#99000000"/>-->
+    <solid android:color="@color/color_5ab1e1"/>
 
 </shape>

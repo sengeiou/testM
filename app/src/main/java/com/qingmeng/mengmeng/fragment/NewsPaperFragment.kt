@@ -196,7 +196,7 @@ class NewsPaperFragment : BaseFragment() {
                                 imgList = it.banners as ArrayList<Banner>
                                 mImgList.addAll(it.banners)
                                 //存入缓存
-                                BoxUtils.saveBanners(mImgList)
+                                BoxUtils.saveBanners(imgList)
                                 mLoadMoreAdapter.notifyDataSetChanged()
                             }
                         }
