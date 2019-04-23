@@ -84,6 +84,7 @@ object BoxUtils {
         boxStore.runInTxAsync({ searchBox.remove(search) }, { _, _ -> })
     }
 
+
     /**
      * 根据类型获取静态数据
      *
