@@ -13,7 +13,6 @@
         <item name="windowNoTitle">true</item>
         <item name="android:windowBackground">@null</item>
         <item name="android:screenOrientation">portrait</item>
-
     </style>
 
     <!--<style name="AppTheme.NoActionBarBack">-->
@@ -27,6 +26,7 @@
     <!--透明activity-->
     <style name="AppTheme.NoActionBar.Translucent">
         <!--<item name="android:windowIsTranslucent">true</item>-->
+        <item name="android:windowBackground">@drawable/img_splash</item>
     </style>
 
     <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

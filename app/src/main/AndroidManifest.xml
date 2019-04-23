@@ -157,6 +157,7 @@
             android:name=".activity.RedShopSeachResult"
             android:launchMode="singleTask"
             android:windowSoftInputMode="stateAlwaysHidden"/>
+        <activity android:name=".activity.TestActivity"/>
     </application>
 
 </manifest>
