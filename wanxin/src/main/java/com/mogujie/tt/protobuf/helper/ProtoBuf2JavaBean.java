@@ -214,7 +214,8 @@ public class ProtoBuf2JavaBean {
         /**抽离出来 或者用gson*/
         JSONObject extraContent = new JSONObject();
         extraContent.put("audioPath",audioMessage.getAudioPath());
-        extraContent.put("audiolength",audioMessage.getAudioLength());
+        extraContent.put("audioUrl",audioMessage.getAudioUrl());
+        extraContent.put("audioLength",audioMessage.getAudioLength());
         extraContent.put("readStatus",audioMessage.getReadStatus());
         String audioContent = extraContent.toString();
         audioMessage.setContent(audioContent);

@@ -58,6 +58,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_message_chat.*
 import kotlinx.android.synthetic.main.layout_head.*
 import kotlinx.android.synthetic.main.view_dialog_sound_volume.*
+import kotlinx.android.synthetic.main.view_tips.*
 import org.jetbrains.anko.startActivity
 import java.io.IOException
 import java.util.*
@@ -134,6 +135,7 @@ class MyMessageChatActivity : BaseActivity() {
         instance = this
         val title = intent.getStringExtra("title") ?: ""
         setHeadName(title)
+        tvViewTips.text = getString(R.string.my_message_notification_null_tips)
         mAudioRecordManager = AudioRecordManager.getInstance(this)
         //系统通知隐藏聊天功能
         if (title == getString(R.string.systemNotification)) {
@@ -1125,15 +1127,15 @@ class MyMessageChatActivity : BaseActivity() {
      */
     private fun onRecordVoiceEnd(audioSavePath: String, audioLen: Float) {
         if (audioSavePath != "" && loginUser != null) {
-            val audioMessage = if (peerEntity == null) {
-                if (currentSessionKey == null) {
-                    return
-                }
-                val sessionInfo = EntityChangeEngine.spiltSessionKey(currentSessionKey)
-                AudioMessage.buildForSend(audioLen, audioSavePath, loginUser!!, sessionInfo[0].toInt(), sessionInfo[1].toInt())
-            } else {
-                AudioMessage.buildForSend(audioLen, audioSavePath, loginUser!!, peerEntity!!)
-            }
+//            val audioMessage = if (peerEntity == null) {
+//                if (currentSessionKey == null) {
+//                    return
+//                }
+//                val sessionInfo = EntityChangeEngine.spiltSessionKey(currentSessionKey)
+//                AudioMessage.buildForSend(audioLen, audioSavePath, loginUser!!, sessionInfo[0].toInt(), sessionInfo[1].toInt())
+//            } else {
+//            }
+            val audioMessage = AudioMessage.buildForSend(audioLen, audioSavePath, loginUser!!, currentSessionKey)
 
             mImService?.messageManager?.sendAudio(audioMessage)
             pushList(audioMessage, true)

@@ -3,7 +3,7 @@
     android:oneshot="false" >
 
     <item
-        android:drawable="@drawable/tt_voice_node_mine"
+        android:drawable="@drawable/tt_voice_node_mine_playing003"
         android:duration="100"/>
     <item
         android:drawable="@drawable/tt_voice_node_mine_playing001"

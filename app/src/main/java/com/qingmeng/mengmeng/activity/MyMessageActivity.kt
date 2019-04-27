@@ -41,6 +41,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_my_message.*
 import kotlinx.android.synthetic.main.activity_shop_detail.*
 import kotlinx.android.synthetic.main.layout_head.*
+import kotlinx.android.synthetic.main.view_tips.*
 import org.jetbrains.anko.startActivityForResult
 import java.util.*
 
@@ -97,7 +98,7 @@ class MyMessageActivity : BaseActivity() {
 
         instance = this
         setHeadName(R.string.message)
-        llMyMessageTips.findViewById<TextView>(R.id.tvViewTips).text = getString(R.string.my_message_null_tips)
+        tvViewTips.text = getString(R.string.my_message_null_tips)
         mIsMyFragmentEnter = intent.getBooleanExtra(MY_TO_MESSAGE, false)
         if (mIsMyFragmentEnter) {
             MYFRAGMENT_TO_MESSAGE = true
@@ -162,7 +163,7 @@ class MyMessageActivity : BaseActivity() {
                     FaceInitData.init(applicationContext)
                     FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
                     if (t.sessionKey != null && t.name != null) {
-                        startActivityForResult<MyMessageChatActivity>(TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to t.sessionKey, "title" to t.name, "avatar" to mAvatar)
+                        startActivityForResult<MyMessageChatActivity>(TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to t.sessionKey, "title" to t.name, "avatar" to if (t.avatar[0] != null && t.avatar[0].isNotEmpty()) t.avatar[0] else mAvatar)
                         MESSAGE_TO_CHAT = true
                         //如果聊天页面存在了 就销毁它
                         finishAty(MyMessageChatActivity::class.java)

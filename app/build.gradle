@@ -134,7 +134,7 @@ dependencies {
     //微信
     implementation 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+'
     implementation 'com.aliyun.dpa:oss-android-sdk:+'
-    implementation 'com.github.Aspsine:SwipeToLoadLayout:1.0.3'
+    implementation 'com.github.Aspsine:SwipeToLoadLayout:1.0.4'
     implementation 'com.github.hackware1993:MagicIndicator:1.4.2'
     implementation "io.objectbox:objectbox-kotlin:$objectboxVersion"
     implementation 'com.aliyun.dpa:oss-android-sdk:2.4.5'

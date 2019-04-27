@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/seach_ranking_linear"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    >
 
     <TextView
         android:id="@+id/search_result_pop_left_item"
@@ -17,7 +19,8 @@
         android:maxLines="1"
         android:text="content"
         android:textColor="@color/color_666666"
-        android:textSize="@dimen/text_size_14" />
+        android:textSize="@dimen/text_size_14"
+        />
 
     <ImageView
         android:id="@+id/search_result_pop_left_arrows"
@@ -27,5 +30,6 @@
         android:layout_marginTop="@dimen/padding_dp_15"
         android:gravity="center"
         android:src="@drawable/seach_select"
-        android:visibility="gone" />
+        android:visibility="gone"
+        />
 </LinearLayout>

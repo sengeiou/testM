@@ -169,12 +169,14 @@ class RedShopFragment : BaseFragment() {
                 setText(R.id.red_shop_left_textview, data.name)
             }
         }, onItemClick = { _, _, position ->
-            mLeftList.forEach {
-                it.checkState = false
+            if (position != -1) {
+                mLeftList.forEach {
+                    it.checkState = false
+                }
+                mLeftList[position].checkState = true
+                getClickCache(mLeftList[position].id.toLong())
+                mLeftAdapter.notifyDataSetChanged()
             }
-            mLeftList[position].checkState = true
-            getClickCache(mLeftList[position].id.toLong())
-            mLeftAdapter.notifyDataSetChanged()
         })
         red_shop_left_recyclerview.adapter = mLeftAdapter
     }

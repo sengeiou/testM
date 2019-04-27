@@ -26,7 +26,14 @@
 
     <!--透明activity-->
     <style name="AppTheme.NoActionBar.Translucent">
+        <item name="android:windowBackground">@drawable/img_splash</item>
         <!--<item name="android:windowIsTranslucent">true</item>-->
+    </style>
+
+    <!--无背景activity-->
+    <style name="AppTheme.NoActionBar.Launcher">
+        <item name="android:windowBackground">@null</item>
+        <item name="android:windowDisablePreview">true</item>
     </style>
 
     <style name="AppTheme.NoActionBar.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />

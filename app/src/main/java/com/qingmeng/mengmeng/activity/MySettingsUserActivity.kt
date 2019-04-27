@@ -363,9 +363,9 @@ class MySettingsUserActivity : BaseActivity() {
             mName.isBlank() -> ToastUtil.showShort(getString(R.string.my_settings_user_name_tips))   //真实姓名
 //            mPhone.isBlank() -> ToastUtil.showShort(getString(R.string.phoneTips))  //手机号
 //            !InputCheckUtils.checkPhone(mPhone) -> ToastUtil.showShort(getString(R.string.phoneFormat_tips))   //手机号格式错误
-            mProvinceId == 0 -> ToastUtil.showShort(getString(R.string.popCitySelect_twoTips))   //省id 直接判断省id就可以了
-            mCapitalId == 0 -> ToastUtil.showShort(getString(R.string.my_settings_user_money_tips))   //创业资本
-            mIndustryOfInterest.isBlank() -> ToastUtil.showShort(getString(R.string.my_settings_user_interestIndustry_tips)) //感兴趣行业
+//            mProvinceId == 0 -> ToastUtil.showShort(getString(R.string.popCitySelect_twoTips))   //省id 直接判断省id就可以了
+//            mCapitalId == 0 -> ToastUtil.showShort(getString(R.string.my_settings_user_money_tips))   //创业资本
+//            mIndustryOfInterest.isBlank() -> ToastUtil.showShort(getString(R.string.my_settings_user_interestIndustry_tips)) //感兴趣行业
             !mTelephone.isBlank() && !InputCheckUtils.checkTel(mTelephone) -> ToastUtil.showShort(getString(R.string.my_settings_user_telephone_tips))
             !mWx.isBlank() && !InputCheckUtils.checkWechat(mWx) -> ToastUtil.showShort(getString(R.string.my_settings_user_wechat_tips))
             !mQQ.isBlank() && !InputCheckUtils.checkQQ(mQQ) -> ToastUtil.showShort(getString(R.string.my_settings_user_qq_tips))

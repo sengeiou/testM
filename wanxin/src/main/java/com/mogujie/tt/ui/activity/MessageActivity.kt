@@ -587,7 +587,7 @@ class MessageActivity : MessageBaseActivity(), OnRefreshListener2<ListView>, Vie
      */
     private fun onRecordVoiceEnd(audioSavePath: String, audioLen: Float) {
         logger.d("message_activity#chat#audio#onRecordVoiceEnd audioLen:%f", audioLen)
-        val audioMessage = AudioMessage.buildForSend(audioLen, audioSavePath, loginUser!!, peerEntity!!)
+        val audioMessage = AudioMessage.buildForSend(audioLen, audioSavePath, loginUser!!, currentSessionKey!!) //peerEntity
         mImService?.messageManager?.sendAudio(audioMessage)//sendVoice
         pushList(audioMessage)
         adapter.notifyDataSetChanged()

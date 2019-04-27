@@ -1,52 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:id="@+id/mjoinLinear"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/common_bg"
-              android:focusable="true"
-              android:focusableInTouchMode="true"
-              android:orientation="vertical">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mjoinLinear"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/common_bg"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:orientation="vertical">
 
-    <include layout="@layout/layout_head"/>
+    <include layout="@layout/layout_head" />
 
-    <LinearLayout
+    <Button
+        android:id="@+id/btn_join_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="45dp"
+        android:background="@color/white"
+        android:drawableRight="@drawable/join_brand_details"
+        android:gravity="center_vertical"
+        android:hint="@string/join_feedback_type"
+        android:padding="10dp"
+        android:textColor="@color/color_999999"
+        android:textSize="@dimen/text_size_14" />
+
+    <EditText
+        android:id="@+id/edt_join_feedback"
+        android:layout_width="match_parent"
+        android:layout_height="195dp"
+        android:background="@color/white"
+        android:gravity="left"
+        android:hint="@string/join_feedback_description"
+        android:maxLength="200"
+        android:padding="10dp"
+        android:textColor="@color/color_333333"
+        android:textSize="@dimen/text_size_14" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recy_join_feedback"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/white"
-        android:orientation="vertical">
-
-        <Button
-            android:id="@+id/btn_join_feedback"
-            android:layout_width="match_parent"
-            android:layout_height="45dp"
-            android:background="@color/white"
-            android:drawableRight="@drawable/join_brand_details"
-            android:gravity="center_vertical"
-            android:hint="@string/join_feedback_type"
-            android:padding="10dp"
-            android:textColor="@color/color_999999"
-            android:textSize="@dimen/text_size_14"/>
-
-        <EditText
-            android:id="@+id/edt_join_feedback"
-            android:layout_width="match_parent"
-            android:layout_height="195dp"
-            android:background="@null"
-            android:gravity="left"
-            android:maxLength="200"
-            android:hint="@string/join_feedback_description"
-            android:padding="10dp"
-            android:textColor="@color/color_333333"
-            android:textSize="@dimen/text_size_14"/>
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recy_join_feedback"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="5dp"/>
-    </LinearLayout>
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp"
+        android:paddingBottom="5dp"
+        android:background="@color/white" />
 
 </LinearLayout>
