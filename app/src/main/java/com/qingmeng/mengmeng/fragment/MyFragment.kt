@@ -74,6 +74,7 @@ class MyFragment : BaseFragment() {
         ivMySettings.setMarginExt(top = statusBarHeight + context!!.dp2px(10))
 
         spf = SharedPreferencesHelper(context!!, "myFragment")
+        mLoginSuccess = (MainApplication.instance.TOKEN != "")
 
         //设置缓存数据
         getCacheData()

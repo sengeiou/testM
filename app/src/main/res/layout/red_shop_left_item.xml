@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/red_shop_left_lineralayout"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/padding_dp_45">
+    android:layout_height="@dimen/padding_dp_45"
+    >
 
     <TextView
         android:id="@+id/red_shop_left_textview"
@@ -12,5 +14,6 @@
         android:gravity="center_vertical"
         android:paddingStart="@dimen/padding_dp_20"
         android:textColor="@color/color_666666"
-        android:textSize="@dimen/text_size_14" />
+        android:textSize="@dimen/text_size_14"
+        />
 </RelativeLayout>

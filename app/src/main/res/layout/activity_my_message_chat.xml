@@ -13,29 +13,11 @@
         android:id="@+id/llMyMessageChatHead"
         layout="@layout/layout_head"/>
 
-    <LinearLayout
+    <include
         android:id="@+id/llMyMessageChatTips"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:gravity="center"
-        android:orientation="vertical"
+        layout="@layout/view_tips"
         android:visibility="gone"
-        >
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/search_nothing"
-            />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/padding_dp_21"
-            android:layout_marginTop="@dimen/padding_dp_10"
-            android:text="@string/my_message_notification_null_tips"
-            />
-    </LinearLayout>
+        />
 
     <FrameLayout
         android:id="@+id/flMyMessageChat"

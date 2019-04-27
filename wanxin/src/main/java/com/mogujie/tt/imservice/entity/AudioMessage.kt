@@ -6,6 +6,7 @@ import com.mogujie.tt.config.MessageExtConst
 import com.mogujie.tt.db.entity.MessageEntity
 import com.mogujie.tt.db.entity.PeerEntity
 import com.mogujie.tt.db.entity.UserEntity
+import com.mogujie.tt.imservice.manager.buildSendMessage
 import java.io.Serializable
 
 /**
@@ -69,66 +70,81 @@ class AudioMessage() : TextMessage(), Serializable {
             return AudioMessage(entity)
         }
 
-        fun buildForSend(audioLen: Float, audioSavePath: String, fromUser: UserEntity, peerEntity: PeerEntity): AudioMessage {
-            var tLen = (audioLen + 0.5).toInt()
-            tLen = if (tLen < 1) 1 else tLen
-            if (tLen < audioLen) {
-                ++tLen
+//        fun buildForSend(audioLen: Float, audioSavePath: String, fromUser: UserEntity, peerEntity: PeerEntity): AudioMessage {
+//            var tLen = (audioLen + 0.5).toInt()
+//            tLen = if (tLen < 1) 1 else tLen
+//            if (tLen < audioLen) {
+//                ++tLen
+//            }
+//
+//            val nowTime = (System.currentTimeMillis() / 1000).toInt()
+//            val audioMessage = AudioMessage()
+//            audioMessage.setFromId(fromUser.peerId)
+//            audioMessage.setToId(peerEntity.peerId)
+//            audioMessage.setCreated(nowTime)
+//            audioMessage.setUpdated(nowTime)
+//            val peerType = peerEntity.type
+//            val msgType = if (peerType == DBConstant.SESSION_TYPE_GROUP)
+//                DBConstant.MSG_TYPE_GROUP_AUDIO
+//            else
+//                DBConstant.MSG_TYPE_SINGLE_AUDIO
+//            audioMessage.setMsgType(msgType)
+//
+//            audioMessage.audioPath = audioSavePath
+//            audioMessage.audioLength = tLen
+//            //自己发送的就把消息状态设置成已读
+//            audioMessage.readStatus = MessageConstant.UP_OSS_READED
+//            audioMessage.setDisplayType(DBConstant.SHOW_AUDIO_TYPE)
+//            audioMessage.sendStatus = MessageConstant.UP_OSS_LOADING
+//            audioMessage.setStatus(MessageConstant.MSG_SENDING)
+//            audioMessage.buildSessionKey(true)
+//            return audioMessage
+//        }
+//
+//        fun buildForSend(audioLen: Float, audioSavePath: String, fromUser: UserEntity, peerId: Int, peerType: Int): AudioMessage {
+//            var tLen = (audioLen + 0.5).toInt()
+//            tLen = if (tLen < 1) 1 else tLen
+//            if (tLen < audioLen) {
+//                ++tLen
+//            }
+//
+//            val nowTime = (System.currentTimeMillis() / 1000).toInt()
+//            val audioMessage = AudioMessage()
+//            audioMessage.setFromId(fromUser.peerId)
+//            audioMessage.setToId(peerId)
+//            audioMessage.setCreated(nowTime)
+//            audioMessage.setUpdated(nowTime)
+//            val peerType = peerType
+//            val msgType = if (peerType == DBConstant.SESSION_TYPE_GROUP)
+//                DBConstant.MSG_TYPE_GROUP_AUDIO
+//            else
+//                DBConstant.MSG_TYPE_SINGLE_AUDIO
+//            audioMessage.setMsgType(msgType)
+//
+//            audioMessage.audioPath = audioSavePath
+//            audioMessage.audioLength = tLen
+//            //自己发送的就把消息状态设置成已读
+//            audioMessage.readStatus = MessageConstant.UP_OSS_READED
+//            audioMessage.setDisplayType(DBConstant.SHOW_AUDIO_TYPE)
+//            audioMessage.sendStatus = MessageConstant.UP_OSS_LOADING
+//            audioMessage.setStatus(MessageConstant.MSG_SENDING)
+//            audioMessage.buildSessionKey(true)
+//            return audioMessage
+//        }
+
+        // 消息页面，发送视频消息
+        fun buildForSend(audioLen: Float?, audioSavePath: String?, fromUser: UserEntity?, sessionKey: String?): AudioMessage? {
+            if (audioLen == null || audioSavePath == null || fromUser == null || sessionKey == null) {
+                return null
             }
-
-            val nowTime = (System.currentTimeMillis() / 1000).toInt()
-            val audioMessage = AudioMessage()
-            audioMessage.setFromId(fromUser.peerId)
-            audioMessage.setToId(peerEntity.peerId)
-            audioMessage.setCreated(nowTime)
-            audioMessage.setUpdated(nowTime)
-            val peerType = peerEntity.type
-            val msgType = if (peerType == DBConstant.SESSION_TYPE_GROUP)
-                DBConstant.MSG_TYPE_GROUP_AUDIO
-            else
-                DBConstant.MSG_TYPE_SINGLE_AUDIO
-            audioMessage.setMsgType(msgType)
-
-            audioMessage.audioPath = audioSavePath
-            audioMessage.audioLength = tLen
-            //自己发送的就把消息状态设置成已读
-            audioMessage.readStatus = MessageConstant.UP_OSS_READED
-            audioMessage.setDisplayType(DBConstant.SHOW_AUDIO_TYPE)
-            audioMessage.sendStatus = MessageConstant.UP_OSS_LOADING
-            audioMessage.setStatus(MessageConstant.MSG_SENDING)
-            audioMessage.buildSessionKey(true)
-            return audioMessage
-        }
-
-        fun buildForSend(audioLen: Float, audioSavePath: String, fromUser: UserEntity, peerId: Int, peerType: Int): AudioMessage {
-            var tLen = (audioLen + 0.5).toInt()
-            tLen = if (tLen < 1) 1 else tLen
-            if (tLen < audioLen) {
-                ++tLen
+            val peerEntity = PeerEntity.getPeerEntity(sessionKey)
+            return AudioMessage().apply {
+                buildSendMessage(fromUser, peerEntity, "[语音]", DBConstant.SHOW_AUDIO_TYPE)
+                sendStatus = MessageConstant.UP_OSS_LOADING
+                status = MessageConstant.MSG_SENDING
+                audioPath = audioSavePath
+                audioLength = audioLen.toInt()
             }
-
-            val nowTime = (System.currentTimeMillis() / 1000).toInt()
-            val audioMessage = AudioMessage()
-            audioMessage.setFromId(fromUser.peerId)
-            audioMessage.setToId(peerId)
-            audioMessage.setCreated(nowTime)
-            audioMessage.setUpdated(nowTime)
-            val peerType = peerType
-            val msgType = if (peerType == DBConstant.SESSION_TYPE_GROUP)
-                DBConstant.MSG_TYPE_GROUP_AUDIO
-            else
-                DBConstant.MSG_TYPE_SINGLE_AUDIO
-            audioMessage.setMsgType(msgType)
-
-            audioMessage.audioPath = audioSavePath
-            audioMessage.audioLength = tLen
-            //自己发送的就把消息状态设置成已读
-            audioMessage.readStatus = MessageConstant.UP_OSS_READED
-            audioMessage.setDisplayType(DBConstant.SHOW_AUDIO_TYPE)
-            audioMessage.sendStatus = MessageConstant.UP_OSS_LOADING
-            audioMessage.setStatus(MessageConstant.MSG_SENDING)
-            audioMessage.buildSessionKey(true)
-            return audioMessage
         }
     }
 }
