@@ -62,7 +62,14 @@
             android:process=":remote" />
 
         <service android:name=".service.UpdateService" />
-        <service android:name=".service.MMNotificationService" />
+
+        <!-- persistent:将该进程设置为常驻内存进程 -->
+        <!-- priority:设置进程优先级（最高1000） -->
+        <service
+            android:name=".service.MMNotificationService"
+            android:persistent="true"
+            android:priority="1000"
+            />
 
         <activity
             android:name=".activity.SplashActivity"
@@ -150,7 +157,7 @@
         <activity
             android:name=".activity.HeadDetailsActivity"
             android:label="@string/title_activity_head_details"
-            android:theme="@style/AppTheme.NoActionBar" />
+            />
         <activity
             android:name=".activity.RedShopSeach"
             android:launchMode="singleTask"

@@ -27,9 +27,9 @@ public class UnreadMsgUtils {
 //            lp.height = (int) (10 * dm.density);
 //            msgView.setLayoutParams(lp);
 //        } else {
-            lp.height = (int) (13 * dm.density);
+            lp.height =(int) (14 * dm.density);
             if (num > 0 && num < 10) {  //圆
-                lp.width = (int) (13 * dm.density);
+                lp.width = (int) (14 * dm.density);
                 msgView.setText(num + "");
             } else if (num > 9 && num < 100) {  //圆角矩形,圆角是高度的一半,设置默认padding
                 lp.width = RelativeLayout.LayoutParams.WRAP_CONTENT;

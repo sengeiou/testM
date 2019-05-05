@@ -46,7 +46,7 @@
                     android:layout_toEndOf="@+id/ivMyMessageRvLogo"
                     android:gravity="center"
                     android:textColor="#ffffff"
-                    android:textSize="8sp"
+                    android:textSize="@dimen/text_size_10"
                     mv:mv_backgroundColor="#FD481F"
                     mv:mv_isRadiusHalfHeight="true"
                     mv:mv_strokeColor="#ffffff"

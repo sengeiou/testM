@@ -15,11 +15,9 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.constant.IConstants.articleId
-import com.qingmeng.mengmeng.entity.MicroBlog
-import com.qingmeng.mengmeng.entity.Qq
-import com.qingmeng.mengmeng.entity.WeChat
-import com.qingmeng.mengmeng.entity.WeChatCircle
+import com.qingmeng.mengmeng.entity.ShareBean
 import com.qingmeng.mengmeng.utils.ApiUtils
+import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.utils.loginshare.ShareQQManager
 import com.qingmeng.mengmeng.utils.loginshare.ShareWechatManager
 import com.qingmeng.mengmeng.utils.loginshare.ShareWeiboManager
@@ -36,14 +34,13 @@ import org.jetbrains.anko.async
  * 头报详情页
  */
 class HeadDetailsActivity : BaseActivity() {
-    private lateinit var mBottomDialog: ShareDialog
+    private lateinit var mShareDialog: ShareDialog
     private var url = String()
     private var id = 0
-    private lateinit var wxList: ArrayList<WeChat>
-    private lateinit var monentsList: ArrayList<WeChatCircle>
-    private lateinit var qqList: ArrayList<Qq>
-    private lateinit var sinaList: ArrayList<MicroBlog>
+    private var mShareBean = ShareBean()
+
     override fun getLayoutId(): Int = R.layout.activity_head_details
+
     override fun initObject() {
         super.initObject()
 
@@ -51,7 +48,7 @@ class HeadDetailsActivity : BaseActivity() {
         //设置 分享按钮
         mMenu.setDrawableLeft(R.drawable.icon_head_details_share)
         url = intent.getStringExtra("URL")
-        id = intent.getIntExtra(articleId, 1)
+        id = intent.getIntExtra(articleId, 0)
         initWebView()
         NewsWebView.loadUrl(url)
     }
@@ -62,80 +59,60 @@ class HeadDetailsActivity : BaseActivity() {
             onBackPressed()
         }
         mMenu.setOnClickListener {
-            //  httpShareMessage(2, id)
-            //   mBottomDialog = ShareDialog(this,wxList,monentsList,qqList,sinaList)
-            mBottomDialog = ShareDialog(this,{
+            mShareDialog = ShareDialog(this, {
                 async {
                     val bitmap = Glide.with(this@HeadDetailsActivity)
                             .asBitmap()
-                            .load("http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
+                            .load(mShareBean.WeChat.icon)
                             .submit(50, 50).get()
-                    ShareWechatManager.shareToWechat(0, "测试链接", "测试标题", "内容测试", bitmap)
+                    ShareWechatManager.shareToWechat(0, mShareBean.WeChat.url, mShareBean.WeChat.title, mShareBean.WeChat.content, bitmap)
                 }
             }, {
                 async {
                     val bitmap = Glide.with(this@HeadDetailsActivity)
                             .asBitmap()
-                            .load("http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
+                            .load(mShareBean.WeChatCircle.icon)
                             .submit(50, 50).get()
-                    ShareWechatManager.shareToWechat(1, "测试链接", "测试标题", "内容测试", bitmap)
+                    ShareWechatManager.shareToWechat(1, mShareBean.WeChatCircle.url, mShareBean.WeChatCircle.title, mShareBean.WeChatCircle.content, bitmap)
                 }
             }, {
-                ShareQQManager.shareToQQ(this@HeadDetailsActivity, "测试链接", "测试标题", "内容测试", "http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
+                ShareQQManager.shareToQQ(this@HeadDetailsActivity, mShareBean.qq.url, mShareBean.qq.title, mShareBean.qq.content, mShareBean.qq.icon)
             }, {
                 async {
                     val bitmap = Glide.with(this@HeadDetailsActivity)
                             .asBitmap()
-                            .load("http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
+                            .load(mShareBean.microBlog.icon)
                             .submit(50, 50).get()
-                    ShareWeiboManager.shareToWeibo(this@HeadDetailsActivity, "测试标题", "内容测试", bitmap)
+                    ShareWeiboManager.shareToWeibo(this@HeadDetailsActivity, mShareBean.microBlog.title, mShareBean.microBlog.content, bitmap)
                 }
             })
-            mBottomDialog.show()
+            if (mShareBean.qq.title.isEmpty()) {
+                httpShareMessage(2, id)
+            } else {
+                mShareDialog.show()
+            }
         }
     }
 
     @SuppressLint("CheckResult")
     private fun httpShareMessage(type: Int, id: Int) {
+        myDialog.showLoadingDialog()
         ApiUtils.getApi()
                 .getShareMessage(MainApplication.instance.TOKEN, type, id)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
+                    myDialog.dismissLoadingDialog()
                     if (bean.code == 12000) {
                         bean.data?.let {
-                            if (!it.WeChat.isEmpty()) {
-                                if (!wxList.isEmpty()) {
-                                    wxList.clear()
-                                }
-                                wxList.addAll(it.WeChat)
-                            }
-                            if (!it.WeChatCircle.isEmpty()) {
-                                if (!monentsList.isEmpty()) {
-                                    monentsList.clear()
-                                }
-                                monentsList.addAll(it.WeChatCircle)
-                            }
-                            if (!it.qq.isEmpty()) {
-                                if (!qqList.isEmpty()) {
-                                    qqList.clear()
-                                }
-                                qqList.addAll(it.qq)
-                            }
-                            if (!it.microBlog.isEmpty()) {
-                                if (!sinaList.isEmpty()) {
-                                    sinaList.clear()
-                                }
-                                sinaList.addAll(it.microBlog)
-                            }
+                            mShareBean = it
+                            mShareDialog.show()
                         }
-                        //分享数据未传入
-                        //  mBottomDialog = ShareDialog(this, wxList, monentsList, qqList, sinaList)
-                        //  mBottomDialog = ShareDialog(this, wxList)
-                        mBottomDialog.show()
+                    } else {
+                        ToastUtil.showShort(bean.msg)
                     }
-                },{
-
+                }, {
+                    myDialog.dismissLoadingDialog()
                 }, {}, { addSubscription(it) })
     }
 

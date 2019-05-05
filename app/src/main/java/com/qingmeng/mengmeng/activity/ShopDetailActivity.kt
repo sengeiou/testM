@@ -35,10 +35,7 @@ import com.qingmeng.mengmeng.constant.IConstants.MESSAGE_BACK_BRAND_ID
 import com.qingmeng.mengmeng.constant.IConstants.MYFRAGMENT_TO_MESSAGE
 import com.qingmeng.mengmeng.constant.IConstants.POSITION
 import com.qingmeng.mengmeng.constant.IConstants.TO_MESSAGE
-import com.qingmeng.mengmeng.entity.BrandBean
-import com.qingmeng.mengmeng.entity.BrandInformation
-import com.qingmeng.mengmeng.entity.BrandInitialFee
-import com.qingmeng.mengmeng.entity.ShopDetailImg
+import com.qingmeng.mengmeng.entity.*
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.utils.loginshare.ShareQQManager
@@ -61,6 +58,7 @@ class ShopDetailActivity : BaseActivity() {
     private var brandInformation: BrandInformation? = null
     private var brandInitialFee: BrandInitialFee? = null
     private lateinit var mShareDialog: ShareDialog
+    private var mShareBean = ShareBean()
     private var brandBean: BrandBean? = null
     private var name = ""
     private var id = 0
@@ -113,8 +111,31 @@ class ShopDetailActivity : BaseActivity() {
                 }, {}, { addSubscription(it) })
     }
 
+    //获取分享信息
+    private fun httpShareMessage(type: Int, id: Int) {
+        myDialog.showLoadingDialog()
+        ApiUtils.getApi()
+                .getShareMessage(MainApplication.instance.TOKEN, type, id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ bean ->
+                    myDialog.dismissLoadingDialog()
+                    if (bean.code == 12000) {
+                        bean.data?.let {
+                            mShareBean = it
+                            mShareDialog.show()
+                        }
+                    } else {
+                        ToastUtil.showShort(bean.msg)
+                    }
+                }, {
+                    myDialog.dismissLoadingDialog()
+                }, {}, { addSubscription(it) })
+    }
+
     private fun setData(bean: BrandBean) {
-        if (bean.isStand) {
+        //品牌被下架或特殊处理了，不做展示
+        if (bean.isStand || bean.brandIsShow == 0) {
             mGoodsUndercarriage.visibility = View.VISIBLE
             mGoodsUndercarriageText.visibility = View.VISIBLE
             Handler().postDelayed({ finish() }, 2000)
@@ -202,30 +223,34 @@ class ShopDetailActivity : BaseActivity() {
                     async {
                         val bitmap = Glide.with(this@ShopDetailActivity)
                                 .asBitmap()
-                                .load("http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
+                                .load(mShareBean.WeChat.icon)
                                 .submit(50, 50).get()
-                        ShareWechatManager.shareToWechat(0, "测试链接", "测试标题", "内容测试", bitmap)
+                        ShareWechatManager.shareToWechat(0, mShareBean.WeChat.url, mShareBean.WeChat.title, mShareBean.WeChat.content, bitmap)
                     }
                 }, {
                     async {
                         val bitmap = Glide.with(this@ShopDetailActivity)
                                 .asBitmap()
-                                .load("http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
+                                .load(mShareBean.WeChatCircle.icon)
                                 .submit(50, 50).get()
-                        ShareWechatManager.shareToWechat(1, "测试链接", "测试标题", "内容测试", bitmap)
+                        ShareWechatManager.shareToWechat(1, mShareBean.WeChatCircle.url, mShareBean.WeChatCircle.title, mShareBean.WeChatCircle.content, bitmap)
                     }
                 }, {
-                    ShareQQManager.shareToQQ(this@ShopDetailActivity, "测试链接", "测试标题", "内容测试", "http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
+                    ShareQQManager.shareToQQ(this@ShopDetailActivity, mShareBean.qq.url, mShareBean.qq.title, mShareBean.qq.content, mShareBean.qq.icon)
                 }, {
                     async {
                         val bitmap = Glide.with(this@ShopDetailActivity)
                                 .asBitmap()
-                                .load("http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
+                                .load(mShareBean.microBlog.icon)
                                 .submit(50, 50).get()
-                        ShareWeiboManager.shareToWeibo(this@ShopDetailActivity, "测试标题", "内容测试", bitmap)
+                        ShareWeiboManager.shareToWeibo(this@ShopDetailActivity, mShareBean.microBlog.title, mShareBean.microBlog.content, bitmap)
                     }
                 })
-                mShareDialog.show()
+                if (mShareBean.qq.title.isEmpty()) {
+                    httpShareMessage(1, id)
+                } else {
+                    mShareDialog.show()
+                }
             })
         }
         mDetailJoinSupport.setOnClickListener {

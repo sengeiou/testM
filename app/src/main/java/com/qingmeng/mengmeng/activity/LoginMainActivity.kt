@@ -40,6 +40,7 @@ import com.qingmeng.mengmeng.utils.loginshare.bean.WxInfoBean
 import com.qingmeng.mengmeng.utils.loginshare.bean.WxTokenBean
 import com.qingmeng.mengmeng.view.AlphaPageTransformer
 import com.tencent.mm.opensdk.modelmsg.SendAuth
+import com.tencent.mm.opensdk.openapi.IWXAPI
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import de.greenrobot.event.EventBus
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -60,6 +61,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     private var mVersion = ""
     private var mQQThreeLogin = QQThreeLogin()
     private var mImgList = ArrayList<Banner>()
+    private var mWeChatApi: IWXAPI? = null       //微信api
 
     //完信相关
     private var mImService: IMService? = null
@@ -142,17 +144,17 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
 
     //微信登陆
     private fun wxLogin() {
-        val mWeChatApi = WXAPIFactory.createWXAPI(this, IConstants.APPID_WECHAT)
-        if (!mWeChatApi.isWXAppInstalled) {
+        mWeChatApi = WXAPIFactory.createWXAPI(this, IConstants.APPID_WECHAT)
+        if (!mWeChatApi!!.isWXAppInstalled) {
             // 提醒用户没有安装微信
             ToastUtil.showShort("未检测到微信客户端")
             return
         }
-        mWeChatApi.registerApp(IConstants.APPID_WECHAT)
+        mWeChatApi!!.registerApp(IConstants.APPID_WECHAT)
         val req = SendAuth.Req()
         req.scope = "snsapi_userinfo"
         req.state = "diandi_wx_login"
-        mWeChatApi.sendReq(req)
+        mWeChatApi!!.sendReq(req)
     }
 
     fun onEvent(wxBean: WxBean) {
@@ -307,5 +309,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
         imServiceConnector.disconnect(this)
         EventBus.getDefault().unregister(this)
         super.onDestroy()
+        //解除第三方微信的引用，彻底关闭此aty
+        mWeChatApi?.detach()
     }
 }

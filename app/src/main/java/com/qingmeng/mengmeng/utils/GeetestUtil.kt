@@ -1,5 +1,6 @@
 package com.qingmeng.mengmeng.utils
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.util.Log
 import com.geetest.sdk.GT3ConfigBean
@@ -8,6 +9,8 @@ import com.geetest.sdk.GT3GeetestUtils
 import com.geetest.sdk.GT3Listener
 import org.json.JSONObject
 
+
+@SuppressLint("StaticFieldLeak")
 object GeetestUtil {
     private val TAG = "GeetestUtil"
 
@@ -117,6 +120,23 @@ object GeetestUtil {
 
     fun destroy() {
         gt3GeetestUtils.destory()
+        method("holder")
+    }
+
+    /**
+     * 反射置空类中的属性
+     */
+    private fun method(attr: String) {
+        try {
+            //获得变量
+            var mCurRootViewField = GT3GeetestUtils::class.java.getDeclaredField(attr)
+            mCurRootViewField.isAccessible = true
+            mCurRootViewField?.let {
+                mCurRootViewField = null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun showSuccessDialog() {
