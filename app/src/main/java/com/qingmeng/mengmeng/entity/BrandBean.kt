@@ -19,7 +19,9 @@ data class BrandBean(var name: String,
                      var isAttention: Int,
                      var affiliateSupport: AffiliateSupport,
                      var brandInformation: BrandInformation,
-                     var brandInitialFee: BrandInitialFee)
+                     var brandInitialFee: BrandInitialFee,
+                     var brandIsShow: Int = 1
+)
 
 data class AffiliateSupport(var trainContent: Array<String>? = null,
                             var operateSupport: Array<String>? = null,

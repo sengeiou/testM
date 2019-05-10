@@ -201,7 +201,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:visibility="gone"
             >
 
             <LinearLayout
@@ -269,12 +268,11 @@
                     android:id="@+id/viewMyMessageCount"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/tvMyMessage"
-                    android:layout_marginBottom="-12dp"
+                    android:layout_centerVertical="true"
                     android:layout_toEndOf="@+id/tvMyMessage"
                     android:gravity="center"
                     android:textColor="#ffffff"
-                    android:textSize="8sp"
+                    android:textSize="@dimen/text_size_10"
                     mv:mv_backgroundColor="#FD481F"
                     mv:mv_isRadiusHalfHeight="true"
                     mv:mv_strokeColor="#ffffff"

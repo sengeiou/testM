@@ -113,4 +113,19 @@ public class UnreadEntity {
         }
         return latestMsgData;
     }
+
+    //获取昵称
+    public String getNickName() {
+        if (!TextUtils.isEmpty(latestMsgData)) {
+            try {
+                ContentEntity contentEntity = new Gson().fromJson(latestMsgData, ContentEntity.class);
+                if (contentEntity != null) {
+                    return contentEntity.getNickname();
+                }
+            } catch (JsonSyntaxException e) {
+                Log.d(getClass().getSimpleName(),"isn't json："+latestMsgData);
+            }
+        }
+        return latestMsgData;
+    }
 }

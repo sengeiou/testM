@@ -3,6 +3,7 @@ package com.qingmeng.mengmeng.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -15,9 +16,7 @@ import android.text.TextUtils
 import android.text.style.ImageSpan
 import android.view.View
 import android.view.WindowManager
-import android.webkit.WebChromeClient
-import android.webkit.WebSettings
-import android.webkit.WebView
+import android.webkit.*
 import cn.jzvd.Jzvd
 import cn.jzvd.JzvdStd
 import com.bumptech.glide.Glide
@@ -35,10 +34,7 @@ import com.qingmeng.mengmeng.constant.IConstants.MESSAGE_BACK_BRAND_ID
 import com.qingmeng.mengmeng.constant.IConstants.MYFRAGMENT_TO_MESSAGE
 import com.qingmeng.mengmeng.constant.IConstants.POSITION
 import com.qingmeng.mengmeng.constant.IConstants.TO_MESSAGE
-import com.qingmeng.mengmeng.entity.BrandBean
-import com.qingmeng.mengmeng.entity.BrandInformation
-import com.qingmeng.mengmeng.entity.BrandInitialFee
-import com.qingmeng.mengmeng.entity.ShopDetailImg
+import com.qingmeng.mengmeng.entity.*
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.utils.loginshare.ShareQQManager
@@ -61,6 +57,7 @@ class ShopDetailActivity : BaseActivity() {
     private var brandInformation: BrandInformation? = null
     private var brandInitialFee: BrandInitialFee? = null
     private lateinit var mShareDialog: ShareDialog
+    private var mShareBean = ShareBean()
     private var brandBean: BrandBean? = null
     private var name = ""
     private var id = 0
@@ -113,8 +110,31 @@ class ShopDetailActivity : BaseActivity() {
                 }, {}, { addSubscription(it) })
     }
 
+    //获取分享信息
+    private fun httpShareMessage(type: Int, id: Int) {
+        myDialog.showLoadingDialog()
+        ApiUtils.getApi()
+                .getShareMessage(MainApplication.instance.TOKEN, type, id)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.io())
+                .subscribe({ bean ->
+                    myDialog.dismissLoadingDialog()
+                    if (bean.code == 12000) {
+                        bean.data?.let {
+                            mShareBean = it
+                            mShareDialog.show()
+                        }
+                    } else {
+                        ToastUtil.showShort(bean.msg)
+                    }
+                }, {
+                    myDialog.dismissLoadingDialog()
+                }, {}, { addSubscription(it) })
+    }
+
     private fun setData(bean: BrandBean) {
-        if (bean.isStand) {
+        //品牌被下架或特殊处理了，不做展示
+        if (bean.isStand || bean.brandIsShow == 0) {
             mGoodsUndercarriage.visibility = View.VISIBLE
             mGoodsUndercarriageText.visibility = View.VISIBLE
             Handler().postDelayed({ finish() }, 2000)
@@ -198,34 +218,43 @@ class ShopDetailActivity : BaseActivity() {
             }, {
                 toNext<JoinFeedbackActivity>(BRANDID to id)
             }, {
-                mShareDialog = ShareDialog(this, {
-                    async {
-                        val bitmap = Glide.with(this@ShopDetailActivity)
-                                .asBitmap()
-                                .load("http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
-                                .submit(50, 50).get()
-                        ShareWechatManager.shareToWechat(0, "测试链接", "测试标题", "内容测试", bitmap)
+                if (TextUtils.isEmpty(MainApplication.instance.TOKEN)) {
+                    startActivity<LoginMainActivity>(FROM_TYPE to 1)
+                    ToastUtil.showShort(getString(R.string.pls_login))
+                } else {
+                    mShareDialog = ShareDialog(this, {
+                        async {
+                            val bitmap = if (mShareBean.WeChat.icon.isNullOrBlank()) BitmapFactory.decodeResource(resources, R.mipmap.my_settings_aboutus_icon) else Glide.with(this@ShopDetailActivity)
+                                    .asBitmap()
+                                    .load(mShareBean.WeChat.icon)
+                                    .submit(50, 50).get()
+                            ShareWechatManager.shareToWechat(0, mShareBean.WeChat.url, mShareBean.WeChat.title, mShareBean.WeChat.content, bitmap)
+                        }
+                    }, {
+                        async {
+                            val bitmap = if (mShareBean.WeChatCircle.icon.isNullOrBlank()) BitmapFactory.decodeResource(resources, R.mipmap.my_settings_aboutus_icon) else Glide.with(this@ShopDetailActivity)
+                                    .asBitmap()
+                                    .load(mShareBean.WeChatCircle.icon)
+                                    .submit(50, 50).get()
+                            ShareWechatManager.shareToWechat(1, mShareBean.WeChatCircle.url, mShareBean.WeChatCircle.title, mShareBean.WeChatCircle.content, bitmap)
+                        }
+                    }, {
+                        ShareQQManager.shareToQQ(this@ShopDetailActivity, mShareBean.qq.url, mShareBean.qq.title, mShareBean.qq.content, mShareBean.qq.icon)
+                    }, {
+                        async {
+                            val bitmap = if (mShareBean.microBlog.icon.isNullOrBlank()) BitmapFactory.decodeResource(resources, R.mipmap.my_settings_aboutus_icon) else Glide.with(this@ShopDetailActivity)
+                                    .asBitmap()
+                                    .load(mShareBean.microBlog.icon)
+                                    .submit(50, 50).get()
+                            ShareWeiboManager.shareToWeibo(this@ShopDetailActivity, mShareBean.microBlog.url, mShareBean.microBlog.title, mShareBean.microBlog.content, bitmap)
+                        }
+                    })
+                    if (mShareBean.qq.title.isEmpty()) {
+                        httpShareMessage(1, id)
+                    } else {
+                        mShareDialog.show()
                     }
-                }, {
-                    async {
-                        val bitmap = Glide.with(this@ShopDetailActivity)
-                                .asBitmap()
-                                .load("http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
-                                .submit(50, 50).get()
-                        ShareWechatManager.shareToWechat(1, "测试链接", "测试标题", "内容测试", bitmap)
-                    }
-                }, {
-                    ShareQQManager.shareToQQ(this@ShopDetailActivity, "测试链接", "测试标题", "内容测试", "http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
-                }, {
-                    async {
-                        val bitmap = Glide.with(this@ShopDetailActivity)
-                                .asBitmap()
-                                .load("http://pic1.nipic.com/2008-12-30/200812308231244_2.jpg")
-                                .submit(50, 50).get()
-                        ShareWeiboManager.shareToWeibo(this@ShopDetailActivity, "测试标题", "内容测试", bitmap)
-                    }
-                })
-                mShareDialog.show()
+                }
             })
         }
         mDetailJoinSupport.setOnClickListener {
@@ -463,29 +492,30 @@ class ShopDetailActivity : BaseActivity() {
             javaScriptCanOpenWindowsAutomatically = true
         }
 
-//        mDetailWeb.webViewClient = object : WebViewClient() {
-//            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest?): Boolean {
-//                view.loadUrl(webUrl)
-//                return true
-//            }
+        mDetailWeb.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest?): Boolean {
+                view.loadUrl(webUrl)
+                return true
+            }
+
+            override fun onPageFinished(view: WebView?, url: String?) {
+                mDetailWeb.loadUrl("javascript:App.resize(document.body.getBoundingClientRect().height)")
+                super.onPageFinished(view, url)
+//                //编写 javaScript方法
+//                val javascript =
+//                        "javascript:function hideOther() {" +
+//                                "var firstP = document.getElementsByTagName('p');" +
+//                                "   if(firstP[0].innerHTML == null || firstP[0].innerHTML == ''){" +
+//                                "       firstP[0].parentElement.removeChild(firstP[0]);" +
+//                                "   }" +
+//                                "}"
 //
-////            override fun onPageFinished(view: WebView, url: String?) {
-////                super.onPageFinished(view, url)
-////                //编写 javaScript方法
-////                val javascript =
-////                        "javascript:function hideOther() {" +
-////                                "var firstP = document.getElementsByTagName('p');" +
-////                                "   if(firstP[0].innerHTML == null || firstP[0].innerHTML == ''){" +
-////                                "       firstP[0].parentElement.removeChild(firstP[0]);" +
-////                                "   }" +
-////                                "}"
-////
-////                //创建方法
-////                view.loadUrl(javascript)
-////                //加载方法
-////                view.loadUrl("javascript:hideOther();")
-////            }
-//        }
+//                //创建方法
+//                view.loadUrl(javascript)
+//                //加载方法
+//                view.loadUrl("javascript:hideOther();")
+            }
+        }
 
         mDetailWeb.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView, progress: Int) {
@@ -497,6 +527,18 @@ class ShopDetailActivity : BaseActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mWebSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
+        mDetailWeb.addJavascriptInterface(this, "App")
+    }
+
+    @JavascriptInterface
+    fun resize(height: Float) {
+        this@ShopDetailActivity.runOnUiThread(Runnable {
+//            ToastUtil.showShort("$height")
+            val layoutParams = mDetailWeb.layoutParams
+            layoutParams.width = resources.displayMetrics.widthPixels
+            layoutParams.height = (height * resources.displayMetrics.density).toInt() + 50
+            mDetailWeb.layoutParams = layoutParams
+        })
     }
 
 //    override fun onNewIntent(intent: Intent) {

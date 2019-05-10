@@ -20,7 +20,7 @@ class ShareDialog(context: Context,val onWechatClick:() -> Unit,val onPengyouCli
 
     // private lateinit var content: String
     // var wxList: ArrayList<WeChat>, var monentsList: ArrayList<WeChatCircle>,
-    // var qqList: ArrayList<Qq>,var sinaList: ArrayList<MicroBlog>
+    // var qqList: ArrayList<QQ>,var sinaList: ArrayList<MicroBlog>
     init {
         setContentView(R.layout.dialog_share)
         val wlp = window.attributes

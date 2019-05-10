@@ -391,7 +391,14 @@ class MainActivity : BaseActivity() {
     //退出登录
     private fun logOut() {
         deleteUser()
-        startActivity(intentFor<MainActivity>().newTask().clearTask())
+        when (AppManager.instance.currentActivity()) {
+            is RedShopSeach, is RedShopSeachResult, is ShopDetailActivity, is VideoDetailActivity, is WebViewActivity, is HeadDetailsActivity, is MyEnterpriseEntryActivity -> {    //如果当前页面在 搜索页、搜索结果页、品牌详情页、图片预览页、3个webView页面，退出时就停留在当前页面,不做处理
+
+            }
+            else -> {
+                startActivity(intentFor<MainActivity>().newTask().clearTask())
+            }
+        }
     }
 
     override fun onRestart() {
@@ -399,7 +406,7 @@ class MainActivity : BaseActivity() {
 
         //点开应用就清空桌面角标
 //        ShortcutBadger.applyCount(this, 0)
-        BadgeUtil.setBadgeCount(this,0)
+        BadgeUtil.setBadgeCount(this, 0)
     }
 
     override fun onBackPressed() {
@@ -409,6 +416,7 @@ class MainActivity : BaseActivity() {
             firstTime = secondTime//更新firstTime
         } else {//两次按键小于2秒时，退出应用
             AppManager.instance.appExit(this)
+            super.onBackPressed()
         }
     }
 

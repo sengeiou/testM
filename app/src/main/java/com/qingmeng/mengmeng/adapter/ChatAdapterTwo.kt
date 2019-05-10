@@ -1151,11 +1151,11 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
      */
     private fun audioLengthToContent(length: Int): String {
         val num = if (length <= 40) length else 40
-        var str = ""
+        val sb = StringBuilder()
         for (i in 0..num) {
-            str += " "
+            sb.append(" ")
         }
-        return str
+        return sb.toString()
     }
 
     /**

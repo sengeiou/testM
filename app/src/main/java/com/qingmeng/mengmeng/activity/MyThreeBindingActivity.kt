@@ -17,6 +17,7 @@ import com.qingmeng.mengmeng.utils.loginshare.bean.WxInfoBean
 import com.qingmeng.mengmeng.utils.loginshare.bean.WxTokenBean
 import com.qingmeng.mengmeng.view.dialog.DialogCommon
 import com.tencent.mm.opensdk.modelmsg.SendAuth
+import com.tencent.mm.opensdk.openapi.IWXAPI
 import com.tencent.mm.opensdk.openapi.WXAPIFactory
 import de.greenrobot.event.EventBus
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -38,6 +39,7 @@ class MyThreeBindingActivity : BaseActivity() {
     private lateinit var mDialog: DialogCommon   //弹框
     private var mQQThreeLogin = QQThreeLogin()
     private var mCanClickAgain = true            //是否可以再次点击
+    private var mWeChatApi: IWXAPI? = null       //微信api
 
     override fun getLayoutId(): Int {
         return R.layout.activity_my_threebinding
@@ -213,19 +215,19 @@ class MyThreeBindingActivity : BaseActivity() {
     //绑定微信
     private fun bindingWeChat() {
         mCanClickAgain = false
-        val mWeChatApi = WXAPIFactory.createWXAPI(this, IConstants.APPID_WECHAT)
-        if (!mWeChatApi.isWXAppInstalled) {
+        mWeChatApi = WXAPIFactory.createWXAPI(this, IConstants.APPID_WECHAT)
+        if (!mWeChatApi!!.isWXAppInstalled) {
             mCanClickAgain = true
             // 提醒用户没有安装微信
             ToastUtil.showShort(getString(R.string.wechat_no_tips))
             return
         }
 
-        mWeChatApi.registerApp(IConstants.APPID_WECHAT)
+        mWeChatApi!!.registerApp(IConstants.APPID_WECHAT)
         val req = SendAuth.Req()
         req.scope = "snsapi_userinfo"
         req.state = "wechat_sdk_demo_test"
-        mWeChatApi.sendReq(req)
+        mWeChatApi!!.sendReq(req)
         mCanClickAgain = true
     }
 
@@ -305,5 +307,7 @@ class MyThreeBindingActivity : BaseActivity() {
     override fun onDestroy() {
         super.onDestroy()
         EventBus.getDefault().unregister(this)
+        //解除第三方微信的引用，彻底关闭此aty
+        mWeChatApi?.detach()
     }
 }
