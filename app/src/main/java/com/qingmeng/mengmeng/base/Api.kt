@@ -303,8 +303,8 @@ interface Api {
     fun loginThree(@Query("openId") openId: String, @Query("type") type: Int, @Query("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
 
     //分享获取信息
-    @GET("api/share/third_party_share")
-    fun getShareMessage(@Query("ACCESS-TOKEN") access_token: String, @Query("type") type: Int, @Query("id") id: Int): Observable<BaseBean<ShareBean>>
+    @GET("api/share/share_information")
+    fun getShareMessage(@Header("ACCESS-TOKEN") access_token: String, @Query("type") type: Int, @Query("id") id: Int): Observable<BaseBean<ShareBean>>
 
     //获取新浪
     @GET("https://api.weibo.com/2/users/show.json")

@@ -3,8 +3,10 @@ package com.qingmeng.mengmeng.activity
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.text.TextUtils
 import android.view.View
 import android.webkit.WebChromeClient
 import android.webkit.WebSettings
@@ -14,6 +16,7 @@ import com.bumptech.glide.Glide
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
+import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.articleId
 import com.qingmeng.mengmeng.entity.ShareBean
 import com.qingmeng.mengmeng.utils.ApiUtils
@@ -28,6 +31,7 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_head_details.*
 import kotlinx.android.synthetic.main.layout_head.*
 import org.jetbrains.anko.async
+import org.jetbrains.anko.startActivity
 
 /**
  * Created by fyf on 2019/1/5
@@ -51,45 +55,55 @@ class HeadDetailsActivity : BaseActivity() {
         id = intent.getIntExtra(articleId, 0)
         initWebView()
         NewsWebView.loadUrl(url)
+        myDialog.showLoadingDialog()
     }
 
     override fun initListener() {
         super.initListener()
+
+        //返回
         mBack.setOnClickListener {
             onBackPressed()
         }
+
+        //分享
         mMenu.setOnClickListener {
-            mShareDialog = ShareDialog(this, {
-                async {
-                    val bitmap = Glide.with(this@HeadDetailsActivity)
-                            .asBitmap()
-                            .load(mShareBean.WeChat.icon)
-                            .submit(50, 50).get()
-                    ShareWechatManager.shareToWechat(0, mShareBean.WeChat.url, mShareBean.WeChat.title, mShareBean.WeChat.content, bitmap)
-                }
-            }, {
-                async {
-                    val bitmap = Glide.with(this@HeadDetailsActivity)
-                            .asBitmap()
-                            .load(mShareBean.WeChatCircle.icon)
-                            .submit(50, 50).get()
-                    ShareWechatManager.shareToWechat(1, mShareBean.WeChatCircle.url, mShareBean.WeChatCircle.title, mShareBean.WeChatCircle.content, bitmap)
-                }
-            }, {
-                ShareQQManager.shareToQQ(this@HeadDetailsActivity, mShareBean.qq.url, mShareBean.qq.title, mShareBean.qq.content, mShareBean.qq.icon)
-            }, {
-                async {
-                    val bitmap = Glide.with(this@HeadDetailsActivity)
-                            .asBitmap()
-                            .load(mShareBean.microBlog.icon)
-                            .submit(50, 50).get()
-                    ShareWeiboManager.shareToWeibo(this@HeadDetailsActivity, mShareBean.microBlog.title, mShareBean.microBlog.content, bitmap)
-                }
-            })
-            if (mShareBean.qq.title.isEmpty()) {
-                httpShareMessage(2, id)
+            if (TextUtils.isEmpty(MainApplication.instance.TOKEN)) {
+                startActivity<LoginMainActivity>(IConstants.FROM_TYPE to 1)
+                ToastUtil.showShort(getString(R.string.pls_login))
             } else {
-                mShareDialog.show()
+                mShareDialog = ShareDialog(this, {
+                    async {
+                        val bitmap = if (mShareBean.WeChat.icon.isNullOrBlank()) BitmapFactory.decodeResource(resources, R.mipmap.my_settings_aboutus_icon) else Glide.with(this@HeadDetailsActivity)
+                                .asBitmap()
+                                .load(mShareBean.WeChat.icon)
+                                .submit(50, 50).get()
+                        ShareWechatManager.shareToWechat(0, mShareBean.WeChat.url, mShareBean.WeChat.title, mShareBean.WeChat.content, bitmap)
+                    }
+                }, {
+                    async {
+                        val bitmap = if (mShareBean.WeChatCircle.icon.isNullOrBlank()) BitmapFactory.decodeResource(resources, R.mipmap.my_settings_aboutus_icon) else Glide.with(this@HeadDetailsActivity)
+                                .asBitmap()
+                                .load(mShareBean.WeChatCircle.icon)
+                                .submit(50, 50).get()
+                        ShareWechatManager.shareToWechat(1, mShareBean.WeChatCircle.url, mShareBean.WeChatCircle.title, mShareBean.WeChatCircle.content, bitmap)
+                    }
+                }, {
+                    ShareQQManager.shareToQQ(this@HeadDetailsActivity, mShareBean.qq.url, mShareBean.qq.title, mShareBean.qq.content, mShareBean.qq.icon)
+                }, {
+                    async {
+                        val bitmap = if (mShareBean.microBlog.icon.isNullOrBlank()) BitmapFactory.decodeResource(resources, R.mipmap.my_settings_aboutus_icon) else Glide.with(this@HeadDetailsActivity)
+                                .asBitmap()
+                                .load(mShareBean.microBlog.icon)
+                                .submit(50, 50).get()
+                        ShareWeiboManager.shareToWeibo(this@HeadDetailsActivity, mShareBean.microBlog.url, mShareBean.microBlog.title, mShareBean.microBlog.content, bitmap)
+                    }
+                })
+                if (mShareBean.qq.title.isEmpty()) {
+                    httpShareMessage(2, id)
+                } else {
+                    mShareDialog.show()
+                }
             }
         }
     }

@@ -100,7 +100,7 @@
         <activity android:name=".activity.MySettingsActivity" />
         <activity
             android:name=".activity.MySettingsUserActivity"
-            android:windowSoftInputMode="adjustResize"
+            android:windowSoftInputMode="stateHidden|adjustResize"
             />
         <activity android:name=".activity.MySettingsSetOrUpdatePasswordActivity" />
         <activity android:name=".activity.MySettingsUpdatePhoneActivity" />

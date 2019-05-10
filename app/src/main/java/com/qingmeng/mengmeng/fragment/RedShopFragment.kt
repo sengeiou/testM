@@ -283,7 +283,9 @@ class RedShopFragment : BaseFragment() {
                         }
                     }
                 }, {
-                    ToastUtil.showNetError()
+                    if (it.cause.toString().contains("java.net.ConnectException")) {
+                        ToastUtil.showNetError()
+                    }
                 }, {}, { addSubscription(it) })
     }
 

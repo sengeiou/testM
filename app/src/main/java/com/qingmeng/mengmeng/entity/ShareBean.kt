@@ -8,8 +8,8 @@ class ShareBean {
 }
 
 class ShareContent {
-    val content: String = ""
-    val icon: String = ""
-    val title: String = ""
     val url: String = ""
+    val title: String = ""
+    val icon: String = ""
+    val content: String = ""
 }

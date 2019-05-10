@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
+        android:fillViewport="true"
         android:paddingBottom="@dimen/padding_dp_49"
         android:scrollbars="none"
         >

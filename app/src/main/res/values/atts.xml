@@ -2,47 +2,62 @@
 
 <resources>
     <declare-styleable name="SwipeMenuLayout">
-        <attr name="swipeEnable" format="boolean"/>
-        <attr name="ios" format="boolean"/>
-        <attr name="leftSwipe" format="boolean"/>
+        <attr name="swipeEnable" format="boolean" />
+        <attr name="ios" format="boolean" />
+        <attr name="leftSwipe" format="boolean" />
     </declare-styleable>
     <declare-styleable name="BGABanner">
         <!-- 是否开启自动轮播 -->
-        <attr name="banner_pointAutoPlayAble" format="boolean"/>
+        <attr name="banner_pointAutoPlayAble" format="boolean" />
         <!-- 自动轮播的时间间隔 -->
-        <attr name="banner_pointAutoPlayInterval" format="integer"/>
+        <attr name="banner_pointAutoPlayInterval" format="integer" />
         <!-- 页码切换过程的时间长度 -->
-        <attr name="banner_pageChangeDuration" format="integer"/>
+        <attr name="banner_pageChangeDuration" format="integer" />
         <!-- 指示点容器背景 -->
-        <attr name="banner_pointContainerBackground" format="reference|color"/>
+        <attr name="banner_pointContainerBackground" format="reference|color" />
         <!-- 指示点背景 -->
-        <attr name="banner_pointDrawable" format="reference"/>
+        <attr name="banner_pointDrawable" format="reference" />
         <!-- 指示点容器左右内间距 -->
-        <attr name="banner_pointContainerLeftRightPadding" format="dimension"/>
+        <attr name="banner_pointContainerLeftRightPadding" format="dimension" />
         <!-- 指示点上下外间距 -->
-        <attr name="banner_pointTopBottomMargin" format="dimension"/>
+        <attr name="banner_pointTopBottomMargin" format="dimension" />
         <!-- 页面切换的动画效果 -->
         <attr name="banner_transitionEffect" format="enum">
-            <enum name="defaultEffect" value="0"/>
-            <enum name="alpha" value="1"/>
+            <enum name="defaultEffect" value="0" />
+            <enum name="alpha" value="1" />
         </attr>
     </declare-styleable>
 
     <!-- 圆形图片 -->
     <declare-styleable name="round_imageview">
-        <attr name="border_color" format="color"/>
-        <attr name="border_width" format="dimension"/>
-        <attr name="circle" format="boolean"/>
+        <attr name="border_color" format="color" />
+        <attr name="border_width" format="dimension" />
+        <attr name="circle" format="boolean" />
     </declare-styleable>
     <!-- 流动布局-->
     <declare-styleable name="TagFlowLayout">
         <attr name="max_select" format="integer"></attr>
         <attr name="tag_gravity">
-            <enum name="left" value="-1"/>
-            <enum name="center" value="0"/>
-            <enum name="right" value="1"/>
+            <enum name="left" value="-1" />
+            <enum name="center" value="0" />
+            <enum name="right" value="1" />
         </attr>
     </declare-styleable>
+
+    <!-- 圆角Text -->
+    <declare-styleable name="DotText">
+        <!-- 数量 -->
+        <attr name="dotNum" format="integer" />
+        <!-- 背景 -->
+        <attr name="backgroundColor" format="color" />
+        <!-- 背景弧度,单位dp-->
+        <attr name="backgroundRadius" format="dimension" />
+        <!-- 边框弧度,单位dp-->
+        <attr name="strokeWidth" format="dimension" />
+        <!-- 边框颜色-->
+        <attr name="strokeColor" format="color" />
+    </declare-styleable>
+
     <!-- 小红点工具 -->
     <declare-styleable name="MsgView">
         <!-- 圆角矩形背景色 -->
@@ -60,8 +75,8 @@
     </declare-styleable>
 
     <declare-styleable name="MyItemView">
-        <attr name="my_item_title" format="string"/>
-        <attr name="my_item_content" format="string"/>
+        <attr name="my_item_title" format="string" />
+        <attr name="my_item_content" format="string" />
     </declare-styleable>
 
     <declare-styleable name="WaveProgressView">
@@ -76,8 +91,8 @@
 
     //相机
     <declare-styleable name="FocusImageView">
-        <attr name="focus_focusing_id" format="integer"/>
-        <attr name="focus_success_id" format="integer"/>
-        <attr name="focus_fail_id" format="integer"/>
+        <attr name="focus_focusing_id" format="integer" />
+        <attr name="focus_success_id" format="integer" />
+        <attr name="focus_fail_id" format="integer" />
     </declare-styleable>
 </resources>

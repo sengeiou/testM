@@ -20,7 +20,7 @@ object ShareQQManager : IUiListener {
     private lateinit var mTencent: Tencent
 
     fun shareToQQ(mActivity: Activity, url: String, title: String, description: String,
-                  imageUrl: String) {
+                  imageUrl: String?) {
         val bundle = Bundle()
         bundle.putInt(QQShare.SHARE_TO_QQ_KEY_TYPE, QQShare.SHARE_TO_QQ_TYPE_DEFAULT)
         // 标题
@@ -30,7 +30,7 @@ object ShareQQManager : IUiListener {
         // 内容地址
         bundle.putString(QQShare.SHARE_TO_QQ_TARGET_URL, url)
         // 网络图片地址
-        bundle.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, imageUrl)
+        bundle.putString(QQShare.SHARE_TO_QQ_IMAGE_URL, imageUrl ?: "")
         // 应用名称
 //        bundle.putString(QQShare.SHARE_TO_QQ_APP_NAME, "应用名称")
 //        bundle.putString(QQShare.SHARE_TO_QQ_EXT_INT, "其它附加功能")

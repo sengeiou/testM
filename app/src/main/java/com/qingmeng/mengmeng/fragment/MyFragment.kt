@@ -321,7 +321,7 @@ class MyFragment : BaseFragment() {
             unReadCount += it.unReadCnt
         }
         //未读消息
-        UnreadMsgUtils.show(viewMyMessageCount, unReadCount)
+        UnreadMsgUtils.show(viewMyMessageCount,unReadCount)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -114,7 +114,7 @@ class MMNotificationService : Service() {
         badgeCount = unReadCount
         //设置桌面角标提示
 //        ShortcutBadger.applyCount(this, unReadCount)
-        BadgeUtil.setBadgeCount(this,unReadCount)
+        BadgeUtil.setBadgeCount(this, unReadCount)
     }
 
     /**
@@ -139,7 +139,8 @@ class MMNotificationService : Service() {
         if (unreadEntity.sessionType == DBConstant.SESSION_TYPE_SINGLE) {
             val contact = IMContactManager.instance().findContact(peerId)
             if (contact != null) {
-                title = contact.mainName
+                val name = if (!contact.mainName.isNullOrBlank()) contact.mainName else unreadEntity.nickName
+                title = name
                 avatarUrl = contact.avatar
             } else {
                 title = "User_$peerId"
