@@ -23,8 +23,6 @@ import com.mogujie.tt.imservice.manager.IMGroupManager
 import com.mogujie.tt.imservice.manager.IMLoginManager
 import com.mogujie.tt.imservice.manager.IMNotificationManager
 import com.mogujie.tt.imservice.service.IMService
-import com.mogujie.tt.imservice.service.IMService.CHANNEL_ID_STRING
-import com.mogujie.tt.imservice.service.IMService.IMServiceNotificaId
 import com.mogujie.tt.imservice.support.IMServiceConnector
 import com.mogujie.tt.utils.IMUIHelper
 import com.nostra13.universalimageloader.core.ImageLoader
@@ -79,10 +77,10 @@ class MMNotificationService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val notification = Notification.Builder(applicationContext, CHANNEL_ID_STRING).build()
-            startForeground(IMServiceNotificaId, notification)
+//            val notification = Notification.Builder(applicationContext, CHANNEL_ID_STRING).build()
+//            startForeground(IMServiceNotificaId, notification)
         }
-        return super.onStartCommand(intent, flags, startId)
+        return START_STICKY
     }
 
     override fun onBind(intent: Intent): IBinder? {

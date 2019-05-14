@@ -111,7 +111,6 @@ class UpdateService : Service() {
             }
         }
         return super.onStartCommand(intent, flags, startId)
-
     }
 
     override fun onBind(intent: Intent): IBinder? {
