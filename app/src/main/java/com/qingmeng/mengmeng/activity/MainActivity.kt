@@ -376,6 +376,8 @@ class MainActivity : BaseActivity() {
         MainApplication.instance.user = UserBean()
         MainApplication.instance.TOKEN = ""
         sharedSingleton.setString(IConstants.USER)
+        //清空桌面角标
+        BadgeUtil.setBadgeCount(this, 0)
     }
 
     //跳登录页面

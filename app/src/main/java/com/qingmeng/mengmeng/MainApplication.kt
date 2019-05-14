@@ -4,7 +4,6 @@ import AppManager
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.os.Build
 import android.support.multidex.MultiDex
 import android.support.multidex.MultiDexApplication
 import android.text.TextUtils
@@ -60,21 +59,21 @@ class MainApplication : MultiDexApplication() {
     private fun startMMNotificationService() {
         val intent = Intent()
         intent.setClass(this, MMNotificationService::class.java)
-        if (Build.VERSION.SDK_INT >= 26) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
-        }
+//        if (Build.VERSION.SDK_INT >= 26) {
+//            startForegroundService(intent)
+//        } else {
+//        }
+        startService(intent)
     }
 
     private fun startIMService() {
         val intent = Intent()
         intent.setClass(this, IMService::class.java)
-        if (Build.VERSION.SDK_INT >= 26) {
-            startForegroundService(intent)
-        } else {
-            startService(intent)
-        }
+//        if (Build.VERSION.SDK_INT >= 26) {
+//            startForegroundService(intent)
+//        } else {
+//        }
+        startService(intent)
 
 //        val serviceIntent = Intent(this, MyJobService::class.java)
 //        serviceIntent.putExtra("messenger", Messenger(mHandler))

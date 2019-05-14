@@ -1,7 +1,6 @@
 package com.mogujie.tt.imservice.service;
 
 import android.annotation.SuppressLint;
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
@@ -195,8 +194,8 @@ public class IMService extends Service {
             NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID_STRING, "聊天", NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(mChannel);
-            Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ID_STRING).build();
-            startForeground(IMServiceNotificaId, notification);
+//            Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ID_STRING).build();
+//            startForeground(IMServiceNotificaId, notification);
             handler.sendEmptyMessageDelayed(IMServiceNotificaId, 5000);
 //            Intent innerIntent = new Intent(this, HelpService.class);
 //            startForegroundService(innerIntent);

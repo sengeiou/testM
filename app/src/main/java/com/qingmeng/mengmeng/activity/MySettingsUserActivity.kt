@@ -458,7 +458,7 @@ class MySettingsUserActivity : BaseActivity() {
     }
 
     //打开相机拍照上传服务器
-    private fun openCameraAndUploadServer() {
+    private fun openCameraAndUploadServer() {//人生又有几个有意义的10月呢
         SimplePhotoUtil.instance.setConfig(PhotoConfig(this, true, onPathCallback = { path ->
             //用ImageView显示出来
             val bitmap = getLoacalBitmap(path)
