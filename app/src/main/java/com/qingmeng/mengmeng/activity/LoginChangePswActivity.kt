@@ -58,6 +58,7 @@ class LoginChangePswActivity : BaseActivity() {
     //初始化Object
     override fun initObject() {
         super.initObject()
+
         //设置标题
         setHeadName(R.string.retrieve_password)
         from = intent.getIntExtra(FROM_TYPE, from)
