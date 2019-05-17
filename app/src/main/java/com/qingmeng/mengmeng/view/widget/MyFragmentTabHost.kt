@@ -226,16 +226,16 @@ class MyFragmentTabHost : TabHost, TabHost.OnTabChangeListener {
             }
             mLastTab?.apply {
                 fragment?.let {
-                    fragmentTransaction.hide(it)
+                    fragmentTransaction?.hide(it)
                 }
             }
             newTab.apply {
                 if (fragment == null) {
                     fragment = Fragment.instantiate(context, clss.name, args)
-                    fragmentTransaction.add(mContainerId, fragment!!, tag)
+                    fragmentTransaction?.add(mContainerId, fragment!!, tag)
                 } else {
                     //                  ft.attach(newTab.fragment);
-                    fragmentTransaction.show(fragment!!)
+                    fragmentTransaction?.show(fragment!!)
                 }
             }
 
