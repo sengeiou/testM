@@ -493,6 +493,7 @@ class ShopDetailActivity : BaseActivity() {
         }
 
         mDetailWeb.apply {
+            //解决底部空白问题
             isVerticalScrollBarEnabled = false
             setVerticalScrollbarOverlay(false)
             isHorizontalScrollBarEnabled = false
