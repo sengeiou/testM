@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.text.Editable
+import android.text.InputType
 import android.text.TextUtils
 import android.text.TextWatcher
 import com.mogujie.tt.config.UrlConstant
@@ -31,6 +32,9 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.activity_log_register.*
 import org.jetbrains.anko.*
 import org.json.JSONObject
+import android.text.Selection.getSelectionStart
+import android.text.method.HideReturnsTransformationMethod
+import android.text.method.PasswordTransformationMethod
 
 
 @SuppressLint("CheckResult")
@@ -48,6 +52,7 @@ class LoginRegisterActivity : BaseActivity() {
     private var thirdUserName = ""
     private var avatar = ""
     private var threeType = 1
+    private var isShowPwd = false
 
     //完信相关
     private var mImService: IMService? = null
@@ -128,6 +133,14 @@ class LoginRegisterActivity : BaseActivity() {
                 !mRead -> ToastUtil.showShort(R.string.please_read_accept)
                 else -> if (contentType == 1) register() else bindPhone()
             }
+        }
+
+        ivPwdShowHind.setOnClickListener {
+            isShowPwd = !isShowPwd
+            val pos = mRegisterPsw.selectionStart
+            ivPwdShowHind.setImageResource(if (isShowPwd) R.drawable.ic_pwd_hind else R.drawable.ic_pwd_show)
+            mRegisterPsw.transformationMethod = if (isShowPwd) HideReturnsTransformationMethod.getInstance() else PasswordTransformationMethod.getInstance()
+            mRegisterPsw.setSelection(pos)
         }
     }
 
