@@ -148,7 +148,7 @@ class MyMessageActivity : BaseActivity() {
                     GlideLoader.load(this@MyMessageActivity, it[0], getView(R.id.ivMyMessageRvLogo), placeholder = R.drawable.default_img_icon)
                 }
                 //未读消息
-                UnreadMsgUtils.show(getView(R.id.viewMyMessageRvTipsNum),t.unReadCnt)
+                UnreadMsgUtils.show(getView(R.id.viewMyMessageRvTipsNum), t.unReadCnt)
                 //姓名
                 setText(R.id.tvMyMessageRvTitle, t.name)
                 //最后消息
@@ -226,7 +226,8 @@ class MyMessageActivity : BaseActivity() {
                     mRecentSessionList.add(0, recentInfo)
                 } else {
                     //防止重复添加
-                    if (mRecentSessionList[0].name != getString(R.string.systemNotification)) {
+                    val isExitSys = mRecentSessionList.any { it.name == getString(R.string.systemNotification) }
+                    if (!isExitSys) {
                         mRecentSessionList.add(0, recentInfo)
                     }
                 }
