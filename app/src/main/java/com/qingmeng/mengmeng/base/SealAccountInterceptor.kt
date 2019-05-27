@@ -1,7 +1,7 @@
 package com.qingmeng.mengmeng.base
 
 import android.util.Log
-import com.app.common.BuildConfig
+import com.qingmeng.mengmeng.BuildConfig
 import okhttp3.*
 import okio.Buffer
 import java.io.EOFException
@@ -20,7 +20,7 @@ open class SealAccountInterceptor : Interceptor {
         //修改请求信息
 //        request = addUrlInformation(request)
         //日志打印
-//        logOut(request)
+        if (BuildConfig.DEBUG) logOut(request)
         val response: Response = chain.proceed(request)
         val responseBody = response.body()
         responseBody?.let {

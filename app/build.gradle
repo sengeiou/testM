@@ -1,3 +1,7 @@
+import com.android.build.gradle.api.ApplicationVariant
+import com.android.builder.core.DefaultProductFlavor
+import org.gradle.api.internal.DefaultDomainObjectSet
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
@@ -22,6 +26,7 @@ android {
     compileSdkVersion rootProject.ext.android.compileSdkVersion
     defaultConfig {
         applicationId "com.qingmeng.mengmeng"
+        customAppName(applicationVariants, defaultConfig)
         multiDexEnabled true
         minSdkVersion rootProject.ext.android.minSdkVersion
         targetSdkVersion rootProject.ext.android.targetSdkVersion
@@ -47,8 +52,6 @@ android {
             // 缩减resource文件
             shrinkResources true
             signingConfig signingConfigs.mengmeng
-            //请求地址
-            buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
             //SD目录名
             buildConfigField("String", "APP_DIR", "\"mengmeng\"")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -59,13 +62,27 @@ android {
             minifyEnabled false
             shrinkResources false
             signingConfig signingConfigs.mengmeng
-            //请求地址
-            buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
             //SD目录名
             buildConfigField("String", "APP_DIR", "\"mengmeng\"")
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             //bugly
             buildConfigField("String", "BUGLY_APPID", "\"6f80b267bd\"")
+        }
+    }
+    flavorDimensions("ip")
+    productFlavors {
+        //IP地址
+        on {
+            dimension "ip"
+            buildConfigField("String", "SERVER_IP", "\"http://app.ejiameng.cn/\"")
+        }
+        moni {
+            dimension "ip"
+            buildConfigField("String", "SERVER_IP", "\"http://appitest.ejiameng.cn/\"")
+        }
+        off {
+            dimension "ip"
+            buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
         }
     }
     sourceSets {
@@ -78,9 +95,17 @@ android {
             dirs 'libs'
         }
     }
-    android.applicationVariants.all { variant ->
+}
+
+def customAppName(DefaultDomainObjectSet<ApplicationVariant> applicationVariants, DefaultProductFlavor defaultConfig) {
+    applicationVariants.all { variant ->
         variant.outputs.all { output ->
-            outputFileName = "mengmeng-${variant.buildType.name}-${releaseDate()}.apk".toLowerCase()
+            outputFileName = "mengmeng-${variant.buildType.name}-${defaultConfig.versionName}-${new Date().format("yyyyMMdd")}"
+            variant.productFlavors.forEach() { it ->
+                outputFileName += "-" + it.name
+            }
+            outputFileName += ".apk"
+            outputFileName.toLowerCase()
         }
     }
 }
