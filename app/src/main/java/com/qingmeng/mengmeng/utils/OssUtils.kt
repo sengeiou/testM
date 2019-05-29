@@ -69,8 +69,8 @@ object OssUtils {
      *
      * @return
      */
-    fun getZoomProcessWidth(width: Int): String {
-        return "?x-oss-process=image/resize,w_$width,limit_0"
+    fun wrapByWidth(url: String,width: Int): String {
+        return "$url?x-oss-process=image/resize,w_$width,limit_0/format,webp"
     }
 
     /**
@@ -78,8 +78,8 @@ object OssUtils {
      *
      * @return
      */
-    fun getZoomProcessHeight(height: Int): String {
-        return "?x-oss-process=image/resize,h_$height,limit_0"
+    fun wrapByHeight(url: String, height: Int): String {
+        return "$url?x-oss-process=image/resize,h_$height,limit_0/format,webp"
     }
 
     /**
@@ -99,8 +99,8 @@ object OssUtils {
      * @return
      */
     @JvmOverloads
-    fun getCircleProcess(width: Int, r: Int = width / 2): String {
-        return "?x-oss-process=image/resize,w_$width/circle,r_$r/format,webp"
+    fun getCircleProcess(url: String,width: Int, r: Int = width / 2): String {
+        return "$url?x-oss-process=image/resize,w_$width/circle,r_$r/format,webp"
     }
 
     /**
