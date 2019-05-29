@@ -98,15 +98,15 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
     override fun initData() {
         val bannerData = BoxUtils.getBannersByType(10)
         mImgList.addAll(bannerData)
-        if (!mImgList.isEmpty()) {
+        if (!mImgList.isEmpty() && mImgList.size > 0) {
             mVersion = mImgList[0].version
             setBanner()
         } else {
-            banner_login_main.setData(R.drawable.login_icon_banner1, R.drawable.login_icon_banner2, R.drawable.login_icon_banner3)
-            (0..2).forEach { banner_login_main.getItemImageView(it).scaleType = ImageView.ScaleType.FIT_CENTER }//CENTER_INSIDE
-            banner_login_main.setPageTransformer(AlphaPageTransformer())
-            banner_login_main.setAllowUserScrollable(false)
-            banner_login_main.viewPager.setPageChangeDuration(10000)
+//            banner_login_main.setData(R.drawable.login_icon_banner1, R.drawable.login_icon_banner2, R.drawable.login_icon_banner3)
+//            (0..2).forEach { banner_login_main.getItemImageView(it).scaleType = ImageView.ScaleType.FIT_CENTER }//CENTER_INSIDE
+//            banner_login_main.setPageTransformer(AlphaPageTransformer())
+//            banner_login_main.setAllowUserScrollable(false)
+//            banner_login_main.viewPager.setPageChangeDuration(10000)
         }
         setBGABannerLogin()
     }
@@ -243,7 +243,7 @@ class LoginMainActivity : BaseActivity(), BGABanner.Delegate<ImageView, Banner>,
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         bean.data?.let {
-                            if (it.banners != null) {
+                            if (it.banners.isNotEmpty()) {
                                 BoxUtils.removeBanners(mImgList)
                                 it.setVersion()
                                 mVersion = it.version
