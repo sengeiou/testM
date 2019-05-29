@@ -1,8 +1,8 @@
 package com.qingmeng.mengmeng.activity
 
-
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.content.Intent.ACTION_VIEW
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
@@ -17,7 +17,6 @@ import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.constant.IConstants
-import com.qingmeng.mengmeng.constant.IConstants.articleId
 import com.qingmeng.mengmeng.entity.ShareBean
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
@@ -28,39 +27,37 @@ import com.qingmeng.mengmeng.utils.setDrawableLeft
 import com.qingmeng.mengmeng.view.dialog.ShareDialog
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_head_details.*
+import kotlinx.android.synthetic.main.activity_web.*
 import kotlinx.android.synthetic.main.layout_head.*
 import org.jetbrains.anko.async
 import org.jetbrains.anko.startActivity
 
-/**
- * Created by fyf on 2019/1/5
- * 头报详情页
- */
+
+@SuppressLint("SetJavaScriptEnabled")
+@Suppress("DEPRECATION", "OverridingDeprecatedMember")
 class HeadDetailsActivity : BaseActivity() {
-    private lateinit var mShareDialog: ShareDialog
-    private var url = String()
     private var id = 0
+    private var url = ""
+    private lateinit var mShareDialog: ShareDialog
     private var mShareBean = ShareBean()
 
-    override fun getLayoutId(): Int = R.layout.activity_head_details
+    override fun getLayoutId(): Int = R.layout.activity_web
 
     override fun initObject() {
-        super.initObject()
-
+        url = intent.getStringExtra("URL") ?: ""
+        id = intent.getIntExtra(IConstants.articleId,0)
         setHeadName(R.string.head_detail)
-        //设置 分享按钮
         mMenu.setDrawableLeft(R.drawable.icon_head_details_share)
-        url = intent.getStringExtra("URL")
-        id = intent.getIntExtra(articleId, 0)
-        initWebView()
-        NewsWebView.loadUrl(url)
-        myDialog.showLoadingDialog()
+        if (TextUtils.isEmpty(url)) {
+            mNoNet.text = getString(R.string.url_error)
+            mNoNet.visibility = View.VISIBLE
+        } else {
+            initWebView()
+        }
     }
 
     override fun initListener() {
         super.initListener()
-
         //返回
         mBack.setOnClickListener {
             onBackPressed()
@@ -131,8 +128,8 @@ class HeadDetailsActivity : BaseActivity() {
     }
 
     private fun initWebView() {
-        val mWebSettings = NewsWebView.settings
-        NewsWebView.isVerticalScrollBarEnabled = false
+        val mWebSettings = mWebView.settings
+        mWebView.isVerticalScrollBarEnabled = false
         mWebSettings.apply {
             defaultTextEncodingName = "UTF-8"
             javaScriptEnabled = true
@@ -146,14 +143,15 @@ class HeadDetailsActivity : BaseActivity() {
             javaScriptCanOpenWindowsAutomatically = true
             domStorageEnabled = true
         }
-        NewsWebView.webChromeClient = object : WebChromeClient() {
+        myDialog.showLoadingDialog()
+        mWebView.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView, progress: Int) {
                 if (progress >= 100) {
                     myDialog.dismissLoadingDialog()
                 }
             }
         }
-        NewsWebView.webViewClient = object : WebViewClient() {
+        mWebView.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, url: String): Boolean {
                 if (url == null) return false
 
@@ -163,7 +161,7 @@ class HeadDetailsActivity : BaseActivity() {
                             || url.startsWith("taobao://")//淘宝
                             || url.startsWith("tbopen://")//淘宝
                     ) {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                        val intent = Intent(ACTION_VIEW, Uri.parse(url))
                         startActivity(intent)
                         return true
                     }//其他自定义的scheme
@@ -177,14 +175,16 @@ class HeadDetailsActivity : BaseActivity() {
             }
 
             override fun onReceivedError(view: WebView?, errorCode: Int, description: String?, failingUrl: String?) {
-                super.onReceivedError(view, errorCode, description, failingUrl)
+//                super.onReceivedError(view, errorCode, description, failingUrl)
                 if (failingUrl == url) {
-                    llHeadDetailsTips.visibility = View.VISIBLE
+                    mWebView.visibility = View.GONE
+                    mNoNet.visibility = View.VISIBLE
                 }
             }
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mWebSettings.mixedContentMode = WebSettings.MIXED_CONTENT_ALWAYS_ALLOW
         }
+        mWebView.loadUrl(url)
     }
 }
