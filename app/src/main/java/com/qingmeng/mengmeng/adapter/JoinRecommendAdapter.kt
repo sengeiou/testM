@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.entity.JoinRecommendBean
+import com.qingmeng.mengmeng.utils.OssUtils
 
 class JoinRecommendAdapter(val context: Context, val onItemClick: (JoinRecommendBean.JoinBean) -> Unit) : RecyclerView.Adapter<JoinRecommendAdapter.RecommendViewHolder>() {
     private val list = ArrayList<JoinRecommendBean.JoinBean>()
@@ -70,11 +71,11 @@ class JoinRecommendAdapter(val context: Context, val onItemClick: (JoinRecommend
 //                Glide.with(context).load(joinBean.appCover).apply(RequestOptions()
 //                        .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(recommendLogo)
 //            } else {
-            val logo = if(!TextUtils.isEmpty(joinBean.appCover)) joinBean.appCover else joinBean.logo
-                if (!TextUtils.isEmpty(logo)) {
-                    Glide.with(context).load(logo).apply(RequestOptions()
-                            .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(recommendLogo)
-                }
+            val logo = if (!TextUtils.isEmpty(joinBean.appCover)) joinBean.appCover else joinBean.logo
+            if (!TextUtils.isEmpty(logo)) {
+                Glide.with(context).load(OssUtils.getZoomCropProcess(logo,600, 300)).apply(RequestOptions()
+                        .placeholder(R.drawable.default_img_banner).error(R.drawable.default_img_banner)).into(recommendLogo)
+            }
 //            }
         }
     }
