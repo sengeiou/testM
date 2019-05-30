@@ -77,7 +77,7 @@ android {
             buildConfigField("String", "SERVER_IP", "\"http://app.ejiameng.cn/\"")
             resValue "string", "AppName", "盟盟"
         }
-        OnlineMoni {
+        Moni {
             dimension "ip"
             buildConfigField("String", "SERVER_IP", "\"http://appitest.ejiameng.cn/\"")
             resValue "string", "AppName", "盟盟模拟"
