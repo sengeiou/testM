@@ -69,20 +69,28 @@ android {
             buildConfigField("String", "BUGLY_APPID", "\"6f80b267bd\"")
         }
     }
-    flavorDimensions("ip")
+    flavorDimensions("ip", "suffix")
     productFlavors {
         //IP地址
-        on {
+        Online {
             dimension "ip"
             buildConfigField("String", "SERVER_IP", "\"http://app.ejiameng.cn/\"")
         }
-        moni {
+        OnlineMoni {
             dimension "ip"
             buildConfigField("String", "SERVER_IP", "\"http://appitest.ejiameng.cn/\"")
         }
-        off {
+        Offline {
             dimension "ip"
             buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
+        }
+        //多包
+        All {
+            dimension "suffix"
+        }
+        Demo {
+            dimension "suffix"
+            applicationIdSuffix ".demo"
         }
     }
     sourceSets {
