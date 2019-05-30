@@ -76,11 +76,12 @@ open class NewsPaperAdapter(val context: Context, var mImgsList: ArrayList<Banne
     inner class NewspaperBannerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val bgaBanner = itemView.findViewById<BGABanner>(R.id.news_pager_bgaBanner)
         fun bindViewHolder() {
-            if (mImgsList.isNotEmpty()) {
-                bgaBanner.setAdapter(this@NewsPaperAdapter) //必须设置此适配器，否则方法不会调用接口来填充图片
-                bgaBanner.setDelegate(this@NewsPaperAdapter) //设置点击事件，重写点击回调方法
-                bgaBanner.setData(mImgsList, null)
-                bgaBanner.setAutoPlayAble(mImgsList.size > 1)
+            bgaBanner.setAdapter(this@NewsPaperAdapter) //必须设置此适配器，否则方法不会调用接口来填充图片
+            bgaBanner.setDelegate(this@NewsPaperAdapter) //设置点击事件，重写点击回调方法
+            bgaBanner.setData(mImgsList, null)
+            bgaBanner.setAutoPlayAble(mImgsList.size > 1)
+            if (mImgsList.isEmpty()) {
+                bgaBanner.showPlaceholder()
             }
         }
     }
