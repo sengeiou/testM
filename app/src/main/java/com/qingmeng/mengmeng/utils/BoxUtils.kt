@@ -36,7 +36,7 @@ object BoxUtils {
 
     //删除已过期banner
     fun removeBanners(banners: MutableList<Banner>) {
-        boxStore.runInTxAsync({ bannerBox.remove(banners) }, { _, _ -> })
+        boxStore.run({ bannerBox.remove(banners) })
     }
 
     //保存静态数据到数据库

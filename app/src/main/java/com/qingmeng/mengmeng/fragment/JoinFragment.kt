@@ -192,7 +192,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         swipeLayout.setOnRefreshListener(this)
         swipeLayout.setOnLoadMoreListener(this)
         barLayout.addOnOffsetChangedListener(this)
-
+        initBanner()
         listPagerAdapter = object : PagerAdapter() {
             override fun getCount(): Int {
                 return tabList.size
@@ -371,16 +371,15 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         bean.data?.let {
-                            if (!it.banners.isEmpty()) {
-                                val isInitialization = mImgList.isEmpty()
-                                BoxUtils.removeBanners(imgList)
-                                mImgList.clear()
-                                it.setVersion()
-                                imgList = it.banners as ArrayList<Banner>
-                                mImgList.addAll(it.banners)
-                                BoxUtils.saveBanners(imgList)
-                                setBanner(isInitialization)
-                            }
+                            val isInitialization = mImgList.isEmpty()
+                            BoxUtils.removeBanners(imgList)
+                            mImgList.clear()
+                            it.setVersion()
+                            mImgList.addAll(it.banners)
+                            BoxUtils.saveBanners(mImgList)
+                            imgList.clear()
+                            imgList.addAll(mImgList)
+                            setBanner(isInitialization)
                         }
                     } else if (bean.code != 20000) {
                         ToastUtil.showShort(bean.msg)
@@ -445,16 +444,20 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         }
     }
 
+    private fun initBanner(){
+        mJoinBanner.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
+        mJoinBanner.setDelegate(this)//设置点击事件
+        mJoinBanner.setData(mImgList, null)// ，重写点击回调方法
+        mJoinBanner.setAutoPlayAble(mImgList.size > 1)
+    }
     private fun setBanner(isFirst: Boolean = true) {
-        if (mImgList.isNotEmpty() && mImgList.size > 0) {
-            if (isFirst) {
-                mJoinBanner.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
-                mJoinBanner.setDelegate(this)//设置点击事件，重写点击回调方法
-                mJoinBanner.setAutoPlayAble(mImgList.size > 1)
-                mJoinBanner.setData(mImgList, null)
-            } else {
-                mJoinBanner.invalidate()
-            }
+        if (isFirst) {
+            mJoinBanner.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
+            mJoinBanner.setDelegate(this)//设置点击事件
+            mJoinBanner.setData(mImgList, null)// ，重写点击回调方法
+            mJoinBanner.setAutoPlayAble(mImgList.size > 1)
+        } else {
+            mJoinBanner.invalidate()
         }
     }
 

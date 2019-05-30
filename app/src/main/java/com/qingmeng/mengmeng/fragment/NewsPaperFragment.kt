@@ -188,17 +188,15 @@ class NewsPaperFragment : BaseFragment() {
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         bean.data?.let {
-                            if (it.banners != null) {
-                                //清除缓存
-                                BoxUtils.removeBanners(imgList)
-                                mImgList.clear()
-                                it.setVersion()
-                                imgList = it.banners as ArrayList<Banner>
-                                mImgList.addAll(it.banners)
-                                //存入缓存
-                                BoxUtils.saveBanners(imgList)
-                                mLoadMoreAdapter.notifyDataSetChanged()
-                            }
+                            //清除缓存
+                            BoxUtils.removeBanners(imgList)
+                            mImgList.clear()
+                            it.setVersion()
+                            mImgList.addAll(it.banners)
+                            imgList = mImgList
+                            //存入缓存
+                            BoxUtils.saveBanners(imgList)
+                            mLoadMoreAdapter.notifyDataSetChanged()
                         }
                     }
                 }, {
