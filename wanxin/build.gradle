@@ -54,7 +54,6 @@ android {
             abiFilters 'armeabi', 'armeabi-v7a'
             //, 'arm64-v8a','mips','mips64'
         }
-        resValue "string", "appName", "完信"
         manifestPlaceholders = [PACKAGE_NAME: packageName,
                                 HMSVERSION: hmsVersion, HUAWEI_APP_ID: huaweiAppId,
                                 XIAOMI_APP_ID: xiaomiAppId, XIAOMI_APP_KEY: xiaomiAppKey,
