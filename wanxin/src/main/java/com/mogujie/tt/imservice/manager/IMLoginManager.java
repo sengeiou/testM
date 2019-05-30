@@ -194,7 +194,7 @@ public class IMLoginManager extends IMManager {
 
     public void login(String userName, String password) {
         logger.i("login#login -> userName:%s", userName);
-
+        DBInterface.instance().initDbHelp(ctx, Integer.parseInt(userName));
         //test 使用
         LoginSp.SpLoginIdentity identity = LoginSp.instance().getLoginIdentity();
         if (identity != null && !TextUtils.isEmpty(identity.getPwd())) {
