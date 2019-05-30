@@ -451,14 +451,14 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         mJoinBanner.setAutoPlayAble(mImgList.size > 1)
     }
     private fun setBanner(isFirst: Boolean = true) {
+        if(mImgList.isEmpty()){
+            mImgList.add(Banner(-1,-1,"",-1,false,-1,-1,"",-1,"","",""))
+        }
         if (isFirst) {
             mJoinBanner.setData(mImgList, null)// ，重写点击回调方法
             mJoinBanner.setAutoPlayAble(mImgList.size > 1)
         } else {
             mJoinBanner.invalidate()
-        }
-        if (mImgList.isEmpty()) {
-            mJoinBanner.showPlaceholder()
         }
     }
 
