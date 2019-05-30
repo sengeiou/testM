@@ -647,7 +647,7 @@ class MyMessageChatActivity : BaseActivity() {
         //消息适配器
         mLayoutManager = LinearLayoutManager(this)
         rvMyMessageChat.layoutManager = mLayoutManager
-        mAdapter = ChatAdapterTwo(this, msgObjectList) { audioMessage, imageView ->
+        mAdapter = ChatAdapterTwo(this, msgObjectList, mIsSystemMotification) { audioMessage, imageView ->
             PermissionUtils.readAndWrite(this) {
                 //音频点击事件
                 if (mMediaManager.isPlaying()) {    //正在播放点击就结束播放

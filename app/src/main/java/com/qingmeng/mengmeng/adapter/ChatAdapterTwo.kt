@@ -56,7 +56,7 @@ import kotlin.collections.ArrayList
 
  *  Date: 2019/2/14
  */
-class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<Any>, val audioClick: (audioMessage: AudioMessage, imageView: ImageView) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<Any>,val isSystemMsg: Boolean = false, val audioClick: (audioMessage: AudioMessage, imageView: ImageView) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mImService: IMService? = null
     private var loginUser: UserEntity? = null
     private var currentPop: MessageOperatePopup? = null    //弹出气泡
@@ -79,9 +79,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 RenderType.MESSAGE_TYPE_BRAND -> {    //品牌详情
                     (it as BrandViewHolder).bindViewHolder(position)
                 }
-                /**
-                 * 别人消息
-                 */
+            /**
+             * 别人消息
+             */
                 RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF -> {    //别人文本(emoji表情)
                     (it as OtherTextViewHolder).bindViewHolder(position)
                 }
@@ -100,9 +100,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 RenderType.MESSAGE_TYPE_OTHER_BRAND -> {    //别人品牌详情
                     (it as OtherBrandViewHolder).bindViewHolder(position)
                 }
-                /**
-                 * 自己消息
-                 */
+            /**
+             * 自己消息
+             */
                 RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF -> {  //自己文本(emoji表情)
                     (it as MineTextViewHolder).bindViewHolder(position)
                 }
@@ -144,9 +144,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_brand, viewGroup, false)
                 BrandViewHolder(view)
             }
-            /**
-             * 别人消息
-             */
+        /**
+         * 别人消息
+         */
             RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF -> {    //别人文本(emoji表情)
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_text, viewGroup, false)
                 OtherTextViewHolder(view, viewGroup)
@@ -171,9 +171,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_brand, viewGroup, false)
                 OtherBrandViewHolder(view, viewGroup)
             }
-            /**
-             * 自己消息
-             */
+        /**
+         * 自己消息
+         */
             RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF -> {  //自己文本(emoji表情)
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_text, viewGroup, false)
                 MineTextViewHolder(view, viewGroup)
@@ -288,8 +288,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         fun bindViewHolder(position: Int) {
             val textMessage = msgObjectList[position] as TextMessage
             setHeadImage(textMessage, ivMyMessageChatRvOtherTextHead)
+            val content= if(isSystemMsg) systemMsgSubContent(textMessage.info) else textMessage.info
             tvMyMessageChatRvOtherTextText.let {
-                it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), textMessage.info, it, true)
+                it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), content, it, true)
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
                     true
@@ -1245,6 +1246,16 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         override fun onDeleteClick(position: Int) {
             mCallBack?.onDeleteClick(position)
         }
+    }
+
+    fun systemMsgSubContent(msg: String): String {
+        val startStr = "内容["
+        val endStr = "]"
+        val startPoi = msg.indexOf(startStr)
+        val endPoi = msg.lastIndexOf(endStr)
+        return if (startPoi > -1 && startPoi < endPoi)
+            msg.substring(startPoi + startStr.length, endPoi)
+        else msg
     }
 
     /**
