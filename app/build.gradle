@@ -80,12 +80,12 @@ android {
         Moni {
             dimension "ip"
             buildConfigField("String", "SERVER_IP", "\"http://appitest.ejiameng.cn/\"")
-            resValue "string", "AppName", "盟盟模拟"
+            resValue "string", "AppName", "盟盟-模拟"
         }
         Offline {
             dimension "ip"
             buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
-            resValue "string", "AppName", "盟盟线下"
+            resValue "string", "AppName", "盟盟-线下"
         }
     }
     sourceSets {
