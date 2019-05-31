@@ -93,7 +93,8 @@ class JoinRecommendAdapter(val context: Context, val onItemClick: (JoinRecommend
         private val fullView by lazy { itemView.findViewById<LinearLayout>(R.id.llRoot) }
 
         fun bindViewHolder(position: Int) {
-            fullView.setWidthHeightExt(height = (ScreenUtils.getScreenHeight() - context.dp2px(64 + 40 + (256 * list.size) + 49)) / (3 - list.size))
+            val height= ScreenUtils.getScreenHeight() - context.dp2px(64 + 40 + (256 * list.size) + 45)
+            fullView.setWidthHeightExt(height = height / (3 - list.size))
         }
     }
 }
