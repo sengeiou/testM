@@ -276,7 +276,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 
     override fun onRefresh() {
         getNewData()
-        mJoinBannerView.visibility = View.VISIBLE
+//        mJoinBannerView.visibility = View.VISIBLE
     }
 
     private fun getNewData() {
@@ -371,7 +371,6 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 .subscribe({ bean ->
                     if (bean.code == 12000) {
                         bean.data?.let {
-                            val isInitialization = mImgList.isEmpty()
                             BoxUtils.removeBanners(imgList)
                             mImgList.clear()
                             it.setVersion()
@@ -379,14 +378,14 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                             BoxUtils.saveBanners(mImgList)
                             imgList.clear()
                             imgList.addAll(mImgList)
-                            setBanner(isInitialization)
+                            setBanner()
                         }
                     } else if (bean.code != 20000) {
                         ToastUtil.showShort(bean.msg)
                     }
-                    mJoinBannerView.visibility = View.GONE
+//                    mJoinBannerView.visibility = View.GONE
                 }, {
-                    mJoinBannerView.visibility = View.GONE
+//                    mJoinBannerView.visibility = View.GONE
                     ToastUtil.showNetError()
                 }, {}, { addSubscription(it) })
     }
@@ -450,16 +449,10 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         mJoinBanner.setData(mImgList, null)// ，重写点击回调方法
         mJoinBanner.setAutoPlayAble(mImgList.size > 1)
     }
-    private fun setBanner(isFirst: Boolean = true) {
-        if(mImgList.isEmpty()){
-            mImgList.add(Banner(-1,-1,"",-1,false,-1,-1,"",-1,"","",""))
-        }
-        if (isFirst) {
-            mJoinBanner.setData(mImgList, null)// ，重写点击回调方法
-            mJoinBanner.setAutoPlayAble(mImgList.size > 1)
-        } else {
-            mJoinBanner.invalidate()
-        }
+    private fun setBanner() {
+        mJoinBanner.setData(mImgList, null)// ，重写点击回调方法
+        mJoinBanner.setAutoPlayAble(mImgList.size > 1)
+        mJoinBannerView.visibility = if(mImgList.isEmpty()) View.VISIBLE else View.GONE
     }
 
     /**

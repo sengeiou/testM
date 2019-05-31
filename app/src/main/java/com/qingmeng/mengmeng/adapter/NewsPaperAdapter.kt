@@ -1,6 +1,7 @@
 package com.qingmeng.mengmeng.adapter
 
 import android.content.Context
+import android.media.Image
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -75,17 +76,13 @@ open class NewsPaperAdapter(val context: Context, var mImgsList: ArrayList<Banne
 
     inner class NewspaperBannerViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val bgaBanner = itemView.findViewById<BGABanner>(R.id.news_pager_bgaBanner)
+        private val bannerPlaceholder= itemView.findViewById<ImageView>(R.id.ivBannerPlaceholder)
         fun bindViewHolder() {
-            if(mImgsList.isEmpty()){
-                mImgsList.add(Banner(-1,-1,"",-1,false,-1,-1,"",-1,"","",""))
-            }
             bgaBanner.setAdapter(this@NewsPaperAdapter) //必须设置此适配器，否则方法不会调用接口来填充图片
             bgaBanner.setDelegate(this@NewsPaperAdapter) //设置点击事件，重写点击回调方法
             bgaBanner.setData(mImgsList, null)
             bgaBanner.setAutoPlayAble(mImgsList.size > 1)
-//            if (mImgsList.isEmpty()) {
-//                bgaBanner.showPlaceholder()
-//            }
+            bannerPlaceholder.visibility = if (mImgsList.isEmpty()) View.VISIBLE else View.GONE
         }
     }
 

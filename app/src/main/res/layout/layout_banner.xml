@@ -25,10 +25,12 @@
         app:banner_transitionEffect="alpha"
         />
 
-    <View
+    <ImageView
         android:id="@+id/mJoinBannerView"
         android:layout_width="match_parent"
         android:layout_height="188dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_img_banner"
         android:visibility="gone"
         />
 </RelativeLayout>
