@@ -96,7 +96,7 @@ object BoxUtils {
 
     //删除已过期静态数据
     fun removeStatic(statics: MutableList<StaticBean>) {
-        boxStore.runInTxAsync({ staticBox.remove(statics) }, { _, _ -> })
+        boxStore.run({ staticBox.remove(statics) })
     }
 
     //保存我的板块信息
