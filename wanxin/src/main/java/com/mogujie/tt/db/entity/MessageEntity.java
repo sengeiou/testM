@@ -9,6 +9,7 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.google.gson.annotations.SerializedName;
 import com.mogujie.tt.config.DBConstant;
 import com.mogujie.tt.config.MessageConstant;
 import com.mogujie.tt.imservice.entity.AudioMessage;
@@ -101,6 +102,8 @@ public class MessageEntity implements Serializable {
     protected String nickname;
     @Transient
     protected boolean special;
+    @Transient
+    private String title;
 
     {
         setAttribute("time", System.currentTimeMillis());
@@ -464,6 +467,7 @@ public class MessageEntity implements Serializable {
             infoType = contentEntity.getInfoType();
             nickname = contentEntity.getNickname();
             special = contentEntity.isSpecial();
+            title = contentEntity.getTitle();
             String extInfo = (contentEntity.getExtInfo() != null ? contentEntity.getExtInfo() : "").toString();
             if (!TextUtils.isEmpty(extInfo)) {
                 try {
@@ -529,6 +533,14 @@ public class MessageEntity implements Serializable {
     @Keep
     public void setSpecial(boolean special) {
         this.special = special;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Keep

@@ -288,9 +288,8 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         fun bindViewHolder(position: Int) {
             val textMessage = msgObjectList[position] as TextMessage
             setHeadImage(textMessage, ivMyMessageChatRvOtherTextHead)
-            val content= if(isSystemMsg) systemMsgSubContent(textMessage.info) else textMessage.info
             tvMyMessageChatRvOtherTextText.let {
-                it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), content, it, true)
+                it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), textMessage.info, it, true)
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
                     true

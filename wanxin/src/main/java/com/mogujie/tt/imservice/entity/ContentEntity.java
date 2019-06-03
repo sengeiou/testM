@@ -23,6 +23,8 @@ public class ContentEntity {
     //原来的消息
     @SerializedName("info")
     private String info;
+    @SerializedName("title")
+    private String title;
     @SerializedName("nickname")
     private String nickname;
     //扩展消息
@@ -54,6 +56,14 @@ public class ContentEntity {
 
     public void setInfoType(int infoType) {
         this.infoType = infoType;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     @Override
