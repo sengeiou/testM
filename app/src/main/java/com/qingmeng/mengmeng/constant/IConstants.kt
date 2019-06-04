@@ -69,7 +69,7 @@ object IConstants {
     val APPID_WECHAT = "wx9eaf08161137b52e"
     val SECRET_WECHAT = "90f41ca172fbdeb216e1a03044b3ca27"
     //QQ
-    val APP_ID_QQ = "1109051429"
+    val APP_ID_QQ = "101540890"
     val APP_KEY_QQ = ""
     //微博
     val APP_ID_SINA = "1439791251"
