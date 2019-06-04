@@ -301,7 +301,7 @@ interface Api {
 
     //第三方登录   type 1.QQ 2.微信
     @POST("app/user/third_party_login")
-    fun loginThree(@Query("openId") openId: String, @Query("type") type: Int, @Query("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
+    fun loginThree(@Query("openId") openId: String,@Query("unionId") unionId: String, @Query("type") type: Int, @Query("deviceType") deviceType: Int): Observable<BaseBean<UserBean>>
 
     //分享获取信息
     @GET("api/share/share_information")
