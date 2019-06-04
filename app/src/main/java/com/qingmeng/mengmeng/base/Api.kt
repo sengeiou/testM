@@ -49,6 +49,7 @@ interface Api {
                   @Field("openId") openId: String,
                   @Field("token") token: String,
                   @Field("weChatUnionId") weChatUnionId: String,
+                  @Field("weChatAppopenId") weChatAppopenId: String,
                   @Field("avatar") avatar: String,
                   @Field("type") type: Int,
                   @Field("password") password: String,
@@ -256,7 +257,7 @@ interface Api {
     //第三方绑定
     @POST("app/user/third_party_binding")
     @FormUrlEncoded
-    fun threeBinding(@Field("type") type: Int, @Field("openId") openId: String, @Field("token") token: String, @Field("weChatUnionId") weChatUnionId: String, @Header("ACCESS-TOKEN") accessToken: String): Observable<BaseBean<Any>>
+    fun threeBinding(@Field("type") type: Int, @Field("openId") openId: String, @Field("token") token: String, @Field("weChatUnionId") weChatUnionId: String,@Field("weChatAppopenId") weChatAppopenId: String, @Header("ACCESS-TOKEN") accessToken: String): Observable<BaseBean<Any>>
 
     //第三方解绑绑定 1.QQ 2.微信
     @GET("app/user/third_party_unbind")
