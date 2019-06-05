@@ -273,7 +273,7 @@ class LoginRegisterActivity : BaseActivity() {
 
     //展示图片验证码
     private fun showImgCode() {
-        myDialog.showImageCodeDialog(mRegisterPhone.text.toString(), contentType,
+        myDialog.showImageCodeDialog(mRegisterPhone.text.toString(), 1,
                 { addSubscription(it) }, { imgHandler.sendEmptyMessage(timing) })
     }
 
@@ -281,7 +281,7 @@ class LoginRegisterActivity : BaseActivity() {
     private fun sendSmsCode(result: String) {
         val phone = mRegisterPhone.text.toString()
         val params = JSONObject(result)
-        ApiUtils.getApi().sendSms(phone, contentType, geetest_challenge = params.optString("geetest_challenge"),
+        ApiUtils.getApi().sendSms(phone, 1, geetest_challenge = params.optString("geetest_challenge"),
                 geetest_validate = params.optString("geetest_validate"), geetest_seccode = params.optString("geetest_seccode"))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
