@@ -840,10 +840,12 @@ class MyMessageChatActivity : BaseActivity() {
      * 添加单个消息
      */
     private fun pushList(msg: MessageEntity?, isMinePhone: Boolean) {
-        if (isMinePhone) {
-            mAdapter.addItem(msg!!, mLayoutManager)
-        } else {
-            mAdapter.addItem(msg!!)
+        msg?.let {
+            if (isMinePhone) {
+                mAdapter.addItem(msg, mLayoutManager)
+            } else {
+                mAdapter.addItem(msg)
+            }
         }
     }
 
