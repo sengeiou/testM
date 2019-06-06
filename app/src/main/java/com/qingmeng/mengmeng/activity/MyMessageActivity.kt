@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.support.v7.widget.LinearLayoutManager
+import android.support.v7.widget.RecyclerView
 import android.view.MotionEvent
 import android.view.View
 import android.widget.LinearLayout
@@ -134,6 +135,13 @@ class MyMessageActivity : BaseActivity() {
             }
             false
         }
+        //RecyclerView滑动监听
+        rvMyMessage.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+                srlMyMessage.isRefreshEnabled = !recyclerView.canScrollVertically(-1)
+            }
+        })
     }
 
     private fun initAdapter() {
