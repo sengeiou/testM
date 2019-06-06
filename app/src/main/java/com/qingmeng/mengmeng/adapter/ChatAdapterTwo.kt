@@ -56,7 +56,7 @@ import kotlin.collections.ArrayList
 
  *  Date: 2019/2/14
  */
-class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<Any>,val isSystemMsg: Boolean = false, val audioClick: (audioMessage: AudioMessage, imageView: ImageView) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<Any>, val isSystemMsg: Boolean = false, val audioClick: (audioMessage: AudioMessage, imageView: ImageView) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var mImService: IMService? = null
     private var loginUser: UserEntity? = null
     private var currentPop: MessageOperatePopup? = null    //弹出气泡
@@ -71,7 +71,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         holder.let {
             when (RenderType.values()[getItemViewType(position)]) {
                 RenderType.MESSAGE_TYPE_TIME_TITLE, RenderType.MESSAGE_TYPE_OTHER_REVOKE, RenderType.MESSAGE_TYPE_MINE_REVOKE -> {  //时间
-                    (it as TimeViewHolder).bindViewHolder(msgObjectList[position])
+                    (it as TimeViewHolder).bindViewHolder(msgObjectList[position], position)
                 }
                 RenderType.MESSAGE_TYPE_INVALID -> {    //默认失败类型
 
@@ -79,9 +79,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 RenderType.MESSAGE_TYPE_BRAND -> {    //品牌详情
                     (it as BrandViewHolder).bindViewHolder(position)
                 }
-            /**
-             * 别人消息
-             */
+                /**
+                 * 别人消息
+                 */
                 RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF -> {    //别人文本(emoji表情)
                     (it as OtherTextViewHolder).bindViewHolder(position)
                 }
@@ -100,9 +100,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 RenderType.MESSAGE_TYPE_OTHER_BRAND -> {    //别人品牌详情
                     (it as OtherBrandViewHolder).bindViewHolder(position)
                 }
-            /**
-             * 自己消息
-             */
+                /**
+                 * 自己消息
+                 */
                 RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF -> {  //自己文本(emoji表情)
                     (it as MineTextViewHolder).bindViewHolder(position)
                 }
@@ -144,9 +144,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_brand, viewGroup, false)
                 BrandViewHolder(view)
             }
-        /**
-         * 别人消息
-         */
+            /**
+             * 别人消息
+             */
             RenderType.MESSAGE_TYPE_OTHER_TEXT, RenderType.MESSAGE_TYPE_OTHER_GIF -> {    //别人文本(emoji表情)
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_text, viewGroup, false)
                 OtherTextViewHolder(view, viewGroup)
@@ -171,9 +171,9 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_other_brand, viewGroup, false)
                 OtherBrandViewHolder(view, viewGroup)
             }
-        /**
-         * 自己消息
-         */
+            /**
+             * 自己消息
+             */
             RenderType.MESSAGE_TYPE_MINE_TEXT, RenderType.MESSAGE_TYPE_MINE_GIF -> {  //自己文本(emoji表情)
                 view = LayoutInflater.from(context).inflate(R.layout.activity_my_message_chat_item_mine_text, viewGroup, false)
                 MineTextViewHolder(view, viewGroup)
@@ -211,8 +211,14 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
     inner class TimeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         private val llMyMessageChatRvAllTime = itemView.findViewById<LinearLayout>(R.id.llMyMessageChatRvAllTime)
         private val tvMyMessageChatRvTime = itemView.findViewById<TextView>(R.id.tvMyMessageChatRvTime)
-        fun bindViewHolder(item: Any) {
-            if (msgObjectList[0] == item) {
+        fun bindViewHolder(item: Any, position: Int) {
+            val first = msgObjectList[0]
+            val firstIsNull = if (first is MessageEntity) {
+                first.id == null && first.content.isEmpty()
+            } else {
+                false
+            }
+            if (position == 0 || (firstIsNull && position == 1)) {
                 llMyMessageChatRvAllTime.setMarginExt(top = 60)
             } else {
                 llMyMessageChatRvAllTime.setMarginExt(top = 0)
