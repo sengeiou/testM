@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="105dp"
-              android:layout_height="122dp"
+              android:layout_height="wrap_content"
               android:background="@drawable/color_white_radius_2"
               android:orientation="vertical"
               android:paddingStart="@dimen/padding_dp_5"
-              android:paddingTop="@dimen/padding_dp_5">
+              android:paddingTop="@dimen/padding_dp_5"
+              android:paddingBottom="@dimen/padding_dp_5">
 
     <TextView
         android:id="@+id/popMoreMessage"
@@ -50,6 +51,7 @@
         android:drawableStart="@drawable/detail_icon_share"
         android:drawablePadding="@dimen/padding_dp_12"
         android:padding="@dimen/padding_dp_5"
+        android:visibility="gone"
         android:text="@string/share"
         android:textColor="@color/color_666666"
         android:textSize="@dimen/text_size_14"/>

@@ -16,6 +16,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
 import android.widget.PopupWindow
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
@@ -312,7 +313,7 @@ class DialogCustom(private var mContext: Context?) {
         // 创建PopupWindow对象，其中：
         // 第一个参数是用于PopupWindow中的View，第二个参数是PopupWindow的宽度，
         // 第三个参数是PopupWindow的高度，第四个参数指定PopupWindow能否获得焦点
-        val window = PopupWindow(contentView, mContext!!.dp2px(105), mContext!!.dp2px(122), true)
+        val window = PopupWindow(contentView, mContext!!.dp2px(105), LinearLayout.LayoutParams.WRAP_CONTENT, true)
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         window.showAsDropDown(view, mContext!!.dp2px(-80), mContext!!.dp2px(5))
         contentView.popMoreMessage.setOnClickListener {
