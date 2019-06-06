@@ -59,8 +59,10 @@ import java.util.*
 class MyMessageActivity : BaseActivity() {
     private lateinit var mLayoutManager: LinearLayoutManager
     private lateinit var mAdapter: CommonAdapter<RecentInfo>
+    private var mAllList = ArrayList<RecentInfo>()
     private var mRecentSessionList = ArrayList<RecentInfo>()             //消息内容
-    private var mList = ArrayList<MyMessage>()                           //接口消息内容
+    private var mSysRecentInfo = RecentInfo()
+    private var mKefuRecentInfo = RecentInfo()
     private var mAvatar = ""                                             //默认发送者头像
     private var mIsMyFragmentEnter = false                               //是我的板块进来的
 
@@ -113,6 +115,15 @@ class MyMessageActivity : BaseActivity() {
          */
         imServiceConnector.connect(this)
         EventBus.getDefault().register(this)
+
+        mSysRecentInfo.name = "系统消息"
+        mSysRecentInfo.peerId = 60834
+        mSysRecentInfo.sessionKey = "1_60834"
+
+
+        mKefuRecentInfo.name = "盟盟客服"
+        mKefuRecentInfo.peerId = 60831
+        mKefuRecentInfo.sessionKey = "1_60831"
     }
 
     override fun initListener() {
@@ -147,7 +158,7 @@ class MyMessageActivity : BaseActivity() {
     private fun initAdapter() {
         mLayoutManager = LinearLayoutManager(this)
         rvMyMessage.layoutManager = mLayoutManager
-        mAdapter = CommonAdapter(this, R.layout.activity_my_message_item, mRecentSessionList, holderConvert = { holder, t, position, payloads ->
+        mAdapter = CommonAdapter(this, R.layout.activity_my_message_item, mAllList, holderConvert = { holder, t, position, payloads ->
             holder.apply {
                 //接口请求的不给他左滑
                 getView<SwipeMenuLayout>(R.id.smlMyMessageRv).isSwipeEnable = t.sessionType != 0
@@ -171,7 +182,7 @@ class MyMessageActivity : BaseActivity() {
                     FaceInitData.init(applicationContext)
                     FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
                     if (t.sessionKey != null && t.name != null) {
-                        startActivityForResult<MyMessageChatActivity>(TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to t.sessionKey, "title" to t.name, "avatar" to if (t.avatar[0] != null && t.avatar[0].isNotEmpty()) t.avatar[0] else mAvatar)
+                        startActivityForResult<MyMessageChatActivity>(TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to t.sessionKey, "title" to t.name, "avatar" to if (t.avatar!=null && t.avatar.size>0 && t.avatar[0] != null && t.avatar[0].isNotEmpty()) t.avatar[0] else mAvatar)
                         MESSAGE_TO_CHAT = true
                         //如果聊天页面存在了 就销毁它
                         finishAty(MyMessageChatActivity::class.java)
@@ -184,7 +195,7 @@ class MyMessageActivity : BaseActivity() {
                     //                    startActivity<MyMessageChatActivity>(IntentConstant.KEY_SESSION_KEY to t.sessionKey)
                     //关闭view
                     getView<SwipeMenuLayout>(R.id.smlMyMessageRv).smoothClose()
-                    mImService?.sessionManager?.reqRemoveSession(mRecentSessionList[position])
+                    mImService?.sessionManager?.reqRemoveSession(mAllList[position])
                 }
             }
         }, onItemClick = { view, holder, position ->
@@ -203,62 +214,45 @@ class MyMessageActivity : BaseActivity() {
                     srlMyMessage.isRefreshing = false
                     it.apply {
                         if (code == 12000) {
-                            setData(data!!.chatInfoList)
+                            setData(data?.chatInfoList)
                         } else {
                             ToastUtil.showShort(msg)
                             //依赖联系人回话、未读消息、用户的信息三者的状态
                             onRecentContactDataReady()
-                            setNoChatView(mRecentSessionList)
+                            setNoChatView()
                         }
                     }
                 }, {
                     myDialog.dismissLoadingDialog()
                     srlMyMessage.isRefreshing = false
                     onRecentContactDataReady()
-                    setNoChatView(mRecentSessionList)
+                    setNoChatView()
                 }, {}, { addSubscription(it) })
     }
 
-    private fun setData(chatInfoList: List<MyMessage>) {
-        onRecentContactDataReady()
-        mList.clear()
-        mList.addAll(chatInfoList)
-        mList.forEachIndexed { index, myMessage ->
+    private fun setData(chatInfoList: List<MyMessage>?) {
+        chatInfoList?.forEachIndexed { index, myMessage ->
             val recentInfo = RecentInfo()
             recentInfo.avatar = listOf(myMessage.avatar)
             recentInfo.name = myMessage.name
             recentInfo.peerId = myMessage.wxUid
             recentInfo.sessionKey = "1_${myMessage.wxUid}"
-            if (myMessage.name == getString(R.string.systemNotification) && myMessage.wxUid == getString(R.string.systemNotification_id).toInt()) {
-                if (mRecentSessionList.isEmpty()) {
-                    mRecentSessionList.add(0, recentInfo)
-                } else {
-                    //防止重复添加
-                    val isExitSys = mRecentSessionList.any { it.name == getString(R.string.systemNotification) }
-                    if (!isExitSys) {
-                        mRecentSessionList.add(0, recentInfo)
+
+            when (myMessage.name) {
+                getString(R.string.systemNotification) -> {
+                    if(mSysRecentInfo.avatar==null) {
+                        mSysRecentInfo = recentInfo
                     }
                 }
-            } else {
-                if (myMessage.name.contains("盟盟客服")) {
-                    mAvatar = myMessage.avatar
-                }
-                var isRepeat = false
-                mRecentSessionList?.forEach {
-                    //过滤重复会话
-                    if (myMessage.wxUid == it.peerId) {
-                        it.name = myMessage.name
-                        it.avatar = listOf(myMessage.avatar)
-                        isRepeat = true
+                "盟盟客服" -> {
+                    if(mKefuRecentInfo.avatar==null) {
+                        mKefuRecentInfo = recentInfo
                     }
-                }
-                if (!isRepeat) {
-                    mRecentSessionList.add(index, recentInfo)
                 }
             }
         }
-        setNoChatView(mRecentSessionList)
-        mAdapter.notifyDataSetChanged()
+        onRecentContactDataReady()
+        setNoChatView()
     }
 
     /**
@@ -378,14 +372,14 @@ class MyMessageActivity : BaseActivity() {
     /**
      * 这个处理有点过于粗暴 消息列表展示
      */
-    private fun onRecentContactDataReady() {
+    private fun onRecentContactDataReady(): Boolean {
         val isUserData = mImService?.contactManager?.isUserDataReady
         val isSessionData = mImService?.sessionManager?.isSessionListReady
         val isGroupData = mImService?.groupManager?.isGroupReady
 
         if (!(isUserData!! && isSessionData!! && isGroupData!!)) {
             srlMyMessage.isRefreshing = false
-            return
+            return false
         }
 
 //        val unreadMsgManager = mImService?.unReadMsgManager
@@ -393,15 +387,38 @@ class MyMessageActivity : BaseActivity() {
 //        ((MainActivity) getActivity()).setUnreadMessageCnt(totalUnreadMsgCnt);
         //todo 设置未读消息
         val recentSessionList = mImService?.sessionManager?.recentListInfo
-        mRecentSessionList.clear()
-        mRecentSessionList.addAll(recentSessionList!!)
+        recentSessionList?.filterNot {
+            when (it.peerId) {
+                mSysRecentInfo.peerId -> {
+                    mSysRecentInfo = it
+                    true
+                }
+                mKefuRecentInfo.peerId -> {
+                    mKefuRecentInfo = it
+                    true
+                }
+                else -> false
+            }
+
+        }?.let {
+            mRecentSessionList.clear()
+            mRecentSessionList.addAll(it)
+        }
+
+
+        mAllList.clear()
+        mAllList.add(mSysRecentInfo)
+        mAllList.add(mKefuRecentInfo)
+        mAllList.addAll(mRecentSessionList)
+        mAdapter.notifyDataSetChanged()
+        return true
     }
 
     /**
      * 无消息提示
      */
-    private fun setNoChatView(recentSessionList: List<RecentInfo>) {
-        if (recentSessionList.isEmpty()) {
+    private fun setNoChatView() {
+        if (mAllList.isEmpty()) {
             llMyMessageTips.visibility = View.VISIBLE
         } else {
             llMyMessageTips.visibility = View.GONE
