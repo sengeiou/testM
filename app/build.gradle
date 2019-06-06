@@ -46,11 +46,11 @@ android {
     buildTypes {
         release {
             //混淆开启
-            minifyEnabled true
+            minifyEnabled false
             //是否zip对齐
-            zipAlignEnabled true
+            zipAlignEnabled false
             // 缩减resource文件
-            shrinkResources true
+            shrinkResources false
             signingConfig signingConfigs.mengmeng
             //SD目录名
             buildConfigField("String", "APP_DIR", "\"mengmeng\"")
