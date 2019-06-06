@@ -72,17 +72,17 @@ android {
     flavorDimensions("ip")
     productFlavors {
         //IP地址
-        Online {
+        online {
             dimension "ip"
             buildConfigField("String", "SERVER_IP", "\"http://app.ejiameng.cn/\"")
             resValue "string", "AppName", "盟盟"
         }
-        Moni {
+        moni {
             dimension "ip"
             buildConfigField("String", "SERVER_IP", "\"http://appitest.ejiameng.cn/\"")
             resValue "string", "AppName", "盟盟-模拟"
         }
-        Offline {
+        offline {
             dimension "ip"
             buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
             resValue "string", "AppName", "盟盟-线下"

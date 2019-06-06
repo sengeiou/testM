@@ -217,10 +217,10 @@ class LoginPwdActivity : BaseActivity() {
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
                     //已注册
-                    if (bean.code == 25089) {
-                        GeetestUtil.customVerity({ checkCodeType() }, { sendSmsCode(it) })
-                    } else {
-                        ToastUtil.showShort(getString(R.string.phone_not_register))
+                    when {
+                        bean.code == 25089 -> GeetestUtil.customVerity({ checkCodeType() }, { sendSmsCode(it) })
+                        bean.code == 12000 -> ToastUtil.showShort(getString(R.string.phone_not_register))
+                        else -> ToastUtil.showShort(bean.msg)
                     }
                 }, {
                     ToastUtil.showNetError()
