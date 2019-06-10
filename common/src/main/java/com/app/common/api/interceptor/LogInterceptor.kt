@@ -3,6 +3,7 @@ package com.app.common.api.interceptor
 
 import android.util.Log
 import okhttp3.FormBody
+import okhttp3.Request
 import java.net.URLDecoder
 
 /**
@@ -16,10 +17,10 @@ class LogInterceptor : BaseInterceptor(requestCallback = {
     try {
         val method = it.method();
         val sb = StringBuilder();
-        if ("POST".equals(method)) {
+        if ("POST" == method) {
             if (it.body() is FormBody) {
                 val body = it.body() as FormBody
-                for (i in 0..(body.size() - 1)) {
+                for (i in 0 until body.size()) {
                     sb.append(body.encodedName(i) + "=" + body.encodedValue(i) + ",")
                 }
                 sb.delete(sb.length - 1, sb.length);
@@ -36,4 +37,6 @@ class LogInterceptor : BaseInterceptor(requestCallback = {
         Log.i("LogInterceptor", "intercept#request:\n$info")
     } catch (e: Exception) {
     }
+},resultCallback={result: String, request: Request ->
+    Log.i("LogInterceptor", "intercept#result: ###[${request.url().toString().replace("http://","").replace("https://","")}]###\n$result")
 })

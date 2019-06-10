@@ -20,7 +20,7 @@ open class SealAccountInterceptor : Interceptor {
         //修改请求信息
 //        request = addUrlInformation(request)
         //日志打印
-        if (BuildConfig.DEBUG) logOut(request)
+//        if (BuildConfig.DEBUG) logOut(request)
         val response: Response = chain.proceed(request)
         val responseBody = response.body()
         responseBody?.let {

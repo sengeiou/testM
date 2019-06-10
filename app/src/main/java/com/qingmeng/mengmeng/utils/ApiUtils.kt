@@ -13,7 +13,9 @@ import com.alibaba.sdk.android.oss.common.auth.OSSFederationCredentialProvider
 import com.alibaba.sdk.android.oss.common.auth.OSSFederationToken
 import com.alibaba.sdk.android.oss.model.PutObjectRequest
 import com.alibaba.sdk.android.oss.model.PutObjectResult
+import com.app.common.api.interceptor.LogInterceptor
 import com.qingmeng.mengmeng.BaseActivity
+import com.qingmeng.mengmeng.BuildConfig
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.base.Api
 import com.qingmeng.mengmeng.base.SealAccountInterceptor
@@ -40,7 +42,10 @@ import java.util.concurrent.TimeUnit
 object ApiUtils {
     fun getApi(): Api {
         val okClientBuilder = OkHttpClient.Builder().apply {
-            this.addInterceptor(SealAccountInterceptor())
+            addInterceptor(SealAccountInterceptor())
+            if(BuildConfig.DEBUG) {
+                addInterceptor(LogInterceptor())
+            }
             connectTimeout(15, TimeUnit.SECONDS)
             readTimeout(60, TimeUnit.SECONDS)
             writeTimeout(60, TimeUnit.SECONDS)
