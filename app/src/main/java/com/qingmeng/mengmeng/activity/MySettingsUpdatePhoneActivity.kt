@@ -25,7 +25,7 @@ import org.json.JSONObject
  */
 @SuppressLint("CheckResult")
 class MySettingsUpdatePhoneActivity : BaseActivity() {
-
+    private val geetestUtil = GeetestUtil()
     override fun getLayoutId(): Int {
         return R.layout.activity_my_settings_updatephone
     }
@@ -34,7 +34,7 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
         super.initObject()
 
         //极验初始化
-        GeetestUtil.init(this)
+        geetestUtil.init(this)
         timerHandler = TimerHandler(this, tvMySettingsUpdatePhoneGetMsg)
 
         setHeadName(R.string.my_settings_updatePhone)
@@ -96,7 +96,7 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
                 .subscribe({
                     it.apply {
                         if (code == 12000) {
-                            GeetestUtil.customVerity({ checkCodeType() }, { sendSmsCode(phone, it) })
+                            geetestUtil.customVerity({ checkCodeType() }, { sendSmsCode(phone, it) })
                         } else {
                             ToastUtil.showShort(msg)
                         }
@@ -115,14 +115,14 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
                     when {
                         bean.code == 12000 -> {
                             bean.data!!.new_captcha = true
-                            GeetestUtil.showGeetest(bean.data!!.toJson())
+                            geetestUtil.showGeetest(bean.data!!.toJson())
                         }
                         bean.code == 25080 -> {
-                            GeetestUtil.dismissGeetestDialog()
+                            geetestUtil.dismissGeetestDialog()
                             showImgCode()
                         }
                         else -> {
-                            GeetestUtil.dismissGeetestDialog()
+                            geetestUtil.dismissGeetestDialog()
                             ToastUtil.showShort(bean.msg)
                         }
                     }
@@ -151,13 +151,13 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
                     if (it.code == 12000) {
                         //倒计时
                         timerHandler.sendEmptyMessage(timing)
-                        GeetestUtil.showSuccessDialog()
+                        geetestUtil.showSuccessDialog()
                     } else {
-                        GeetestUtil.showFailedDialog()
+                        geetestUtil.showFailedDialog()
                         ToastUtil.showShort(it.msg)
                     }
                 }, {
-                    GeetestUtil.showFailedDialog()
+                    geetestUtil.showFailedDialog()
                     ToastUtil.showNetError()
                 }, {}, { addSubscription(it) })
     }
@@ -203,6 +203,6 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        GeetestUtil.destroy()
+        geetestUtil.destroy()
     }
 }

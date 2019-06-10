@@ -44,6 +44,8 @@ class LoginChangePswActivity : BaseActivity() {
 
     //完信相关
     private var mImService: IMService? = null
+
+    private val geetestUtil = GeetestUtil()
     private val imServiceConnector = object : IMServiceConnector() {
         override fun onServiceDisconnected() {}
 
@@ -62,7 +64,7 @@ class LoginChangePswActivity : BaseActivity() {
         setHeadName(R.string.retrieve_password)
         from = intent.getIntExtra(FROM_TYPE, from)
         imgHandler = ImageCodeHandler(this, mForgerGetCode)
-        GeetestUtil.init(this)
+        geetestUtil.init(this)
         //完信相关
         SystemConfigSp.instance().init(applicationContext)
         if (TextUtils.isEmpty(SystemConfigSp.instance().getStrConfig(SystemConfigSp.SysCfgDimension.LOGINSERVER))) {
@@ -106,7 +108,7 @@ class LoginChangePswActivity : BaseActivity() {
                 .subscribe({ bean ->
                     //已注册
                     if (bean.code == 25089) {
-                        GeetestUtil.customVerity({ checkCodeType() }, { sendSmsCode(it) })
+                        geetestUtil.customVerity({ checkCodeType() }, { sendSmsCode(it) })
                     } else if (bean.code == 12000) {
                         //未注册
                         ToastUtil.showShort(R.string.phone_not_register)
@@ -125,12 +127,12 @@ class LoginChangePswActivity : BaseActivity() {
                 .subscribeOn(Schedulers.io())
                 .subscribe({ bean ->
                     if (bean.code != 12000) {
-                        GeetestUtil.dismissGeetestDialog()
+                        geetestUtil.dismissGeetestDialog()
                     }
                     when (bean.code) {
                         12000 -> bean.data?.let {
                             it.new_captcha = true
-                            GeetestUtil.showGeetest(it.toJson())
+                            geetestUtil.showGeetest(it.toJson())
                         }
                         25080 -> showImgCode()
                         else -> ToastUtil.showShort(bean.msg)
@@ -157,13 +159,13 @@ class LoginChangePswActivity : BaseActivity() {
                 .subscribe({
                     if (it.code == 12000) {
                         imgHandler.sendEmptyMessage(timing)
-                        GeetestUtil.showSuccessDialog()
+                        geetestUtil.showSuccessDialog()
                     } else {
-                        GeetestUtil.showFailedDialog()
+                        geetestUtil.showFailedDialog()
                         ToastUtil.showShort(it.msg)
                     }
                 }, {
-                    GeetestUtil.showFailedDialog()
+                    geetestUtil.showFailedDialog()
                     ToastUtil.showNetError()
                 }, {}, { addSubscription(it) })
     }
@@ -215,7 +217,7 @@ class LoginChangePswActivity : BaseActivity() {
 
     override fun onDestroy() {
         imServiceConnector.disconnect(this)
-        GeetestUtil.destroy()
+        geetestUtil.destroy()
         super.onDestroy()
     }
 

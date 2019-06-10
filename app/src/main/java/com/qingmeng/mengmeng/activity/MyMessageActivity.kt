@@ -164,7 +164,9 @@ class MyMessageActivity : BaseActivity() {
                 getView<SwipeMenuLayout>(R.id.smlMyMessageRv).isSwipeEnable = t.sessionType != 0
                 //头像
                 t.avatar?.let {
-                    GlideLoader.load(this@MyMessageActivity, it[0], getView(R.id.ivMyMessageRvLogo), placeholder = R.drawable.default_img_icon)
+                    if(it.size > 0) {
+                        GlideLoader.load(this@MyMessageActivity, it[0], getView(R.id.ivMyMessageRvLogo), placeholder = R.drawable.default_img_icon)
+                    }
                 }
                 //未读消息
                 UnreadMsgUtils.show(getView(R.id.viewMyMessageRvTipsNum), t.unReadCnt)

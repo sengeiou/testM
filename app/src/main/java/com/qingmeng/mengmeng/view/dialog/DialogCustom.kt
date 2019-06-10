@@ -51,7 +51,6 @@ class DialogCustom(private var mContext: Context?) {
     private var loadingDialog: Dialog? = null
     private lateinit var bottomSheetDialog: MyBottomDialog
     private var screenWidth: Int = mContext?.resources?.displayMetrics?.widthPixels ?: 0
-
     fun unBindContext() {
         screenWidth = 0
         mContext = null
@@ -132,7 +131,6 @@ class DialogCustom(private var mContext: Context?) {
                             remindDialog?.dismiss()
                         }
                     }, {
-                        GeetestUtil.showFailedDialog()
                         ToastUtil.showNetError()
                     }, {}, { sureClick(it) })
         }

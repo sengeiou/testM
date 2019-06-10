@@ -46,7 +46,7 @@ class LoginPwdActivity : BaseActivity() {
     private var mUsername = ""
     private var mPassword = ""
     private var mCode = ""
-
+    private val geetestUtil = GeetestUtil()
     //完信相关
     private var mImService: IMService? = null
     private val imServiceConnector = object : IMServiceConnector() {
@@ -70,7 +70,7 @@ class LoginPwdActivity : BaseActivity() {
         from = intent.getIntExtra(FROM_TYPE, 0)
         setLoginType(loginType)
         imgHandler = ImageCodeHandler(this, mLoginGetCode)
-        GeetestUtil.init(this)
+        geetestUtil.init(this)
         //完信相关
         SystemConfigSp.instance().init(applicationContext)
         if (TextUtils.isEmpty(SystemConfigSp.instance().getStrConfig(SystemConfigSp.SysCfgDimension.LOGINSERVER))) {
@@ -81,7 +81,7 @@ class LoginPwdActivity : BaseActivity() {
 
     override fun onDestroy() {
         imServiceConnector.disconnect(this)
-        GeetestUtil.destroy()
+        geetestUtil.destroy()
         super.onDestroy()
     }
 
@@ -218,7 +218,7 @@ class LoginPwdActivity : BaseActivity() {
                 .subscribe({ bean ->
                     //已注册
                     when {
-                        bean.code == 25089 -> GeetestUtil.customVerity({ checkCodeType() }, { sendSmsCode(it) })
+                        bean.code == 25089 -> geetestUtil.customVerity({ checkCodeType() }, { sendSmsCode(it) })
                         bean.code == 12000 -> ToastUtil.showShort(getString(R.string.phone_not_register))
                         else -> ToastUtil.showShort(bean.msg)
                     }
@@ -236,14 +236,14 @@ class LoginPwdActivity : BaseActivity() {
                     when {
                         bean.code == 12000 -> {
                             bean.data!!.new_captcha = true
-                            GeetestUtil.showGeetest(bean.data!!.toJson())
+                            geetestUtil.showGeetest(bean.data!!.toJson())
                         }
                         bean.code == 25080 -> {
-                            GeetestUtil.dismissGeetestDialog()
+                            geetestUtil.dismissGeetestDialog()
                             showImgCode()
                         }
                         else -> {
-                            GeetestUtil.dismissGeetestDialog()
+                            geetestUtil.dismissGeetestDialog()
                             ToastUtil.showShort(bean.msg)
                         }
                     }
@@ -269,13 +269,13 @@ class LoginPwdActivity : BaseActivity() {
                 .subscribe({
                     if (it.code == 12000) {
                         imgHandler.sendEmptyMessage(timing)
-                        GeetestUtil.showSuccessDialog()
+                        geetestUtil.showSuccessDialog()
                     } else {
-                        GeetestUtil.showFailedDialog()
+                        geetestUtil.showFailedDialog()
                         ToastUtil.showShort(it.msg)
                     }
                 }, {
-                    GeetestUtil.showFailedDialog()
+                    geetestUtil.showFailedDialog()
                     ToastUtil.showNetError()
                 }, {}, { addSubscription(it) })
     }

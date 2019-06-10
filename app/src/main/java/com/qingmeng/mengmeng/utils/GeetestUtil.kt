@@ -11,7 +11,7 @@ import org.json.JSONObject
 
 
 @SuppressLint("StaticFieldLeak")
-object GeetestUtil {
+class GeetestUtil {
     private val TAG = "GeetestUtil"
 
     lateinit var gt3GeetestUtils: GT3GeetestUtils
