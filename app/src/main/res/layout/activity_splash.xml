@@ -21,7 +21,7 @@
         android:id="@+id/mSplashAdv"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         android:visibility="gone"
         android:src="@drawable/img_splash"/>
 
