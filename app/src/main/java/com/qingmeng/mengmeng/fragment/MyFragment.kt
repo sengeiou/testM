@@ -329,10 +329,15 @@ class MyFragment : BaseFragment() {
         if ((requestCode == REQUEST_MY || requestCode == IConstants.LOGIN_BACK) && resultCode == Activity.RESULT_OK) {
             val isDelete = data?.getBooleanExtra("isDelete", false) ?: false
             val mPhoneChange = data?.getBooleanExtra("mPhoneChange", false) ?: false
-            //如果下一页删掉过数据 或改变过手机号 设置过密码 就刷新本页
-            if (isDelete || mPhoneChange || requestCode == IConstants.LOGIN_BACK) {
+            val isExitAccount = data?.getBooleanExtra("exitAccount", false) ?: false
+            if(isExitAccount) {
+                loginFail()
+            } else {
+                //如果下一页删掉过数据 或改变过手机号 设置过密码 就刷新本页
+                if (isDelete || mPhoneChange || requestCode == IConstants.LOGIN_BACK) {
 //                srlMy.isRefreshing = true
-                httpSelect()
+                    httpSelect()
+                }
             }
         }
     }

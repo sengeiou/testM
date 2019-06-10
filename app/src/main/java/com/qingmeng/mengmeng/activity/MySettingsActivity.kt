@@ -121,7 +121,7 @@ class MySettingsActivity : BaseActivity() {
         MainApplication.instance.user = UserBean()
         MainApplication.instance.TOKEN = ""
         sharedSingleton.setString(USER)
-        setResult(Activity.RESULT_OK, Intent().putExtra("mPhoneChange", true))
+        setResult(Activity.RESULT_OK, Intent().putExtra("exitAccount", true))
         finish()
     }
 
