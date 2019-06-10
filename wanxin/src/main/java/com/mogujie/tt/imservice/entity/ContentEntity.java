@@ -2,7 +2,9 @@ package com.mogujie.tt.imservice.entity;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.google.gson.annotations.JsonAdapter;
 import com.google.gson.annotations.SerializedName;
+import com.mogujie.tt.utils.BooleanTypeAdapter;
 
 /**
  * 扩展消息
@@ -31,6 +33,7 @@ public class ContentEntity {
     @SerializedName("extInfo")
     private JsonObject extInfo;
     //透传消息
+    @JsonAdapter(BooleanTypeAdapter.class)
     @SerializedName("special")
     private boolean special;
 
