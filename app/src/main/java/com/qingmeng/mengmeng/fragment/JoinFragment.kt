@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import cn.bingoogolapple.bgabanner.BGABanner
+import com.app.common.logger.Logger
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener
 import com.aspsine.swipetoloadlayout.OnRefreshListener
 import com.bumptech.glide.Glide
@@ -270,11 +271,13 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     }
 
     override fun onLoadMore() {
+        Logger.d("开始加载")
         isRefresh = false
         getData(tabList[vpList.currentItem].id)
     }
 
     override fun onRefresh() {
+        Logger.d("开始刷新")
         getNewData()
 //        mJoinBannerView.visibility = View.VISIBLE
     }
@@ -393,9 +396,11 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     private fun endLoadEverything() {
         if (swipeLayout.isRefreshing) {
             swipeLayout.endRefresh()
+            Logger.d("取消刷新")
         }
         if (swipeLayout.isLoadingMore) {
             swipeLayout.endLoadMore()
+            Logger.d("取消加载")
         }
     }
 

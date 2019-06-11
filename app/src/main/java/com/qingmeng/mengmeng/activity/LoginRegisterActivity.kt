@@ -35,10 +35,6 @@ import org.json.JSONObject
 import android.text.Selection.getSelectionStart
 import android.text.method.HideReturnsTransformationMethod
 import android.text.method.PasswordTransformationMethod
-import com.app.common.api.RequestFileManager
-import com.app.common.api.download.FileDownLoadObserver
-import com.qingmeng.mengmeng.utils.PermissionUtils
-import java.io.File
 
 
 @SuppressLint("CheckResult")
@@ -169,32 +165,10 @@ class LoginRegisterActivity : BaseActivity() {
 //        }
     }
 
-    private fun downUpAvatar(avatar: String, upCallback: (isSuc: Boolean, ossUrl: String?) -> Unit) {
-        RequestFileManager.downloadFile(avatar, File(IConstants.DIR_AVATAR_STR), object : FileDownLoadObserver<File>() {
-            override fun onDownLoadSuccess(t: File) {
-                ApiUtils.updateImg(this@LoginRegisterActivity, t.path, callback = { ossUrl, _ ->
-                    if (ossUrl.isNotBlank()) {
-                        upCallback(true, ossUrl)
-                    } else {
-                        upCallback(false, null)
-                    }
-                })
-            }
-
-            override fun onDownLoadFail(throwable: Throwable) {
-                upCallback(false, null)
-            }
-        }) { _, _, _ -> }
-    }
-
     //绑定手机
     private fun bindPhone() {
-        PermissionUtils.readAndWrite(context = this, readAndWriteCallback = {
             myDialog.showLoadingDialog()
-            downUpAvatar(avatar) { isSuc, ossUrl ->
-                if (isSuc) {
-                    ApiUtils.getApi().bindPhone(mPhone, mCode, openId, token, weChatUnionId, openId, ossUrl
-                            ?: avatar,
+        ApiUtils.getApi().bindPhone(mPhone, mCode, openId, token, weChatUnionId, openId, avatar,
                             threeType, mPsw, 1, mUserName, 2, 1, thirdUserName)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
@@ -216,12 +190,6 @@ class LoginRegisterActivity : BaseActivity() {
                                 myDialog.dismissLoadingDialog()
                                 ToastUtil.showNetError()
                             }, {}, { addSubscription(it) })
-                } else {
-                    myDialog.dismissLoadingDialog()
-                    ToastUtil.showNetError()
-                }
-            }
-        })
     }
 
     //注册
@@ -352,10 +320,5 @@ class LoginRegisterActivity : BaseActivity() {
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        PermissionUtils.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 }
