@@ -64,7 +64,7 @@ object IConstants {
     const val ROOT_NAME = BuildConfig.APP_DIR
     //语音路径
     val DIR_AUDIO_STR = StorageUtils.getPublicStorageDir("${ROOT_NAME}/audio")
-
+    val DIR_AVATAR_STR = StorageUtils.getPublicStorageDir("${ROOT_NAME}/avatar")
     //微信
     val APPID_WECHAT = "wx9eaf08161137b52e"
     val SECRET_WECHAT = "90f41ca172fbdeb216e1a03044b3ca27"
