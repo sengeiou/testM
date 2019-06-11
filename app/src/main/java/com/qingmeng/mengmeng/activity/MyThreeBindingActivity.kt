@@ -136,7 +136,7 @@ class MyThreeBindingActivity : BaseActivity() {
     //第三方绑定接口
     private fun httpThreeBinding(type: Int, infoBean: WxInfoBean, token: String) {
         ApiUtils.getApi()
-                .threeBinding(type, infoBean.openid, token, infoBean.unionid,infoBean.openid, MainApplication.instance.TOKEN)
+                .threeBinding(type, infoBean.openid, token, infoBean.unionid, MainApplication.instance.TOKEN)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
                 .subscribe({

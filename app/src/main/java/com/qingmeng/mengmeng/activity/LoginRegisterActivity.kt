@@ -168,7 +168,7 @@ class LoginRegisterActivity : BaseActivity() {
     //绑定手机
     private fun bindPhone() {
             myDialog.showLoadingDialog()
-        ApiUtils.getApi().bindPhone(mPhone, mCode, openId, token, weChatUnionId, openId, avatar,
+        ApiUtils.getApi().bindPhone(mPhone, mCode, openId, token, weChatUnionId, avatar,
                             threeType, mPsw, 1, mUserName, 2, 1, thirdUserName)
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeOn(Schedulers.io())
