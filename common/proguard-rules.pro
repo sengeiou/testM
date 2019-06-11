@@ -20,6 +20,7 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-keep class com.app.common.** {*;}
 
 # glide 的混淆代码
 -keep public class * implements com.bumptech.glide.module.GlideModule

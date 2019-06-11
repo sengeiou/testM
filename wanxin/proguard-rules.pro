@@ -20,6 +20,14 @@
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
 
+-keep class com.mogujie.tt.** {*;}
+
+#protobuf
+-dontwarn com.google.protobuf.**
+-keep class com.google.protobuf.** { *;}
+-keep interface com.google.protobuf.** { *;}
+-keep public class* extends com.google.protobuf.** { *; }
+
 
 #华为
 -ignorewarning
@@ -32,8 +40,13 @@
 -keep class com.huawei.updatesdk.**{*;}
 -keep class com.huawei.hms.**{*;}
 
--keep class com.huawei.android.hms.agent.**{*;}
+-dontwarn com.huawei.hms.**
 
+-keep interface com.huawei.hms.**{*;}
+
+-keep class com.huawei.**{*;}
+-keep interface com.huawei.**{*;}
+-dontwarn com.huawei.**
 
 #小米
 #这里com.xiaomi.mipushdemo.DemoMessageRreceiver改成app中定义的完整类名
