@@ -163,11 +163,8 @@ class MyMessageActivity : BaseActivity() {
                 //接口请求的不给他左滑
                 getView<SwipeMenuLayout>(R.id.smlMyMessageRv).isSwipeEnable = t.sessionType != 0
                 //头像
-                t.avatar?.let {
-                    if(it.size > 0) {
-                        GlideLoader.load(this@MyMessageActivity, it[0], getView(R.id.ivMyMessageRvLogo), placeholder = R.drawable.default_img_icon)
-                    }
-                }
+                val avatar= if(t.avatar?.size?:0 > 0) t.avatar[0] else ""
+                GlideLoader.load(this@MyMessageActivity, avatar, getView(R.id.ivMyMessageRvLogo), placeholder = R.drawable.default_img_icon)
                 //未读消息
                 UnreadMsgUtils.show(getView(R.id.viewMyMessageRvTipsNum), t.unReadCnt)
                 //姓名
@@ -183,7 +180,7 @@ class MyMessageActivity : BaseActivity() {
 //                    })
                     FaceInitData.init(applicationContext)
                     FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
-                    if (t.sessionKey != null && t.name != null) {
+                    if (t.sessionKey != null) {
                         startActivityForResult<MyMessageChatActivity>(TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to t.sessionKey, "title" to t.name, "avatar" to if (t.avatar!=null && t.avatar.size>0 && t.avatar[0] != null && t.avatar[0].isNotEmpty()) t.avatar[0] else mAvatar)
                         MESSAGE_TO_CHAT = true
                         //如果聊天页面存在了 就销毁它
@@ -331,6 +328,7 @@ class MyMessageActivity : BaseActivity() {
     fun onEventMainThread(event: UserInfoEvent) {
         when (event) {
             UserInfoEvent.USER_INFO_UPDATE -> {
+                onRecentContactDataReady()
             }
             UserInfoEvent.USER_INFO_OK -> {
                 httpLoad()
@@ -407,7 +405,7 @@ class MyMessageActivity : BaseActivity() {
             mRecentSessionList.addAll(it)
         }
 
-
+        mImService?.contactManager?.reqGetDetaillUsers(recentSessionList?.map { it.peerId }?.toList())
         mAllList.clear()
         mAllList.add(mSysRecentInfo)
         mAllList.add(mKefuRecentInfo)

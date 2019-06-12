@@ -18,6 +18,8 @@ import org.jboss.netty.channel.ChannelStateEvent;
 import org.jboss.netty.channel.MessageEvent;
 import com.mogujie.tt.imservice.manager.IMMessageManager;
 
+import java.util.ArrayList;
+
 /**
  * Created by wangru
  * Date: 2017/8/25  10:14
@@ -124,5 +126,10 @@ public class 流程 {
 
     /**
      * {@link IMMessageManager#onRecvMessage(IMMessage.IMMsgData)} 接收聊天消息
+     */
+
+
+    /***
+     * {@link com.mogujie.tt.imservice.manager.IMContactManager#reqGetDetaillUsers(ArrayList)}  请求用户详情信息  UserInfoEvent.USER_INFO_UPDATE 获取
      */
 }

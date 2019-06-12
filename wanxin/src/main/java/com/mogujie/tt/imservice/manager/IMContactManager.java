@@ -190,7 +190,7 @@ public class IMContactManager extends IMManager {
      *
      * @param userIds
      */
-    public void reqGetDetaillUsers(ArrayList<Integer> userIds) {
+    public void reqGetDetaillUsers(List<Integer> userIds) {
         logger.i("contact#contact#reqGetDetaillUsers");
         if (null == userIds || userIds.size() <= 0) {
             logger.i("contact#contact#reqGetDetaillUsers return,cause by null or empty");

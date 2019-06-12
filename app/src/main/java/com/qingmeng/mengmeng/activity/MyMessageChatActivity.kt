@@ -120,6 +120,9 @@ class MyMessageChatActivity : BaseActivity() {
         override fun onIMServiceConnected() {
             mImService = this.imService
             initMsgData()
+            peerEntity?.let {
+                mImService?.contactManager?.reqGetDetaillUsers(listOf(it.peerId))
+            }
         }
 
         override fun onServiceDisconnected() {}
