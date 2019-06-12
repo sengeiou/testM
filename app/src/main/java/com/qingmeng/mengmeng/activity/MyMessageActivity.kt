@@ -406,8 +406,14 @@ class MyMessageActivity : BaseActivity() {
             mRecentSessionList.clear()
             mRecentSessionList.addAll(it)
         }
-
-        mImService?.contactManager?.reqGetDetaillUsers(recentSessionList?.map { it.peerId }?.toList())
+        val idList = arrayListOf<Int>()
+        mImService?.loginManager?.loginId?.let{
+            idList.add(it)
+        }
+        recentSessionList?.map { it.peerId }?.toList()?.forEach { id ->
+            idList.add(id)
+        }
+        mImService?.contactManager?.reqGetDetaillUsers(idList)
         mAllList.clear()
         mAllList.add(mSysRecentInfo)
         mAllList.add(mKefuRecentInfo)
