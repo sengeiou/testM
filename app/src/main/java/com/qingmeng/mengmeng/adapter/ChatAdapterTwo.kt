@@ -214,7 +214,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         fun bindViewHolder(item: Any, position: Int) {
             val first = msgObjectList[0]
             val firstIsNull = if (first is MessageEntity) {
-                first.id == null && first.content.isEmpty()
+                first.id == null
             } else {
                 false
             }
