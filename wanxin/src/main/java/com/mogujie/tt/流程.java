@@ -130,6 +130,8 @@ public class 流程 {
 
 
     /***
-     * {@link com.mogujie.tt.imservice.manager.IMContactManager#reqGetDetaillUsers(ArrayList)}  请求用户详情信息  UserInfoEvent.USER_INFO_UPDATE 获取
+     * 请求用户详情信息
+     * {@link com.mogujie.tt.imservice.manager.IMContactManager#reqGetDetaillUsers(ArrayList)}
+     * UserInfoEvent.USER_INFO_UPDATE  EventBus获取
      */
 }

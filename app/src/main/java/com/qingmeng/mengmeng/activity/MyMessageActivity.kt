@@ -12,6 +12,7 @@ import android.widget.TextView
 import com.lemo.emojcenter.FaceInitData
 import com.mogujie.tt.config.DBConstant
 import com.mogujie.tt.config.IntentConstant
+import com.mogujie.tt.db.DBInterface
 import com.mogujie.tt.db.entity.GroupEntity
 import com.mogujie.tt.imservice.entity.RecentInfo
 import com.mogujie.tt.imservice.event.GroupEvent
@@ -84,6 +85,7 @@ class MyMessageActivity : BaseActivity() {
         override fun onIMServiceConnected() {
             IMServiceConnector.logger.d("MyMessageActivity#recent#onIMServiceConnected")
             mImService = this.imService
+            DBInterface.instance().initDbHelp(applicationContext, imService.loginManager.loginId)
             if (mImService == null) {
                 //why ,some reason
                 return

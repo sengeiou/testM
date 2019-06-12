@@ -28,6 +28,7 @@ import com.luck.picture.lib.config.PictureConfig
 import com.luck.picture.lib.config.PictureMimeType
 import com.mogujie.tt.app.IMApplication
 import com.mogujie.tt.config.*
+import com.mogujie.tt.db.DBInterface
 import com.mogujie.tt.db.entity.GroupEntity
 import com.mogujie.tt.db.entity.MessageEntity
 import com.mogujie.tt.db.entity.PeerEntity
@@ -119,6 +120,7 @@ class MyMessageChatActivity : BaseActivity() {
     private val imServiceConnector = object : IMServiceConnector() {
         override fun onIMServiceConnected() {
             mImService = this.imService
+            DBInterface.instance().initDbHelp(applicationContext, imService.loginManager.loginId)
             initMsgData()
             peerEntity?.let {
                 mImService?.contactManager?.reqGetDetaillUsers(listOf(it.peerId))
