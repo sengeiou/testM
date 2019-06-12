@@ -395,6 +395,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 
     private fun endLoadEverything() {
         if (swipeLayout.isRefreshing) {
+            swipeLayout.isRefreshEnabled = true
             swipeLayout.endRefresh()
             Logger.d("取消刷新")
         }

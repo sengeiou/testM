@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
+import com.app.common.logger.Logger
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.HeadDetailsActivity
@@ -58,6 +59,7 @@ class NewsPaperFragment : BaseFragment() {
 
         //下拉刷新
         news_swipeLayout.setOnRefreshListener {
+            Logger.d("下拉刷新")
             getNewData()
         }
 
@@ -93,7 +95,7 @@ class NewsPaperFragment : BaseFragment() {
                         }
                     }
                 } else {
-                    news_swipeLayout.isRefreshEnabled = false
+//                    news_swipeLayout.isRefreshEnabled = false
                     news_swipeLayout.isLoadMoreEnabled = false
                 }
             }
@@ -238,6 +240,7 @@ class NewsPaperFragment : BaseFragment() {
     }
 
     private fun endLoadingMore() {
+        Logger.d("结束刷新")
         news_swipeLayout.isRefreshing = false
         news_swipeLayout.isLoadingMore = false
         news_swipeLayout.isRefreshEnabled = false

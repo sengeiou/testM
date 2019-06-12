@@ -237,7 +237,7 @@ class RedShopSeachResult : BaseActivity() {
                     }
                 } else {
                     mSeachToTop.visibility = View.VISIBLE
-                    seach_result_swipeLayout.isRefreshEnabled = false
+//                    seach_result_swipeLayout.isRefreshEnabled = false
                     seach_result_swipeLayout.isLoadMoreEnabled = false
                 }
             }

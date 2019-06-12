@@ -128,7 +128,7 @@ class MyMyFollowActivity : BaseActivity() {
                         }
                     }
                 } else {
-                    srlMyMyFollow.isRefreshEnabled = false
+//                    srlMyMyFollow.isRefreshEnabled = false
                     srlMyMyFollow.isLoadMoreEnabled = false
                 }
             }
