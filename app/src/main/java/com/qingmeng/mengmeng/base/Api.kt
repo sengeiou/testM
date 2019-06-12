@@ -50,7 +50,7 @@ interface Api {
                   @Field("token") token: String,
                   @Field("weChatUnionId") weChatUnionId: String,
                   @Field("avatar") avatar: String,
-                  @Field("type") type: Int,
+                  @Field("bindingType") type: Int,
                   @Field("password") password: String,
                   @Field("isUserProtocol") isUserProtocol: Int = 1, //是否同意用户协议（0.否1.是）
                   @Field("userName") userName: String,
