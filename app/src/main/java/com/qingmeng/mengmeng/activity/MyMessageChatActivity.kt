@@ -225,12 +225,17 @@ class MyMessageChatActivity : BaseActivity() {
                 super.onScrollStateChanged(recyclerView, newState)
                 //滑到顶部了
                 if (!recyclerView.canScrollVertically(-1)) {
-                    onPullDownToRefresh()
+                    if(!mIsSystemMotification) {
+                        onPullDownToRefresh()
+                    }
                 }
                 //没有滑动&&在最后一个item
-                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition + 1 == mAdapter.itemCount) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition + 2 >= mAdapter.itemCount) {
                     mRecyclerViewIsBottom = true
                     tvMyMessageChatTips.visibility = View.GONE
+                    if(mIsSystemMotification) {
+                        onPullDownToRefresh()
+                    }
                 } else {
                     mRecyclerViewIsBottom = false
                 }
@@ -1068,7 +1073,9 @@ class MyMessageChatActivity : BaseActivity() {
         }
         historyTimes++
         pushList(msgList)
+        if(!mIsSystemMotification){
         scrollToBottomListItem()
+    }
     }
 
     /**
@@ -1154,7 +1161,7 @@ class MyMessageChatActivity : BaseActivity() {
      */
     fun onPullDownToRefresh() {
         // 获取消息
-        val messageEntity = mAdapter.getTopMsgEntity()
+        val messageEntity = if(!mIsSystemMotification)mAdapter.getTopMsgEntity() else mAdapter.getBottomMsgEntity()
         if (messageEntity != null) {
             val historyMsgInfo = mImService?.messageManager?.loadHistoryMsg(messageEntity, historyTimes)
             if (historyMsgInfo?.size ?: 0 > 0) {

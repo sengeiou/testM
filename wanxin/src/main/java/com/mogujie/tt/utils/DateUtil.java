@@ -90,7 +90,7 @@ public class DateUtil {
     }
 
     public static boolean needDisplayTime(int predateTime, int curdateTime) {
-        long timediff = (curdateTime - predateTime);
+        long timediff = Math.abs(curdateTime - predateTime);
         return (timediff >= 5 * 60 );
     }
 

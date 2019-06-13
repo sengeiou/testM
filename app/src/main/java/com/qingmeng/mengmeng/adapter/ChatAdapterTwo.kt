@@ -831,13 +831,25 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
      */
     fun addItem(msg: MessageEntity, mLayoutManager: LinearLayoutManager? = null) {
         val nextTime = msg.created
+        var needTime = false
         if (msgObjectList.size > 0) {
-            val objectMessage = msgObjectList[msgObjectList.lastIndex]
-            if (objectMessage is MessageEntity) {
-                val preTime = objectMessage.created
-                val needTime = DateUtil.needDisplayTime(preTime, nextTime)
-                if (needTime) {
-                    msgObjectList.add(nextTime)
+            if(!isSystemMsg) {
+                val objectMessage = msgObjectList[msgObjectList.lastIndex]
+                if (objectMessage is MessageEntity) {
+                    val preTime = objectMessage.created
+                    needTime = DateUtil.needDisplayTime(preTime, nextTime)
+                    if (needTime) {
+                        msgObjectList.add(nextTime)
+                    }
+                }
+            }else{
+                val objectMessage = msgObjectList[0]
+                if (objectMessage is MessageEntity) {
+                    val preTime = objectMessage.created
+                    needTime = DateUtil.needDisplayTime(preTime, nextTime)
+                    if (needTime) {
+                        msgObjectList.add(0,nextTime)
+                    }
                 }
             }
         } else {
@@ -847,9 +859,17 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         /**消息的判断 */
         if (msg.displayType == DBConstant.SHOW_MIX_TEXT) {
             val mixMessage = msg as MixMessage
-            msgObjectList.addAll(mixMessage.getMsgList())
+            if(isSystemMsg){
+                msgObjectList.addAll(if(needTime) 1 else 0 ,mixMessage.getMsgList())
+            }else {
+                msgObjectList.addAll(mixMessage.getMsgList())
+            }
         } else {
-            msgObjectList.add(msg)
+            if(isSystemMsg){
+                msgObjectList.add(if(needTime) 1 else 0 ,msg)
+            }else {
+                msgObjectList.add(msg)
+            }
         }
         if (msg is ImageMessage) {
             ImageMessage.addToImageMessageList(msg)
@@ -858,9 +878,13 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         if (msg.infoType == DBConstant.SHOW_REVOKE_TYPE) {
             updateRevokeMsg(msg)
         }
+
+
         mLayoutManager?.let {
             notifyDataSetChanged()
-            it.scrollToPosition(msgObjectList.lastIndex)
+            if(!isSystemMsg) {
+                it.scrollToPosition(msgObjectList.lastIndex)
+            }
         }
     }
 
@@ -925,6 +949,18 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         return null
     }
 
+    fun getBottomMsgEntity(): MessageEntity? {
+        if (msgObjectList.size <= 0) {
+            return null
+        }
+        for (result in msgObjectList.reversed()) {
+            if (result is MessageEntity && result.id!=null) {
+                return result
+            }
+        }
+        return null
+    }
+
     /**
      * 时间比较
      */
@@ -962,7 +998,8 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
         var preTime = 0
         var nextTime = 0
         val idset = HashSet<Int>()
-        for (msg in historyList) {
+        val list=if(isSystemMsg) historyList.reversed() else historyList
+        for (msg in list) {
             idset.add(msg.fromId)
             if (msg.displayType == DBConstant.MSG_TYPE_SINGLE_TEXT) {
                 if (isMsgGif(msg)) {
@@ -971,7 +1008,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             }
             nextTime = msg.created
             val needTimeBubble = DateUtil.needDisplayTime(preTime, nextTime)
-            if (needTimeBubble) {
+            if (needTimeBubble && nextTime > 0) {
                 val `in` = nextTime
                 chatList.add(`in`)
             }
@@ -984,10 +1021,16 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             }
         }
         // 如果是历史消息，从头开始加
-        msgObjectList.addAll(0, chatList)
+        if(!isSystemMsg) {
+            msgObjectList.addAll(0, chatList)
+        }else{
+            msgObjectList.addAll(chatList)
+        }
         getImageList()
         notifyDataSetChanged()
-        mLayoutManager?.scrollToPositionWithOffset(chatList.lastIndex + 1, 0)
+        if(!isSystemMsg) {
+             mLayoutManager?.scrollToPositionWithOffset(chatList.lastIndex + 1, 0)
+        }
     }
 
     /**
