@@ -85,7 +85,8 @@ class MyMessageActivity : BaseActivity() {
         override fun onIMServiceConnected() {
             IMServiceConnector.logger.d("MyMessageActivity#recent#onIMServiceConnected")
             mImService = this.imService
-            DBInterface.instance().initDbHelp(applicationContext, imService.loginManager.loginId)
+            val wxId=if(imService.loginManager.loginId>0) imService.loginManager.loginId else sharedSingleton.getInt(IConstants.wx_id)
+            DBInterface.instance().initDbHelp(applicationContext, wxId)
             if (mImService == null) {
                 //why ,some reason
                 return

@@ -12,6 +12,7 @@ import android.webkit.WebChromeClient
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import com.app.common.logger.Logger
 import com.bumptech.glide.Glide
 import com.qingmeng.mengmeng.BaseActivity
 import com.qingmeng.mengmeng.MainApplication
@@ -46,6 +47,7 @@ class HeadDetailsActivity : BaseActivity() {
     override fun initObject() {
         url = intent.getStringExtra("URL") ?: ""
         id = intent.getIntExtra(IConstants.articleId,0)
+        Logger.d("url=$url")
         setHeadName(R.string.head_detail)
         mMenu.setDrawableLeft(R.drawable.icon_head_details_share)
         if (TextUtils.isEmpty(url)) {

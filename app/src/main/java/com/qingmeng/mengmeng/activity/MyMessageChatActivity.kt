@@ -120,7 +120,8 @@ class MyMessageChatActivity : BaseActivity() {
     private val imServiceConnector = object : IMServiceConnector() {
         override fun onIMServiceConnected() {
             mImService = this.imService
-            DBInterface.instance().initDbHelp(applicationContext, imService.loginManager.loginId)
+            val wxId=if(imService.loginManager.loginId>0) imService.loginManager.loginId else sharedSingleton.getInt(IConstants.wx_id)
+            DBInterface.instance().initDbHelp(applicationContext, wxId)
             initMsgData()
             peerEntity?.let {
                 mImService?.contactManager?.reqGetDetaillUsers(listOf(it.peerId))

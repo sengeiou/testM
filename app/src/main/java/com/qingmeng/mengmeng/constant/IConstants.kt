@@ -49,6 +49,7 @@ object IConstants {
     var login_name = "mengUser"           //账号密码登录时保存账号
     var login_phone = "mengPhone"         //保存手机号
     var login_pwd = "mengPass"            //账号密码登录时保存密码
+    var wx_id = "wanxinId"            //完信id
     val TO_MESSAGE = 10055                //页面进聊天
     var MESSAGE_BACK_BRAND_ID = ""        //聊天界面返回的品牌详情id
     var ENTER_BRAND_NUM = 0               //第几次进详情

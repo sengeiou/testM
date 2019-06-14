@@ -207,6 +207,7 @@ class LoginRegisterActivity : BaseActivity() {
                             sharedSingleton.setString(IConstants.login_name, mUserName)
                             sharedSingleton.setString(IConstants.login_phone, mPhone)
                             sharedSingleton.setString(IConstants.login_pwd, mPsw)
+                            sharedSingleton.setInt(IConstants.wx_id, it.wxUid)
                             it.upDate()
                             //还要登录完信..
                             mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
