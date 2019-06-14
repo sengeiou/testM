@@ -120,13 +120,8 @@ class MyMessageActivity : BaseActivity() {
         EventBus.getDefault().register(this)
 
         mSysRecentInfo.name = "系统消息"
-        mSysRecentInfo.peerId = 60834
-        mSysRecentInfo.sessionKey = "1_60834"
-
 
         mKefuRecentInfo.name = "盟盟客服"
-        mKefuRecentInfo.peerId = 60831
-        mKefuRecentInfo.sessionKey = "1_60831"
     }
 
     override fun initListener() {
