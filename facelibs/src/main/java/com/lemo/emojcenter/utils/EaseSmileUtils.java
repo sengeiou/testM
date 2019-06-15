@@ -237,7 +237,7 @@ public class EaseSmileUtils {
     public static final String e_victory = "[胜利]";
     public static final String e_doublehappiness = "[双喜]";
     public static final String e_sleep = "[睡]";
-    public static final String e_flowers = "[送花]";
+    public static final String e_flowers = "[玫瑰]";
     public static final String e_sun = "[太阳]";
     public static final String e_naughty = "[调皮]";
     public static final String e_skipping = "[跳绳]";

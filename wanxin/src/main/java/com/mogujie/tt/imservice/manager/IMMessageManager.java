@@ -642,7 +642,10 @@ public class IMMessageManager extends IMManager {
         // 降序结果输出desc
         List<MessageEntity> listMsg = dbInterface.getHistoryMsg(sessionKey, lastMsgId, lastCreateTime, count);
         // asyn task refresh
-        int resSize = listMsg.size();
+        int resSize = 0;
+        if(listMsg != null){
+            resSize = listMsg.size();
+        }
         logger.d("LoadHistoryMsg return size is %d", resSize);
         if (resSize == 0 || pullTimes == 1 || pullTimes % 3 == 0) {
             //后台异步请求服务器历史消息

@@ -19,6 +19,7 @@ import org.jboss.netty.channel.MessageEvent;
 import com.mogujie.tt.imservice.manager.IMMessageManager;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by wangru
@@ -131,7 +132,7 @@ public class 流程 {
 
     /***
      * 请求用户详情信息
-     * {@link com.mogujie.tt.imservice.manager.IMContactManager#reqGetDetaillUsers(ArrayList)}
+     * {@link com.mogujie.tt.imservice.manager.IMContactManager#reqGetDetaillUsers(List)}
      * UserInfoEvent.USER_INFO_UPDATE  EventBus获取
      */
 }
