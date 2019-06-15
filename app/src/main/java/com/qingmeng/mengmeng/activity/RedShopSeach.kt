@@ -150,6 +150,7 @@ class RedShopSeach : BaseActivity() {
             setSearchHistory(shistory)
             adapter.notifyDataChanged()
             search_cancel_search.visibility = View.GONE
+            viewHistoryTip.visibility = View.GONE
         }
 
     }
@@ -166,6 +167,7 @@ class RedShopSeach : BaseActivity() {
         } else {
             getSearchHistory()
         }
+        viewHistoryTip.visibility = if(!bhistorySearch) View.VISIBLE else View.GONE
     }
 
     //get热门标签
@@ -285,7 +287,6 @@ class RedShopSeach : BaseActivity() {
     lateinit var adapter: TagAdapter<String>
     //set搜索历史
     private fun setSearchHistory(stagList: List<String>) {
-
         adapter = object : TagAdapter<String>(stagList) {
             override fun getView(parent: FlowLayout?, position: Int, data: String?): View {
                 return LayoutInflater.from(this@RedShopSeach).inflate(R.layout.red_shop_view_flowlayout_reasons_text, tfl_search_history, false).apply {
