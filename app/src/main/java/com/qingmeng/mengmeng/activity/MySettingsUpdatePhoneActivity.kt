@@ -178,6 +178,7 @@ class MySettingsUpdatePhoneActivity : BaseActivity() {
                             setResult(Activity.RESULT_OK, Intent().apply {
                                 putExtra("phone", phone)
                             })
+                            MainApplication.instance.user.userInfo.phone = phone
                             onBackPressed()
                         } else {
                             ToastUtil.showShort(this.msg)
