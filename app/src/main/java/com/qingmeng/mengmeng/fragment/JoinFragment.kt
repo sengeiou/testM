@@ -60,6 +60,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     override fun getLayoutId(): Int = R.layout.fragment_join
 
     override fun initData() {
+        initBanner()
         getCacheData()
     }
 
@@ -456,10 +457,12 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         }
     }
 
+    private fun initBanner(){
+        mJoinBanner.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
+        mJoinBanner.setDelegate(this)//设置点击事件
+    }
     private fun setBanner(isInit:Boolean = false) {
         if(!( isInit && mImgList.size == 0)) {
-            mJoinBanner.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
-            mJoinBanner.setDelegate(this)//设置点击事件
             Logger.d("setBanner mImgList size=${mImgList.size}")
             mJoinBanner.setAutoPlayAble(mImgList.size > 1)
             mJoinBanner.setData(mImgList, null)// ，重写点击回调方法
