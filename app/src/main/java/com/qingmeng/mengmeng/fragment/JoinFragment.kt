@@ -55,9 +55,12 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     private var isLoading = false
     private var isRefresh = false
 
+    private var isRefreshBanner = false
+
     override fun getLayoutId(): Int = R.layout.fragment_join
 
     override fun initData() {
+        initBanner()
         getCacheData()
     }
 
@@ -83,7 +86,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 .subscribe({
                     initView()
                     initVPIndicator()
-                    setBanner()
+                    setBanner(true)
                     if (!tabList.isEmpty()) {
                         val view = getView(tabList[vpList.currentItem].id)
                         val adapter = view.adapter as JoinRecommendAdapter
@@ -193,7 +196,6 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         swipeLayout.setOnRefreshListener(this)
         swipeLayout.setOnLoadMoreListener(this)
         barLayout.addOnOffsetChangedListener(this)
-        initBanner()
         listPagerAdapter = object : PagerAdapter() {
             override fun getCount(): Int {
                 return tabList.size
@@ -368,6 +370,8 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 
     //获取banner图
     private fun getBanners(version: String) {
+        if(isRefreshBanner) return
+        isRefreshBanner = true
         ApiUtils.getApi().getBanners(version, 7)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeOn(Schedulers.io())
@@ -387,10 +391,14 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                         ToastUtil.showShort(bean.msg)
                     }
 //                    mJoinBannerView.visibility = View.GONE
+                    isRefreshBanner = false
                 }, {
 //                    mJoinBannerView.visibility = View.GONE
                     ToastUtil.showNetError()
-                }, {}, { addSubscription(it) })
+                    isRefreshBanner = false
+                }, {
+                    isRefreshBanner = false
+                }, { addSubscription(it) })
     }
 
     private fun endLoadEverything() {
@@ -452,11 +460,12 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
     private fun initBanner(){
         mJoinBanner.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
         mJoinBanner.setDelegate(this)//设置点击事件
-        mJoinBanner.setData(mImgList, null)// ，重写点击回调方法
-        mJoinBanner.setAutoPlayAble(mImgList.size > 1)
     }
-    private fun setBanner() {
-        mJoinBanner.setData(mImgList, null)// ，重写点击回调方法
+    private fun setBanner(isInit:Boolean = false) {
+        if(!(isInit&&mImgList.size==0)) {
+            Logger.d("setBanner mImgList size=${mImgList.size}")
+            mJoinBanner.setData(mImgList, null)// ，重写点击回调方法
+        }
         mJoinBanner.setAutoPlayAble(mImgList.size > 1)
         mJoinBannerView.visibility = if(mImgList.isEmpty()) View.VISIBLE else View.GONE
     }
