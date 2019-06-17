@@ -17,12 +17,21 @@ import com.qingmeng.mengmeng.entity.JoinRecommendBean
 class JoinRecommendAdapter(val context: Context, val onItemClick: (JoinRecommendBean.JoinBean) -> Unit) : RecyclerView.Adapter<JoinRecommendAdapter.RecommendViewHolder>() {
     private val list = ArrayList<JoinRecommendBean.JoinBean>()
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecommendViewHolder {
+        if (viewType == -1) {
+            return RecommendViewHolder(LayoutInflater.from(context).inflate(R.layout.item_join_a, parent, false))
+        }
         return RecommendViewHolder(LayoutInflater.from(context).inflate(R.layout.item_join_recommend, parent, false))
     }
 
-    override fun getItemCount(): Int = list.size
+    override fun getItemCount(): Int = if (list.size == 1) 2 else list.size
+
+    override fun getItemViewType(position: Int): Int {
+        if (position > list.size - 1) return -1
+        return super.getItemViewType(position)
+    }
 
     override fun onBindViewHolder(viewHolder: RecommendViewHolder, position: Int) {
+        if (position > list.size - 1) return
         viewHolder.bindViewHolder(list[position])
     }
 
@@ -44,9 +53,9 @@ class JoinRecommendAdapter(val context: Context, val onItemClick: (JoinRecommend
     }
 
     inner class RecommendViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        private val recommendLogo: ImageView = itemView.findViewById(R.id.recommend_logo)
-        private val recommendName: TextView = itemView.findViewById(R.id.recommend_name)
-        private val recommendMoney: TextView = itemView.findViewById(R.id.recommend_money)
+        private val recommendLogo by lazy { itemView.findViewById<ImageView>(R.id.recommend_logo) }
+        private val recommendName by lazy { itemView.findViewById<TextView>(R.id.recommend_name) }
+        private val recommendMoney by lazy { itemView.findViewById<TextView>(R.id.recommend_money) }
 
         @SuppressLint("SetTextI18n")
         fun bindViewHolder(joinBean: JoinRecommendBean.JoinBean) {

@@ -190,7 +190,7 @@
             <WebView
                 android:id="@+id/mDetailWeb"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 />
         </LinearLayout>
     </ScrollView>
@@ -201,7 +201,8 @@
         android:layout_alignParentBottom="true"
         android:background="@color/white"
         android:orientation="horizontal"
-        >
+        android:clickable="true"
+        android:focusable="true">
 
         <TextView
             android:id="@+id/mCustomerService"

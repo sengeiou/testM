@@ -492,6 +492,14 @@ class ShopDetailActivity : BaseActivity() {
             javaScriptCanOpenWindowsAutomatically = true
         }
 
+        mDetailWeb.apply {
+            //解决底部空白问题
+            isVerticalScrollBarEnabled = false
+            setVerticalScrollbarOverlay(false)
+            isHorizontalScrollBarEnabled = false
+            setHorizontalScrollbarOverlay(false)
+        }
+
         mDetailWeb.webViewClient = object : WebViewClient() {
             override fun shouldOverrideUrlLoading(view: WebView, request: WebResourceRequest?): Boolean {
                 view.loadUrl(webUrl)
@@ -530,16 +538,16 @@ class ShopDetailActivity : BaseActivity() {
         mDetailWeb.addJavascriptInterface(this, "App")
     }
 
-    @JavascriptInterface
-    fun resize(height: Float) {
-        this@ShopDetailActivity.runOnUiThread(Runnable {
+//    @JavascriptInterface
+//    fun resize(height: Float) {
+//        this@ShopDetailActivity.runOnUiThread(Runnable {
 //            ToastUtil.showShort("$height")
-            val layoutParams = mDetailWeb.layoutParams
-            layoutParams.width = resources.displayMetrics.widthPixels
-            layoutParams.height = (height * resources.displayMetrics.density).toInt() + 50
-            mDetailWeb.layoutParams = layoutParams
-        })
-    }
+//            val layoutParams = mDetailWeb.layoutParams
+//            layoutParams.width = resources.displayMetrics.widthPixels
+//            layoutParams.height = (height * resources.displayMetrics.density).toInt() + 50
+//            mDetailWeb.layoutParams = layoutParams
+//        })
+//    }
 
 //    override fun onNewIntent(intent: Intent) {
 //        super.onNewIntent(intent)
