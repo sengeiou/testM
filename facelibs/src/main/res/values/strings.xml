@@ -6,6 +6,6 @@
     <string name="face_no_data_text_store_alreadyDown">该表情包已下架!</string>
     <string name="face_no_data_text">您暂时还没有添加表情快去添加吧!</string>
     <string name="face_btn_send">发送</string>
-    <string name="face_response_failure">网络获取失败</string>
+    <string name="face_response_failure">请求失败</string>
     <string name="face_download_failure">下载失败</string>
 </resources>

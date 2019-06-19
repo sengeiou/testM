@@ -16,7 +16,7 @@
     <string name="take_photo_description">take photo</string>
     <string name="pick_photo_description">pick photo</string>
     <string name="network_has_disconnected">网络已经断开</string>
-    <string name="message_send_failed">请检查网络</string>
+    <string name="message_send_failed">发送失败</string>
     <string name="network_has_connected">网络已正常</string>
     <string name="image_download_failed">下载文件失败</string>
     <string name="send_good_url_btn_text">发送链接</string>

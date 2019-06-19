@@ -979,7 +979,7 @@ class MyMessageChatActivity : BaseActivity() {
 
             MessageEvent.Event.ACK_SEND_MESSAGE_FAILURE -> {
                 // 失败情况下新添提醒
-//                ToastUtil.showShort(getString(R.string.message_send_failed))
+                ToastUtil.showShort(getString(R.string.message_send_failed))
                 run { onMsgUnAckTimeoutOrFailure(event.messageEntity) }
             }
             MessageEvent.Event.ACK_SEND_MESSAGE_TIME_OUT -> {
