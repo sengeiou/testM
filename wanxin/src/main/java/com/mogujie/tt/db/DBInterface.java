@@ -62,7 +62,9 @@ public class DBInterface {
 
     public void initDbHelp(Context ctx, int loginId) {
         if (ctx == null || loginId <= 0) {
-            throw new RuntimeException("#DBInterface# init DB exception!");
+//            throw new RuntimeException("#DBInterface# init DB exception!");
+            Log.e("DBInterface","#DBInterface# init DB exception!");
+            return;
         }
         // 临时处理，为了解决离线登陆db实例初始化的过程
         if (context != ctx || loginUserId != loginId) {
