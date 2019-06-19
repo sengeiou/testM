@@ -1,6 +1,7 @@
 package com.mogujie.tt.imservice.network;
 
 import com.mogujie.tt.imservice.manager.IMHeartBeatManager;
+import com.mogujie.tt.imservice.manager.IMReconnectManager;
 import com.mogujie.tt.imservice.manager.IMSocketManager;
 import com.mogujie.tt.utils.Logger;
 
@@ -39,8 +40,8 @@ public class MsgServerHandler extends SimpleChannelHandler {
         super.channelDisconnected(ctx, e);
         IMSocketManager.instance().onMsgServerDisconn();
         IMHeartBeatManager.instance().onMsgServerDisconn();
-        // 断线了，先尝试重连。统一入口，否则会产生循环锁
-        //IMReconnectManager.instance().tryReconnect();
+        //todo 断线了，先尝试重连。统一入口，否则会产生循环锁
+        IMReconnectManager.instance().tryReconnect();
     }
 
     @Override

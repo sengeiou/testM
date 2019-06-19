@@ -155,7 +155,7 @@ public class IMReconnectManager extends IMManager {
         }
     };
 
-    private boolean isReconnecting(){
+    public  boolean isReconnecting(){
         SocketEvent socketEvent =   IMSocketManager.instance().getSocketStatus();
         LoginEvent loginEvent = IMLoginManager.instance().getLoginStatus();
 
@@ -172,7 +172,7 @@ public class IMReconnectManager extends IMManager {
      * 可能是数据包异常
      * 启动快速重连机制
      */
-    private  void tryReconnect(){
+    public void tryReconnect(){
         /**检测网络状态*/
         ConnectivityManager nw = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netinfo = nw.getActiveNetworkInfo();
