@@ -979,7 +979,7 @@ class MyMessageChatActivity : BaseActivity() {
 
             MessageEvent.Event.ACK_SEND_MESSAGE_FAILURE -> {
                 // 失败情况下新添提醒
-                ToastUtil.showShort(getString(R.string.message_send_failed))
+//                ToastUtil.showShort(getString(R.string.message_send_failed))
                 run { onMsgUnAckTimeoutOrFailure(event.messageEntity) }
             }
             MessageEvent.Event.ACK_SEND_MESSAGE_TIME_OUT -> {
@@ -1150,10 +1150,11 @@ class MyMessageChatActivity : BaseActivity() {
 //                AudioMessage.buildForSend(audioLen, audioSavePath, loginUser!!, sessionInfo[0].toInt(), sessionInfo[1].toInt())
 //            } else {
 //            }
-            val audioMessage = AudioMessage.buildForSend(audioLen, audioSavePath, loginUser!!, currentSessionKey)
-
-            mImService?.messageManager?.sendAudio(audioMessage)
-            pushList(audioMessage, true)
+            Handler().postDelayed({
+                val audioMessage = AudioMessage.buildForSend(audioLen, audioSavePath, loginUser!!, currentSessionKey)
+                mImService?.messageManager?.sendAudio(audioMessage)
+                pushList(audioMessage, true)
+            }, 500)
         }
     }
 
