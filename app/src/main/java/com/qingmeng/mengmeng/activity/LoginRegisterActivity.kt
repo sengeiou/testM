@@ -101,6 +101,10 @@ class LoginRegisterActivity : BaseActivity() {
         mUserProtocol.setOnClickListener {
             startActivityForResult<LoginUserAgreementActivity>(0)
         }
+        tvPrivacy.setOnClickListener {
+            startActivityForResult<PrivacyProtocolWebViewActivity>(1)
+        }
+
         //是否同意用户协议
         mRegisterAgree.setOnClickListener {
             mRead = if (!mRead) {

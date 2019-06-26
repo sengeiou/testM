@@ -83,7 +83,7 @@ object IConstants {
     const val APP_SCOPE_SINA =""
     /**
      * 当前 DEMO 应用的回调页，第三方应用可以使用自己的回调页。
-     * 建议使用默认回调页：https://api.weibo.com/oauth2/default.html
+     * 建议使用默认回调页：https://api.weibo.com/oauth2/default.web
      */
-    val APP_REDIRECT_URL_SINA = "https://api.weibo.com/oauth2/default.html"
+    val APP_REDIRECT_URL_SINA = "https://api.weibo.com/oauth2/default.web"
 }

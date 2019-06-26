@@ -24,7 +24,7 @@ import android.net.Uri
  *
  * 京东详情
  * openApp.jdMobile://virtual?params={"category":"jump","des":"productDetail","skuId":"4099139","sourceType":"JSHOP_SOURCE_TYPE","sourceValue":"JSHOP_SOURCE_VALUE"}
- * https://item.m.jd.com/product/4099139.html
+ * https://item.m.jd.com/product/4099139.web
  *
  *
  *

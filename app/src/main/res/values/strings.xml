@@ -161,7 +161,9 @@
     <string name="picture_neirong">请输入图片中的内容</string>
     <string name="read_accept">我已经认真阅读并接受</string>
     <string name="user_agreement">《盟盟用户协议》</string>
+    <string name="privacy_agreement">《隐私声明》</string>
     <string name="user_agreement1">用户协议</string>
+    <string name="privacy_protocol">隐私声明</string>
     <string name="user_agreement_yes">我已阅读并同意盟盟用户协议</string>
     <string name="user_agreement_no">您拒绝接受协议</string>
     <string name="refresh">刷新</string>

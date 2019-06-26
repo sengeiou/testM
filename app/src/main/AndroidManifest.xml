@@ -85,6 +85,11 @@
             android:name=".activity.MainActivity"
             android:exported="true"
             android:launchMode="singleTask" />
+
+        <activity
+            android:name=".activity.PrivacyProtocolWebViewActivity"
+            android:screenOrientation="portrait"
+            />
         <!-- 爱加盟 -->
         <activity
             android:name=".activity.ShopDetailActivity"
