@@ -73,9 +73,9 @@ object IConstants {
     val APP_ID_QQ = "101540890"
     val APP_KEY_QQ = ""
     //微博
-    val APP_ID_SINA = "1439791251"
-    val APP_KEY_SINA = "856474246"
-    val APP_SECRET_SINA = "17a934ca23dd28ced1bd704c3a8d6870"
+    val APP_ID_SINA = "1463353715"
+    val APP_KEY_SINA = "2799301667"
+    val APP_SECRET_SINA = "b2b527a7ac19dfe4d6f47f6f73eb8b52"
     /**
      * WeiboSDKDemo 应用对应的权限，第三方开发者一般不需要这么多，可直接设置成空即可。
      * 详情请查看 Demo 中对应的注释。
