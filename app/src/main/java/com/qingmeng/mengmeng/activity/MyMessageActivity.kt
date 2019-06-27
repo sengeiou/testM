@@ -159,7 +159,7 @@ class MyMessageActivity : BaseActivity() {
         mAdapter = CommonAdapter(this, R.layout.activity_my_message_item, mAllList, holderConvert = { holder, t, position, payloads ->
             holder.apply {
                 //接口请求的不给他左滑
-                getView<SwipeMenuLayout>(R.id.smlMyMessageRv).isSwipeEnable = t.sessionType != 0
+                getView<SwipeMenuLayout>(R.id.smlMyMessageRv).isSwipeEnable = t.sessionType != 0 && t.name != "盟盟客服" && t.name != "系统通知"
                 //头像
                 val avatar= if(t.avatar?.size?:0 > 0) t.avatar[0] else ""
                 GlideLoader.load(this@MyMessageActivity, avatar, getView(R.id.ivMyMessageRvLogo), placeholder = R.drawable.default_img_icon)
