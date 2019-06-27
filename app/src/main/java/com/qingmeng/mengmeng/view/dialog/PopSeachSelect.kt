@@ -14,6 +14,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
 import android.widget.TextView
+import com.app.common.extensions.setWidthHeightExt
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.R
@@ -23,6 +24,7 @@ import com.qingmeng.mengmeng.entity.*
 import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.BoxUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.qingmeng.mengmeng.utils.dp2px
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -82,6 +84,7 @@ class PopSeachSelect(private var mActivity: Activity, type: Int, mfatherId: Int)
     private fun initLeftAdapter(type: Int) {
         mLauyoutManger = LinearLayoutManager(mActivity)
         mMenuView.left_recyclerView_pop.layoutManager = mLauyoutManger
+        mMenuView.left_recyclerView_pop.setWidthHeightExt(width=mActivity.dp2px(104))
         if (type == 1) {
             mFoodTypeAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mFoodTypeList, holderConvert = { holder, data, _, _ ->
                 holder.apply {
@@ -129,7 +132,7 @@ class PopSeachSelect(private var mActivity: Activity, type: Int, mfatherId: Int)
             mMenuView.seach_pop_ranking.layoutParams.height = ViewGroup.LayoutParams.WRAP_CONTENT
             mRankingAdapter = CommonAdapter(mActivity, R.layout.seach_result_left_item, mRankingList, holderConvert = { holder, data, _, _ ->
                 holder.apply {
-                    getView<LinearLayout>(R.id.seach_ranking_linear).apply {
+                    getView<View>(R.id.seach_ranking_linear).apply {
                         if (data.checkState) {
                             getView<TextView>(R.id.search_result_pop_left_item).setTextColor(resources.getColor(R.color.color_5ab1e1))
                         } else {
@@ -147,6 +150,7 @@ class PopSeachSelect(private var mActivity: Activity, type: Int, mfatherId: Int)
                 mSelectCallBack.onSelectCallBack(position + 1, 0, mRankingList[position].title)
                 dismiss()
             })
+            mMenuView.left_recyclerView_pop.setWidthHeightExt(width= ViewGroup.LayoutParams.MATCH_PARENT)
             mMenuView.left_recyclerView_pop.adapter = mRankingAdapter
         }
     }
