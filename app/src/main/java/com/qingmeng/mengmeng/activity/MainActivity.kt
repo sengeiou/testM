@@ -33,6 +33,7 @@ import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.base.MainTab
 import com.qingmeng.mengmeng.constant.IConstants
+import com.qingmeng.mengmeng.entity.AccountEvent
 import com.qingmeng.mengmeng.entity.MainTabBean
 import com.qingmeng.mengmeng.entity.ProgressBean
 import com.qingmeng.mengmeng.entity.UserBean
@@ -360,6 +361,7 @@ class MainActivity : BaseActivity() {
                             it.upDate()
                             //还要登录完信..
                             mImService?.loginManager?.login("${it.wxUid}", it.wxToken)
+                            EventBus.getDefault().postSticky(AccountEvent(true))
                         }
                         else -> {  //TOKEN过期或失败
                             //跳登录页面

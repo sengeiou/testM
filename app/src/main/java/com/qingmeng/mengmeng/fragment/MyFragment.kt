@@ -14,6 +14,7 @@ import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.*
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.MY_TO_MESSAGE
+import com.qingmeng.mengmeng.entity.AccountEvent
 import com.qingmeng.mengmeng.entity.MyInformation
 import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.imageLoader.CacheType
@@ -294,6 +295,12 @@ class MyFragment : BaseFragment() {
         }
     }
 
+    fun onEventMainThread(event: AccountEvent) {
+        if (event.isLogin) {
+            httpSelect()
+        }
+    }
+
     /**
      * -------------------------------------------------------------start-------------------------------------------------------------
      */
@@ -321,7 +328,7 @@ class MyFragment : BaseFragment() {
             unReadCount += it.unReadCnt
         }
         //未读消息
-        UnreadMsgUtils.show(viewMyMessageCount,unReadCount)
+        UnreadMsgUtils.show(viewMyMessageCount, unReadCount)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -330,7 +337,7 @@ class MyFragment : BaseFragment() {
             val isDelete = data?.getBooleanExtra("isDelete", false) ?: false
             val mPhoneChange = data?.getBooleanExtra("mPhoneChange", false) ?: false
             val isExitAccount = data?.getBooleanExtra("exitAccount", false) ?: false
-            if(isExitAccount) {
+            if (isExitAccount) {
                 loginFail()
             } else {
                 //如果下一页删掉过数据 或改变过手机号 设置过密码 就刷新本页

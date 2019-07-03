@@ -177,6 +177,8 @@ dependencies {
     implementation files('libs/BaiduLBS_Android.jar')
     implementation project(':facelibs')
     implementation project(':waveview')
+
+    implementation 'com.github.pinguo-zhouwei:MZBannerView:v2.0.2'
 }
 
 //allprojects {
