@@ -1,12 +1,14 @@
 package com.qingmeng.mengmeng.fragment
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.support.design.widget.AppBarLayout
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.SparseArray
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -29,12 +31,14 @@ import com.qingmeng.mengmeng.utils.ApiUtils
 import com.qingmeng.mengmeng.utils.BoxUtils
 import com.qingmeng.mengmeng.utils.OpenMallApp
 import com.qingmeng.mengmeng.utils.ToastUtil
+import com.zhouwei.mzbanner.MZBannerView
+import com.zhouwei.mzbanner.holder.MZHolderCreator
+import com.zhouwei.mzbanner.holder.MZViewHolder
 import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_join.*
-import kotlinx.android.synthetic.main.layout_banner.*
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
 import org.jetbrains.anko.support.v4.startActivity
 
@@ -57,10 +61,17 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 
     private var isRefreshBanner = false
 
+    private lateinit var mJoinBanner: MZBannerView<Banner>
+
     override fun getLayoutId(): Int = R.layout.fragment_join
 
     override fun initData() {
         getCacheData()
+    }
+
+    override fun initObject() {
+        super.initObject()
+        mJoinBanner = mView.findViewById(R.id.mJoinBanner)
     }
 
     //获取缓存数据
@@ -369,7 +380,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 
     //获取banner图
     private fun getBanners(version: String) {
-        if(isRefreshBanner) return
+        if (isRefreshBanner) return
         isRefreshBanner = true
         ApiUtils.getApi().getBanners(version, 7)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -392,7 +403,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 //                    mJoinBannerView.visibility = View.GONE
                     isRefreshBanner = false
                 }, {
-//                    mJoinBannerView.visibility = View.GONE
+                    //                    mJoinBannerView.visibility = View.GONE
                     ToastUtil.showNetError()
                     isRefreshBanner = false
                 }, {
@@ -431,41 +442,77 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 
     //banner点击事件  skipType 跳转类型 1.不做任何跳转 2.普通链接 3.头报文章链接 4.品牌详情
     override fun onBannerItemClick(banner: BGABanner?, itemView: ImageView?, model: Banner?, position: Int) {
-        model?.apply {
-            when (skipType) {
-                2 -> startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
-                3 -> startActivity<HeadDetailsActivity>("URL" to url)
-                4 -> startActivity<ShopDetailActivity>(BRANDID to interiorDetailsId)
-                5 -> {
-                    try {
-                        OpenMallApp.open(context!!, exteriorUrl)
-                    } catch (e: OpenMallApp.NotInstalledException) {
-                        startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
-                    }
-                }
-            }
-        }
+//        model?.apply {
+//            when (skipType) {
+//                2 -> startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
+//                3 -> startActivity<HeadDetailsActivity>("URL" to url)
+//                4 -> startActivity<ShopDetailActivity>(BRANDID to interiorDetailsId)
+//                5 -> {
+//                    try {
+//                        OpenMallApp.open(context!!, exteriorUrl)
+//                    } catch (e: OpenMallApp.NotInstalledException) {
+//                        startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
+//                    }
+//                }
+//            }
+//        }
     }
 
     //banner加载图片
     override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: Banner?, position: Int) {
-        model?.let {
-            Glide.with(this).load(model.imgUrl).apply(RequestOptions()
-                    .placeholder(R.drawable.default_img_banner)
-                    .centerCrop()).into(itemView)
-        }
+//        model?.let {
+//            Glide.with(this).load(model.imgUrl).apply(RequestOptions()
+//                    .placeholder(R.drawable.default_img_banner)
+//                    .centerCrop()).into(itemView)
+//        }
     }
 
-    private fun setBanner(isInit:Boolean = false) {
-        if(!(isInit && mImgList.size == 0)) {
-            mJoinBanner.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
-            mJoinBanner.setDelegate(this)//设置点击事件
-            Logger.d("setBanner mImgList size=${mImgList.size}")
-            mJoinBanner.setData(mImgList, null)// ，重写点击回调方法
-            mJoinBanner.setAutoPlayAble(mImgList.size > 1)
-            mJoinBanner.setData(mImgList, null)// ，重写点击回调方法
+    private fun setBanner(isInit: Boolean = false) {
+        if (!(isInit && mImgList.size == 0)) {
+//            mJoinBanner.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
+//            mJoinBanner.setDelegate(this)//设置点击事件
+//            Logger.d("setBanner mImgList size=${mImgList.size}")
+//            mJoinBanner.setData(f, null)// ，重写点击回调方法
+//            mJoinBanner.setAutoPlayAble(mImgList.size > 1)
+//            mJoinBanner.setData(mImgList, null)// ，重写点击回调方法
+            mJoinBanner.setPages(mImgList, MZHolderCreator<MZViewHolder<Banner>> { banner; })
+            mJoinBanner.setBannerPageClickListener { view, i ->
+                mImgList[i].apply {
+                    when (skipType) {
+                        2 -> startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
+                        3 -> startActivity<HeadDetailsActivity>("URL" to url)
+                        4 -> startActivity<ShopDetailActivity>(BRANDID to interiorDetailsId)
+                        5 -> {
+                            try {
+                                OpenMallApp.open(context!!, exteriorUrl)
+                            } catch (e: OpenMallApp.NotInstalledException) {
+                                startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
+                            }
+                        }
+                    }
+                }
+            }
         }
-        mJoinBannerView.visibility = if(mImgList.isEmpty()) View.VISIBLE else View.GONE
+        mJoinBannerView.visibility = if (mImgList.isEmpty()) View.VISIBLE else View.GONE
+        mJoinBanner.start()//开始轮播
+    }
+
+    private var banner = object : MZViewHolder<Banner> {
+        var mImageView: ImageView? = null
+        override fun onBind(context: Context?, position: Int, data: Banner?) {
+            mImageView?.let {
+                Glide.with(this@JoinFragment).load(data?.imgUrl ?: "").apply(RequestOptions()
+                        .placeholder(R.drawable.default_img_banner)
+                        .centerCrop()).into(it)
+            }
+
+        }
+
+        override fun createView(context: Context?): View {
+            val view = LayoutInflater.from(context).inflate(R.layout.banner_item, null)
+            mImageView = view.findViewById(R.id.ivBannerImg) as ImageView
+            return view
+        }
     }
 
     /**
@@ -478,5 +525,13 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
             type == 2 && !tabList.isEmpty() -> tabList[0].version
             else -> ""
         }
+    }
+    override fun onResume() {
+        super.onResume()
+        mJoinBanner.start()//开始轮播
+    }
+    override fun onPause() {
+        super.onPause()
+        mJoinBanner.pause();//暂停轮播
     }
 }

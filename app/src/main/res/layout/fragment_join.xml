@@ -33,7 +33,28 @@
                     app:layout_scrollFlags="scroll"
                     >
 
-                    <include layout="@layout/layout_banner" />
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        >
+
+                        <com.zhouwei.mzbanner.MZBannerView
+                            android:id="@+id/mJoinBanner"
+                            android:layout_width="match_parent"
+                            android:layout_height="188dp"
+                            app:canLoop="true"
+                            app:open_mz_mode="false"
+                            />
+
+                        <ImageView
+                            android:id="@+id/mJoinBannerView"
+                            android:layout_width="match_parent"
+                            android:layout_height="188dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/default_img_banner"
+                            android:visibility="gone"
+                            />
+                    </RelativeLayout>
 
                     <LinearLayout
                         android:id="@+id/bottomSearch"
@@ -77,7 +98,7 @@
                     android:background="@color/common_bg"
                     />
 
-                <include layout="@layout/layout_guess_you_like" />
+                <include layout="@layout/layout_guess_you_like"/>
 
                 <net.lucode.hackware.magicindicator.MagicIndicator
                     android:id="@+id/channelIndicator"
