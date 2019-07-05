@@ -33,7 +33,7 @@ class PrivacyProtocolWebViewActivity : BaseActivity() {
     private fun initWebView() {
         WebViewUtil.initWeb(application, webview, true)
         if (application.isConnected()) {
-            webview.loadUrl("https://wangru.oss-cn-qingdao.aliyuncs.com/web/cprivacy-policy.html")
+            webview.loadUrl("http://api.ejiameng.cn/")
         } else {
             webview.loadUrl("file:///android_asset/web/privacy/privacy_protocol.html")
         }
