@@ -365,7 +365,8 @@ public class CameraActivity extends AppCompatActivity implements MediaRecorder.O
                     if (mPhotoOrVideo == 1) {//如果是在拍视频
                         mLlSelectPhotoOrVideo.setVisibility(View.VISIBLE);
                         mIvRecorderPlay.setVisibility(View.GONE);
-                        mIvTakeVideo.setVisibility(View.VISIBLE);
+                        mIvTakeVideo.setVisibility(View.GONE);
+                        mIvRecorderStop.setVisibility(View.VISIBLE);
                         mChronometer.setBase(SystemClock.elapsedRealtime());// 复位
                         turnLight(mLightStatusBefore);//之前的闪光灯状态
                         mRlFlashLight.setVisibility(View.VISIBLE);//显示闪光灯图标

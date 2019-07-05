@@ -482,9 +482,13 @@ class MyMessageChatActivity : BaseActivity() {
 
         //拍照
         ivMyMessageChatFunctionCamera.setOnClickListener {
-            PermissionUtils.camera(this) {
-                //打开相机
-                openCamera()
+            PermissionUtils.audio(this) {
+                PermissionUtils.readAndWrite(this) {
+                    PermissionUtils.camera(this) {
+                        //打开相机
+                        openCamera()
+                    }
+                }
             }
         }
 
