@@ -134,7 +134,7 @@
                     android:focusableInTouchMode="false"
                     android:paddingEnd="@dimen/padding_dp_25"
                     android:paddingStart="@dimen/padding_dp_15"
-                    android:maxEms="2000"
+                    android:maxLength="2000"
                     android:textColor="@color/color_333333"
                     />
 
