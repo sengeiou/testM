@@ -314,4 +314,10 @@ interface Api {
     @POST("/api/msg_op/msg")
     @FormUrlEncoded
     fun msgRevokeDelete(@Field("wxFromId") wxUserName: Int, @Field("wxToId") wxPassWord: Int, @Field("wxMsgId") wxProjectId: Int, @Field("type") type: Int): Observable<BaseBean<Any>>
+
+    //敏感词过滤
+    @POST("api/sensitive_word")
+    @FormUrlEncoded
+    fun sensitiveWord(@Field("filterBefore") filterBefore: String): Observable<WordBean>
+
 }

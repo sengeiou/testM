@@ -120,7 +120,7 @@ class MyMessageChatActivity : BaseActivity() {
     private val imServiceConnector = object : IMServiceConnector() {
         override fun onIMServiceConnected() {
             mImService = this.imService
-            val wxId=if(imService.loginManager.loginId>0) imService.loginManager.loginId else sharedSingleton.getInt(IConstants.wx_id)
+            val wxId = if (imService.loginManager.loginId > 0) imService.loginManager.loginId else sharedSingleton.getInt(IConstants.wx_id)
             DBInterface.instance().initDbHelp(applicationContext, wxId)
             initMsgData()
             peerEntity?.let {
@@ -226,7 +226,7 @@ class MyMessageChatActivity : BaseActivity() {
                 super.onScrollStateChanged(recyclerView, newState)
                 //滑到顶部了
                 if (!recyclerView.canScrollVertically(-1)) {
-                    if(!mIsSystemMotification) {
+                    if (!mIsSystemMotification) {
                         onPullDownToRefresh()
                     }
                 }
@@ -234,7 +234,7 @@ class MyMessageChatActivity : BaseActivity() {
                 if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItemPosition + 2 >= mAdapter.itemCount) {
                     mRecyclerViewIsBottom = true
                     tvMyMessageChatTips.visibility = View.GONE
-                    if(mIsSystemMotification) {
+                    if (mIsSystemMotification) {
                         onPullDownToRefresh()
                     }
                 } else {
@@ -472,8 +472,23 @@ class MyMessageChatActivity : BaseActivity() {
 
         //发送消息
         tvMyMessageChatSend.setOnClickListener {
-            val textMessage = TextMessage.buildForSend(etMyMessageChatContent.text.toString().trim(), loginUser, currentSessionKey)
-            mImService!!.messageManager.sendText(textMessage)
+            val content = etMyMessageChatContent.text.toString().trim()
+            val textMessage = TextMessage.buildForSend(content, loginUser, currentSessionKey)
+            ApiUtils.getApi()
+                    .sensitiveWord(content)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe({ bean ->
+                        if (bean.code == 1) {
+                            textMessage?.info = bean.text ?: ""
+                        }
+                        mImService!!.messageManager.sendText(textMessage)
+                    }, {
+                        textMessage?.status = MessageConstant.MSG_FAILURE
+                        DBInterface.instance().insertOrUpdateMessage(textMessage)
+                        EventBus.getDefault().post(MessageEvent(MessageEvent.Event.ACK_SEND_MESSAGE_FAILURE, textMessage))
+                    }, {}, { addSubscription(it) })
+
             //输入框置空
             etMyMessageChatContent.setText("")
             pushList(textMessage, true)
@@ -1078,9 +1093,9 @@ class MyMessageChatActivity : BaseActivity() {
         }
         historyTimes++
         pushList(msgList)
-        if(!mIsSystemMotification){
-        scrollToBottomListItem()
-    }
+        if (!mIsSystemMotification) {
+            scrollToBottomListItem()
+        }
     }
 
     /**
@@ -1167,7 +1182,7 @@ class MyMessageChatActivity : BaseActivity() {
      */
     fun onPullDownToRefresh() {
         // 获取消息
-        val messageEntity = if(!mIsSystemMotification)mAdapter.getTopMsgEntity() else mAdapter.getBottomMsgEntity()
+        val messageEntity = if (!mIsSystemMotification) mAdapter.getTopMsgEntity() else mAdapter.getBottomMsgEntity()
         if (messageEntity != null) {
             val historyMsgInfo = mImService?.messageManager?.loadHistoryMsg(messageEntity, historyTimes)
             if (historyMsgInfo?.size ?: 0 > 0) {

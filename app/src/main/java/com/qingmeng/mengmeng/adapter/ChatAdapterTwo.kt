@@ -25,9 +25,11 @@ import com.mogujie.tt.config.DBConstant
 import com.mogujie.tt.config.IntentConstant
 import com.mogujie.tt.config.MessageConstant
 import com.mogujie.tt.config.MessageExtConst
+import com.mogujie.tt.db.DBInterface
 import com.mogujie.tt.db.entity.MessageEntity
 import com.mogujie.tt.db.entity.UserEntity
 import com.mogujie.tt.imservice.entity.*
+import com.mogujie.tt.imservice.event.MessageEvent
 import com.mogujie.tt.imservice.service.IMService
 import com.mogujie.tt.ui.activity.PreviewMessageImagesActivity
 import com.mogujie.tt.ui.helper.AudioPlayerHandler
@@ -43,6 +45,9 @@ import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.MyMessageChatActivity
 import com.qingmeng.mengmeng.utils.*
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
+import de.greenrobot.event.EventBus
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
@@ -503,7 +508,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             val textMessage = msgObjectList[position] as TextMessage
             setHeadImage(textMessage, ivMyMessageChatRvMineTextHead)
             tvMyMessageChatRvMineTextText.let {
-                it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), textMessage.info, it, true)
+                it.text = SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, AppManager.instance.currentActivity(), textMessage?.info?:"", it, true)
                 it.setOnLongClickListener {
                     showPopWindow(position, parent, it)
                     true
@@ -1266,7 +1271,20 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
                     msgObjectList.removeAt(mPosition)
                     addItem(mMsgInfo)
                     notifyDataSetChanged()
-                    mImService?.messageManager?.resendMessage(mMsgInfo)
+                    ApiUtils.getApi()
+                            .sensitiveWord(mMsgInfo.info)
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeOn(Schedulers.io())
+                            .subscribe({ bean ->
+                                if (bean.code == 1) {
+                                    mMsgInfo.info = bean.text?: ""
+                                }
+                                mImService?.messageManager?.resendMessage(mMsgInfo)
+                            }, {
+                                mMsgInfo.status = MessageConstant.MSG_FAILURE
+                                DBInterface.instance().insertOrUpdateMessage(mMsgInfo)
+                                EventBus.getDefault().post(MessageEvent(MessageEvent.Event.ACK_SEND_MESSAGE_FAILURE, mMsgInfo))
+                            }, {}, {  })
                 }
             } catch (e: Exception) {
 
