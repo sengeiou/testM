@@ -658,12 +658,19 @@ class MyMessageChatActivity : BaseActivity() {
                 FaceLocalConstant.IMGTYPE_EMOJ -> { //emoji表情
                     val msg = it.name
                     val curPosition = etMyMessageChatContent.selectionStart
-                    val sb = StringBuilder(etMyMessageChatContent.text.toString())
-                    sb.insert(curPosition, msg)
-                    // 特殊文字处理,将表情等转换一下
-                    etMyMessageChatContent.setText(SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, this@MyMessageChatActivity, sb.toString(), etMyMessageChatContent))
-                    // 将光标设置到新增完表情的右侧
-                    etMyMessageChatContent.setSelection(curPosition + msg!!.length)
+                    if (curPosition + 4 < etMyMessageChatContent.maxLines) {
+                        val sb = StringBuilder(etMyMessageChatContent.text.toString())
+                        sb.insert(curPosition, msg)
+                        // 特殊文字处理,将表情等转换一下
+                        etMyMessageChatContent.setText(SpanStringUtils.getEmotionContent(EmotionUtils.EMOTION_CLASSIC_TYPE, this@MyMessageChatActivity, sb.toString(), etMyMessageChatContent))
+                        // 将光标设置到新增完表情的右侧
+                        if (curPosition + msg!!.length < etMyMessageChatContent.text.length) {
+                            etMyMessageChatContent.setSelection(curPosition + msg.length)
+                        } else {
+                            etMyMessageChatContent.setSelection(etMyMessageChatContent.text.length)
+                        }
+                    }
+
                 }
                 FaceLocalConstant.IMGTYPE_EMOJ_DELETE -> etMyMessageChatContent.dispatchKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
                 else -> {
