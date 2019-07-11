@@ -9,7 +9,6 @@ import android.text.TextUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
-import com.google.gson.annotations.SerializedName;
 import com.mogujie.tt.config.DBConstant;
 import com.mogujie.tt.config.MessageConstant;
 import com.mogujie.tt.imservice.entity.AudioMessage;
@@ -46,10 +45,10 @@ import org.greenrobot.greendao.annotation.Generated;
  * Entity mapped to table Message.
  */
 @Entity(nameInDb = "MessageDao",
-    indexes = {
-        @Index(value = "msgId"),
-        @Index(value = "sessionKey")
-    }
+indexes = {
+@Index(value = "msgId"),
+@Index(value = "sessionKey")
+}
 )
 public class MessageEntity implements Serializable {
     private static final long serialVersionUID = -2719594838594429816L;
@@ -106,7 +105,7 @@ public class MessageEntity implements Serializable {
     private String title;
 
     {
-        setAttribute("time", System.currentTimeMillis());
+        setAttribute("time", System.currentTimeMillis() / 1000);
     }
 
     public MessageEntity() {
@@ -273,22 +272,22 @@ public class MessageEntity implements Serializable {
     @Override
     public String toString() {
         return "MessageEntity{" +
-            "id=" + id +
-            ", msgId=" + msgId +
-            ", fromId=" + fromId +
-            ", toId=" + toId +
-            ", sessionKey='" + sessionKey + '\'' +
-            ", content='" + content + '\'' +
-            ", msgType=" + msgType +
-            ", displayType=" + displayType +
-            ", status=" + status +
-            ", created=" + created +
-            ", updated=" + updated +
-            ", isGIfEmo=" + isGIfEmo +
-            ", info='" + info + '\'' +
-            ", infoType=" + infoType +
-            ", nickname=" + nickname +
-            '}';
+        "id=" + id +
+        ", msgId=" + msgId +
+        ", fromId=" + fromId +
+        ", toId=" + toId +
+        ", sessionKey='" + sessionKey + '\'' +
+        ", content='" + content + '\'' +
+        ", msgType=" + msgType +
+        ", displayType=" + displayType +
+        ", status=" + status +
+        ", created=" + created +
+        ", updated=" + updated +
+        ", isGIfEmo=" + isGIfEmo +
+        ", info='" + info + '\'' +
+        ", infoType=" + infoType +
+        ", nickname=" + nickname +
+        '}';
     }
 
     @Keep

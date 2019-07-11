@@ -12,7 +12,7 @@ repositories {
 
 //推送
 //包名
-def packageName = "com.leimo.wanxin"
+def packageName = "com.qingmeng.mengmeng"
 //小米
 def xiaomiAppId = "2882303761517926618"
 def xiaomiAppKey = "5261792694618"
