@@ -51,7 +51,6 @@
         android:drawableStart="@drawable/detail_icon_share"
         android:drawablePadding="@dimen/padding_dp_12"
         android:padding="@dimen/padding_dp_5"
-        android:visibility="gone"
         android:text="@string/share"
         android:textColor="@color/color_666666"
         android:textSize="@dimen/text_size_14"/>
