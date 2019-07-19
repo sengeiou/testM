@@ -114,9 +114,10 @@ public class IMReconnectManager extends IMManager {
         switch (socketEvent){
             case MSG_SERVER_DISCONNECTED:
             case REQ_MSG_SERVER_ADDRS_FAILED:
-            case CONNECT_MSG_SERVER_FAILED:{
+            case CONNECT_MSG_SERVER_FAILED: {
                 tryReconnect();
-            }break;
+                break;
+            }
         }
     }
 

@@ -57,7 +57,7 @@ class HeadDetailsActivity : BaseActivity() {
             initWebView()
         }
         //todo 隐藏分享
-        mMenu.visibility = View.GONE
+//        mMenu.visibility = View.GONE
     }
 
     override fun initListener() {

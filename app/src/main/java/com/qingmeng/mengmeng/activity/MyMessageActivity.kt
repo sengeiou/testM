@@ -33,6 +33,7 @@ import com.qingmeng.mengmeng.constant.IConstants.MY_TO_MESSAGE
 import com.qingmeng.mengmeng.constant.IConstants.TO_MESSAGE
 import com.qingmeng.mengmeng.entity.MyMessage
 import com.qingmeng.mengmeng.utils.ApiUtils
+import com.qingmeng.mengmeng.utils.BoxUtils
 import com.qingmeng.mengmeng.utils.ToastUtil
 import com.qingmeng.mengmeng.utils.imageLoader.GlideLoader
 import com.qingmeng.mengmeng.view.SwipeMenuLayout
@@ -202,6 +203,9 @@ class MyMessageActivity : BaseActivity() {
     }
 
     private fun httpLoad() {
+        BoxUtils.getNewsChatType()?.let {
+            setData(it)
+        }
         ApiUtils.getApi()
                 .getMyMessage()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -211,6 +215,7 @@ class MyMessageActivity : BaseActivity() {
                     srlMyMessage.isRefreshing = false
                     it.apply {
                         if (code == 12000) {
+                            BoxUtils.saveNewsChatType(data?.chatInfoList?: arrayListOf())
                             setData(data?.chatInfoList)
                         } else {
                             ToastUtil.showShort(msg)

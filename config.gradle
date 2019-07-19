@@ -46,7 +46,7 @@ ext {
             //banner图
             bga_banner                 : 'cn.bingoogolapple:bga-banner:2.1.7',
             //微信
-            wechat_sdk_android_with_mta: 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:+',
+            wechat_sdk_android_with_mta: 'com.tencent.mm.opensdk:wechat-sdk-android-with-mta:5.4.0',
             //阿里云
             oss_android_sdk            : 'com.aliyun.dpa:oss-android-sdk:+',
             oss_android_sdk1           : 'com.aliyun.dpa:oss-android-sdk:2.4.5',

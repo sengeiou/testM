@@ -407,9 +407,33 @@
         }
       ],
       "relations": []
+    },
+    {
+      "id": "16:1564469311067679650",
+      "lastPropertyId": "4:2072370353650565436",
+      "name": "MyMessage",
+      "properties": [
+        {
+          "id": "1:3885893215534364023",
+          "name": "name"
+        },
+        {
+          "id": "2:7159785351273503112",
+          "name": "avatar"
+        },
+        {
+          "id": "3:4159141433304842189",
+          "name": "wxUid"
+        },
+        {
+          "id": "4:2072370353650565436",
+          "name": "id"
+        }
+      ],
+      "relations": []
     }
   ],
-  "lastEntityId": "15:6437640560797655029",
+  "lastEntityId": "16:1564469311067679650",
   "lastIndexId": "0:0",
   "lastRelationId": "2:2924194491345688607",
   "lastSequenceId": "0:0",

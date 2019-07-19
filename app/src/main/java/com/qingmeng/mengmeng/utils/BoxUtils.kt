@@ -19,7 +19,7 @@ object BoxUtils {
     private val newsPagerBox = boxStore.boxFor(NewsPagerList::class.java)       //头报数据
     private val joinTypeBox = boxStore.boxFor(JoinModes::class.java)        //加盟模式
     private val joinMoneyBox = boxStore.boxFor(CapitalList::class.java)        //投资金额
-
+    private val newsChatBox = boxStore.boxFor(MyMessage::class.java)        //消息列表客服系统消息
     //保存banner到数据库
     fun saveBanners(banners: MutableList<Banner>) {
         boxStore.runInTxAsync({ bannerBox.put(banners) }, { _, _ -> })
@@ -216,5 +216,15 @@ object BoxUtils {
     //   获取所有投资金额数据
     fun getMoneyType(): MutableList<CapitalList> {
         return joinMoneyBox.query().build().find()
+    }
+
+    //保存所有投资金额
+    fun saveNewsChatType(list: List<MyMessage>) {
+        boxStore.runInTxAsync({ newsChatBox.put(list) }, { _, _ -> })
+    }
+
+    //   获取所有投资金额数据
+    fun getNewsChatType(): MutableList<MyMessage> {
+        return newsChatBox.query().build().find()
     }
 }
