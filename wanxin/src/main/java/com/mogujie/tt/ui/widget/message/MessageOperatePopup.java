@@ -118,6 +118,8 @@ public class MessageOperatePopup implements View.OnClickListener, View.OnTouchLi
         } else {
             deleteBtn.setVisibility(View.VISIBLE);
         }
+        //todo 隐藏删除
+        deleteBtn.setVisibility(View.GONE);
 
         //下标赋值
         mPosition = position;
