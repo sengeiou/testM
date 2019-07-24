@@ -252,7 +252,6 @@ class RedShopSeachResult : BaseActivity() {
             holder.apply {
                 Glide.with(this@RedShopSeachResult)
                         .load(data.logo).apply(RequestOptions()
-                                .transform(GlideRoundTransformCenterCrop())
                                 .placeholder(R.drawable.default_img_icon).error(R.drawable.default_img_icon)).into(getView(R.id.search_result_bigLogo))
                 if (data.status == 1) {
                     val spanString = SpannableString("证\t\t\t${data.name}")
