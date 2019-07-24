@@ -72,6 +72,11 @@ class MyMessageActivity : BaseActivity() {
         var instance: MyMessageActivity? = null                          //当前aty
     }
 
+    override fun onResume() {
+        super.onResume()
+        onRecentContactDataReady()
+    }
+
     /**
      * 消息用到的
      */
@@ -86,7 +91,7 @@ class MyMessageActivity : BaseActivity() {
         override fun onIMServiceConnected() {
             IMServiceConnector.logger.d("MyMessageActivity#recent#onIMServiceConnected")
             mImService = this.imService
-            val wxId=if(imService.loginManager.loginId>0) imService.loginManager.loginId else sharedSingleton.getInt(IConstants.wx_id)
+            val wxId = if (imService.loginManager.loginId > 0) imService.loginManager.loginId else sharedSingleton.getInt(IConstants.wx_id)
             DBInterface.instance().initDbHelp(applicationContext, wxId)
             if (mImService == null) {
                 //why ,some reason
@@ -162,7 +167,7 @@ class MyMessageActivity : BaseActivity() {
                 //接口请求的不给他左滑
                 getView<SwipeMenuLayout>(R.id.smlMyMessageRv).isSwipeEnable = t.sessionType != 0 && t.name != "盟盟客服" && t.name != "系统通知"
                 //头像
-                val avatar= if(t.avatar?.size?:0 > 0) t.avatar[0] else ""
+                val avatar = if (t.avatar?.size ?: 0 > 0) t.avatar[0] else ""
                 GlideLoader.load(this@MyMessageActivity, avatar, getView(R.id.ivMyMessageRvLogo), placeholder = R.drawable.default_img_icon)
                 //未读消息
                 UnreadMsgUtils.show(getView(R.id.viewMyMessageRvTipsNum), t.unReadCnt)
@@ -180,7 +185,7 @@ class MyMessageActivity : BaseActivity() {
                     FaceInitData.init(applicationContext)
                     FaceInitData.setAlias("${MainApplication.instance.user.wxUid}")
                     if (t.sessionKey != null) {
-                        startActivityForResult<MyMessageChatActivity>(TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to t.sessionKey, "title" to t.name, "avatar" to if (t.avatar!=null && t.avatar.size>0 && t.avatar[0] != null && t.avatar[0].isNotEmpty()) t.avatar[0] else mAvatar)
+                        startActivityForResult<MyMessageChatActivity>(TO_MESSAGE, IntentConstant.KEY_SESSION_KEY to t.sessionKey, "title" to t.name, "avatar" to if (t.avatar != null && t.avatar.size > 0 && t.avatar[0] != null && t.avatar[0].isNotEmpty()) t.avatar[0] else mAvatar)
                         MESSAGE_TO_CHAT = true
                         //如果聊天页面存在了 就销毁它
                         finishAty(MyMessageChatActivity::class.java)
@@ -215,7 +220,7 @@ class MyMessageActivity : BaseActivity() {
                     srlMyMessage.isRefreshing = false
                     it.apply {
                         if (code == 12000) {
-                            BoxUtils.saveNewsChatType(data?.chatInfoList?: arrayListOf())
+                            BoxUtils.saveNewsChatType(data?.chatInfoList ?: arrayListOf())
                             setData(data?.chatInfoList)
                         } else {
                             ToastUtil.showShort(msg)
@@ -242,12 +247,12 @@ class MyMessageActivity : BaseActivity() {
 
             when (myMessage.name) {
                 getString(R.string.systemNotification) -> {
-                    if(mSysRecentInfo.avatar==null) {
+                    if (mSysRecentInfo.avatar == null) {
                         mSysRecentInfo = recentInfo
                     }
                 }
                 "盟盟客服" -> {
-                    if(mKefuRecentInfo.avatar==null) {
+                    if (mKefuRecentInfo.avatar == null) {
                         mKefuRecentInfo = recentInfo
                     }
                 }
@@ -376,11 +381,11 @@ class MyMessageActivity : BaseActivity() {
      * 这个处理有点过于粗暴 消息列表展示
      */
     private fun onRecentContactDataReady(): Boolean {
-        val isUserData = mImService?.contactManager?.isUserDataReady
-        val isSessionData = mImService?.sessionManager?.isSessionListReady
-        val isGroupData = mImService?.groupManager?.isGroupReady
+        val isUserData = mImService?.contactManager?.isUserDataReady ?: false
+        val isSessionData = mImService?.sessionManager?.isSessionListReady ?: false
+        val isGroupData = mImService?.groupManager?.isGroupReady ?: false
 
-        if (!(isUserData!! && isSessionData!! && isGroupData!!)) {
+        if (!(isUserData && isSessionData!! && isGroupData!!)) {
             srlMyMessage.isRefreshing = false
             return false
         }
@@ -408,7 +413,7 @@ class MyMessageActivity : BaseActivity() {
             mRecentSessionList.addAll(it)
         }
         val idList = arrayListOf<Int>()
-        mImService?.loginManager?.loginId?.let{
+        mImService?.loginManager?.loginId?.let {
             idList.add(it)
         }
         recentSessionList?.map { it.peerId }?.toList()?.forEach { id ->

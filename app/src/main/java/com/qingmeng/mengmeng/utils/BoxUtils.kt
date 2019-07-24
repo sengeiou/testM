@@ -223,7 +223,7 @@ object BoxUtils {
         boxStore.runInTxAsync({ newsChatBox.put(list) }, { _, _ -> })
     }
 
-    //   获取所有投资金额数据
+    //获取消息列表系统和客服消息
     fun getNewsChatType(): MutableList<MyMessage> {
         return newsChatBox.query().build().find()
     }
