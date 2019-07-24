@@ -99,9 +99,7 @@ class RedShopFragment : BaseFragment() {
                     if (!mLeftList.isEmpty()) {
                         mLeftAdapter.notifyDataSetChanged()
                     }
-                    if (!mRightInListType.isEmpty()) {
-                        mRightAdapterType.notifyDataSetChanged()
-                    }
+                    mRightAdapterType.notifyDataSetChanged()
                     mRightAdapterHost.notifyDataSetChanged()
                     httpLoad(0, getVersion(0))
                     httpLoad2(1, getVersion(1))
@@ -142,9 +140,7 @@ class RedShopFragment : BaseFragment() {
         }.subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe({
-                    if (!mRightInListType.isEmpty()) {
-                        mRightAdapterType.notifyDataSetChanged()
-                    }
+                    mRightAdapterType.notifyDataSetChanged()
                     mRightAdapterHost.notifyDataSetChanged()
                     httpLoad2(fahterId, getVersion(1))
                 }, {

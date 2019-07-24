@@ -22,5 +22,7 @@ data class MyFollow(
         val logo: String,
         val foodName: String,
         val attentionId: Int,
-        val capitalName: String
+        val capitalName: String,
+        val isStand: Boolean,
+        val isDel: Boolean
 )

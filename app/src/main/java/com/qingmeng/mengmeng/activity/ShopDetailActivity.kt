@@ -137,6 +137,15 @@ class ShopDetailActivity : BaseActivity() {
         if (bean.isStand || bean.brandIsShow == 0) {
             mGoodsUndercarriage.visibility = View.VISIBLE
             mGoodsUndercarriageText.visibility = View.VISIBLE
+            mDetailTopBg.textColor = resources.getColor(R.color.colorPrimary)
+            mDetailTopBg.alpha = 1f
+            mDetailBackMask.alpha = 0f
+            mDetailMoreMask.alpha = 0f
+            mDetailBack.alpha = 1f
+            mDetailMore.alpha = 1f
+            mDetailScroll.setOnScrollChangeListener { _, _, _, _, _ ->
+
+            }
             Handler().postDelayed({ finish() }, 2000)
         } else {
             mGoodsUndercarriage.visibility = View.GONE
