@@ -278,7 +278,7 @@
         android:gravity="center_horizontal"
         android:paddingTop="@dimen/join_search_bar_top"
         android:text="@string/head_detail"
-        android:textColor="@color/colorPrimary"
+        android:textColor="@color/white"
         android:textSize="@dimen/text_size_20"
         />
 
