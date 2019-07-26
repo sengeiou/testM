@@ -118,7 +118,8 @@ public class MessageOperatePopup implements View.OnClickListener, View.OnTouchLi
         } else {
             deleteBtn.setVisibility(View.VISIBLE);
         }
-        //todo 隐藏删除
+        //todo 隐藏删除 撤回
+        bRevoke = false;
         deleteBtn.setVisibility(View.GONE);
 
         //下标赋值
@@ -193,6 +194,10 @@ public class MessageOperatePopup implements View.OnClickListener, View.OnTouchLi
                 copyBtn.setVisibility(View.GONE);
                 bcopyShow = false;
             }
+        }
+
+        if (copyBtn.getVisibility() != View.VISIBLE && revokeBtn.getVisibility() != View.VISIBLE && deleteBtn.getVisibility() != View.VISIBLE && resendBtn.getVisibility() != View.VISIBLE && speakerBtn.getVisibility() != View.VISIBLE){
+            return;
         }
 
         //出现的位置

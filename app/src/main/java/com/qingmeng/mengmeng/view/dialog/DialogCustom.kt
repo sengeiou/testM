@@ -330,5 +330,7 @@ class DialogCustom(private var mContext: Context?) {
             shareClick()
             window.dismiss()
         }
+        //todo 隐藏分享
+        contentView.popMoreShare.visibility = View.GONE
     }
 }
