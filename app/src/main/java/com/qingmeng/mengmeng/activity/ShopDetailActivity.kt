@@ -217,15 +217,25 @@ class ShopDetailActivity : BaseActivity() {
         mDetailBack.setOnClickListener { onBackPressed() }
         mDetailMore.setOnClickListener {
             myDialog.showMorePop(it, {
-                toNextResult<MyMessageActivity>(TO_MESSAGE)
-                if (!MYFRAGMENT_TO_MESSAGE) {
-                    //如果聊天列表页面存在了 就销毁它
-                    finishAty(MyMessageActivity::class.java)
+                if (TextUtils.isEmpty(MainApplication.instance.TOKEN)) {
+                    startActivity<LoginMainActivity>(FROM_TYPE to 1)
+                    ToastUtil.showShort(getString(R.string.pls_login))
+                } else {
+                    toNextResult<MyMessageActivity>(TO_MESSAGE)
+                    if (!MYFRAGMENT_TO_MESSAGE) {
+                        //如果聊天列表页面存在了 就销毁它
+                        finishAty(MyMessageActivity::class.java)
+                    }
                 }
             }, {
                 startActivity(intentFor<MainActivity>().newTask().clearTask())
             }, {
-                toNext<JoinFeedbackActivity>(BRANDID to id)
+                if (TextUtils.isEmpty(MainApplication.instance.TOKEN)) {
+                    startActivity<LoginMainActivity>(FROM_TYPE to 1)
+                    ToastUtil.showShort(getString(R.string.pls_login))
+                } else {
+                    toNext<JoinFeedbackActivity>(BRANDID to id)
+                }
             }, {
                 if (TextUtils.isEmpty(MainApplication.instance.TOKEN)) {
                     startActivity<LoginMainActivity>(FROM_TYPE to 1)
