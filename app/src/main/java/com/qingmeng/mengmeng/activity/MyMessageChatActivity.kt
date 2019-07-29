@@ -626,9 +626,10 @@ class MyMessageChatActivity : BaseActivity() {
 
             //品牌点击 跳转详情
             override fun onBrandClick(position: Int) {
-                val id = (mAdapter.msgObjectList[position] as BrandMessage).brandId
-                startActivity<ShopDetailActivity>(IConstants.BRANDID to id)
-                MESSAGE_TO_CHAT = false
+               (mAdapter.msgObjectList[position] as? BrandMessage)?.brandId?.let {
+                   startActivity<ShopDetailActivity>(IConstants.BRANDID to it)
+                   MESSAGE_TO_CHAT = false
+               }
             }
 
             //发送品牌
