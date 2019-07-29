@@ -1,20 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
+                android:layout_width="240dp"
                 android:layout_height="match_parent">
 
     <LinearLayout
         android:id="@+id/update_layout"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/dialog_update_bg"
+        android:paddingStart="@dimen/padding_dp_22"
+        android:paddingEnd="@dimen/padding_dp_22"
         android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="110dp"
+            android:layout_marginTop="16dp"
             android:text="@string/new_version_update"
             android:textColor="@color/color_5ab1e1"
             android:textSize="@dimen/text_size_16"/>
@@ -22,7 +24,6 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding_dp_25"
             android:layout_marginTop="@dimen/padding_dp_10"
             android:text="@string/update_content"
             android:textColor="@color/color_333333"
@@ -32,8 +33,9 @@
             android:id="@+id/updateContent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/padding_dp_25"
             android:layout_marginTop="@dimen/padding_dp_3"
+            android:paddingBottom="60dp"
+            android:maxLines="10"
             android:text="@string/content_update"
             android:textColor="@color/color_666666"
             android:textSize="@dimen/text_size_14"/>
