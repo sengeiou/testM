@@ -129,7 +129,11 @@ public class IMService extends Service {
         }
         // 重启自己 
         Intent intent = new Intent(getApplicationContext(), IMService.class);
-        startService(intent);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            startForegroundService(intent);
+        } else {
+            startService(intent);
+        }
         super.onDestroy();
     }
 
@@ -188,17 +192,17 @@ public class IMService extends Service {
 
         ImageLoaderUtil.initImageLoaderConfig(ctx);
         startPlayMusic();
-//        lunxun();
+        //        lunxun();
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
             NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
             NotificationChannel mChannel = new NotificationChannel(CHANNEL_ID_STRING, "聊天", NotificationManager.IMPORTANCE_HIGH);
             notificationManager.createNotificationChannel(mChannel);
-//            Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ID_STRING).build();
-//            startForeground(IMServiceNotificaId, notification);
+            //            Notification notification = new Notification.Builder(getApplicationContext(), CHANNEL_ID_STRING).build();
+            //            startForeground(IMServiceNotificaId, notification);
             handler.sendEmptyMessageDelayed(IMServiceNotificaId, 5000);
-//            Intent innerIntent = new Intent(this, HelpService.class);
-//            startForegroundService(innerIntent);
+            //            Intent innerIntent = new Intent(this, HelpService.class);
+            //            startForegroundService(innerIntent);
         }
 
         return START_STICKY;

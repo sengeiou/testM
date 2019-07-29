@@ -130,6 +130,7 @@ class MainActivity : BaseActivity() {
                             myDialog.showVersionUpdateDialog(it) { dialog, view ->
                                 PermissionUtils.readAndWrite(this) {
                                     startService(Intent(this@MainActivity, UpdateService::class.java).putExtra("downloadPath", it.link))
+
                                     if (it.forceUpdate == 0) {
                                         dialog.cancel()
                                     } else {
