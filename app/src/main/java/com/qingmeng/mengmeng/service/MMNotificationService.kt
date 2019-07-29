@@ -11,7 +11,6 @@ import android.os.Build
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.view.View
-import com.lemo.emojcenter.FaceInitData.context
 import com.mogujie.tt.config.DBConstant
 import com.mogujie.tt.config.IntentConstant
 import com.mogujie.tt.config.SysConstant
@@ -255,7 +254,7 @@ class MMNotificationService : Service() {
         if (EventBus.getDefault().isRegistered(this)) {
             EventBus.getDefault().unregister(this)
         }
-        imServiceConnector.disconnect(context)
+        imServiceConnector.disconnect(this)
         super.onDestroy()
     }
 }
