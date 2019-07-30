@@ -70,7 +70,7 @@ object OssUtils {
      * @return
      */
     fun wrapByWidth(url: String,width: Int): String {
-        return "$url?x-oss-process=image/resize,w_$width,limit_0/format,webp"
+        return "$url?x-oss-process=image/resize,w_$width,limit_0"
     }
 
     /**
@@ -79,7 +79,7 @@ object OssUtils {
      * @return
      */
     fun wrapByHeight(url: String, height: Int): String {
-        return "$url?x-oss-process=image/resize,h_$height,limit_0/format,webp"
+        return "$url?x-oss-process=image/resize,h_$height,limit_0"
     }
 
     /**
@@ -88,7 +88,7 @@ object OssUtils {
      * @return
      */
     fun getZoomCropProcess(url: String, width: Int, height: Int): String {
-        return "$url?x-oss-process=image/resize,w_$width,h_$height,m_fill,limit_0/format,webp"
+        return "$url?x-oss-process=image/resize,w_$width,h_$height,m_fill,limit_0"
     }
 
     /**
@@ -100,7 +100,7 @@ object OssUtils {
      */
     @JvmOverloads
     fun getCircleProcess(url: String,width: Int, r: Int = width / 2): String {
-        return "$url?x-oss-process=image/resize,w_$width/circle,r_$r/format,webp"
+        return "$url?x-oss-process=image/resize,w_$width/circle,r_$r"
     }
 
     /**
@@ -109,6 +109,6 @@ object OssUtils {
      * @return
      */
     fun getRectRoundProcess(width: Int, round: Int): String {
-        return "?x-oss-process=image/resize,w_$width,h_$width,m_fill/rounded-corners,r_$round/format,webp"
+        return "?x-oss-process=image/resize,w_$width,h_$width,m_fill/rounded-corners,r_$round"
     }
 }
