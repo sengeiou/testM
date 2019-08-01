@@ -178,7 +178,7 @@ dependencies {
     implementation project(':facelibs')
     implementation project(':waveview')
 
-    implementation 'com.github.pinguo-zhouwei:MZBannerView:v2.0.2'
+    implementation 'com.youth.banner:banner:1.4.10'
 }
 
 //allprojects {

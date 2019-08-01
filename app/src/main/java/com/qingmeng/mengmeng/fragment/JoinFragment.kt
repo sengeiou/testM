@@ -1,23 +1,17 @@
 package com.qingmeng.mengmeng.fragment
 
 import android.annotation.SuppressLint
-import android.content.Context
 import android.support.design.widget.AppBarLayout
 import android.support.v4.view.PagerAdapter
 import android.support.v4.view.ViewPager
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.util.SparseArray
-import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import cn.bingoogolapple.bgabanner.BGABanner
 import com.app.common.logger.Logger
 import com.aspsine.swipetoloadlayout.OnLoadMoreListener
 import com.aspsine.swipetoloadlayout.OnRefreshListener
-import com.bumptech.glide.Glide
-import com.bumptech.glide.request.RequestOptions
 import com.qingmeng.mengmeng.BaseFragment
 import com.qingmeng.mengmeng.R
 import com.qingmeng.mengmeng.activity.*
@@ -27,13 +21,8 @@ import com.qingmeng.mengmeng.adapter.UnderLineNavigatorAdapter
 import com.qingmeng.mengmeng.constant.IConstants
 import com.qingmeng.mengmeng.constant.IConstants.BRANDID
 import com.qingmeng.mengmeng.entity.*
-import com.qingmeng.mengmeng.utils.ApiUtils
-import com.qingmeng.mengmeng.utils.BoxUtils
-import com.qingmeng.mengmeng.utils.OpenMallApp
-import com.qingmeng.mengmeng.utils.ToastUtil
-import com.zhouwei.mzbanner.MZBannerView
-import com.zhouwei.mzbanner.holder.MZHolderCreator
-import com.zhouwei.mzbanner.holder.MZViewHolder
+import com.qingmeng.mengmeng.utils.*
+import com.youth.banner.BannerConfig
 import de.greenrobot.event.EventBus
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -43,8 +32,7 @@ import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigat
 import org.jetbrains.anko.support.v4.startActivity
 
 @SuppressLint("CheckResult")
-class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppBarLayout.OnOffsetChangedListener,
-        BGABanner.Delegate<ImageView, Banner>, BGABanner.Adapter<ImageView, Banner> {
+class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppBarLayout.OnOffsetChangedListener {
     private lateinit var listPagerAdapter: PagerAdapter
     private lateinit var indicatorAdapter: UnderLineNavigatorAdapter
     private lateinit var commonNavigator: CommonNavigator
@@ -61,17 +49,12 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
 
     private var isRefreshBanner = false
 
-    private lateinit var mJoinBanner: MZBannerView<Banner>
-
     override fun getLayoutId(): Int = R.layout.fragment_join
 
     override fun initData() {
-        getCacheData()
-    }
+        initBanner()
 
-    override fun initObject() {
-        super.initObject()
-        mJoinBanner = mView.findViewById(R.id.mJoinBanner)
+        getCacheData()
     }
 
     //获取缓存数据
@@ -96,7 +79,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 .subscribe({
                     initView()
                     initVPIndicator()
-                    setBanner(true)
+                    setBanner()
                     if (!tabList.isEmpty()) {
                         val view = getView(tabList[vpList.currentItem].id)
                         val adapter = view.adapter as JoinRecommendAdapter
@@ -161,7 +144,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         })
         barLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
             //verticalOffset始终为0以下的负数
-            val percent = Math.abs(verticalOffset * 1.0f) / mJoinBanner.height
+            val percent = Math.abs(verticalOffset * 1.0f) / banner.height
             mSearchBg.alpha = percent
             if (percent == 0f) {
                 bottomSearch.visibility = View.VISIBLE
@@ -440,79 +423,37 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
         return !getView(tagId).canScrollVertically(1)
     }
 
-    //banner点击事件  skipType 跳转类型 1.不做任何跳转 2.普通链接 3.头报文章链接 4.品牌详情
-    override fun onBannerItemClick(banner: BGABanner?, itemView: ImageView?, model: Banner?, position: Int) {
-//        model?.apply {
-//            when (skipType) {
-//                2 -> startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
-//                3 -> startActivity<HeadDetailsActivity>("URL" to url)
-//                4 -> startActivity<ShopDetailActivity>(BRANDID to interiorDetailsId)
-//                5 -> {
-//                    try {
-//                        OpenMallApp.open(context!!, exteriorUrl)
-//                    } catch (e: OpenMallApp.NotInstalledException) {
-//                        startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
-//                    }
-//                }
-//            }
-//        }
-    }
-
-    //banner加载图片
-    override fun fillBannerItem(banner: BGABanner?, itemView: ImageView, model: Banner?, position: Int) {
-//        model?.let {
-//            Glide.with(this).load(model.imgUrl).apply(RequestOptions()
-//                    .placeholder(R.drawable.default_img_banner)
-//                    .centerCrop()).into(itemView)
-//        }
-    }
-
-    private fun setBanner(isInit: Boolean = false) {
-        if (!(isInit && mImgList.size == 0)) {
-//            mJoinBanner.setAdapter(this)//必须设置此适配器，否则不会调用接口方法来填充图片
-//            mJoinBanner.setDelegate(this)//设置点击事件
-//            Logger.d("setBanner mImgList size=${mImgList.size}")
-//            mJoinBanner.setData(f, null)// ，重写点击回调方法
-//            mJoinBanner.setAutoPlayAble(mImgList.size > 1)
-//            mJoinBanner.setData(mImgList, null)// ，重写点击回调方法
-            mJoinBanner.setPages(mImgList, MZHolderCreator<MZViewHolder<Banner>> { banner; })
-            mJoinBanner.setBannerPageClickListener { view, i ->
-                mImgList[i].apply {
-                    when (skipType) {
-                        2 -> startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
-                        3 -> startActivity<HeadDetailsActivity>("URL" to url)
-                        4 -> startActivity<ShopDetailActivity>(BRANDID to interiorDetailsId)
-                        5 -> {
-                            try {
-                                OpenMallApp.open(context!!, exteriorUrl)
-                            } catch (e: OpenMallApp.NotInstalledException) {
-                                startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
-                            }
+    private fun initBanner() {
+        banner.setImageLoader(GlideImageLoader())
+        banner.setOnBannerListener {
+            mImgList[it].apply {
+                //banner点击事件  skipType 跳转类型 1.不做任何跳转 2.普通链接 3.头报文章链接 4.品牌详情
+                when (skipType) {
+                    2 -> startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
+                    3 -> startActivity<HeadDetailsActivity>("URL" to url)
+                    4 -> startActivity<ShopDetailActivity>(BRANDID to interiorDetailsId)
+                    5 -> {
+                        try {
+                            OpenMallApp.open(context!!, exteriorUrl)
+                        } catch (e: OpenMallApp.NotInstalledException) {
+                            startActivity<WebViewActivity>(IConstants.title to "详情", IConstants.detailUrl to url)
                         }
                     }
                 }
             }
         }
-        mJoinBannerView.visibility = if (mImgList.isEmpty()) View.VISIBLE else View.GONE
-        mJoinBanner.start()//开始轮播
     }
 
-    private var banner = object : MZViewHolder<Banner> {
-        var mImageView: ImageView? = null
-        override fun onBind(context: Context?, position: Int, data: Banner?) {
-            mImageView?.let {
-                Glide.with(this@JoinFragment).load(data?.imgUrl ?: "").apply(RequestOptions()
-                        .placeholder(R.drawable.default_img_banner)
-                        .centerCrop()).into(it)
-            }
-
+    private fun setBanner() {
+        Logger.d("setBanner")
+        if (mImgList.size > 0) {
+            Logger.d("setBanner mImgList size=${mImgList.size}")
+            banner.setImages(mImgList.map { it.imgUrl });
+            banner.isAutoPlay(true)
+            banner.setIndicatorGravity(BannerConfig.CENTER);
+            banner.start();
         }
-
-        override fun createView(context: Context?): View {
-            val view = LayoutInflater.from(context).inflate(R.layout.banner_item, null)
-            mImageView = view.findViewById(R.id.ivBannerImg) as ImageView
-            return view
-        }
+        mJoinBannerView.visibility = if (mImgList.isEmpty()) View.VISIBLE else View.GONE
     }
 
     /**
@@ -526,12 +467,14 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
             else -> ""
         }
     }
-    override fun onResume() {
-        super.onResume()
-        mJoinBanner.start()//开始轮播
+
+    override fun onStart() {
+        super.onStart()
+        banner.startAutoPlay()
     }
-    override fun onPause() {
-        super.onPause()
-        mJoinBanner.pause();//暂停轮播
+
+    override fun onStop() {
+        super.onStop()
+        banner.stopAutoPlay()
     }
 }
