@@ -30,6 +30,8 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_join.*
 import net.lucode.hackware.magicindicator.buildins.commonnavigator.CommonNavigator
 import org.jetbrains.anko.support.v4.startActivity
+import java.util.*
+import kotlin.collections.ArrayList
 
 @SuppressLint("CheckResult")
 class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppBarLayout.OnOffsetChangedListener {
@@ -79,7 +81,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 .subscribe({
                     initView()
                     initVPIndicator()
-                    setBanner()
+                    setBanner(mImgList)
                     if (!tabList.isEmpty()) {
                         val view = getView(tabList[vpList.currentItem].id)
                         val adapter = view.adapter as JoinRecommendAdapter
@@ -378,7 +380,7 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                             BoxUtils.saveBanners(mImgList)
                             imgList.clear()
                             imgList.addAll(mImgList)
-                            setBanner()
+                            setBanner(it.banners)
                         }
                     } else if (bean.code != 20000) {
                         ToastUtil.showShort(bean.msg)
@@ -442,18 +444,18 @@ class JoinFragment : BaseFragment(), OnRefreshListener, OnLoadMoreListener, AppB
                 }
             }
         }
+        banner.setIndicatorGravity(BannerConfig.CENTER);
     }
 
-    private fun setBanner() {
+    private fun setBanner(imgList: List<Banner>) {
         Logger.d("setBanner")
-        if (mImgList.size > 0) {
-            Logger.d("setBanner mImgList size=${mImgList.size}")
-            banner.setImages(mImgList.map { it.imgUrl });
+        if (imgList.isNotEmpty()) {
+            Logger.d("setBanner mImgList size=${imgList.size}")
+            banner.update(imgList.map { it.imgUrl });
             banner.isAutoPlay(true)
-            banner.setIndicatorGravity(BannerConfig.CENTER);
             banner.start();
         }
-        mJoinBannerView.visibility = if (mImgList.isEmpty()) View.VISIBLE else View.GONE
+        mJoinBannerView.visibility = if (imgList.isEmpty()) View.VISIBLE else View.GONE
     }
 
     /**
