@@ -39,6 +39,8 @@ import org.jetbrains.anko.ctx
 class MMNotificationService : Service() {
     private lateinit var mConfigurationSp: ConfigurationSp
     private var badgeCount = 0
+    val CHANNEL_ID_STRING = "NotifiService"
+    val IMServiceNotificaId = 3
 
     /**
      * 消息用到的
@@ -76,8 +78,8 @@ class MMNotificationService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            val notification = Notification.Builder(applicationContext, CHANNEL_ID_STRING).build()
-//            startForeground(IMServiceNotificaId, notification)
+            val notification = Notification.Builder(applicationContext, CHANNEL_ID_STRING).build()
+            startForeground(IMServiceNotificaId, notification)
         }
         return START_STICKY
     }
