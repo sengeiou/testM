@@ -82,7 +82,7 @@ android {
         }
         offline {
             dimension "ip"
-            buildConfigField("String", "SERVER_IP", "\"http://47.99.139.155:11000/\"")
+            buildConfigField("String", "SERVER_IP", "\"http://apptest.ejiameng.cn/\"")
             resValue "string", "AppName", "盟盟-线下"
         }
     }

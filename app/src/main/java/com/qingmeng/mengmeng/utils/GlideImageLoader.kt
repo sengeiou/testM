@@ -5,6 +5,7 @@ import android.widget.ImageView
 
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.qingmeng.mengmeng.MainApplication
 import com.qingmeng.mengmeng.R
 import com.youth.banner.loader.ImageLoader
 
@@ -25,8 +26,10 @@ class GlideImageLoader : ImageLoader() {
          */
 
         //Glide 加载图片简单用法
-        Glide.with(context).load(path).apply(RequestOptions()
-                .placeholder(R.drawable.default_img_banner)).into(imageView)
+        if(path is String) {
+            Glide.with(MainApplication.instance).load(path).apply(RequestOptions()
+                    .placeholder(R.drawable.default_img_banner)).into(imageView)
+        }
     }
 
     //提供createImageView 方法，如果不用可以不重写这个方法，主要是方便自定义ImageView的创建
