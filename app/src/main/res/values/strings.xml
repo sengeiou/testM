@@ -130,7 +130,7 @@
 
     <!-- ======================================登录注册====================================== -->
 
-    <string name="please_input_user_name">请输入用户名</string>
+    <string name="please_input_user_name">请输入4~12位用户名</string>
     <string name="please_input_user_name_or_phone_num">请输入手机号码/用户名</string>
     <string name="please_input_phone_num">请输入手机号码</string>
     <string name="please_read_accept">请同意用户协议</string>

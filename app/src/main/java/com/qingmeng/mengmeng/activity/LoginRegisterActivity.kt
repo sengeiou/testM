@@ -131,6 +131,7 @@ class LoginRegisterActivity : BaseActivity() {
             val psw = mRegisterPsw.text.toString()
             when {
                 TextUtils.isEmpty(userName) -> ToastUtil.showShort(R.string.user_name_empty)
+                userName.length < 4 || userName.length > 12 -> ToastUtil.showShort(R.string.please_input_user_name)
                 TextUtils.isEmpty(phone) -> ToastUtil.showShort(R.string.phone_empty)
                 TextUtils.isEmpty(code) -> ToastUtil.showShort(R.string.input_code)
                 psw.length < 6 || psw.length > 12 -> ToastUtil.showShort(R.string.psw_hint)
