@@ -116,7 +116,7 @@ class LoginPwdActivity : BaseActivity() {
     private fun login(loginType: Int) {
         when {
             TextUtils.isEmpty(mUsername) -> ToastUtil.showShort(R.string.user_name_empty)
-            loginType == 0 && (mPassword.length > 12 || mPassword.length < 6) -> ToastUtil.showShort(R.string.psw_hint)
+            loginType == 0 && (mPassword.length > 12 || mPassword.length < 6) -> ToastUtil.showShort("密码格式不正确")
             loginType == 1 && TextUtils.isEmpty(mCode) -> ToastUtil.showShort(R.string.scuuess_code)
             else -> if (loginType == 0) accountLogin(mUsername, mPassword) else codeLogin(mUsername, mCode)
         }
