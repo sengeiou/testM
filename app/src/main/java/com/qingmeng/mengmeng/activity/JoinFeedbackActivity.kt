@@ -50,8 +50,8 @@ class JoinFeedbackActivity : BaseActivity() {
     lateinit var token: String
     //品牌ID
     private var brandId = 0
-    private var type = 0
-    lateinit var content: String
+    private var type = -1
+
     override fun getLayoutId(): Int = R.layout.activity_join_feedback
     override fun initData() {
         brandId = intent.getIntExtra(BRANDID, 0)
@@ -72,7 +72,7 @@ class JoinFeedbackActivity : BaseActivity() {
         menuList.add(SelectBean(getString(R.string.join_feedback_type4), 4))
         mBottomDialog = SelectDialog(this, menuList, onItemClick = { id ->
             btn_join_feedback.text = menuList[id].name
-            btn_join_feedback.textColor=resources.getColor(R.color.face_text_color_black)
+            btn_join_feedback.textColor = resources.getColor(R.color.face_text_color_black)
             type = id
         })
     }
@@ -98,9 +98,15 @@ class JoinFeedbackActivity : BaseActivity() {
         btn_join_feedback.setOnClickListener { mBottomDialog.show() }
         //提交
         mMenu.setOnClickListener { _ ->
+            when {
+                type == -1 -> {
+                    ToastUtil.showShort(getString(R.string.join_feedback_type))
+                    return@setOnClickListener
+                }
+            }
             myDialog.showLoadingDialog()
             token = MainApplication.instance.TOKEN
-            content = edt_join_feedback.text.toString()
+            val content = edt_join_feedback.text.toString()
             callUrl.clear()
             var failCount = 0
             var successCount = 0
