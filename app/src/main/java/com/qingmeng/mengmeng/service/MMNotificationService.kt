@@ -8,6 +8,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
 import android.support.v4.app.NotificationCompat
 import android.view.View
@@ -78,8 +79,15 @@ class MMNotificationService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val notificationManager = ctx.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            val mChannel = NotificationChannel(CHANNEL_ID_STRING, "通知", NotificationManager.IMPORTANCE_HIGH)
+            notificationManager.createNotificationChannel(mChannel)
             val notification = Notification.Builder(applicationContext, CHANNEL_ID_STRING).build()
             startForeground(IMServiceNotificaId, notification)
+            Handler().postDelayed({
+                stopForeground(true)
+                stopSelf(IMServiceNotificaId)
+            },5000)
         }
         return START_STICKY
     }
