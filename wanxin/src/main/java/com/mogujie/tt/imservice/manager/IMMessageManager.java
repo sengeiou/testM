@@ -543,6 +543,9 @@ public class IMMessageManager extends IMManager {
                 sendList.add(msgInfo);
                 sendVideos(sendList);
                 break;
+            case DBConstant.SHOW_BRAND_TYPE:
+                sendBrand((BrandMessage) msgInfo);
+                break;
             default:
                 throw new IllegalArgumentException("#resendMessage#enum type is wrong!!,cause by displayType" + msgType);
         }
