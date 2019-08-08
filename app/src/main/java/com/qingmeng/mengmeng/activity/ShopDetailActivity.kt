@@ -142,7 +142,7 @@ class ShopDetailActivity : BaseActivity() {
             mDetailBackMask.alpha = 0f
             mDetailMoreMask.alpha = 0f
             mDetailBack.alpha = 1f
-            mDetailMore.alpha = 1f
+            mDetailMore.visibility = View.GONE
             mDetailScroll.setOnScrollChangeListener { _, _, _, _, _ ->
 
             }
