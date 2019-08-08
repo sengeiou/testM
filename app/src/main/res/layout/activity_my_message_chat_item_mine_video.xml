@@ -85,18 +85,18 @@
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 
-    <!--<android.support.v7.widget.CardView-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--app:cardCornerRadius="3dp"-->
-    <!--app:cardElevation="0dp"-->
-    <!--&gt;-->
+    <android.support.v7.widget.CardView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="0dp"
+    >
 
-    <com.qingmeng.mengmeng.view.RoundImageView
+    <ImageView
         android:id="@+id/ivMyMessageChatRvMineVideoHead"
         android:layout_width="@dimen/padding_dp_40"
         android:layout_height="@dimen/padding_dp_40"
         android:src="@drawable/default_img_icon"
         />
-    <!--</android.support.v7.widget.CardView>-->
+    </android.support.v7.widget.CardView>
 </LinearLayout>

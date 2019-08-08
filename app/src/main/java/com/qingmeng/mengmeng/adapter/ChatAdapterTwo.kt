@@ -1186,9 +1186,10 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
      * 设置头像
      */
     private fun setHeadImage(message: MessageEntity, imageView: ImageView) {
+        imageView.scaleType=ImageView.ScaleType.FIT_CENTER
         //直接加载头像（此消息是假消息）
         if (message.fromId == 0) {
-            GlideLoader.load(AppManager.instance.currentActivity(), MyMessageChatActivity.mAvatar, imageView, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            GlideLoader.load(AppManager.instance.currentActivity(), MyMessageChatActivity.mAvatar, imageView, placeholder = R.drawable.default_img_icon, centerCrop = false)
         } else {
             val isMine = message.fromId == loginUser?.peerId
             val userEntity = getUserEntity(message)
@@ -1196,7 +1197,7 @@ class ChatAdapterTwo(private val context: Context, var msgObjectList: ArrayList<
             if (isMine && TextUtils.isEmpty(avatarUrl)) {
                 avatarUrl = MainApplication.instance.user.userInfo.avatar
             }
-            GlideLoader.load(AppManager.instance.currentActivity(), avatarUrl, imageView, placeholder = R.drawable.default_img_icon, roundRadius = 15)
+            GlideLoader.load(AppManager.instance.currentActivity(), avatarUrl, imageView, placeholder = R.drawable.default_img_icon, centerCrop = false)
         }
     }
 
